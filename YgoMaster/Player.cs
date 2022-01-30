@@ -31,7 +31,7 @@ namespace YgoMaster
         public Dictionary<int, ChapterStatus> SoloChapters { get; private set; }
         public PlayerCraftPoints CraftPoints { get; private set; }
         public PlayerOrbPoints OrbPoints { get; private set; }
-        public PlayerActiveDuel ActiveDuel { get; private set; }
+        public PlayerDuelState Duel { get; private set; }
 
         public int NextDeckUId = 1;
 
@@ -50,7 +50,7 @@ namespace YgoMaster
             SoloChapters = new Dictionary<int, ChapterStatus>();
             CraftPoints = new PlayerCraftPoints();
             OrbPoints = new PlayerOrbPoints();
-            ActiveDuel = new PlayerActiveDuel();
+            Duel = new PlayerDuelState(this);
         }
 
         public Dictionary<string, object> SoloChaptersToDictionary()
@@ -800,12 +800,88 @@ namespace YgoMaster
         }
     }
 
-    class PlayerActiveDuel
+    class PlayerDuelState
     {
+        Player player;
         public GameMode Mode;
+        public Dictionary<GameMode, int> SelectedDeck { get; private set; }// <GameMode, deckid>
+
         // For solo/story...
         public int ChapterId;
-        public int DeckId;
         public bool IsMyDeck;
+
+        public PlayerDuelState(Player player)
+        {
+            this.player = player;
+            SelectedDeck = new Dictionary<GameMode, int>();
+        }
+
+        public DeckInfo GetDeck(GameMode mode)
+        {
+            int deckId;
+            if (SelectedDeck.TryGetValue(mode, out deckId))
+            {
+                DeckInfo deck;
+                if (player.Decks.TryGetValue(deckId, out deck))
+                {
+                    return deck;
+                }
+            }
+            return null;
+        }
+
+        public int GetDeckId(GameMode mode)
+        {
+            int result;
+            SelectedDeck.TryGetValue(mode, out result);
+            return result;
+        }
+
+        public void SetDeckId(GameMode mode, int deckId)
+        {
+            SelectedDeck[mode] = deckId;
+        }
+
+        public void SelectedDeckFromDictionary(Dictionary<string, object> data)
+        {
+            SelectedDeck.Clear();
+            if (data == null)
+            {
+                return;
+            }
+            Dictionary<string, DeckInfo> decksByFileName = new Dictionary<string, DeckInfo>();
+            foreach (DeckInfo deck in player.Decks.Values)
+            {
+                if (!string.IsNullOrEmpty(deck.File))
+                {
+                    string name = Path.GetFileName(deck.File);
+                    decksByFileName[name] = deck;
+                }
+            }
+            foreach (KeyValuePair<string, object> selectedDeck in data)
+            {
+                GameMode mode;
+                DeckInfo deck;
+                string file = selectedDeck.Value as string;
+                if (Enum.TryParse(selectedDeck.Key, out mode) && !string.IsNullOrEmpty(file) && decksByFileName.TryGetValue(file, out deck))
+                {
+                    SelectedDeck[mode] = deck.Id;
+                }
+            }
+        }
+
+        public Dictionary<string, object> SelectedDeckToDictionary()
+        {
+            Dictionary<string, object> result = new Dictionary<string, object>();
+            foreach (KeyValuePair<GameMode, int> selectedDeck in SelectedDeck)
+            {
+                DeckInfo deck = GetDeck(selectedDeck.Key);
+                if (deck != null && !string.IsNullOrEmpty(deck.File))
+                {
+                    result[selectedDeck.Key.ToString()] = Path.GetFileName(deck.File);
+                }
+            }
+            return result;
+        }
     }
 }

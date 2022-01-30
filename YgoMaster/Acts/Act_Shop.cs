@@ -156,6 +156,7 @@ namespace YgoMaster
                 foreach (ShopItemPrice price in shopItem.Prices)
                 {
                     string pop = null;
+                    int buttonType = price.ButtonType;
                     if (shopItem.PackType != ShopPackType.None)
                     {
                         if (price.TextArgs.Count > 0)
@@ -171,6 +172,7 @@ namespace YgoMaster
                             if (request.Player.ShopState.IsUltraRareGuaranteed(shopItem.Id))
                             {
                                 pop = "IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_10_UR";
+                                buttonType = 3;// Pink / purple button
                             }
                         }
                         ShopOddsInfo odds = shopItem.GetOdds(Shop);
@@ -185,7 +187,7 @@ namespace YgoMaster
                         { "price_id", price.Id },
                         { "item_category", 1 },
                         { "item_id", 1 },
-                        { "button_type", price.ButtonType },
+                        { "button_type", buttonType },
                         { "use_item_num", price.Price },
                         { "buy_count", 1 },
                         { "textId", FixIdString(price.TextId) },

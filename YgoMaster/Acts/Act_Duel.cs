@@ -12,7 +12,7 @@ namespace YgoMaster
             Dictionary<string, object> rule;
             if (TryGetValue(request.ActParams, "rule", out rule))
             {
-                PlayerActiveDuel duel = request.Player.ActiveDuel;
+                PlayerDuelState duel = request.Player.Duel;
                 duel.Mode = (GameMode)GetValue<int>(rule, "GameMode");
                 duel.ChapterId = GetValue<int>(rule, "chapter");
                 DuelSettings duelSettings = null;
@@ -32,6 +32,14 @@ namespace YgoMaster
                                 if (SoloDisableNoShuffle)
                                 {
                                     duelSettings.noshuffle = false;
+                                }
+                                if (duel.IsMyDeck)
+                                {
+                                    DeckInfo deck = duel.GetDeck(duel.Mode);
+                                    if (deck != null)
+                                    {
+                                        duelSettings.Deck[DuelSettings.PlayerIndex].CopyFrom(deck);
+                                    }
                                 }
                             }
                         }
@@ -64,12 +72,12 @@ namespace YgoMaster
                 TryGetValue(endParams, "res", out res) &&
                 TryGetValue(endParams, "finish", out finish))
             {
-                switch (request.Player.ActiveDuel.Mode)
+                switch (request.Player.Duel.Mode)
                 {
                     case GameMode.SoloSingle:
-                        if (/*res == (int)DuelResultType.Win && */request.Player.ActiveDuel.ChapterId != 0)
+                        if (/*res == (int)DuelResultType.Win && */request.Player.Duel.ChapterId != 0)
                         {
-                            OnSoloChapterComplete(request, request.Player.ActiveDuel.ChapterId);
+                            OnSoloChapterComplete(request, request.Player.Duel.ChapterId);
                         }
                         break;
                 }

@@ -178,6 +178,9 @@ namespace YgoMaster
                                     case "Deck.delete_deck":
                                         Act_DeckDeleteDeck(gameServerWebRequest);
                                         break;
+                                    case "Deck.set_select_deck":
+                                        Act_SetSelectDeck(gameServerWebRequest);
+                                        break;
                                     case "Shop.get_list":
                                         Act_ShopGetList(gameServerWebRequest);
                                         break;
@@ -204,6 +207,9 @@ namespace YgoMaster
                                         break;
                                     case "Solo.set_use_deck_type":
                                         Act_SoloSetUseDeckType(gameServerWebRequest);
+                                        break;
+                                    case "Solo.deck_check":
+                                        Act_SoloDeckCheck(gameServerWebRequest);
                                         break;
                                     case "Solo.skip":
                                         Act_SoloSkip(gameServerWebRequest);

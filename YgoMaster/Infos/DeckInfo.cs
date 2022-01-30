@@ -35,6 +35,32 @@ namespace YgoMaster
             TrayCards = new CardCollection();
         }
 
+        public bool IsValid(Player player)
+        {
+            if (MainDeckCards.Count < 40 || MainDeckCards.Count > 60 || ExtraDeckCards.Count > 15 || SideDeckCards.Count > 15)
+            {
+                return false;
+            }
+            // TODO: Validate the StyleRarity of the cards
+            Dictionary<int, int> count = new Dictionary<int, int>();
+            IEnumerable<int>[] collections = { MainDeckCards.GetIds(), ExtraDeckCards.GetIds(), SideDeckCards.GetIds() };
+            foreach (IEnumerable<int> collection in collections)
+            {
+                foreach (int id in collection)
+                {
+                    if (!count.ContainsKey(id))
+                    {
+                        count[id] = player.Cards.GetCount(id);
+                    }
+                    if (--count[id] < 0)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
         public List<int> GetAllCards(bool main = true, bool extra = true, bool side = false, bool tray = false)
         {
             List<int> result = new List<int>();

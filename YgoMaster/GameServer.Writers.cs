@@ -200,5 +200,29 @@ namespace YgoMaster
             Dictionary<string, object> cards = request.GetOrCreateDictionary("Cards");
             cards["favorite"] = request.Player.CardFavorites.ToDictionary();
         }
+
+        void WriteSolo(GameServerWebRequest request)
+        {
+            WriteSolo_deck_info(request);
+            WriteSolo_cleared(request);
+        }
+
+        void WriteSolo_cleared(GameServerWebRequest request)
+        {
+            Dictionary<string, object> solo = request.GetOrCreateDictionary("Solo");
+            solo["cleared"] = request.Player.SoloChaptersToDictionary();
+        }
+
+        void WriteSolo_deck_info(GameServerWebRequest request)
+        {
+            DeckInfo deck = request.Player.Duel.GetDeck(GameMode.SoloSingle);
+            Dictionary<string, object> solo = request.GetOrCreateDictionary("Solo");
+            solo["deck_info"] = new Dictionary<string, object>()
+            {
+                { "deck_id", deck != null ? deck.Id : 0 },
+                { "valid", deck != null ? deck.IsValid(request.Player) : false },
+                { "possession", true }//request.Player.Duel.IsMyDeck }
+            };
+        }
     }
 }

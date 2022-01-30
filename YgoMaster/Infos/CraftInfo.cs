@@ -76,12 +76,7 @@ namespace YgoMaster
             foreach (KeyValuePair<string, object> rarityData in data)
             {
                 CardRarity rarity;
-                int value;
-                if (int.TryParse(rarityData.Key, out value))
-                {
-                    rarity = (CardRarity)value;
-                }
-                else if (!Enum.TryParse<CardRarity>(rarityData.Key, out rarity))
+                if (!Enum.TryParse<CardRarity>(rarityData.Key, out rarity))
                 {
                     continue;
                 }
@@ -92,11 +87,7 @@ namespace YgoMaster
                     foreach (KeyValuePair<string, object> item in rarityItems)
                     {
                         CardStyleRarity styleRarity;
-                        if (int.TryParse(item.Key, out value))
-                        {
-                            styleRarity = (CardStyleRarity)value;
-                        }
-                        else if (!Enum.TryParse<CardStyleRarity>(item.Key, out styleRarity))
+                        if (!Enum.TryParse<CardStyleRarity>(item.Key, out styleRarity))
                         {
                             continue;
                         }

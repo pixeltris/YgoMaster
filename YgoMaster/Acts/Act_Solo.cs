@@ -8,6 +8,8 @@ using System.Text;
 // YgomGame.Solo.mainScroll.SoloModeViewController (InfinityScrollView)
 // YgomSystem.UI.InfinityScroll.InfinityScrollView
 
+// TODO: Pull SoloData into a class (SoloInfo or something) because currently there are several lookups of the same thing
+
 namespace YgoMaster
 {
     partial class GameServer
@@ -15,6 +17,28 @@ namespace YgoMaster
         internal static int GetChapterGateId(int chapterId)
         {
             return chapterId / 10000;
+        }
+
+        HashSet<int> GetAllSoloChapterIds()
+        {
+            HashSet<int> result = new HashSet<int>();
+            Dictionary<string, object> allChapterData = GetDictionary(SoloData, "chapter");
+            foreach (KeyValuePair<string, object> gateChapterData in allChapterData)
+            {
+                Dictionary<string, object> chapters = gateChapterData.Value as Dictionary<string, object>;
+                if (chapters != null)
+                {
+                    foreach (KeyValuePair<string, object> chapter in chapters)
+                    {
+                        int chapterId;
+                        if (int.TryParse(chapter.Key, out chapterId) && chapterId > 0)
+                        {
+                            result.Add(chapterId);
+                        }
+                    }
+                }
+            }
+            return result;
         }
 
         bool IsValidNonDuelChapter(int chapterId)
@@ -63,24 +87,46 @@ namespace YgoMaster
             return false;
         }
 
+        bool GetChapterSetIds(GameServerWebRequest request, int chapterId, out int myDeckSetId, out int loanerDeckSetId)
+        {
+            myDeckSetId = 0;
+            loanerDeckSetId = 0;
+            int gateId = GetChapterGateId(chapterId);
+            Dictionary<string, object> allChapterData = GetDictionary(SoloData, "chapter");
+            if (allChapterData == null)
+            {
+                return false;
+            }
+            Dictionary<string, object> chapterGateData = GetDictionary(allChapterData, gateId.ToString());
+            if (chapterGateData == null)
+            {
+                return false;
+            }
+            Dictionary<string, object> chapterData = GetDictionary(chapterGateData, chapterId.ToString());
+            if (chapterData == null)
+            {
+                return false;
+            }
+            myDeckSetId = GetValue<int>(chapterData, "mydeck_set_id");
+            loanerDeckSetId = GetValue<int>(chapterData, "set_id");
+            return true;
+        }
+
         void OnSoloChapterComplete(GameServerWebRequest request, int chapterId)
         {
-            // TODO: "Solo.Result.gate_clear" when finishing goal gates (unlock a random secret)
-            // "gate_clear":{"gate":6,"pack":{"nameTextId":"IDS_CARDPACK_ID2081_NAME","shopId":10002081,"iconMrk":13579,"is_extend":true}}
-
             ChapterStatus currentStatus;
             if (request.Player.SoloChapters.TryGetValue(chapterId, out currentStatus))
             {
                 switch (currentStatus)
                 {
                     case ChapterStatus.MYDECK_CLEAR:
-                        if (request.Player.ActiveDuel.IsMyDeck)
+                        if (request.Player.Duel.IsMyDeck)
                         {
                             return;
                         }
                         break;
                     case ChapterStatus.RENTAL_CLEAR:
-                        if (!request.Player.ActiveDuel.IsMyDeck)
+                        if (!request.Player.Duel.IsMyDeck)
                         {
                             return;
                         }
@@ -91,6 +137,20 @@ namespace YgoMaster
             }
 
             int gateId = GetChapterGateId(chapterId);
+
+            Dictionary<string, object> allGateData = GetDictionary(SoloData, "gate");
+            if (allGateData == null)
+            {
+                LogWarning("Failed to get all gate data");
+                return;
+            }
+            Dictionary<string, object> gateData = GetDictionary(allGateData, gateId.ToString());
+            if (gateData == null)
+            {
+                LogWarning("Failed to get gate " + gateId);
+                return;
+            }
+            bool isChapterGoal = GetValue<int>(gateData, "clear_chapter") == chapterId;
 
             ChapterStatus newStatus = ChapterStatus.OPEN;
             Dictionary<string, object> allChapterData = GetDictionary(SoloData, "chapter");
@@ -114,142 +174,330 @@ namespace YgoMaster
             int myDeckSetId = GetValue<int>(chapterData, "mydeck_set_id");
             int loanerDeckSetId = GetValue<int>(chapterData, "set_id");
             int targetSetId = 0;
-            if (request.Player.ActiveDuel.IsMyDeck)
+            if (myDeckSetId == 0 && loanerDeckSetId == 0)
             {
-                if (myDeckSetId == 0)
+                if (!IsValidNonDuelChapter(chapterId))
                 {
-                    LogWarning("Completed chapter with own deck but no option for it");
-                    return;
+                    LogWarning("Unknown chapter type unknown for " + chapterId + " (but will attempt to set it to complete)");
                 }
-                targetSetId = myDeckSetId;
-                if (loanerDeckSetId == 0 || currentStatus > ChapterStatus.OPEN)
-                {
-                    newStatus = ChapterStatus.COMPLETE;
-                }
-                else
-                {
-                    newStatus = ChapterStatus.MYDECK_CLEAR;
-                }
+                newStatus = ChapterStatus.COMPLETE;
             }
             else
             {
-                if (loanerDeckSetId == 0)
+                if (request.Player.Duel.IsMyDeck)
                 {
-                    LogWarning("Completed chapter with loaner deck but no option for it");
-                    return;
-                }
-                targetSetId = loanerDeckSetId;
-                if (myDeckSetId == 0 || currentStatus > ChapterStatus.OPEN)
-                {
-                    newStatus = ChapterStatus.COMPLETE;
+                    if (myDeckSetId == 0)
+                    {
+                        LogWarning("Completed chapter with own deck but no option for it");
+                        return;
+                    }
+                    targetSetId = myDeckSetId;
+                    if (loanerDeckSetId == 0 || currentStatus > ChapterStatus.OPEN)
+                    {
+                        newStatus = ChapterStatus.COMPLETE;
+                    }
+                    else
+                    {
+                        newStatus = ChapterStatus.MYDECK_CLEAR;
+                    }
                 }
                 else
                 {
-                    newStatus = ChapterStatus.RENTAL_CLEAR;
+                    if (loanerDeckSetId == 0)
+                    {
+                        LogWarning("Completed chapter with loaner deck but no option for it");
+                        return;
+                    }
+                    targetSetId = loanerDeckSetId;
+                    if (myDeckSetId == 0 || currentStatus > ChapterStatus.OPEN)
+                    {
+                        newStatus = ChapterStatus.COMPLETE;
+                    }
+                    else
+                    {
+                        newStatus = ChapterStatus.RENTAL_CLEAR;
+                    }
                 }
             }
+            List<object> resultRewards = new List<object>();
+            List<object> resultSub = new List<object>();
             Dictionary<string, object> allRewardData = GetDictionary(SoloData, "reward");
             if (allRewardData == null)
             {
                 LogWarning("Failed to get all reward data");
                 return;
             }
-            List<object> resultRewards = new List<object>();
-            Dictionary<string, object> rewardData = GetDictionary(allRewardData, targetSetId.ToString());
-            foreach (KeyValuePair<string, object> reward in rewardData)
+            int unlockId = GetValue<int>(chapterData, "unlock_id");
+            if (unlockId != 0)
             {
-                Dictionary<string, object> rewardItems = reward.Value as Dictionary<string, object>;
-                int rewardCategoryI32;
-                if (!int.TryParse(reward.Key, out rewardCategoryI32))
+                Dictionary<string, object> allUnlockData = GetDictionary(SoloData, "unlock");
+                Dictionary<string, object> allUnlockItemData = GetDictionary(SoloData, "unlock_item");
+                if (allUnlockData == null || allUnlockItemData == null)
                 {
-                    continue;
+                    LogWarning("Failed to get all unlock data");
+                    return;
                 }
-                ItemID.Category category = (ItemID.Category)rewardCategoryI32;
-                foreach (KeyValuePair<string, object> item in rewardItems)
+                Dictionary<string, object> unlockData = GetDictionary(allUnlockData, unlockId.ToString());
+                if (unlockData == null)
                 {
-                    int itemId;
-                    int count = (int)Convert.ChangeType(item.Value, typeof(int));
-                    if (!int.TryParse(item.Key, out itemId))
+                    LogWarning("Failed to get unlock data for unlock_id " + unlockId);
+                    return;
+                }
+                /////////////////////////////////////////////////////////////////////////
+                // !!! No return statments below this as we're modifying player state !!!
+                /////////////////////////////////////////////////////////////////////////
+                foreach (KeyValuePair<string, object> unlockRequirement in unlockData)
+                {
+                    ChapterUnlockType unlockType;
+                    if (Enum.TryParse(unlockRequirement.Key, out unlockType))
+                    {
+                        switch (unlockType)
+                        {
+                            case ChapterUnlockType.ITEM:
+                                {
+                                    List<object> itemSetList = unlockRequirement.Value as List<object>;
+                                    if (itemSetList == null)
+                                    {
+                                        continue;
+                                    }
+                                    // NOTE: There should be a validation pass before taking any items, but just trust the client knows what it has
+                                    foreach (object itemSet in itemSetList)
+                                    {
+                                        int itemSetId = (int)Convert.ChangeType(itemSet, typeof(int));
+                                        Dictionary<string, object> itemsByCategory = GetDictionary(allUnlockItemData, itemSetId.ToString());
+                                        if (itemsByCategory == null)
+                                        {
+                                            LogWarning("Failed to find unlock_item " + itemSetId + " for unlock_id" + unlockId + " on chapter " + chapterId);
+                                            continue;
+                                        }
+                                        foreach (KeyValuePair<string, object> itemCategory in itemsByCategory)
+                                        {
+                                            Dictionary<string, object> items = itemCategory.Value as Dictionary<string, object>;
+                                            ItemID.Category category;
+                                            if (!Enum.TryParse(itemCategory.Key, out category))
+                                            {
+                                                continue;
+                                            }
+                                            foreach (KeyValuePair<string, object> item in items)
+                                            {
+                                                int itemId;
+                                                int count = (int)Convert.ChangeType(item.Value, typeof(int));
+                                                if (!int.TryParse(item.Key, out itemId))
+                                                {
+                                                    continue;
+                                                }
+                                                // NOTE: The game only counts CONSUME items (displays all correctly, but doesn't count them)
+                                                switch (category)
+                                                {
+                                                    case ItemID.Category.CONSUME:
+                                                        switch ((ItemID.CONSUME)itemId)
+                                                        {
+                                                            case ItemID.CONSUME.ID0001:
+                                                            case ItemID.CONSUME.ID0002:
+                                                                request.Player.Gems = Math.Max(0, request.Player.Gems - count);
+                                                                break;
+                                                            case ItemID.CONSUME.ID0003:
+                                                            case ItemID.CONSUME.ID0004:
+                                                            case ItemID.CONSUME.ID0005:
+                                                            case ItemID.CONSUME.ID0006:
+                                                                {
+                                                                    CardRarity rarity = CardRarity.None;
+                                                                    switch ((ItemID.CONSUME)itemId)
+                                                                    {
+                                                                        case ItemID.CONSUME.ID0003: rarity = CardRarity.Normal; break;
+                                                                        case ItemID.CONSUME.ID0004: rarity = CardRarity.Rare; break;
+                                                                        case ItemID.CONSUME.ID0005: rarity = CardRarity.SuperRare; break;
+                                                                        case ItemID.CONSUME.ID0006: rarity = CardRarity.UltraRare; break;
+                                                                    }
+                                                                    if (request.Player.CraftPoints.CanSubtract(rarity, count))
+                                                                    {
+                                                                        request.Player.CraftPoints.Subtract(rarity, count);
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        request.Player.CraftPoints.Set(rarity, 0);
+                                                                    }
+                                                                }
+                                                                break;
+                                                            case ItemID.CONSUME.ID0008:
+                                                            case ItemID.CONSUME.ID0009:
+                                                            case ItemID.CONSUME.ID0010:
+                                                            case ItemID.CONSUME.ID0011:
+                                                            case ItemID.CONSUME.ID0012:
+                                                            case ItemID.CONSUME.ID0013:
+                                                                {
+                                                                    OrbType orbType = OrbType.None;
+                                                                    switch ((ItemID.CONSUME)itemId)
+                                                                    {
+                                                                        case ItemID.CONSUME.ID0008: orbType = OrbType.Dark; break;
+                                                                        case ItemID.CONSUME.ID0009: orbType = OrbType.Light; break;
+                                                                        case ItemID.CONSUME.ID0010: orbType = OrbType.Earth; break;
+                                                                        case ItemID.CONSUME.ID0011: orbType = OrbType.Water; break;
+                                                                        case ItemID.CONSUME.ID0012: orbType = OrbType.Fire; break;
+                                                                        case ItemID.CONSUME.ID0013: orbType = OrbType.Wind; break;
+                                                                    }
+                                                                    if (request.Player.OrbPoints.CanSubtract(orbType, count))
+                                                                    {
+                                                                        request.Player.OrbPoints.Subtract(orbType, count);
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        request.Player.OrbPoints.Set(orbType, 0);
+                                                                    }
+                                                                }
+                                                                break;
+                                                            default:
+                                                                LogWarning("Unhandled CONSUME requirement item " + itemId);
+                                                                break;
+                                                        }
+                                                        break;
+                                                    case ItemID.Category.CARD:
+                                                        int cardCountRemaining = count;
+                                                        for (CardStyleRarity i = CardStyleRarity.Normal; i <= CardStyleRarity.Shine; i++)
+                                                        {
+                                                            int currentCardCount = request.Player.Cards.GetCount(itemId, PlayerCardKind.Dismantle, i);
+                                                            if (currentCardCount > 0)
+                                                            {
+                                                                int numCardsToTake = Math.Min(cardCountRemaining, currentCardCount);
+                                                                request.Player.Cards.Subtract(itemId, numCardsToTake, PlayerCardKind.Dismantle, i);
+                                                                cardCountRemaining -= numCardsToTake;
+                                                            }
+                                                        }
+                                                        break;
+                                                    case ItemID.Category.STRUCTURE:
+                                                        LogWarning("Removing a structure deck isn't supported");
+                                                        break;
+                                                    case ItemID.Category.AVATAR:
+                                                    case ItemID.Category.ICON:
+                                                    case ItemID.Category.ICON_FRAME:
+                                                    case ItemID.Category.PROTECTOR:
+                                                    case ItemID.Category.DECK_CASE:
+                                                    case ItemID.Category.AVATAR_HOME:
+                                                        request.Player.Items.Remove(itemId);
+                                                        break;
+                                                    case ItemID.Category.FIELD:
+                                                        foreach (int fieldPartItemId in ItemID.GetDuelFieldParts(itemId))
+                                                        {
+                                                            request.Player.Items.Remove(fieldPartItemId);
+                                                        }
+                                                        break;
+                                                }
+                                                WriteItem(request, itemId);
+                                                resultSub.Add(new Dictionary<string, object>()
+                                                {
+                                                    { "category", (int)category },
+                                                    { "item_id", itemId },
+                                                    { "num", count },
+                                                    { "type", (int)category },
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+            if (targetSetId != 0)
+            {
+                Dictionary<string, object> rewardData = GetDictionary(allRewardData, targetSetId.ToString());
+                foreach (KeyValuePair<string, object> reward in rewardData)
+                {
+                    Dictionary<string, object> rewardItems = reward.Value as Dictionary<string, object>;
+                    ItemID.Category category;
+                    if (!Enum.TryParse(reward.Key, out category))
                     {
                         continue;
                     }
-                    bool valid = true;
-                    switch (category)
+                    foreach (KeyValuePair<string, object> item in rewardItems)
                     {
-                        case ItemID.Category.CONSUME:
-                            {
-                                switch ((ItemID.CONSUME)itemId)
-                                {
-                                    case ItemID.CONSUME.ID0001: request.Player.Gems += count; break;
-                                    case ItemID.CONSUME.ID0003: request.Player.CraftPoints.Add(CardRarity.Normal, count); break;
-                                    case ItemID.CONSUME.ID0004: request.Player.CraftPoints.Add(CardRarity.Rare, count); break;
-                                    case ItemID.CONSUME.ID0005: request.Player.CraftPoints.Add(CardRarity.SuperRare, count); break;
-                                    case ItemID.CONSUME.ID0006: request.Player.CraftPoints.Add(CardRarity.UltraRare, count); break;
-                                    case ItemID.CONSUME.ID0008: request.Player.OrbPoints.Add(OrbType.Dark, count); break;
-                                    case ItemID.CONSUME.ID0009: request.Player.OrbPoints.Add(OrbType.Light, count); break;
-                                    case ItemID.CONSUME.ID0010: request.Player.OrbPoints.Add(OrbType.Earth, count); break;
-                                    case ItemID.CONSUME.ID0011: request.Player.OrbPoints.Add(OrbType.Water, count); break;
-                                    case ItemID.CONSUME.ID0012: request.Player.OrbPoints.Add(OrbType.Fire, count); break;
-                                    case ItemID.CONSUME.ID0013: request.Player.OrbPoints.Add(OrbType.Wind, count); break;
-                                    default:
-                                        LogWarning("Unhandled CONSUME item " + itemId);
-                                        valid = false;
-                                        break;
-                                }
-                            }
-                            break;
-                        case ItemID.Category.CARD:
-                            {
-                                request.Player.Cards.Add(itemId, count, PlayerCardKind.Dismantle, CardStyleRarity.Normal);
-                            }
-                            break;
-                        case ItemID.Category.STRUCTURE:
-                            {
-                                count = 1;
-                                GiveStructureDeck(request, itemId);
-                            }
-                            break;
-                        case ItemID.Category.AVATAR:
-                        case ItemID.Category.ICON:
-                        case ItemID.Category.ICON_FRAME:
-                        case ItemID.Category.PROTECTOR:
-                        case ItemID.Category.DECK_CASE:
-                        case ItemID.Category.AVATAR_HOME:
-                            {
-                                count = 1;
-                                request.Player.Items.Add(itemId);
-                            }
-                            break;
-                        case ItemID.Category.FIELD:
-                            count = 1;
-                            foreach (int fieldPartItemId in ItemID.GetDuelFieldParts(itemId))
-                            {
-                                request.Player.Items.Add(fieldPartItemId);
-                            }
-                            break;
-                        case ItemID.Category.PROFILE_TAG:
-                            // Ignore (currently all tags are auto added)
-                            valid = false;
-                            break;
-                        case ItemID.Category.PACK_TICKET:
-                            // Ignore (currently don't handle pack tickets)
-                            valid = false;
-                            break;
-                        default:
-                            LogWarning("Unhandled reward category " + category);
-                            valid = false;
-                            break;
-                    }
-                    if (valid)
-                    {
-                        WriteItem(request, itemId);
-                        resultRewards.Add(new Dictionary<string, object>()
+                        int itemId;
+                        int count = (int)Convert.ChangeType(item.Value, typeof(int));
+                        if (!int.TryParse(item.Key, out itemId))
                         {
-                            { "category", (int)category },
-                            { "item_id", itemId },
-                            { "num", count },
-                            { "type", (int)category },
-                        });
+                            continue;
+                        }
+                        bool valid = true;
+                        switch (category)
+                        {
+                            case ItemID.Category.CONSUME:
+                                {
+                                    switch ((ItemID.CONSUME)itemId)
+                                    {
+                                        case ItemID.CONSUME.ID0001:
+                                            request.Player.Gems += count;
+                                            break;
+                                        case ItemID.CONSUME.ID0003: request.Player.CraftPoints.Add(CardRarity.Normal, count); break;
+                                        case ItemID.CONSUME.ID0004: request.Player.CraftPoints.Add(CardRarity.Rare, count); break;
+                                        case ItemID.CONSUME.ID0005: request.Player.CraftPoints.Add(CardRarity.SuperRare, count); break;
+                                        case ItemID.CONSUME.ID0006: request.Player.CraftPoints.Add(CardRarity.UltraRare, count); break;
+                                        case ItemID.CONSUME.ID0008: request.Player.OrbPoints.Add(OrbType.Dark, count); break;
+                                        case ItemID.CONSUME.ID0009: request.Player.OrbPoints.Add(OrbType.Light, count); break;
+                                        case ItemID.CONSUME.ID0010: request.Player.OrbPoints.Add(OrbType.Earth, count); break;
+                                        case ItemID.CONSUME.ID0011: request.Player.OrbPoints.Add(OrbType.Water, count); break;
+                                        case ItemID.CONSUME.ID0012: request.Player.OrbPoints.Add(OrbType.Fire, count); break;
+                                        case ItemID.CONSUME.ID0013: request.Player.OrbPoints.Add(OrbType.Wind, count); break;
+                                        default:
+                                            LogWarning("Unhandled CONSUME item " + itemId);
+                                            valid = false;
+                                            break;
+                                    }
+                                }
+                                break;
+                            case ItemID.Category.CARD:
+                                {
+                                    request.Player.Cards.Add(itemId, count, PlayerCardKind.NoDismantle, CardStyleRarity.Normal);
+                                }
+                                break;
+                            case ItemID.Category.STRUCTURE:
+                                {
+                                    count = 1;
+                                    GiveStructureDeck(request, itemId);
+                                }
+                                break;
+                            case ItemID.Category.AVATAR:
+                            case ItemID.Category.ICON:
+                            case ItemID.Category.ICON_FRAME:
+                            case ItemID.Category.PROTECTOR:
+                            case ItemID.Category.DECK_CASE:
+                            case ItemID.Category.AVATAR_HOME:
+                                {
+                                    count = 1;
+                                    request.Player.Items.Add(itemId);
+                                }
+                                break;
+                            case ItemID.Category.FIELD:
+                                count = 1;
+                                foreach (int fieldPartItemId in ItemID.GetDuelFieldParts(itemId))
+                                {
+                                    request.Player.Items.Add(fieldPartItemId);
+                                }
+                                break;
+                            case ItemID.Category.PROFILE_TAG:
+                                // Ignore (currently all tags are auto added)
+                                valid = false;
+                                break;
+                            case ItemID.Category.PACK_TICKET:
+                                // Ignore (currently don't handle pack tickets)
+                                valid = false;
+                                break;
+                            default:
+                                LogWarning("Unhandled reward category " + category);
+                                valid = false;
+                                break;
+                        }
+                        if (valid)
+                        {
+                            WriteItem(request, itemId);
+                            resultRewards.Add(new Dictionary<string, object>()
+                            {
+                                { "category", (int)category },
+                                { "item_id", itemId },
+                                { "num", count },
+                                { "type", (int)category },
+                            });
+                        }
                     }
                 }
             }
@@ -263,11 +511,16 @@ namespace YgoMaster
 
             Dictionary<string, object> resultData = GetOrCreateDictionary(soloData, "Result");
             resultData["rewards"] = resultRewards;
-
-            /*Dictionary<string, object> duelResultData = request.GetOrCreateDictionary("DuelResult");
-            duelResultData["mode"] = (int)GameMode.SoloSingle;
-            Dictionary<string, object> resultInfo = GetOrCreateDictionary(duelResultData, "resultInfo");
-            resultInfo["result"] = 1;*/
+            resultData["sub"] = resultSub;
+            if (isChapterGoal)
+            {
+                // TODO: Support unlocking secret packs
+                // "gate_clear":{"gate":6,"pack":{"nameTextId":"IDS_CARDPACK_ID2081_NAME","shopId":10002081,"iconMrk":13579,"is_extend":true}}
+                resultData["gate_clear"] = new Dictionary<string, object>()
+                {
+                    { "gate", gateId }
+                };
+            }
 
             request.Remove("Solo.Result");
         }
@@ -282,15 +535,7 @@ namespace YgoMaster
             {
                 { "Solo", SoloData }
             };
-            request.Response["Solo"] = new Dictionary<string, object>()
-            {
-                { "deck_info", new Dictionary<string, object>() {
-                    { "deck_id", request.Player.ActiveDuel.DeckId },
-                    { "valid", true },
-                    { "possession", request.Player.ActiveDuel.IsMyDeck }
-                }},
-                { "cleared", request.Player.SoloChaptersToDictionary() }
-            };
+            WriteSolo(request);
             request.Remove("Master.solo", "Solo");
         }
 
@@ -336,9 +581,14 @@ namespace YgoMaster
             int chapterId, deckType;
             if (TryGetValue(request.ActParams, "chapter", out chapterId) && TryGetValue(request.ActParams, "deck_type", out deckType))
             {
-                request.Player.ActiveDuel.IsMyDeck = (SoloDeckType)deckType == SoloDeckType.POSSESSION;
+                request.Player.Duel.IsMyDeck = (SoloDeckType)deckType == SoloDeckType.POSSESSION;
             }
             request.Remove("Solo.rental_deck");
+        }
+
+        void Act_SoloDeckCheck(GameServerWebRequest request)
+        {
+            WriteSolo_deck_info(request);
         }
 
         void Act_SoloStart(GameServerWebRequest request)
@@ -349,6 +599,24 @@ namespace YgoMaster
                 DuelSettings duel;
                 if (SoloDuels.TryGetValue(chapterId, out duel))
                 {
+                    // TODO: Validate loaner deck as well?
+                    int myDeckSetId;
+                    int loanerDeckSetId;
+                    if (GetChapterSetIds(request, chapterId, out myDeckSetId, out loanerDeckSetId) &&
+                        (loanerDeckSetId == 0 || (request.Player.Duel.IsMyDeck && myDeckSetId != 0)))
+                    {
+                        DeckInfo deck = request.Player.Duel.GetDeck(GameMode.SoloSingle);
+                        if (deck != null)
+                        {
+                            request.Player.Duel.IsMyDeck = true;
+                        }
+                        else
+                        {
+                            LogWarning("Failed to get user deck info for duel. Falling back to loaner deck.");
+                            request.ResultCode = (int)ResultCodes.SoloCode.ERROR;
+                            return;
+                        }
+                    }
                     request.Response["Duel"] = new Dictionary<string, object>()
                     {
                         { "avatar", duel.avatar },

@@ -143,5 +143,23 @@ namespace YgoMaster
             SavePlayer(request.Player);
             WriteCards_favorite(request);
         }
+
+        void Act_SetSelectDeck(GameServerWebRequest request)
+        {
+            GameMode mode;
+            int deckId;
+            DeckInfo deck;
+            if (TryGetValue(request.ActParams, "mode", out mode) &&
+                TryGetValue(request.ActParams, "deck_id", out deckId) &&
+                request.Player.Decks.TryGetValue(deckId, out deck))
+            {
+                request.Player.Duel.SetDeckId(mode, deckId);
+            }
+            else
+            {
+                request.Player.Duel.SetDeckId(mode, 0);
+            }
+            SavePlayer(request.Player);
+        }
     }
 }

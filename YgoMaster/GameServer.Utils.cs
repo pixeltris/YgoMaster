@@ -153,7 +153,14 @@ namespace YgoMaster
                     {
                         try
                         {
-                            result = (T)Convert.ChangeType(obj, typeof(T));
+                            if (typeof(T).IsEnum)
+                            {
+                                result = (T)Convert.ChangeType(obj, typeof(T).GetEnumUnderlyingType());
+                            }
+                            else
+                            {
+                                result = (T)Convert.ChangeType(obj, typeof(T));
+                            }
                             return true;
                         }
                         catch

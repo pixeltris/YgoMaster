@@ -1,5 +1,5 @@
 // https://github.com/pixeltris/SonyAlphaUSB/blob/fd69cbb818f3ce0b0ccc01a734c822ecbe9d1147/WIA%20Logger/SonyAlphaUSBLoader.cpp
-// cl YgoMasterLoader.cpp /LD /Fe:../Build/YgoMasterLoader.dll(compile with x64 tools)
+// cl YgoMasterLoader.cpp /LD /Fe:../Build/YgoMasterLoader.dll (compile with x64 tools)
 //
 // Notes about detours:
 // - This version was used https://github.com/microsoft/Detours/releases/tag/v4.0.1

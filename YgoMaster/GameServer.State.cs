@@ -15,6 +15,7 @@ namespace YgoMaster
         int NumDeckSlots;
         bool UnlockAllCards;
         bool UnlockAllItems;
+        bool UnlockAllSoloChapters;
         bool SoloRemoveDuelTutorials;
         bool SoloDisableNoShuffle;
         HashSet<int> DefaultItems;
@@ -49,6 +50,7 @@ namespace YgoMaster
             DefaultGems = GetValue<int>(values, "DefaultGems");
             UnlockAllCards = GetValue<bool>(values, "UnlockAllCards");
             UnlockAllItems = GetValue<bool>(values, "UnlockAllItems");
+            UnlockAllSoloChapters = GetValue<bool>(values, "UnlockAllSoloChapters");
             SoloRemoveDuelTutorials = GetValue<bool>(values, "SoloRemoveDuelTutorials");
             SoloDisableNoShuffle = GetValue<bool>(values, "SoloDisableNoShuffle");
 
@@ -126,9 +128,13 @@ namespace YgoMaster
             {
                 data["Items"] = player.Items.ToArray();
             }
-            data["SoloChapters"] = player.SoloChaptersToDictionary();
+            if (!UnlockAllSoloChapters)
+            {
+                data["SoloChapters"] = player.SoloChaptersToDictionary();
+            }
             data["CraftPoints"] = player.CraftPoints.ToDictionary();
             data["OrbPoints"] = player.OrbPoints.ToDictionary();
+            data["SelectedDeck"] = player.Duel.SelectedDeckToDictionary();
             data["ShopState"] = player.ShopState.ToDictionary();
             if (!UnlockAllCards)
             {
@@ -166,7 +172,17 @@ namespace YgoMaster
             player.AvatarId = GetValue<int>(data, "AvatarId");
             player.Wallpaper = GetValue<int>(data, "Wallpaper");
 
-            player.SoloChaptersFromDictionary(GetDictionary(data, "SoloChapters"));
+            if (UnlockAllSoloChapters)
+            {
+                foreach (int chapterId in GetAllSoloChapterIds())
+                {
+                    player.SoloChapters[chapterId] = ChapterStatus.COMPLETE;
+                }
+            }
+            else
+            {
+                player.SoloChaptersFromDictionary(GetDictionary(data, "SoloChapters"));
+            }
             player.CraftPoints.FromDictionary(GetDictionary(data, "CraftPoints"));
             player.OrbPoints.FromDictionary(GetDictionary(data, "OrbPoints"));
             player.ShopState.FromDictionary(GetDictionary(data, "ShopState"));
@@ -258,7 +274,6 @@ namespace YgoMaster
                     }
                 }
             }
-
             if (Directory.Exists(decksDirectory))
             {
                 foreach (string file in Directory.GetFiles(decksDirectory, "*json"))
@@ -277,6 +292,7 @@ namespace YgoMaster
                     }
                 }
             }
+            player.Duel.SelectedDeckFromDictionary(GetDictionary(data, "SelectedDeck"));
         }
 
         void SaveDeck(DeckInfo deck)

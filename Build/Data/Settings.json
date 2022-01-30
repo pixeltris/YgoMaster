@@ -2,6 +2,7 @@
     "DeckSlots": 999,
     "UnlockAllCards": false,
     "UnlockAllItems": false,
+    "UnlockAllSoloChapters": false,
     "SoloRemoveDuelTutorials": false,
     "SoloDisableNoShuffle": false,
     "CardCratableAll": false,
