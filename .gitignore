@@ -9,6 +9,8 @@ Build/YgoMaster.exe.config
 Build/*.vshost.*
 Build/*.exp
 Build/*.lib
+Build/*.exe
+Build/*.dll
 
 # User-specific files
 *.rsuser

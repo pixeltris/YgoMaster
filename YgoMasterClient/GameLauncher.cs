@@ -18,7 +18,7 @@ namespace YgoMasterClient
         /// </summary>
         Detours,
         /// <summary>
-        /// This is OK(ish) but there is currently a crash which can sometimes occur (FIXME)
+        /// Steals the program entry point to inject very early
         /// </summary>
         StealEntryPoint,
         /// <summary>
@@ -726,6 +726,18 @@ namespace YgoMasterClient
             [DllImport("kernel32.dll", SetLastError = true)]
             static extern IntPtr CreateRemoteThread(IntPtr hProcess, IntPtr lpThreadAttribute, IntPtr dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);
 
+            [DllImport("kernel32.dll", SetLastError = true)]
+            static extern uint WaitForSingleObject(IntPtr hObject, uint dwMilliseconds);
+
+            enum ThreadWaitValue : uint
+            {
+                Object0 = 0x00000000,
+                Abandoned = 0x00000080,
+                Timeout = 0x00000102,
+                Failed = 0xFFFFFFFF,
+                Infinite = 0xFFFFFFFF
+            }
+
             const uint MEM_COMMIT = 0x1000;
             const uint MEM_RESERVE = 0x2000;
             const uint MEM_RELEASE = 0x8000;
@@ -762,7 +774,7 @@ namespace YgoMasterClient
                     return false;
                 }
 
-                byte[] buffer = Encoding.Unicode.GetBytes(dllPath);
+                byte[] buffer = Encoding.Unicode.GetBytes(dllPath + "\0");
 
                 IntPtr libAddr = IntPtr.Zero;
                 IntPtr memAddr = IntPtr.Zero;
@@ -802,6 +814,12 @@ namespace YgoMasterClient
                     if (thread == IntPtr.Zero)
                     {
                         LogError("Unable to start thread in target process");
+                        return false;
+                    }
+
+                    if (WaitForSingleObject(thread, (uint)ThreadWaitValue.Infinite) != (uint)ThreadWaitValue.Object0)
+                    {
+                        LogError("Failed to wait on the target thread");
                         return false;
                     }
 

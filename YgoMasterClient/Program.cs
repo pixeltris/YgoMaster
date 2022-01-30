@@ -77,16 +77,11 @@ namespace YgoMasterClient
                 {
                     // Use a form as an easy way to get execution on the main thread
                     Form dummyForm = new Form();
-                    //dummyForm.Opacity = 0;
-                    //dummyForm.FormBorderStyle = FormBorderStyle.None;
+                    dummyForm.Opacity = 0;
+                    dummyForm.FormBorderStyle = FormBorderStyle.None;
                     dummyForm.Show();
-                    //dummyForm.Hide();
+                    dummyForm.Hide();
                     ConsoleHelper.ShowConsole();
-                    Console.WriteLine(Environment.CommandLine);
-                    foreach (string a in Environment.GetCommandLineArgs())
-                    {
-                        Console.WriteLine(a);
-                    }
                     new Thread(delegate()
                         {
                             while (true)
