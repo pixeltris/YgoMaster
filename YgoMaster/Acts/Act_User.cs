@@ -1,0 +1,194 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace YgoMaster
+{
+    partial class GameServer
+    {
+        void Act_UserEntry(GameServerWebRequest request)
+        {
+            WriteUser(request);
+            WriteDeck(request);
+            WriteCards(request);
+            WriteItem(request);
+            request.Response["Craft"] = Craft.ToDictionary();
+            request.Remove(
+                "Master",
+                "User",
+                "Deck",
+                "Cards",
+                "Item",
+                "Tutorial",
+                "Solo");
+        }
+
+        void Act_UserNameEntry(GameServerWebRequest request)
+        {
+            object newName;
+            if (request.ActParams.TryGetValue("name", out newName))
+            {
+                request.Player.Name = newName.ToString();
+                SavePlayer(request.Player);
+            }
+            request.Response["User"] = new Dictionary<string, object>()
+            {
+                { "profile", new Dictionary<string, object>() {
+                    { "name", request.Player.Name },
+                }}
+            };
+        }
+
+        void Act_UserSetProfile(GameServerWebRequest request)
+        {
+            Dictionary<string, object> args;
+            if (TryGetValue(request.ActParams, "param", out args))
+            {
+                foreach (KeyValuePair<string, object> arg in args)
+                {
+                    switch (arg.Key)
+                    {
+                        case "icon_id":
+                            request.Player.IconId = (int)Convert.ChangeType(arg.Value, typeof(int));
+                            break;
+                        case "icon_frame_id":
+                            request.Player.IconFrameId = (int)Convert.ChangeType(arg.Value, typeof(int));
+                            break;
+                        case "avatar_id":
+                            request.Player.AvatarId = (int)Convert.ChangeType(arg.Value, typeof(int));
+                            break;
+                        case "wallpaper":
+                            request.Player.Wallpaper = (int)Convert.ChangeType(arg.Value, typeof(int));
+                            break;
+                        case "tag":
+                            request.Player.TitleTags.Clear();
+                            foreach (object tagObj in arg.Value as List<object>)
+                            {
+                                request.Player.TitleTags.Add((int)Convert.ChangeType(tagObj, typeof(int)));
+                            }
+                            break;
+                        default:
+                            LogWarning("Unhandled player profile arg '" + arg.Key + "' = " + MiniJSON.Json.Serialize(arg.Value));
+                            break;
+                    }
+                }
+                SavePlayer(request.Player);
+            }
+            // The server normally only writes back what was requested... but writing everything will do
+            WriteUser(request);
+        }
+
+        void Act_UserHome(GameServerWebRequest request)
+        {
+            // Room / Master.Regulation are required to create decks / view public decks without breaking the client
+            Dictionary<string, object> structure = new Dictionary<string, object>();
+            foreach (DeckInfo deck in StructureDecks.Values)
+            {
+                structure[deck.Id.ToString()] = new Dictionary<string, object>()
+                {
+                    { "structure_id", deck.Id },
+                    { "accessory", deck.Accessory.ToDictionary() },
+                    { "focus", deck.DisplayCards.ToDictionary() },
+                    { "contents", deck.ToDictionary() }
+                };
+            }
+            request.Response["Master"] = new Dictionary<string, object>()
+            {
+                { "CardRare", CardRare },// Card rarities
+                { "CardCr", CardCraftable },// Craftable cards
+                { "Structure", structure },// All structure decks
+                { "Regulation", Regulation },// Forbidden / limited cards
+            };
+            request.Response["Room"] = new Dictionary<string, object>()
+            {
+                // Not sure what 10 means
+                { "rule_list", new Dictionary<string, object>() {
+                    { "10", "IDS_CARDMENU_REGULATION_NORMAL" },
+                }},
+                { "common", 10 }
+            };
+            WriteDeck(request);
+            request.Response["DeckList"] = null;
+            request.Response["TDeck"] = new object[0];// Tournament deck list?
+            request.Response["TDeckList"] = null;// Tournament deck list?
+            request.Response["EXHDeck"] = new object[0];// Exhibition deck list?
+            request.Response["EXHDeckList"] = null;// Exhibition deck list?
+            request.Response["Topics"] = new List<object>()
+            {
+                new Dictionary<string, object>() {
+                    { "sort", 1591200 },// 0 / 1591200 / omitted
+                    { "body", @"{""buttons"":[{""label"":{""en_US"":""Purchase Gems""},""url"":""duel:push?GameMode=9"",""shortcut"":""Sub1""}],""contents"":[{""tp"":""H1"",""text"":{""en_US"":""To commemorate the game's release, we're currently having a special Gems sale!""}},{""tp"":""Text"",""text"":{""en_US"":""Check out the Purchase Gems page for an exclusive Gem Pack.nEach player can purchase up to 3.nThis is a deal you do not want to miss!""},""indent"":-1},{""tp"":""Spacer"",""size"":""M"",""indent"":-1},{""tp"":""Text"",""text"":{""en_US"":""<color=#00D2FF>*You can also go to the Purchase Gems page by pressing the Gem icon in the center of the top of the Home screen.</color>""},""indent"":-1}]}" },
+                    { "banner", new Dictionary<string, object>() {
+                        { "image", "Images/Notification/Shop/Gem001" },
+                        //{ "image", "" },
+                        { "pattern", TopicsBannerPatern.GEM },
+                        //{ "image_text", "" }
+                        { "image_text", new string[] {// Either null or 4 entries
+                            "Sale underway!\nDon't miss out!",
+                            "Jan 19 01:00 - Mar 31 04:59",
+                            "",
+                            ""
+                        }},
+                        { "is_coming_soon", false }
+                    }},
+                }
+            };
+            /*request.Response["Duelpass"] = new Dictionary<string, object>()
+            {
+                { "season_id", 1 },
+                { "grade", 1 },
+                { "percent", 0 },
+                { "is_goldpass", false },
+                { "received", new object[0] }
+            };*/
+            request.Remove(
+                "Master.CardRare",
+                "Master.CardCr",
+                "Master.Structure",
+                "Master.Tournament",
+                "Master.Exhibition",
+                "Master.Regulation",
+                "Master.PeriodItem",
+                "Master.Duelpass",
+                "Deck",
+                "DeckList",
+                "TDeck",
+                "TDeckList",
+                "EXHDeck",
+                "EXHDeckList",
+                "Topic",
+                "Notification",
+                "Duelpass");
+        }
+
+        void Act_EventNotifyGetList(GameServerWebRequest request)
+        {
+            // All support "!" and some support displaying a number
+            // 0 = invalid
+            // 1 = missions (!/num)
+            // 2 = friend (!/num)
+            // 3 = duel (!)
+            // 4 = shop (!)
+            // 5 = gift box (!/num)
+            // 6 = notifications (!/num)
+            // 7 = solo (!)
+            const int shopType = 4;
+            Dictionary<string, object> notificationBadges = new Dictionary<string, object>();
+            if (request.Player.ShopState.HasNew())
+            {
+                notificationBadges[shopType.ToString()] = new Dictionary<string, object>()
+                {
+                    { "type", shopType },
+                    { "num", 0 }
+                };
+            }
+            request.Response["EventNotify"] = new Dictionary<string, object>()
+            {
+                { "Notify", new object[0] },// These are popup notifications on the bottom right of the screen
+                { "Badge", notificationBadges }
+            };
+            request.Remove("EventNotify");
+        }
+    }
+}

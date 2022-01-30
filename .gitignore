@@ -3,6 +3,13 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+Build/Data/Decks/*
+Build/Data/Player.json
+Build/YgoMaster.exe.config
+Build/*.vshost.*
+Build/*.exp
+Build/*.lib
+
 # User-specific files
 *.rsuser
 *.suo
