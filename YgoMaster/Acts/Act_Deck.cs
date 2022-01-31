@@ -40,9 +40,12 @@ namespace YgoMaster
             deck.Id = GetValue(request.ActParams, "deck_id", 0);
             deck.Name = GetValue(request.ActParams, "name", "Deck");
             Dictionary<string, object> accessory = GetDictionary(request.ActParams, "accessory");
-            Dictionary<string, object> displayCards = GetDictionary(request.ActParams, "pick_cards");
             deck.Accessory.FromDictionary(accessory);
-            deck.DisplayCards.FromIndexedDictionary(displayCards);
+            Dictionary<string, object> displayCards = GetDictionary(request.ActParams, "pick_cards");
+            if (displayCards != null)
+            {
+                deck.DisplayCards.FromIndexedDictionary(displayCards);
+            }
             Dictionary<string, object> deckListObj = GetDictionary(request.ActParams, "deck_list");
             if (deckListObj != null)
             {
@@ -131,7 +134,11 @@ namespace YgoMaster
                     deck.Accessory.AvBase = value;
                 }
                 deck.Accessory.Sanitize(request.Player);
-                deck.DisplayCards.FromIndexedDictionary(GetDictionary(args, "pick_cards"));
+                Dictionary<string, object> pickCards = GetDictionary(args, "pick_cards");
+                if (pickCards != null)
+                {
+                    deck.DisplayCards.FromIndexedDictionary(pickCards);
+                }
                 SaveDeck(deck);
             }
             WriteDeck(request, deckId);

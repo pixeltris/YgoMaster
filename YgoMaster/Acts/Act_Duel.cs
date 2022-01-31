@@ -7,6 +7,44 @@ namespace YgoMaster
 {
     partial class GameServer
     {
+        DuelSettings CreateSoloDuelSettings(Player player, int chapterId)
+        {
+            DuelSettings duelSettings = null;
+            PlayerDuelState duel = player.Duel;
+            DuelSettings ds;
+            if (SoloDuels.TryGetValue(chapterId, out ds))
+            {
+                duelSettings = new DuelSettings();
+                duelSettings.CopyFrom(ds);
+                if (SoloRemoveDuelTutorials)
+                {
+                    duelSettings.chapter = 0;
+                }
+                if (SoloDisableNoShuffle)
+                {
+                    duelSettings.noshuffle = false;
+                }
+                if (duel.IsMyDeck)
+                {
+                    DeckInfo deck = duel.GetDeck(GameMode.SoloSingle);
+                    if (deck != null)
+                    {
+                        duelSettings.Deck[DuelSettings.PlayerIndex].CopyFrom(deck);
+                        duelSettings.avatar_home[DuelSettings.PlayerIndex] = deck.Accessory.AvBase;
+                        duelSettings.sleeve[DuelSettings.PlayerIndex] = deck.Accessory.Sleeve;
+                        duelSettings.mat[DuelSettings.PlayerIndex] = deck.Accessory.Field;
+                        duelSettings.duel_object[DuelSettings.PlayerIndex] = deck.Accessory.FieldObj;
+                        duelSettings.story_deck_id[DuelSettings.PlayerIndex] = 0;
+                    }
+                }
+                duelSettings.avatar[DuelSettings.PlayerIndex] = player.AvatarId;
+                duelSettings.icon[DuelSettings.PlayerIndex] = player.IconId;
+                duelSettings.icon_frame[DuelSettings.PlayerIndex] = player.IconFrameId;
+                duelSettings.wallpaper[DuelSettings.PlayerIndex] = player.Wallpaper;
+            }
+            return duelSettings;
+        }
+
         void Act_DuelBegin(GameServerWebRequest request)
         {
             Dictionary<string, object> rule;
@@ -19,30 +57,7 @@ namespace YgoMaster
                 switch (duel.Mode)
                 {
                     case GameMode.SoloSingle:
-                        {
-                            DuelSettings ds;
-                            if (SoloDuels.TryGetValue(duel.ChapterId, out ds))
-                            {
-                                duelSettings = new DuelSettings();
-                                duelSettings.CopyFrom(ds);
-                                if (SoloRemoveDuelTutorials)
-                                {
-                                    duelSettings.chapter = 0;
-                                }
-                                if (SoloDisableNoShuffle)
-                                {
-                                    duelSettings.noshuffle = false;
-                                }
-                                if (duel.IsMyDeck)
-                                {
-                                    DeckInfo deck = duel.GetDeck(duel.Mode);
-                                    if (deck != null)
-                                    {
-                                        duelSettings.Deck[DuelSettings.PlayerIndex].CopyFrom(deck);
-                                    }
-                                }
-                            }
-                        }
+                        duelSettings = CreateSoloDuelSettings(request.Player, duel.ChapterId);
                         break;
                 }
                 if (duelSettings != null)
@@ -75,7 +90,7 @@ namespace YgoMaster
                 switch (request.Player.Duel.Mode)
                 {
                     case GameMode.SoloSingle:
-                        if (/*res == (int)DuelResultType.Win && */request.Player.Duel.ChapterId != 0)
+                        if (res == (int)DuelResultType.Win && request.Player.Duel.ChapterId != 0)
                         {
                             OnSoloChapterComplete(request, request.Player.Duel.ChapterId);
                         }

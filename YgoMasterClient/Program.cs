@@ -316,6 +316,13 @@ namespace YgomSystem
         static IntPtr GetResource(IntPtr thisPtr, IntPtr path, IntPtr workPath)
         {
             Console.WriteLine("path:" + new IL2String(path).ToString());
+            string str = new IL2String(path).ToString();
+            /*if (!string.IsNullOrEmpty(str) && str.Contains("Illust/0000"))
+            {
+                Console.WriteLine("ImageBase: " + PInvoke.GameModuleBaseAddress.ToInt64().ToString("X16"));
+                path = new IL2String("Card/Images/Illust/<_CARD_ILLUST_>/15635").ptr;
+                //System.Diagnostics.Debugger.Launch();
+            }*/
             return hookGetResource.Original(thisPtr, path, workPath);
         }
     }
@@ -445,7 +452,7 @@ namespace YgomSystem.Utility
         static IntPtr GetText(IntPtr textPtr, bool richTextEx)
         {
             string inputString = new IL2Object(textPtr).GetValueObj<string>();
-            //Console.WriteLine(inputString);
+            Console.WriteLine(inputString);
             const string header = "IDS_SYS.IDHACK:";
             if (!string.IsNullOrEmpty(inputString) && inputString.StartsWith(header))
             {

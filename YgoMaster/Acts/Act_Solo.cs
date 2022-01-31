@@ -174,15 +174,7 @@ namespace YgoMaster
             int myDeckSetId = GetValue<int>(chapterData, "mydeck_set_id");
             int loanerDeckSetId = GetValue<int>(chapterData, "set_id");
             int targetSetId = 0;
-            if (myDeckSetId == 0 && loanerDeckSetId == 0)
-            {
-                if (!IsValidNonDuelChapter(chapterId))
-                {
-                    LogWarning("Unknown chapter type unknown for " + chapterId + " (but will attempt to set it to complete)");
-                }
-                newStatus = ChapterStatus.COMPLETE;
-            }
-            else
+            if (SoloDuels.ContainsKey(chapterId))
             {
                 if (request.Player.Duel.IsMyDeck)
                 {
@@ -218,6 +210,15 @@ namespace YgoMaster
                         newStatus = ChapterStatus.RENTAL_CLEAR;
                     }
                 }
+            }
+            else
+            {
+                if (!IsValidNonDuelChapter(chapterId))
+                {
+                    LogWarning("Unknown chapter type unknown for " + chapterId + " (but will attempt to set it to complete)");
+                }
+                targetSetId = loanerDeckSetId != 0 ? loanerDeckSetId : myDeckSetId;
+                newStatus = ChapterStatus.COMPLETE;
             }
             List<object> resultRewards = new List<object>();
             List<object> resultSub = new List<object>();
@@ -373,9 +374,11 @@ namespace YgoMaster
                                                     case ItemID.Category.PROTECTOR:
                                                     case ItemID.Category.DECK_CASE:
                                                     case ItemID.Category.AVATAR_HOME:
+                                                    case ItemID.Category.FIELD_OBJ:
                                                         request.Player.Items.Remove(itemId);
                                                         break;
                                                     case ItemID.Category.FIELD:
+                                                        request.Player.Items.Remove(itemId);
                                                         foreach (int fieldPartItemId in ItemID.GetDuelFieldParts(itemId))
                                                         {
                                                             request.Player.Items.Remove(fieldPartItemId);
@@ -462,6 +465,7 @@ namespace YgoMaster
                             case ItemID.Category.PROTECTOR:
                             case ItemID.Category.DECK_CASE:
                             case ItemID.Category.AVATAR_HOME:
+                            case ItemID.Category.FIELD_OBJ:
                                 {
                                     count = 1;
                                     request.Player.Items.Add(itemId);
@@ -469,6 +473,7 @@ namespace YgoMaster
                                 break;
                             case ItemID.Category.FIELD:
                                 count = 1;
+                                request.Player.Items.Add(itemId);
                                 foreach (int fieldPartItemId in ItemID.GetDuelFieldParts(itemId))
                                 {
                                     request.Player.Items.Add(fieldPartItemId);
@@ -596,36 +601,26 @@ namespace YgoMaster
             int chapterId;
             if (TryGetValue<int>(request.ActParams, "chapter", out chapterId))
             {
-                DuelSettings duel;
-                if (SoloDuels.TryGetValue(chapterId, out duel))
+                int myDeckSetId;
+                int loanerDeckSetId;
+                if (GetChapterSetIds(request, chapterId, out myDeckSetId, out loanerDeckSetId) &&
+                    (loanerDeckSetId == 0 || (request.Player.Duel.IsMyDeck && myDeckSetId != 0)))
                 {
-                    // TODO: Validate loaner deck as well?
-                    int myDeckSetId;
-                    int loanerDeckSetId;
-                    if (GetChapterSetIds(request, chapterId, out myDeckSetId, out loanerDeckSetId) &&
-                        (loanerDeckSetId == 0 || (request.Player.Duel.IsMyDeck && myDeckSetId != 0)))
-                    {
-                        DeckInfo deck = request.Player.Duel.GetDeck(GameMode.SoloSingle);
-                        if (deck != null)
-                        {
-                            request.Player.Duel.IsMyDeck = true;
-                        }
-                        else
-                        {
-                            LogWarning("Failed to get user deck info for duel. Falling back to loaner deck.");
-                            request.ResultCode = (int)ResultCodes.SoloCode.ERROR;
-                            return;
-                        }
-                    }
+                    DeckInfo deck = request.Player.Duel.GetDeck(GameMode.SoloSingle);
+                    request.Player.Duel.IsMyDeck = deck != null;
+                }
+                DuelSettings duelSettings = CreateSoloDuelSettings(request.Player, chapterId);
+                if (duelSettings != null)
+                {
                     request.Response["Duel"] = new Dictionary<string, object>()
                     {
-                        { "avatar", duel.avatar },
-                        { "icon", duel.icon },
-                        { "icon_frame", duel.icon_frame },
-                        { "sleeve", duel.sleeve },
-                        { "mat", duel.mat },
-                        { "duel_object", duel.duel_object },
-                        { "avatar_home", duel.avatar_home }
+                        { "avatar", duelSettings.avatar },
+                        { "icon", duelSettings.icon },
+                        { "icon_frame", duelSettings.icon_frame },
+                        { "sleeve", duelSettings.sleeve },
+                        { "mat", duelSettings.mat },
+                        { "duel_object", duelSettings.duel_object },
+                        { "avatar_home", duelSettings.avatar_home }
                     };
                 }
                 else if (IsValidNonDuelChapter(chapterId))

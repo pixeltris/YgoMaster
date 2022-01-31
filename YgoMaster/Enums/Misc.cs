@@ -146,4 +146,22 @@ namespace YgoMaster
         Draw,
         Time
     }
+
+    /// <summary>
+    /// IDS_DECKEDIT.HOWTOGET_CATEGORY (off by 1?)
+    /// </summary>
+    enum HowToObtainCard
+    {
+        None = 0,
+        Pack = 1,
+        Solo = 2,
+        Tournament = 3,// Assumed
+        Exhibition = 4,// Assumed
+        //Craft = 5,// Assumed removed
+        InitialDistributionStructure = 5,
+        SalesStructure = 6,
+        Mission = 7,// Assumed
+        DuelResult = 8,
+        BundleDeals = 9
+    }
 }

@@ -2,6 +2,7 @@ Offline Yu-Gi-Oh Master Duel
 
 WIP:
 - Add solo content
+- Implement "how to obtain"
 - Add custom duel start UI
 - Add ability to create custom packs (custom images, etc)
 
@@ -21,6 +22,7 @@ TODO:
 - Fix "live" injector (crashes the client 80% of the time)
 - Find how to get generic method via IL2CPP reflection to correctly handle TextData hook
 - Patch the GetSteamID xrefs and set to existing folder (maybe hook GetSteamID / crc func and add special check in crc func for returned string)
+- Fix which player starts first on duels in /SoloDuel/ (they are recorded so have a specific starting duelist - remove where not required)
 
 Implemented:
 - Editing player profile

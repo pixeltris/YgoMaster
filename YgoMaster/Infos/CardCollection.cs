@@ -54,8 +54,8 @@ namespace YgoMaster
             Dictionary<string, object> r = new Dictionary<string, object>();
             for (int i = 0; i < displayedCardsCount; i++)
             {
-                ids[(i + 1).ToString()] = collection[i].Key;
-                r[(i + 1).ToString()] = (int)collection[i].Value;
+                ids[(i + 1).ToString()] = i < collection.Count ? collection[i].Key : 0;
+                r[(i + 1).ToString()] =  i < collection.Count ? (int)collection[i].Value : 1;
             }
             result[longKeys ? "CardIds" : "ids"] = ids;
             result[longKeys ? "Rare" : "r"] = r;
