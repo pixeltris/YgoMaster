@@ -199,6 +199,9 @@ namespace YgoMaster
                                     case "Craft.generate_multi":
                                         Act_CraftGenerateMulti(gameServerWebRequest);
                                         break;
+                                    case "Craft.get_card_route":
+                                        Act_CraftGetCardRoute(gameServerWebRequest);
+                                        break;
                                     case "Solo.info":
                                         Act_SoloInfo(gameServerWebRequest);
                                         break;

@@ -1,9 +1,8 @@
 Offline Yu-Gi-Oh Master Duel
 
 WIP:
-- Add solo content
 - Implement "how to obtain"
-- Add custom duel start UI
+- Add custom duel starter UI
 - Add ability to create custom packs (custom images, etc)
 
 Updating:
@@ -14,12 +13,10 @@ Updating:
 TODO:
 - Look at implementation of OpenReportDialog - it has a multi select dialog
 - Look into supporting custom structure decks (custom name, desc, images)
-- Find out how to give an error response to an expired shop pack (should be able to get it from a secret as it only lasts 24 hours and you can easily buy an expired one)
 - Add more options to ShopPackOddsVisuals.json
 - Add support for "searchCategory" in "Shop.get_list"
 - Add default prices setting to Shop.json and add support for buying >1 / <10 packs for packs with a buy limit
 - Implement how to obtain card packet
-- Fix "live" injector (crashes the client 80% of the time)
 - Find how to get generic method via IL2CPP reflection to correctly handle TextData hook
 - Patch the GetSteamID xrefs and set to existing folder (maybe hook GetSteamID / crc func and add special check in crc func for returned string)
 - Fix which player starts first on duels in /SoloDuel/ (they are recorded so have a specific starting duelist - remove where not required)
