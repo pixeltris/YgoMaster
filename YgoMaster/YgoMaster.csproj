@@ -64,6 +64,7 @@
     <Compile Include="GameServer.Writers.cs" />
     <Compile Include="Infos\DeckInfo.cs" />
     <Compile Include="Enums\ItemID.cs" />
+    <Compile Include="Infos\SoloInfo.cs" />
     <Compile Include="Lib\LZ4.cs" />
     <Compile Include="Lib\LZ4Codec.cs" />
     <Compile Include="Lib\LZ4Codec.Safe.cs" />

@@ -95,6 +95,22 @@ namespace YgoMaster
             return String.Concat(result);
         }
 
+        internal static Dictionary<int, Dictionary<string, object>> GetIntDictDict(Dictionary<string, object> values, string key)
+        {
+            Dictionary<int, Dictionary<string, object>> result = new Dictionary<int, Dictionary<string, object>>();
+            Dictionary<string, object> dict = GetDictionary(values, key);
+            foreach (KeyValuePair<string, object> entry in dict)
+            {
+                int intKey;
+                Dictionary<string, object> dictValue = entry.Value as Dictionary<string, object>;
+                if (int.TryParse(entry.Key, out intKey) && intKey > 0 && dictValue != null)
+                {
+                    result[intKey] = dictValue;
+                }
+            }
+            return result;
+        }
+
         internal static Dictionary<string, object> GetDictionary(Dictionary<string, object> values, string key)
         {
             return GetValue(values, key, default(Dictionary<string, object>));
@@ -242,6 +258,20 @@ namespace YgoMaster
             Dictionary<string, object> result = new Dictionary<string, object>();
             data[name] = result;
             return result;
+        }
+
+        internal static Dictionary<string, object> GetResData(Dictionary<string, object> data)
+        {
+            if (data != null && data.ContainsKey("code") && data.ContainsKey("res"))
+            {
+                List<object> resList = GetValue(data, "res", default(List<object>));
+                if (resList != null && resList.Count > 0)
+                {
+                    List<object> resData = resList[0] as List<object>;
+                    data = resData[1] as Dictionary<string, object>;
+                }
+            }
+            return data;
         }
     }
 }

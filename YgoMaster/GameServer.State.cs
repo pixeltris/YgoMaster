@@ -716,20 +716,6 @@ namespace YgoMaster
             settings.RarityOnPack = GetValue<bool>(data, "RarityOnPack", true);
         }
 
-        Dictionary<string, object> GetResData(Dictionary<string, object> data)
-        {
-            if (data != null && data.ContainsKey("code") && data.ContainsKey("res"))
-            {
-                List<object> resList = GetValue(data, "res", default(List<object>));
-                if (resList != null && resList.Count > 0)
-                {
-                    List<object> resData = resList[0] as List<object>;
-                    data = resData[1] as Dictionary<string, object>;
-                }
-            }
-            return data;
-        }
-
         /// <summary>
         /// Helper to merge packet logs of visting the shop to extract out desired information (card packs)
         /// </summary>

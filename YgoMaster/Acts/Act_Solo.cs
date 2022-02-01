@@ -9,6 +9,7 @@ using System.Text;
 // YgomSystem.UI.InfinityScroll.InfinityScrollView
 
 // TODO: Pull SoloData into a class (SoloInfo or something) because currently there are several lookups of the same thing
+// (NOTE: this is now partially implemented along with an alternative text format... but unused for now. See SoloInfo.cs)
 
 namespace YgoMaster
 {
@@ -375,14 +376,8 @@ namespace YgoMaster
                                                     case ItemID.Category.DECK_CASE:
                                                     case ItemID.Category.AVATAR_HOME:
                                                     case ItemID.Category.FIELD_OBJ:
-                                                        request.Player.Items.Remove(itemId);
-                                                        break;
                                                     case ItemID.Category.FIELD:
                                                         request.Player.Items.Remove(itemId);
-                                                        foreach (int fieldPartItemId in ItemID.GetDuelFieldParts(itemId))
-                                                        {
-                                                            request.Player.Items.Remove(fieldPartItemId);
-                                                        }
                                                         break;
                                                 }
                                                 WriteItem(request, itemId);
@@ -466,17 +461,10 @@ namespace YgoMaster
                             case ItemID.Category.DECK_CASE:
                             case ItemID.Category.AVATAR_HOME:
                             case ItemID.Category.FIELD_OBJ:
+                            case ItemID.Category.FIELD:
                                 {
                                     count = 1;
                                     request.Player.Items.Add(itemId);
-                                }
-                                break;
-                            case ItemID.Category.FIELD:
-                                count = 1;
-                                request.Player.Items.Add(itemId);
-                                foreach (int fieldPartItemId in ItemID.GetDuelFieldParts(itemId))
-                                {
-                                    request.Player.Items.Add(fieldPartItemId);
                                 }
                                 break;
                             case ItemID.Category.PROFILE_TAG:
