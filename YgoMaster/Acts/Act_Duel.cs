@@ -7,12 +7,22 @@ namespace YgoMaster
 {
     partial class GameServer
     {
-        DuelSettings CreateSoloDuelSettings(Player player, int chapterId)
+        DuelSettings GetSoloDuelSettings(Player player, int chapterId)
+        {
+            DuelSettings duelSettings;
+            if (SoloDuels.TryGetValue(chapterId, out duelSettings))
+            {
+                return duelSettings;
+            }
+            return null;
+        }
+
+        DuelSettings CreateSoloDuelSettingsInstance(Player player, int chapterId)
         {
             DuelSettings duelSettings = null;
             PlayerDuelState duel = player.Duel;
-            DuelSettings ds;
-            if (SoloDuels.TryGetValue(chapterId, out ds))
+            DuelSettings ds = GetSoloDuelSettings(player, chapterId);
+            if (ds != null)
             {
                 duelSettings = new DuelSettings();
                 duelSettings.CopyFrom(ds);
@@ -57,7 +67,7 @@ namespace YgoMaster
                 switch (duel.Mode)
                 {
                     case GameMode.SoloSingle:
-                        duelSettings = CreateSoloDuelSettings(request.Player, duel.ChapterId);
+                        duelSettings = CreateSoloDuelSettingsInstance(request.Player, duel.ChapterId);
                         break;
                 }
                 if (duelSettings != null)

@@ -272,17 +272,17 @@ unsafe static class DuellDll
 
     static void DLL_DuelSetPlayerType(int player, int type)
     {
-        type = 1;
+        //type = 1;
         //Console.WriteLine("DLL_DuelSetPlayerType " + player + " " + type);
         hookDLL_DuelSetPlayerType.Original(player, type);
     }
 
     static int DLL_DuelSysInitCustom(int fDuelType, bool tag, int life0, int life1, int hand0, int hand1, bool shuf)
     {
-        hand0 = 3;
-        hand1 = 0;
-        life0 = 900000;
-        life1 = 1;
+        //hand0 = 3;
+        //hand1 = 0;
+        //life0 = 900000;
+        //life1 = 1;
         return hookDLL_DuelSysInitCustom.Original(fDuelType, tag, life0, life1, hand0, hand1, shuf);
     }
 }
@@ -304,7 +304,7 @@ namespace YgomSystem
             classInfo = assembly.GetClass("ResourceManager", "YgomSystem");
             methodExists = classInfo.GetMethod("Exists");
             methodGetResource = classInfo.GetMethod("getResource", x => x.GetParameters().Length == 2 && x.GetParameters()[0].Name == "path");
-            //hookGetResource = new Hook<Del_GetResource>(GetResource, methodGetResource);
+            hookGetResource = new Hook<Del_GetResource>(GetResource, methodGetResource);
         }
 
         public static bool Exists(string filename)

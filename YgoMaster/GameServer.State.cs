@@ -28,6 +28,8 @@ namespace YgoMaster
         Dictionary<string, object> Regulation;
         Dictionary<string, object> SoloData;
         Dictionary<int, DuelSettings> SoloDuels;// <chapterid, DuelSettings>
+        Dictionary<int, CardCategory> CardCategories;// <categoryId, CardCategory>
+        Dictionary<string, CardCategory> CardCategoriesByName;// <categoryName, CardCategory>
 
         void LoadSettings()
         {
@@ -103,6 +105,7 @@ namespace YgoMaster
             Craft = new CraftInfo();
             Craft.FromDictionary(GetValue(values, "Craft", default(Dictionary<string, object>)));
 
+            LoadCardCategory();
             LoadShop();
             LoadSolo();
         }
@@ -299,7 +302,6 @@ namespace YgoMaster
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data["Name"] = deck.Name;
-            data["Status"] = deck.Status;
             data["TimeCreated"] = deck.TimeCreated;
             data["TimeEdited"] = deck.TimeEdited;
             data["Accessory"] = deck.Accessory.ToDictionary();
@@ -314,7 +316,6 @@ namespace YgoMaster
         {
             Dictionary<string, object> data = MiniJSON.Json.DeserializeStripped(File.ReadAllText(deck.File)) as Dictionary<string, object>;
             deck.Name = GetValue<string>(data, "Name");
-            deck.Status = GetValue<int>(data, "Status");
             deck.TimeCreated = GetValue<uint>(data, "TimeCreated");
             deck.TimeEdited = GetValue<uint>(data, "TimeEdited");
             deck.Accessory.FromDictionary(GetDictionary(data, "Accessory"));
@@ -335,6 +336,34 @@ namespace YgoMaster
             }
             catch
             {
+            }
+        }
+
+        void LoadCardCategory()
+        {
+            // This data can be extracted is at "External/CardCategory/CardCategory" (assets/resourcesassetbundle/external/cardcategory/cardcategory.bytes)
+            CardCategories = new Dictionary<int, CardCategory>();
+            CardCategoriesByName = new Dictionary<string, CardCategory>();
+            string file = Path.Combine(dataDirectory, "CardCategory.bytes");
+            if (!File.Exists(file))
+            {
+                return;
+            }
+            List<object> data = MessagePack.Unpack(LZ4.Decompress(File.ReadAllBytes(file))) as List<object>;
+            foreach (object entry in data)
+            {
+                Dictionary<string, object> categoryData = entry as Dictionary<string, object>;
+                if (categoryData != null)
+                {
+                    //id, createStart, createEnd, searchStart, searchEnd, nameJa, nameEn, nameIt, nameDe, nameEs, namePt, nameKo, sort
+                    CardCategory category = new CardCategory();
+                    category.Id = GetValue<int>(categoryData, "id");
+                    category.Name = GetValue<string>(categoryData, "nameEn");
+                    category.Sort = GetValue<int>(categoryData, "sort");// actually a string
+                    CardCategories[category.Id] = category;
+                    CardCategoriesByName[category.Name] = category;
+                    //Debug.WriteLine(category.Id + " " + category.Name);
+                }
             }
         }
 
@@ -485,6 +514,40 @@ namespace YgoMaster
                 else if (previewObj is Dictionary<string, object>)
                 {
                     info.Preview = MiniJSON.Json.Serialize(previewObj);
+                }
+                List<object> searchCategoryList = GetValue<List<object>>(data, "searchCategory");
+                if (searchCategoryList != null)
+                {
+                    foreach (object entry in searchCategoryList)
+                    {
+                        if (entry is string)
+                        {
+                            CardCategory category;
+                            int categoryId;
+                            if (int.TryParse(entry as string, out categoryId))
+                            {
+                                if (categoryId > 0)
+                                {
+                                    info.SearchCategory.Add(categoryId);
+                                }
+                            }
+                            else if (CardCategoriesByName.TryGetValue(entry as string, out category))
+                            {
+                                if (category.Id > 0)
+                                {
+                                    info.SearchCategory.Add(category.Id);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            int categoryId = (int)Convert.ChangeType(entry, typeof(int));
+                            if (categoryId > 0)
+                            {
+                                info.SearchCategory.Add(categoryId);
+                            }
+                        }
+                    }
                 }
                 switch (type)
                 {

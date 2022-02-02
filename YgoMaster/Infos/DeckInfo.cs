@@ -10,7 +10,6 @@ namespace YgoMaster
     {
         public int Id;
         public string Name;
-        public int Status;
         public long TimeCreated;
         public long TimeEdited;
         public DeckAccessoryInfo Accessory;
@@ -94,7 +93,6 @@ namespace YgoMaster
         {
             Id = other.Id;
             Name = other.Name;
-            Status = other.Status;
             TimeCreated = other.TimeCreated;
             TimeEdited = other.TimeEdited;
             Accessory.CopyFrom(other.Accessory);

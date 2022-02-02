@@ -71,9 +71,9 @@ namespace YgoMaster
             }
             Dictionary<string, object> ids = GameServer.GetDictionary(dict, longKeys ? "CardIds" : "ids");
             Dictionary<string, object> r = GameServer.GetDictionary(dict, longKeys ? "Rare" : "r");
-            if (ids != null && r != null)
+            if (ids != null)
             {
-                if (ids.Count != r.Count)
+                if (r != null && ids.Count != r.Count)
                 {
                     GameServer.LogWarning("Card style rarity length missmatch " + ids.Count + " - " + r.Count);
                 }
@@ -82,7 +82,7 @@ namespace YgoMaster
                     for (int i = 0; i < displayedCardsCount; i++)
                     {
                         int cardId = GameServer.GetValue<int>(ids, (i + 1).ToString());
-                        CardStyleRarity styleRarity = (CardStyleRarity)GameServer.GetValue<int>(r, (i + 1).ToString());
+                        CardStyleRarity styleRarity = (r == null ? CardStyleRarity.Normal : (CardStyleRarity)GameServer.GetValue<int>(r, (i + 1).ToString()));
                         collection.Add(new KeyValuePair<int, CardStyleRarity>(cardId, styleRarity));
                     }
                 }
@@ -114,10 +114,10 @@ namespace YgoMaster
             }
             List<object> ids;
             List<object> r;
-            if (GameServer.TryGetValue(dict, longKeys ? "CardIds" : "ids", out ids) &&
-                GameServer.TryGetValue(dict, longKeys ? "Rare" : "r", out r))
+            if (GameServer.TryGetValue(dict, longKeys ? "CardIds" : "ids", out ids))
             {
-                if (ids.Count != r.Count)
+                GameServer.TryGetValue(dict, longKeys ? "Rare" : "r", out r);
+                if (r != null && ids.Count != r.Count)
                 {
                     GameServer.LogWarning("Card style rarity length missmatch " + ids.Count + " - " + r.Count);
                 }
@@ -126,7 +126,7 @@ namespace YgoMaster
                     for (int i = 0; i < ids.Count; i++)
                     {
                         int cardId = (int)(long)ids[i];
-                        CardStyleRarity styleRarity = (CardStyleRarity)(long)r[i];
+                        CardStyleRarity styleRarity = (r == null ? CardStyleRarity.Normal : (CardStyleRarity)(long)r[i]);
                         collection.Add(new KeyValuePair<int, CardStyleRarity>(cardId, styleRarity));
                     }
                 }

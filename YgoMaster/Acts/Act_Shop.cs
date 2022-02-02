@@ -144,7 +144,7 @@ namespace YgoMaster
                 data["iconType"] = shopItem.IconType;
                 data["iconData"] = shopItem.IconData;
                 data["preview"] = shopItem.Preview;
-                data["searchCategory"] = new object[0];//TODO
+                data["searchCategory"] = shopItem.SearchCategory.ToArray();
                 data["limitdate_ts"] = expireTime;
                 data["limit_buy_count"] = buyLimit;
                 data["now_buy_count"] = have;

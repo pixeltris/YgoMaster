@@ -126,7 +126,7 @@ namespace YgoMaster
             {
                 { "deck_id", deckInfo.Id },
                 { "name", deckInfo.Name },
-                { "status", deckInfo.Status },
+                { "status", 0 },
                 { "et", deckInfo.TimeEdited },
                 { "ct", deckInfo.TimeCreated },
                 { "accessory", deckInfo.Accessory.ToDictionary() },

@@ -9,6 +9,23 @@ namespace YgoMaster
     {
         void Act_UserEntry(GameServerWebRequest request)
         {
+            /*// NOTE: To handle tutorial properly the following needs to be done:
+            // - Handle "User.first_name_entry"
+            // - Handle "Structure.first"
+            // - Handle "User.complete_home_guide"
+            // - Send "Master.Structure" here ("User.entry")
+            // - Keep track of tutorial completion state
+            // This can be used to create "Welcome to Yu-Gi-Oh!" / tutorial intro
+            request.Response["Tutorial"] = new Dictionary<string, object>()
+            {
+                { "step", 0 },
+                { "structure_ids", new List<int>() {
+                    1120002,
+                    1120003,
+                    1120004
+                }},
+            };*/
+
             WriteUser(request);
             WriteDeck(request);
             WriteCards(request);

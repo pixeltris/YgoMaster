@@ -54,6 +54,7 @@
     <Compile Include="Acts\Act_User.cs" />
     <Compile Include="DuelSettings.cs" />
     <Compile Include="Enums\ResultCodes.cs" />
+    <Compile Include="Infos\CardCategory.cs" />
     <Compile Include="Infos\CardCollection.cs" />
     <Compile Include="Infos\CraftInfo.cs" />
     <Compile Include="Dialogs.cs" />

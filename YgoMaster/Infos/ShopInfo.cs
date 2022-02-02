@@ -104,6 +104,7 @@ namespace YgoMaster
 
         public ShopItemInfo()
         {
+            SearchCategory = new HashSet<int>();
             Prices = new List<ShopItemPrice>();
             Cards = new HashSet<int>();
         }

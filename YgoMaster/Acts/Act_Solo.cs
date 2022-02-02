@@ -70,6 +70,7 @@ namespace YgoMaster
                 // This is a lock
                 return true;
             }
+            // TODO: Change the final check from "clear_chapter" (on the gate) to "npc_id" on the chapter. It should be non-zero for duels
             Dictionary<string, object> allGateData = GetDictionary(SoloData, "gate");
             if (allGateData == null)
             {
@@ -538,8 +539,8 @@ namespace YgoMaster
             if (TryGetValue(request.ActParams, "chapter", out chapterId))
             {
                 Dictionary<string, object> chapterInfo = new Dictionary<string, object>();
-                DuelSettings duel;
-                if (SoloDuels.TryGetValue(chapterId, out duel))
+                DuelSettings duel = GetSoloDuelSettings(request.Player, chapterId); 
+                if (duel != null)
                 {
                     if (duel.Deck[DuelSettings.PlayerIndex].MainDeckCards.Count > 0)
                     {
@@ -597,7 +598,7 @@ namespace YgoMaster
                     DeckInfo deck = request.Player.Duel.GetDeck(GameMode.SoloSingle);
                     request.Player.Duel.IsMyDeck = deck != null;
                 }
-                DuelSettings duelSettings = CreateSoloDuelSettings(request.Player, chapterId);
+                DuelSettings duelSettings = CreateSoloDuelSettingsInstance(request.Player, chapterId);
                 if (duelSettings != null)
                 {
                     request.Response["Duel"] = new Dictionary<string, object>()
