@@ -9,9 +9,6 @@ namespace YgoMaster
     class Player
     {
         public uint Code;
-        public string AccountToken;
-        public string SessionToken;
-
         public string Name;
         public int Rank;
         public int Rate;
@@ -35,12 +32,9 @@ namespace YgoMaster
 
         public int NextDeckUId = 1;
 
-        public Player(uint code, string accountToken, string sessionToken)
+        public Player(uint code)
         {
             Code = code;
-            AccountToken = accountToken;
-            SessionToken = sessionToken;
-
             Items = new HashSet<int>();
             TitleTags = new HashSet<int>();
             CardFavorites = new CardCollection();

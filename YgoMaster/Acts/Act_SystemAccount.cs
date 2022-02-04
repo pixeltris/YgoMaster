@@ -58,8 +58,7 @@ namespace YgoMaster
             request.Response["Persistence"] = new Dictionary<string, object>()
             {
                 { "System", new Dictionary<string, object>() {
-                    { "auth_session", request.Player.AccountToken },
-                    { "token", request.Player.SessionToken },
+                    { "token", Convert.ToBase64String(Encoding.UTF8.GetBytes("sessionToken")) },
                     { "pcode", request.Player.Code },
                 }},
             };

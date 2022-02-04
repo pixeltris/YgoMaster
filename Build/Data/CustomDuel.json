@@ -1,0 +1,27 @@
+{
+    "Deck": [
+        "Decks/Starting Deck.json",
+        "Decks/Starting Deck.json",
+    ],
+    "hnum": [ -1, -1 ],
+    "life": [ -1, -1 ],
+    "mat": [ -1, -1 ],
+    "sleeve": [ -1, -1 ],
+    "avatar": [ -1, -1 ],
+    "avatar_home": [ -1, -1 ],
+    "duel_object": [ -1, -1 ],
+    "icon": [ -1, 1010001 ],
+    "icon_frame": [ -1, 1030001 ],
+    "name": [ "", "CPU" ],
+    "bgms": [
+        "BGM_DUEL_NORMAL_03",
+        "BGM_DUEL_KEYCARD_03",
+        "BGM_DUEL_CLIMAX_03",
+    ],
+    "FirstPlayer": -1,
+    "Limit": 0,// YgomGame.Duel.Engine.LimitedType
+    "cpu": 100,
+    //"cpuflag": "AttackOnly",// YgomGame.Duel.Engine.CpuParam
+    //"RandSeed": 262250261,// If no seed is specified a random one will be generated
+    "targetChapterId": 10001,// The chapter id to replace (doesn't apply unless the chapter is already complete)
+}

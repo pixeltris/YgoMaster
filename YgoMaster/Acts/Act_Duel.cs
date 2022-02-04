@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace YgoMaster
 {
@@ -10,11 +11,96 @@ namespace YgoMaster
         DuelSettings GetSoloDuelSettings(Player player, int chapterId)
         {
             DuelSettings duelSettings;
-            if (SoloDuels.TryGetValue(chapterId, out duelSettings))
+            ChapterStatus chapterStatus;
+            if (SoloDuels.TryGetValue(chapterId, out duelSettings) &&
+                player.SoloChapters.TryGetValue(chapterId, out chapterStatus) &&
+                chapterStatus == ChapterStatus.COMPLETE)
             {
-                return duelSettings;
+                FileInfo customDuelFile = new FileInfo(Path.Combine(dataDirectory, "CustomDuel.json"));
+                if (customDuelFile.Exists)
+                {
+                    if (CustomDuelSettings == null || customDuelFile.LastWriteTime != CustomDuelLastModified)
+                    {
+                        CustomDuelLastModified = customDuelFile.LastWriteTime;
+                        try
+                        {
+                            Dictionary<string, object> duelData = MiniJSON.Json.DeserializeStripped(File.ReadAllText(customDuelFile.FullName)) as Dictionary<string, object>;
+                            object deckListObj;
+                            int targetChapterId;
+                            if (duelData.TryGetValue("Deck", out deckListObj) &&
+                                TryGetValue(duelData, "targetChapterId", out targetChapterId) &&
+                                targetChapterId == chapterId)
+                            {
+                                List<object> deckList = deckListObj as List<object>;
+                                if (deckList.Count >= 2)
+                                {
+                                    List<DeckInfo> decks = new List<DeckInfo>();
+                                    for (int i = 0; i < deckList.Count; i++)
+                                    {
+                                        string deckFile = deckList[i] as string;
+                                        if (deckFile != null)
+                                        {
+                                            string possibleFile = Path.Combine(dataDirectory, deckFile);
+                                            if (!File.Exists(possibleFile))
+                                            {
+                                                possibleFile = Path.Combine(dataDirectory, deckFile + ".json");
+                                                if (!File.Exists(possibleFile))
+                                                {
+                                                    foreach (DeckInfo playerDeck in player.Decks.Values)
+                                                    {
+                                                        if (Path.GetFileNameWithoutExtension(playerDeck.File) == deckFile)
+                                                        {
+                                                            possibleFile = playerDeck.File;
+                                                            break;
+                                                        }
+                                                        if (playerDeck.Name == deckFile)
+                                                        {
+                                                            possibleFile = playerDeck.Name;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            if (File.Exists(possibleFile))
+                                            {
+                                                DeckInfo deckInfo = new DeckInfo();
+                                                deckInfo.File = possibleFile;
+                                                LoadDeck(deckInfo);
+                                                decks.Add(deckInfo);
+                                            }
+                                        }
+                                    }
+                                    duelData.Remove("Deck");
+
+                                    if (decks.Count == 2)
+                                    {
+                                        DuelSettings customDuel = new DuelSettings();
+                                        for (int i = 0; i < decks.Count && i < DuelSettings.MaxPlayers; i++)
+                                        {
+                                            customDuel.Deck[i] = decks[i];
+                                        }
+                                        customDuel.IsCustomDuel = true;
+                                        customDuel.FromDictionary(duelData);
+                                        customDuel.SetRequiredDefaults();
+                                        customDuel.chapter = 0;
+                                        CustomDuelSettings = customDuel;
+                                        return customDuel;
+                                    }
+                                }
+                                LogWarning("Failed to load custom duel");
+                            }
+                        }
+                        catch
+                        {
+                        }
+                    }
+                    if (CustomDuelSettings != null)
+                    {
+                        return CustomDuelSettings;
+                    }
+                }
             }
-            return null;
+            return duelSettings;
         }
 
         DuelSettings CreateSoloDuelSettingsInstance(Player player, int chapterId)
@@ -34,7 +120,7 @@ namespace YgoMaster
                 {
                     duelSettings.noshuffle = false;
                 }
-                if (duel.IsMyDeck)
+                if (duel.IsMyDeck && !duelSettings.IsCustomDuel)
                 {
                     DeckInfo deck = duel.GetDeck(GameMode.SoloSingle);
                     if (deck != null)
@@ -81,8 +167,14 @@ namespace YgoMaster
                     {
                         duelSettings.FirstPlayer = rand.Next(2);
                     }
-                    duelSettings.name[DuelSettings.PlayerIndex] = request.Player.Name;
-                    duelSettings.RandSeed = (uint)rand.Next();
+                    if (!duelSettings.IsCustomDuel || string.IsNullOrEmpty(duelSettings.name[DuelSettings.PlayerIndex]))
+                    {
+                        duelSettings.name[DuelSettings.PlayerIndex] = request.Player.Name;
+                    }
+                    if (!duelSettings.IsCustomDuel || duelSettings.RandSeed == 0)
+                    {
+                        duelSettings.RandSeed = (uint)rand.Next();
+                    }
                     request.Response["Duel"] = duelSettings.ToDictionary();
                 }
             }
@@ -100,7 +192,8 @@ namespace YgoMaster
                 switch (request.Player.Duel.Mode)
                 {
                     case GameMode.SoloSingle:
-                        if (res == (int)DuelResultType.Win && request.Player.Duel.ChapterId != 0)
+                        if (request.Player.Duel.ChapterId != 0 &&
+                            (res == (int)DuelResultType.Win || GetSkippableChapterIds().Contains(request.Player.Duel.ChapterId)))
                         {
                             OnSoloChapterComplete(request, request.Player.Duel.ChapterId);
                         }

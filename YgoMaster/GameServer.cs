@@ -131,9 +131,7 @@ namespace YgoMaster
 
                             if (thePlayer == null)
                             {
-                                string atok = Convert.ToBase64String(Encoding.UTF8.GetBytes("accountToken"));
-                                string stok = Convert.ToBase64String(Encoding.UTF8.GetBytes("sessionToken"));
-                                thePlayer = new Player(1111111111, atok, stok);
+                                thePlayer = new Player(1111111111);
                                 LoadPlayer(thePlayer);
                             }
                             gameServerWebRequest.Player = thePlayer;

@@ -14,6 +14,7 @@ namespace YgoMaster
         public const int MaxPlayers = 4;
 
         public int NumPlayers;
+        public bool IsCustomDuel;
 
         static string[] ignoreZero = { "life", "hnum" };
         
@@ -77,7 +78,7 @@ namespace YgoMaster
             FirstPlayer = -1;
             Auto = -1;
             surrender = true;
-            MyPartnerType = 1;// CPU
+            MyPartnerType = 1;
 
             foreach (PropertyInfo property in GetType().GetProperties())
             {
@@ -110,13 +111,21 @@ namespace YgoMaster
         {
             for (int i = 0; i < NumPlayers; i++)
             {
+                if (hnum[i] == -1) hnum[i] = 0;
+                if (life[i] == -1) life[i] = 0;
+
+                if (mat[i] == -1) mat[i] = Deck[i].Accessory.Field;
+                if (sleeve[i] == -1) sleeve[i] = Deck[i].Accessory.Sleeve;
+                if (avatar_home[i] == -1) avatar_home[i] = Deck[i].Accessory.AvBase;
+                if (duel_object[i] == -1) duel_object[i] = Deck[i].Accessory.FieldObj;
+
                 //if (avatar[i] == 0) avatar[i] = 1000001;
-                if (mat[i] == 0) mat[i] = 1090001;
-                if (sleeve[i] == 0) sleeve[i] = 1070001;
-                if (icon[i] == 0) icon[i] = 1100001;
-                if (icon_frame[i] == 0) icon_frame[i] = 1030001;
-                if (duel_object[i] == 0) duel_object[i] = 1100001;
-                if (wallpaper[i] == 0) wallpaper[i] = 1130001;
+                if (mat[i] <= 0) mat[i] = 1090001;
+                if (sleeve[i] <= 0) sleeve[i] = 1070001;
+                if (icon[i] <= 0) icon[i] = 1100001;
+                if (icon_frame[i] <= 0) icon_frame[i] = 1030001;
+                if (duel_object[i] <= 0) duel_object[i] = 1100001;
+                if (wallpaper[i] <= 0) wallpaper[i] = 1130001;
             }
             /*if (Bgms.Count == 0)
             {

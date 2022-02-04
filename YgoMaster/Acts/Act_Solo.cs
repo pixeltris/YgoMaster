@@ -20,6 +20,14 @@ namespace YgoMaster
             return chapterId / 10000;
         }
 
+        HashSet<int> GetSkippableChapterIds()
+        {
+            return new HashSet<int>()
+            {
+                10001, 10002, 10003,
+            };
+        }
+
         HashSet<int> GetAllSoloChapterIds()
         {
             HashSet<int> result = new HashSet<int>();
@@ -539,7 +547,7 @@ namespace YgoMaster
             if (TryGetValue(request.ActParams, "chapter", out chapterId))
             {
                 Dictionary<string, object> chapterInfo = new Dictionary<string, object>();
-                DuelSettings duel = GetSoloDuelSettings(request.Player, chapterId); 
+                DuelSettings duel = GetSoloDuelSettings(request.Player, chapterId);
                 if (duel != null)
                 {
                     if (duel.Deck[DuelSettings.PlayerIndex].MainDeckCards.Count > 0)

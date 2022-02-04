@@ -18,22 +18,25 @@ namespace YgoMasterClient
         public const string ServerPollUrl = "http://localhost/ygo/poll";
         static bool runConsole = true;
 
-        /// <summary>
-        /// Directory path of YgoMasterClient.exe
-        /// </summary>
-        public static string CurrentDir;
-        /// <summary>
-        /// Directory path of the custom client content
-        /// </summary>
-        public static string ClientDataDir;
-        /// <summary>
-        /// Directory path of the server content
-        /// </summary>
-        public static string ServerDataDir;
+        public static bool IsLive;
+
+        public static string CurrentDir;// Directory path of YgoMasterClient.exe
+        public static string DataDir;// Directory path of misc data
+        public static string ClientDataDir;// Directory path of the custom client content
+        public static string ClientDataDumpDir;// Directory path of where to dump client content when dumping is enabled
 
         static void Main(string[] args)
         {
-            if (!GameLauncher.Launch(GameLauncherMode.Detours, args))
+            bool success;
+            if ((args.Length > 0 && args[0].ToLower() == "live") || !File.Exists("YgoMaster.exe"))
+            {
+                success = GameLauncher.Launch(GameLauncherMode.Inject);
+            }
+            else
+            {
+                success = GameLauncher.Launch(GameLauncherMode.Detours);
+            }
+            if (!success)
             {
                 MessageBox.Show("Failed! Make sure the YgoMaster folder is inside game folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -47,24 +50,27 @@ namespace YgoMasterClient
                 PInvoke.InitGameModuleBaseAddress();
 
                 CurrentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                ClientDataDir = Path.Combine(CurrentDir, "ClientData");
-                ServerDataDir = Path.Combine(CurrentDir, "Data");
+                DataDir = Path.Combine(CurrentDir, "Data");
+                ClientDataDir = Path.Combine(DataDir, "ClientData");
+                ClientDataDumpDir = Path.Combine(DataDir, "ClientDataDump");
 
                 List<Type> nativeTypes = new List<Type>();
                 if (arg == "live")
                 {
-                    // TODO
-                    nativeTypes.Add(typeof(DuellDll));
+                    IsLive = true;
+                    nativeTypes.Add(typeof(AssetHelper));
                 }
                 else
                 {
                     nativeTypes.Add(typeof(DuellDll));
-                    nativeTypes.Add(typeof(YgomSystem.ResourceManager));
+                    nativeTypes.Add(typeof(AssetHelper));
                     nativeTypes.Add(typeof(YgomGame.Utility.ItemUtil));
                     nativeTypes.Add(typeof(YgomSystem.Utility.TextData));
-                    nativeTypes.Add(typeof(YgomSystem.Network.ProtocolHttp));
                     nativeTypes.Add(typeof(YgomSystem.Utility.ClientWork));
-                    nativeTypes.Add(typeof(MiniJSON.Json));
+                    nativeTypes.Add(typeof(YgomSystem.Network.ProtocolHttp));
+                    nativeTypes.Add(typeof(YgomSystem.LocalFileSystem.WindowsStorageIO));
+                    nativeTypes.Add(typeof(YgomSystem.LocalFileSystem.StandardStorageIO));
+                    nativeTypes.Add(typeof(YgomMiniJSON.Json));
                     nativeTypes.Add(typeof(Steamworks.SteamAPI));
                     nativeTypes.Add(typeof(Steamworks.SteamUtils));
                 }
@@ -94,7 +100,7 @@ namespace YgoMasterClient
                                         string[] splitted = consoleInput.Split();
                                         switch (splitted[0].ToLower())
                                         {
-                                            case "itemid":
+                                            case "itemid":// Creates enums for values in IDS_ITEM (all item ids)
                                                 {
                                                     Dictionary<YgomGame.Utility.ItemUtil.Category, List<string>> categories = new Dictionary<YgomGame.Utility.ItemUtil.Category, List<string>>();
                                                     IL2Class classInfo = classInfo = Assembler.GetAssembly("Assembly-CSharp").GetClass("IDS_ITEM", "YgomGame.TextIDs");
@@ -126,7 +132,7 @@ namespace YgoMasterClient
                                                     Console.WriteLine("Done");
                                                 }
                                                 break;
-                                            case "packnames":
+                                            case "packnames":// Gets all the card pack names
                                                 {
                                                     // TODO: Ensure IDS_CARDPACK is loaded before calling GetText (currently need to be in shop screen)
                                                     IL2Class classInfo = Assembler.GetAssembly("Assembly-CSharp").GetClass("IDS_CARDPACK", "YgomGame.TextIDs");
@@ -153,7 +159,7 @@ namespace YgoMasterClient
                                                     Console.WriteLine("Done");
                                                 }
                                                 break;
-                                            case "packimages":
+                                            case "packimages":// Attempts to discover all card pack images (which are based on a given card id)
                                                 {
                                                     // TODO: Improve this (get a card id list as currently this will be very slow)
                                                     StringBuilder sb = new StringBuilder();
@@ -164,7 +170,7 @@ namespace YgoMasterClient
                                                         for (int i = 0; i < 5; i++)
                                                         {
                                                             string name = "CardPackTex" + i.ToString().PadLeft(2, '0') + "_" + j;
-                                                            if (YgomSystem.ResourceManager.Exists("Images/CardPack/<_RESOURCE_TYPE_>/<_CARD_ILLUST_>/" + name))
+                                                            if (AssetHelper.FileExists("Images/CardPack/<_RESOURCE_TYPE_>/<_CARD_ILLUST_>/" + name))
                                                             {
                                                                 sb.Append("\"" + name + "\",");
                                                             }
@@ -175,7 +181,7 @@ namespace YgoMasterClient
                                                     Console.WriteLine("Done");
                                                 }
                                                 break;
-                                            case "text":
+                                            case "text":// Gets a IDS_XXXX value based on the input string (e.g. "IDS_CARD.STYLE3")
                                                 {
                                                     string id = splitted[1];
                                                     Console.WriteLine(YgomSystem.Utility.TextData.GetText(id));
@@ -205,7 +211,7 @@ namespace YgoMasterClient
                                                     }
                                                 }
                                                 break;
-                                            case "resultcodes":
+                                            case "resultcodes":// Gets all network result codes found in "YgomSystem.Network"
                                                 {
                                                     StringBuilder sb = new StringBuilder();
                                                     foreach (IL2Class classInfo in Assembler.GetAssembly("Assembly-CSharp").GetClasses())
@@ -228,6 +234,25 @@ namespace YgoMasterClient
                                                     }
                                                     File.WriteAllText("dump-resultcodes.txt", sb.ToString());
                                                     Console.WriteLine("Done");
+                                                }
+                                                break;
+                                            case "locate":// Finds a file on disk from the given input path which is in /LocalData/
+                                            case "locateraw":
+                                                {
+                                                    // NOTE: Some images (just cards?) resolve to /masterduel_Data/StreamingAssets/AssetBundle/
+                                                    string path = consoleInput.Trim().Substring(consoleInput.Trim().IndexOf(' ') + 1);
+                                                    string convertedPath = splitted[0].ToLower() == "locate" ? AssetHelper.ConvertAssetPath(path) : path;
+                                                    bool exists = AssetHelper.FileExists(path);
+                                                    string convertedPathOnDisk = AssetHelper.GetAssetBundleOnDisk(convertedPath);
+                                                    string dir = "LocalData";
+                                                    foreach (string subDir in Directory.GetDirectories(dir))
+                                                    {
+                                                        dir = subDir;// The steam id folder name
+                                                        break;
+                                                    }
+                                                    bool existsOnDisk = File.Exists(Path.Combine(dir, "0000", convertedPathOnDisk));
+                                                    Console.WriteLine("Converted: " + convertedPath);
+                                                    Console.WriteLine(convertedPathOnDisk + " existsOnDisk: " + existsOnDisk + " exists:" + exists);
                                                 }
                                                 break;
                                         }
@@ -287,47 +312,6 @@ unsafe static class DuellDll
     }
 }
 
-namespace YgomSystem
-{
-    unsafe static class ResourceManager
-    {
-        static IL2Class classInfo;
-        static IL2Method methodExists;
-        static IL2Method methodGetResource;
-
-        delegate IntPtr Del_GetResource(IntPtr thisPtr, IntPtr path, IntPtr workPath);
-        static Hook<Del_GetResource> hookGetResource;
-
-        static ResourceManager()
-        {
-            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
-            classInfo = assembly.GetClass("ResourceManager", "YgomSystem");
-            methodExists = classInfo.GetMethod("Exists");
-            methodGetResource = classInfo.GetMethod("getResource", x => x.GetParameters().Length == 2 && x.GetParameters()[0].Name == "path");
-            hookGetResource = new Hook<Del_GetResource>(GetResource, methodGetResource);
-        }
-
-        public static bool Exists(string filename)
-        {
-            IL2Object obj = methodExists.Invoke(new IntPtr[] { new IL2String(filename).ptr });
-            return obj != null ? obj.GetValueRef<bool>() : false;
-        }
-
-        static IntPtr GetResource(IntPtr thisPtr, IntPtr path, IntPtr workPath)
-        {
-            Console.WriteLine("path:" + new IL2String(path).ToString());
-            string str = new IL2String(path).ToString();
-            /*if (!string.IsNullOrEmpty(str) && str.Contains("Illust/0000"))
-            {
-                Console.WriteLine("ImageBase: " + PInvoke.GameModuleBaseAddress.ToInt64().ToString("X16"));
-                path = new IL2String("Card/Images/Illust/<_CARD_ILLUST_>/15635").ptr;
-                //System.Diagnostics.Debugger.Launch();
-            }*/
-            return hookGetResource.Original(thisPtr, path, workPath);
-        }
-    }
-}
-
 namespace YgomGame.Utility
 {
     unsafe static class ItemUtil
@@ -382,38 +366,6 @@ namespace YgomGame.Utility
             STRUCTURE,
             WALLPAPER,
             PACK_TICKET
-        }
-    }
-}
-
-namespace YgomSystem.Network
-{
-    unsafe static class ProtocolHttp
-    {
-        static IL2Class classInfo;
-        static IL2Method methodGetServerDefaultUrl;
-
-        delegate void Del_GetServerDefaultUrl(int type, IntPtr* outUrl, IntPtr* outPollingUrl);
-        static Hook<Del_GetServerDefaultUrl> hookGetServerDefaultUrl;
-
-        static ProtocolHttp()
-        {
-            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
-            classInfo = assembly.GetClass("ProtocolHttp", "YgomSystem.Network");
-            methodGetServerDefaultUrl = classInfo.GetMethod("GetServerDefaultUrl");
-
-            hookGetServerDefaultUrl = new Hook<Del_GetServerDefaultUrl>(GetServerDefaultUrl, methodGetServerDefaultUrl);
-        }
-
-        static void GetServerDefaultUrl(int type, IntPtr* outUrl, IntPtr* outPollingUrl)
-        {
-            // This doesn't work for some reason...
-            *outUrl = new IL2String(Program.ServerUrl).ptr;
-            *outPollingUrl = new IL2String(Program.ServerPollUrl).ptr;
-            // But this does...
-            YgomSystem.Utility.ClientWork.UpdateJson("$.Server.urls", "{\"System.info\":\"" + Program.ServerUrl + "\"}");
-            YgomSystem.Utility.ClientWork.UpdateValue("$.Server.url", Program.ServerUrl);
-            YgomSystem.Utility.ClientWork.UpdateValue("$.Server.url_polling", Program.ServerUrl);
         }
     }
 }
@@ -506,12 +458,123 @@ namespace YgomSystem.Utility
         public static string SerializePath(string jsonPath)
         {
             IL2Object obj = methodGetByJsonPath.Invoke(new IntPtr[] { new IL2String(jsonPath).ptr });
-            return MiniJSON.Json.Serialize(obj);
+            return YgomMiniJSON.Json.Serialize(obj);
         }
     }
 }
 
-namespace MiniJSON
+namespace YgomSystem.Network
+{
+    unsafe static class ProtocolHttp
+    {
+        static IL2Class classInfo;
+        static IL2Method methodGetServerDefaultUrl;
+
+        delegate void Del_GetServerDefaultUrl(int type, IntPtr* outUrl, IntPtr* outPollingUrl);
+        static Hook<Del_GetServerDefaultUrl> hookGetServerDefaultUrl;
+
+        static ProtocolHttp()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            classInfo = assembly.GetClass("ProtocolHttp", "YgomSystem.Network");
+            methodGetServerDefaultUrl = classInfo.GetMethod("GetServerDefaultUrl");
+
+            hookGetServerDefaultUrl = new Hook<Del_GetServerDefaultUrl>(GetServerDefaultUrl, methodGetServerDefaultUrl);
+        }
+
+        static void GetServerDefaultUrl(int type, IntPtr* outUrl, IntPtr* outPollingUrl)
+        {
+            // This doesn't work for some reason...
+            *outUrl = new IL2String(Program.ServerUrl).ptr;
+            *outPollingUrl = new IL2String(Program.ServerPollUrl).ptr;
+            // But this does...
+            YgomSystem.Utility.ClientWork.UpdateJson("$.Server.urls", "{\"System.info\":\"" + Program.ServerUrl + "\"}");
+            YgomSystem.Utility.ClientWork.UpdateValue("$.Server.url", Program.ServerUrl);
+            YgomSystem.Utility.ClientWork.UpdateValue("$.Server.url_polling", Program.ServerUrl);
+        }
+    }
+}
+
+namespace YgomSystem.LocalFileSystem
+{
+    class WindowsStorageIO
+    {
+        static IL2Class classInfo;
+        static IL2Method methodGetSteamUserDirectoryName;
+
+        delegate IntPtr Del_GetSteamUserDirectoryName(IntPtr thisPtr);
+        static Hook<Del_GetSteamUserDirectoryName> hookGetSteamUserDirectoryName;
+
+        static WindowsStorageIO()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            classInfo = assembly.GetClass("WindowsStorageIO", "YgomSystem.LocalFileSystem");
+            methodGetSteamUserDirectoryName = classInfo.GetMethod("GetSteamUserDirectoryName");
+            hookGetSteamUserDirectoryName = new Hook<Del_GetSteamUserDirectoryName>(GetSteamUserDirectoryName, methodGetSteamUserDirectoryName);
+        }
+
+        static IntPtr GetSteamUserDirectoryName(IntPtr thisPtr)
+        {
+            IntPtr result = hookGetSteamUserDirectoryName.Original(thisPtr);
+            Console.WriteLine("TODO: GetSteamUserDirectoryName (" + new IL2String(result).ToString() + ")");
+            return result;
+        }
+    }
+
+    class StandardStorageIO
+    {
+        static IL2Class classInfo;
+        static IL2Method methodSetupStorageDirectory;
+
+        delegate void Del_SetupStorageDirectory(IntPtr thisPtr, IntPtr storage, IntPtr mountPath);
+        static Hook<Del_SetupStorageDirectory> hookSetupStorageDirectory;
+
+        static StandardStorageIO()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            classInfo = assembly.GetClass("StandardStorageIO", "YgomSystem.LocalFileSystem");
+            methodSetupStorageDirectory = classInfo.GetMethod("setupStorageDirectory");
+            hookSetupStorageDirectory = new Hook<Del_SetupStorageDirectory>(SetupStorageDirectory, methodSetupStorageDirectory);
+        }
+
+        static void SetupStorageDirectory(IntPtr thisPtr, IntPtr storage, IntPtr mountPath)
+        {
+            string path = new IL2String(mountPath).ToString();
+            //Console.WriteLine("Mount: " + path);
+            if (!string.IsNullOrEmpty(path))
+            {
+                // NOTE: Allowing "/../LocalSave/" to point to "00000000"
+                string localDataPath = "/../LocalData/";
+                int localDataPathIndex = path.IndexOf(localDataPath);
+                if (localDataPathIndex >= 0)
+                {
+                    string folderName = path.Substring(localDataPathIndex + localDataPath.Length);
+                    path = path.Substring(0, localDataPathIndex + localDataPath.Length);
+                    if (folderName == "00000000")
+                    {
+                        foreach (string dir in Directory.GetDirectories(path))
+                        {
+                            DirectoryInfo dirInfo = new DirectoryInfo(dir);
+                            if (dirInfo.Name != folderName)
+                            {
+                                folderName = dirInfo.Name;
+                                break;
+                            }
+                        }
+                    }
+                    path += folderName;
+                }
+                hookSetupStorageDirectory.Original(thisPtr, storage, new IL2String(path).ptr);
+            }
+            else
+            {
+                hookSetupStorageDirectory.Original(thisPtr, storage, mountPath);
+            }
+        }
+    }
+}
+
+namespace YgomMiniJSON
 {
     static class Json
     {

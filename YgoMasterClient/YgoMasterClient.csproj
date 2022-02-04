@@ -48,7 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssetHelper.cs" />
     <Compile Include="ConsoleHelper.cs" />
+    <Compile Include="CRC32.cs" />
     <Compile Include="GameLauncher.cs" />
     <Compile Include="Hook.cs" />
     <Compile Include="IL2CPP\Assembler.cs" />

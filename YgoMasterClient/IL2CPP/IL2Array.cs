@@ -68,5 +68,12 @@ namespace IL2CPP
 			}
 			return result;
         }
+
+        public unsafe byte[] ToByteArray()
+        {
+            byte[] result = new byte[Length * Marshal.SizeOf(typeof(T))];
+            Marshal.Copy((IntPtr)((long*)ptr + 4), result, 0, result.Length);
+            return result;
+        }
 	}
 }

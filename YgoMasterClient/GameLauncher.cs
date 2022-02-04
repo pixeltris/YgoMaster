@@ -60,8 +60,9 @@ namespace YgoMasterClient
             }
 
             string commandLine = null;
-            if (args != null)
+            if (args != null && args.Length > 0)
             {
+                commandLine = string.Empty;
                 foreach (string arg in args)
                 {
                     if (!string.IsNullOrEmpty(commandLine))

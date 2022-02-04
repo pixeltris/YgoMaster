@@ -30,6 +30,8 @@ namespace YgoMaster
         Dictionary<int, DuelSettings> SoloDuels;// <chapterid, DuelSettings>
         Dictionary<int, CardCategory> CardCategories;// <categoryId, CardCategory>
         Dictionary<string, CardCategory> CardCategoriesByName;// <categoryName, CardCategory>
+        DuelSettings CustomDuelSettings;
+        DateTime CustomDuelLastModified;
 
         void LoadSettings()
         {
