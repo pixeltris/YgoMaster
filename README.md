@@ -4,7 +4,7 @@ WIP:
 [x] Implement CustomDuel.json
 [x] Fix LocalData folder path lookup (steam id)
 [x] Hook resource functions to replace images
-[ ] hook GetText to replace text (either hooked up to json of specific txt files)
+[x] hook GetText to replace text (either hooked up to json of specific txt files)
 [ ] Manually create a custom shop from the old boosters (with images)
 [ ] Generate deck json files from LE data. Also generate Solo.json from LE data.
 [ ] Create option to limit cards by release year

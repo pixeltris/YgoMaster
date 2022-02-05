@@ -12,6 +12,9 @@ namespace YgoMasterClient
     {
         public static bool ShouldDumpData = false;
 
+        // YgomSystem.Utility.DeviceInfo
+        static IL2Method methodGetResourceType;
+
         // YgomSystem.ResourceSystem.ResourceUtility
         static IL2Class resourceUtilityClassInfo;
         static IL2Method methodConvertAutoPath;
@@ -21,15 +24,22 @@ namespace YgoMasterClient
         static IL2Method methodExists;
         static IL2Method methodGetResource;
 
+        delegate IntPtr Del_GetResource(IntPtr thisPtr, IntPtr pathPtr, IntPtr workPathPtr);
+        static Hook<Del_GetResource> hookGetResource;
+        delegate uint Del_Load(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInterface, IntPtr completeHandler, bool disableErrorNotify);
+        static Hook<Del_Load> hookLoad;
+        delegate uint Del_LoadImmediate(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInterface, IntPtr completeHandler, bool disableErrorNotify);
+        static Hook<Del_LoadImmediate> hookLoadImmediate;
+
         // YgomSystem.ResourceSystem.Resource
         static IL2Class resourceClassInfo;
         static IL2Method methodGetAssets;
         static IL2Method methodSetAssets;
+        static IL2Method methodGetBytes;
+        static IL2Method methodSetBytes;
+        static IL2Method methodSetError;
         static IL2Method methodGetPath;
         static IL2Method methodGetLoadPath;
-
-        delegate IntPtr Del_GetResource(IntPtr thisPtr, IntPtr pathPtr, IntPtr workPathPtr);
-        static Hook<Del_GetResource> hookGetResource;
 
         // UnityEngine.ImageConversionModule.ImageConversion
         static IL2Class imageConversionClassInfo;
@@ -64,11 +74,12 @@ namespace YgoMasterClient
         static IL2Method methodGetPixelsPerUnit;
         static IL2Class rectClassInfo;// Rect
         static IL2Class vector2ClassInfo;// Vector2
-        static IL2Method methodGetName;// Object (UnityEngine)
+        static IL2Class objectClassInfo;// Object (UnityEngine)
+        static IL2Method methodGetName;
         static IL2Method methodSetName;
 
-        // mscorlib.File
-        static IL2Method methodReadAllBytes;
+        // mscorlib
+        static IL2Method methodReadAllBytes;// File
 
         [StructLayout(LayoutKind.Sequential)]
         struct Vector2
@@ -81,15 +92,6 @@ namespace YgoMasterClient
                 this.x = x;
                 this.y = y;
             }
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        struct Vector4
-        {
-            public float v1;
-            public float v2;
-            public float v3;
-            public float v4;
         }
 
         struct Rect
@@ -108,9 +110,29 @@ namespace YgoMasterClient
             }
         }
 
+        public enum ResourceType
+        {
+            Unknown,
+            /// <summary>
+            /// High Resolution
+            /// </summary>
+            HighEnd_HD,
+            /// <summary>
+            /// Normal
+            /// </summary>
+            HighEnd,
+            /// <summary>
+            /// ???
+            /// </summary>
+            LowEnd
+        }
+
         static AssetHelper()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+
+            IL2Class deviceInfoClassInfo = assembly.GetClass("DeviceInfo", "YgomSystem.Utility");
+            methodGetResourceType = deviceInfoClassInfo.GetMethod("GetResourceType");
 
             resourceUtilityClassInfo = assembly.GetClass("ResourceUtility", "YgomSystem.ResourceSystem");
             methodConvertAutoPath = resourceUtilityClassInfo.GetMethod("ConvertAutoPath");
@@ -119,10 +141,15 @@ namespace YgoMasterClient
             methodExists = resourceManagerClassInfo.GetMethod("Exists");
             methodGetResource = resourceManagerClassInfo.GetMethod("getResource", x => x.GetParameters().Length == 2 && x.GetParameters()[0].Name == "path");
             hookGetResource = new Hook<Del_GetResource>(GetResource, methodGetResource);
+            hookLoad = new Hook<Del_Load>(Load, resourceManagerClassInfo.GetMethod("load"));
+            hookLoadImmediate = new Hook<Del_LoadImmediate>(LoadImmediate, resourceManagerClassInfo.GetMethod("loadImmediate"));
 
             resourceClassInfo = assembly.GetClass("Resource", "YgomSystem.ResourceSystem");
             methodGetAssets = resourceClassInfo.GetProperty("Assets").GetGetMethod();
             methodSetAssets = resourceClassInfo.GetProperty("Assets").GetSetMethod();
+            methodGetBytes = resourceClassInfo.GetProperty("Bytes").GetGetMethod();
+            methodSetBytes = resourceClassInfo.GetProperty("Bytes").GetSetMethod();
+            methodSetError = resourceClassInfo.GetProperty("Error").GetSetMethod();
             methodGetPath = resourceClassInfo.GetProperty("Path").GetGetMethod();
             methodGetLoadPath = resourceClassInfo.GetProperty("LoadPath").GetGetMethod();
 
@@ -156,7 +183,7 @@ namespace YgoMasterClient
             methodGetPixelsPerUnit = spriteClassInfo.GetProperty("pixelsPerUnit").GetGetMethod();
             rectClassInfo = coreModuleAssembly.GetClass("Rect");// Rect
             vector2ClassInfo = coreModuleAssembly.GetClass("Vector2");// Vector2
-            IL2Class objectClassInfo = coreModuleAssembly.GetClass("Object");
+            objectClassInfo = coreModuleAssembly.GetClass("Object");
             methodGetName = objectClassInfo.GetProperty("name").GetGetMethod();
             methodSetName = objectClassInfo.GetProperty("name").GetSetMethod();
 
@@ -238,14 +265,76 @@ namespace YgoMasterClient
             return null;
         }
 
-        static IntPtr TextureFromPNG(string filePath)
+        static IntPtr TextureFromPNG(string filePath, string assetName)
         {
+            IL2Object bytes = methodReadAllBytes.Invoke(new IntPtr[] { new IL2String(filePath).ptr });
+            if (bytes != null)
+            {
+                IntPtr newTexture = Import.Object.il2cpp_object_new(texture2DClassInfo.ptr);
+                if (newTexture != IntPtr.Zero)
+                {
+                    int textureWidth = 2, textureHeight = 2;
+                    methodTexture2DCtor.Invoke(newTexture, new IntPtr[] { new IntPtr(&textureWidth), new IntPtr(&textureHeight) });
+                    methodLoadImage.Invoke(new IntPtr[] { newTexture, bytes.ptr });
+                    if (!string.IsNullOrEmpty(assetName))
+                    {
+                        methodSetName.Invoke(newTexture, new IntPtr[] { new IL2String(assetName).ptr });
+                    }
+                    return newTexture;
+                }
+            }
             return IntPtr.Zero;
         }
 
         static IntPtr TextureToSprite(IntPtr texture)
         {
             return IntPtr.Zero;
+        }
+
+        static string GetObjectName(IntPtr obj)
+        {
+            string name = null;
+            IL2Object nameObj = methodGetName.Invoke(obj);
+            if (nameObj != null)
+            {
+                name = nameObj.GetValueObj<string>();
+            }
+            //Console.WriteLine("Name '" + name + "'");
+            return name;
+        }
+
+        static bool IsCustomFile(IntPtr path)
+        {
+            if (path != IntPtr.Zero)
+            {
+                // NOTE: Might be potential issue with resolving the correct resource type (SD/HD)?
+                string loadPath = ConvertAssetPath(new IL2String(path).ToString());
+                string customTexturePath = Path.Combine(Program.ClientDataDir, loadPath + ".png");
+                if (File.Exists(customTexturePath))
+                {
+                    //Console.WriteLine("IS CUSTOM FILE '" + loadPath + "'");
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        static uint Load(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify)
+        {
+            if (IsCustomFile(path))
+            {
+                disableErrorNotify = true;
+            }
+            return hookLoad.Original(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify);
+        }
+
+        static uint LoadImmediate(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify)
+        {
+            if (IsCustomFile(path))
+            {
+                disableErrorNotify = true;
+            }
+            return hookLoadImmediate.Original(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify);
         }
 
         static IntPtr GetResource(IntPtr thisPtr, IntPtr pathPtr, IntPtr workPathPtr)
@@ -255,11 +344,7 @@ namespace YgoMasterClient
             IntPtr resourcePtr = hookGetResource.Original(thisPtr, pathPtr, workPathPtr);
             if (resourcePtr == IntPtr.Zero)
             {
-                // File not found.
-                // We could potentially load our own assets here by doing the following:
-                // - Create a new Resource instance
-                // - Populate relevant fields
-                // - Insert the resource into ResourceManager.resourceDictionary
+                Console.WriteLine("TODO: Handle null resource (" + new IL2String(pathPtr).ToString() + ")");
                 return resourcePtr;
             }
 
@@ -277,13 +362,19 @@ namespace YgoMasterClient
                 loadPath = loadPathObj.GetValueObj<string>();
             }
 
+            if (string.IsNullOrEmpty(loadPath))
+            {
+                return resourcePtr;
+            }
+
             IL2Object assetsArrayObj = methodGetAssets.Invoke(resourcePtr);
+            IL2Array<IntPtr> assetsArray = null;
             if (assetsArrayObj != null)
             {
                 bool hasDumpedTexture = false;
                 int spriteAssetIndex = -1;
                 IntPtr newTextureAsset = IntPtr.Zero;
-                IL2Array<IntPtr> assetsArray = new IL2Array<IntPtr>(assetsArrayObj.ptr);
+                assetsArray = new IL2Array<IntPtr>(assetsArrayObj.ptr);
                 for (int i = 0; i < assetsArray.Length; i++)
                 {
                     IntPtr obj = assetsArray[i];
@@ -325,23 +416,11 @@ namespace YgoMasterClient
                         string customTexturePath = Path.Combine(Program.ClientDataDir, loadPath + ".png");
                         if (newTextureAsset == IntPtr.Zero && File.Exists(customTexturePath))
                         {
-                            IL2Object bytes = methodReadAllBytes.Invoke(new IntPtr[] { new IL2String(customTexturePath).ptr });
-                            if (bytes != null)
+                            newTextureAsset = TextureFromPNG(customTexturePath, GetObjectName(obj));
+                            if (newTextureAsset != IntPtr.Zero)
                             {
-                                newTextureAsset = Import.Object.il2cpp_object_new(texture2DClassInfo.ptr);
-                                if (newTextureAsset != IntPtr.Zero)
-                                {
-                                    int textureWidth = 2, textureHeight = 2;
-                                    methodTexture2DCtor.Invoke(newTextureAsset, new IntPtr[] { new IntPtr(&textureWidth), new IntPtr(&textureHeight) });
-                                    methodLoadImage.Invoke(new IntPtr[] { newTextureAsset, bytes.ptr });
-                                    assetsArray[i] = newTextureAsset;
-                                    IL2Object name = methodGetName.Invoke(obj);
-                                    if (name != null)
-                                    {
-                                        methodSetName.Invoke(newTextureAsset, new IntPtr[] { name.ptr });
-                                    }
-                                    //Console.WriteLine("Texture swapped");
-                                }
+                                assetsArray[i] = newTextureAsset;
+                                //Console.WriteLine("Texture swapped");
                             }
                         }
                     }
@@ -357,18 +436,75 @@ namespace YgoMasterClient
                     if (newSpriteAsset != null)
                     {
                         assetsArray[spriteAssetIndex] = newSpriteAsset.ptr;
-                        IL2Object name = methodGetName.Invoke(oldSpriteAsset);
-                        if (name != null)
+                        string name = GetObjectName(oldSpriteAsset);
+                        if (!string.IsNullOrEmpty(name))
                         {
-                            methodSetName.Invoke(newSpriteAsset.ptr, new IntPtr[] { name.ptr });
+                            methodSetName.Invoke(newSpriteAsset.ptr, new IntPtr[] { new IL2String(name).ptr });
                         }
                         //Console.WriteLine("Sprite swapped");
                     }
                 }
             }
 
+            if (assetsArray == null || assetsArray.Length == 0)
+            {
+                // NOTE: This resource path fixup code is a hack and might not apply to all images. Update the code if it breaks stuff
+                //       - It's done because for non-existing files it seems to make the path fall back to SD?
+                ResourceType resourceType = GetResourceType();
+                switch (resourceType)
+                {
+                    case ResourceType.HighEnd_HD:
+                        loadPath = loadPath.Replace("SD", "HighEnd_HD");
+                        break;
+                    case ResourceType.HighEnd:
+                    case ResourceType.LowEnd:
+                        loadPath = loadPath.Replace("HighEnd_HD", "SD");
+                        break;
+                }
+                string customTexturePath = Path.Combine(Program.ClientDataDir, loadPath + ".png");
+                if (File.Exists(customTexturePath))
+                {
+                    string assetName = Path.GetFileNameWithoutExtension(customTexturePath);
+                    IntPtr newTextureAsset = TextureFromPNG(customTexturePath, assetName);
+                    assetsArray = new IL2Array<IntPtr>(2, objectClassInfo);
+                    assetsArray[0] = newTextureAsset;
+                    bool error = false;
+                    methodSetError.Invoke(resourcePtr, new IntPtr[] { new IntPtr(&error) });
+
+                    int width = methodGetWidth.Invoke(newTextureAsset).GetValueRef<int>();
+                    int height = methodGetHeight.Invoke(newTextureAsset).GetValueRef<int>();
+                    Rect rect = new Rect(0, 0, width, height);
+                    float pixelsPerUnit = resourceType == ResourceType.HighEnd_HD ? 100 : 50;
+                    Vector2 pivot = new Vector2(0.5f, 0.5f);
+                    IL2Object newSpriteAsset = methodSpriteCreate.Invoke(
+                        new IntPtr[] { newTextureAsset, new IntPtr(&rect), new IntPtr(&pivot), new IntPtr(&pixelsPerUnit) });
+                    if (newSpriteAsset != null)
+                    {
+                        assetsArray[1] = newSpriteAsset.ptr;
+                        methodSetName.Invoke(newSpriteAsset.ptr, new IntPtr[] { new IL2String(assetName).ptr });
+                    }
+
+                    methodSetAssets.Invoke(resourcePtr, new IntPtr[] { assetsArray.ptr });
+                }
+            }
+
+            /*Console.WriteLine("Status" +
+                " cancel:" + methodGetCancel.Invoke(resourcePtr).GetValueRef<bool>() +
+                " error:" + methodGetError.Invoke(resourcePtr).GetValueRef<bool>() +
+                " done:" + methodGetDone.Invoke(resourcePtr).GetValueRef<bool>() +
+                " busy:" + methodGetBusy.Invoke(resourcePtr).GetValueRef<bool>());*/
+
             return resourcePtr;
         }
+
+        /* Callstack for loading card pack texture
+           - ResourceManager.getResource
+           - ResourceManager.getAsset
+           - ResourceManager.GetAsset
+           - CardPackResourceBinder.<>c__DisplayClass6_0.<LoadPackTex>b__0 <-- checks for sprite, if fails invokes YgomGame.Menu.Common.CardPackResourceBinder.LoadPackTex?
+           - Resource.HandlerData.Call
+           - ResourceManager.finishLoadAsset
+         */
 
         public static bool FileExists(string path)
         {
@@ -390,9 +526,28 @@ namespace YgoMasterClient
             // Images/CardPack/HighEnd_HD/tcg/CardPackTex01_0000 <--- this exists
             // /<_PLATFORM_>/ gets converted to /PC/
             // /#/ gets converted to /en-US/
+            const string resourceTypeHeader = "<_RESOURCE_TYPE_>";
+            if (path.Contains(resourceTypeHeader))
+            {
+                switch (GetResourceType())
+                {
+                    default:
+                    case ResourceType.LowEnd:
+                    case ResourceType.HighEnd:
+                        path = path.Replace(resourceTypeHeader, "SD");
+                        break;
+                    case ResourceType.HighEnd_HD:
+                        path = path.Replace(resourceTypeHeader, "HighEnd_HD");
+                        break;
+                }
+            }
             path = path.Replace("/HighEnd/", "/HighEnd_HD/");
-            path = path.Replace("<_RESOURCE_TYPE_>", "HighEnd_HD");
             return path;
+        }
+
+        public static ResourceType GetResourceType()
+        {
+            return (ResourceType)methodGetResourceType.Invoke().GetValueRef<int>();
         }
 
         /// <summary>

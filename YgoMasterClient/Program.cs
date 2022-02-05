@@ -20,10 +20,10 @@ namespace YgoMasterClient
 
         public static bool IsLive;
 
-        public static string CurrentDir;// Directory path of YgoMasterClient.exe
-        public static string DataDir;// Directory path of misc data
-        public static string ClientDataDir;// Directory path of the custom client content
-        public static string ClientDataDumpDir;// Directory path of where to dump client content when dumping is enabled
+        public static string CurrentDir;// Path of where the current assembly is (YgoMasterClient.exe)
+        public static string DataDir;// Path of misc data
+        public static string ClientDataDir;// Path of the custom client content
+        public static string ClientDataDumpDir;// Path to dump client content when dumping is enabled
 
         static void Main(string[] args)
         {
@@ -46,13 +46,13 @@ namespace YgoMasterClient
         {
             try
             {
-                PInvoke.WL_InitHooks();
-                PInvoke.InitGameModuleBaseAddress();
-
                 CurrentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 DataDir = Path.Combine(CurrentDir, "Data");
                 ClientDataDir = Path.Combine(DataDir, "ClientData");
                 ClientDataDumpDir = Path.Combine(DataDir, "ClientDataDump");
+
+                PInvoke.WL_InitHooks();
+                PInvoke.InitGameModuleBaseAddress();
 
                 List<Type> nativeTypes = new List<Type>();
                 if (arg == "live")
@@ -187,7 +187,7 @@ namespace YgoMasterClient
                                                     Console.WriteLine(YgomSystem.Utility.TextData.GetText(id));
                                                 }
                                                 break;
-                                            case "texte":// Gets all text from the given enum
+                                            case "textenum":// Gets all text from the given enum
                                                 {
                                                     string enumName = splitted[1];
                                                     IL2Class classInfo = Assembler.GetAssembly("Assembly-CSharp").GetClass(enumName, "YgomGame.TextIDs");
@@ -209,6 +209,53 @@ namespace YgoMasterClient
                                                             }
                                                         }
                                                     }
+                                                }
+                                                break;
+                                            case "textdump":// Dumps all IDS enums
+                                                {
+                                                    foreach (IL2Class classInfo in Assembler.GetAssembly("Assembly-CSharp").GetClasses())
+                                                    {
+                                                        if (classInfo.IsEnum && classInfo.Namespace == "YgomGame.TextIDs" && classInfo.Name.StartsWith("IDS"))
+                                                        {
+                                                            StringBuilder sb = new StringBuilder();
+                                                            YgomSystem.Utility.TextData.LoadGroup(classInfo.Name);
+                                                            foreach (IL2Field field in classInfo.GetFields())
+                                                            {
+                                                                if (field.Name == "value__")
+                                                                {
+                                                                    continue;
+                                                                }
+                                                                string name = classInfo.Name + "." + field.Name;
+                                                                string str = YgomSystem.Utility.TextData.GetText(name);
+                                                                if (!string.IsNullOrEmpty(str))
+                                                                {
+                                                                    sb.AppendLine("[" + name + "]" + Environment.NewLine + str);
+                                                                }
+                                                            }
+                                                            if (sb.Length > 0)
+                                                            {
+                                                                string targetPath = Path.Combine(ClientDataDumpDir, "IDS", classInfo.Name + ".txt");
+                                                                try
+                                                                {
+                                                                    Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
+                                                                }
+                                                                catch { }
+                                                                string text = sb.ToString();
+                                                                if (text.EndsWith(Environment.NewLine))
+                                                                {
+                                                                    text = text.Substring(0, text.Length - Environment.NewLine.Length);
+                                                                }
+                                                                File.WriteAllText(targetPath, text);
+                                                            }
+                                                        }
+                                                    }
+                                                    Console.WriteLine("Done");
+                                                }
+                                                break;
+                                            case "textreload":// Reloads custom text data (IDS)
+                                                {
+                                                    YgomSystem.Utility.TextData.LoadCustomTextData();
+                                                    Console.WriteLine("Done");
                                                 }
                                                 break;
                                             case "resultcodes":// Gets all network result codes found in "YgomSystem.Network"
@@ -381,6 +428,8 @@ namespace YgomSystem.Utility
         delegate IntPtr Del_GetText(IntPtr textPtr, bool richTextEx);
         static Hook<Del_GetText> hookGetText;
 
+        public static Dictionary<string, string> CustomTextData = new Dictionary<string, string>();
+
         static TextData()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
@@ -389,6 +438,49 @@ namespace YgomSystem.Utility
 
             // TODO: Determine a way to get a generic address via reflection
             hookGetText = new Hook<Del_GetText>(GetText, PInvoke.GameModuleBaseAddress + 0xE732C0);
+
+            LoadCustomTextData();
+        }
+
+        public static void LoadCustomTextData()
+        {
+            CustomTextData.Clear();
+            string targetDir = Path.Combine(Program.ClientDataDir, "IDS");
+            if (Directory.Exists(targetDir))
+            {
+                string idName = null;
+                StringBuilder idValue = new StringBuilder();
+                foreach (string file in Directory.GetFiles(targetDir))
+                {
+                    idName = null;
+                    idValue.Length = 0;
+                    string[] lines = File.ReadAllLines(file);
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        if (lines[i].StartsWith("[IDS_"))
+                        {
+                            if (!string.IsNullOrEmpty(idName))
+                            {
+                                CustomTextData[idName] = idValue.ToString();
+                            }
+                            idName = null;
+                            idValue.Length = 0;
+                            if (!lines[i].Trim().EndsWith("!"))
+                            {
+                                idName = lines[i].Trim('[', ']', ' ');
+                            }
+                        }
+                        else
+                        {
+                            idValue.Append((idValue.Length > 0 ? "\n" : string.Empty) + lines[i]);
+                            if (i == lines.Length - 1 && !string.IsNullOrEmpty(idName))
+                            {
+                                CustomTextData[idName] = idValue.ToString();
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public static void LoadGroup(string groupid)
@@ -409,6 +501,11 @@ namespace YgomSystem.Utility
             if (!string.IsNullOrEmpty(inputString) && inputString.StartsWith(header))
             {
                 return new IL2String(inputString.Substring(header.Length)).ptr;
+            }
+            string customText;
+            if (CustomTextData.TryGetValue(inputString, out customText))
+            {
+                return new IL2String(customText).ptr;
             }
             return hookGetText.Original(textPtr, richTextEx);
         }
