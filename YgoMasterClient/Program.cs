@@ -291,7 +291,8 @@ namespace YgoMasterClient
                                                     string path = consoleInput.Trim().Substring(consoleInput.Trim().IndexOf(' ') + 1);
                                                     string convertedPath = splitted[0].ToLower() == "locate" ? AssetHelper.ConvertAssetPath(path) : path;
                                                     bool exists = AssetHelper.FileExists(path);
-                                                    string convertedPathOnDisk = AssetHelper.GetAssetBundleOnDisk(convertedPath);
+                                                    string convertedPathOnDisk = AssetHelper.GetAssetBundleOnDiskConverted(convertedPath);
+                                                    string autoConvertPathOnDisk = AssetHelper.GetAssetBundleOnDisk(path);
                                                     string dir = "LocalData";
                                                     foreach (string subDir in Directory.GetDirectories(dir))
                                                     {
@@ -299,8 +300,10 @@ namespace YgoMasterClient
                                                         break;
                                                     }
                                                     bool existsOnDisk = File.Exists(Path.Combine(dir, "0000", convertedPathOnDisk));
+                                                    bool existsOnDiskNoConvert = File.Exists(Path.Combine(dir, "0000", autoConvertPathOnDisk));
                                                     Console.WriteLine("Converted: " + convertedPath);
-                                                    Console.WriteLine(convertedPathOnDisk + " existsOnDisk: " + existsOnDisk + " exists:" + exists);
+                                                    Console.WriteLine(convertedPathOnDisk + " existsOnDisk: " + existsOnDisk +
+                                                        " existsOnDisk(auto):" + existsOnDiskNoConvert + " exists:" + exists);
                                                 }
                                                 break;
                                         }
@@ -317,6 +320,7 @@ namespace YgoMasterClient
             catch (Exception e)
             {
                 System.Windows.Forms.MessageBox.Show(e.ToString());
+                Environment.Exit(0);
                 return 1;
             }
             return 0;
@@ -556,6 +560,10 @@ namespace YgomSystem.Utility
         public static string SerializePath(string jsonPath)
         {
             IL2Object obj = methodGetByJsonPath.Invoke(new IntPtr[] { new IL2String(jsonPath).ptr });
+            if (obj == null)
+            {
+                return null;
+            }
             return YgomMiniJSON.Json.Serialize(obj);
         }
     }

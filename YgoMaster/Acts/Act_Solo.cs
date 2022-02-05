@@ -550,6 +550,7 @@ namespace YgoMaster
                 DuelSettings duel = GetSoloDuelSettings(request.Player, chapterId);
                 if (duel != null)
                 {
+                    // NOTE: These ids likely link up to IDS_DECKRECIPE so really they shouldn't be generated
                     if (duel.Deck[DuelSettings.PlayerIndex].MainDeckCards.Count > 0)
                     {
                         chapterInfo["story_deck"] = duel.Deck[DuelSettings.PlayerIndex].ToDictionary();

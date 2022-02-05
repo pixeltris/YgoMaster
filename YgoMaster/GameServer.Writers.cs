@@ -100,8 +100,8 @@ namespace YgoMaster
                 WriteDeck_list_item(request, list, deckInfo);
             }
             deck["list"] = list;
-            deck["deckMax"] = NumDeckSlots;
-            deck["deckLimit"] = NumDeckSlots;
+            deck["deckMax"] = NumDeckSlots;// Probably a max slot limit when they introduce buying more slots? (deckMax:50 deckLimit:20)
+            deck["deckLimit"] = NumDeckSlots;// The deck limit displayed on the top right of the deck selection screen
             WriteDeck_num_empty(request);
         }
 

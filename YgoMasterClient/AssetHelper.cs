@@ -18,11 +18,13 @@ namespace YgoMasterClient
         // YgomSystem.ResourceSystem.ResourceUtility
         static IL2Class resourceUtilityClassInfo;
         static IL2Method methodConvertAutoPath;
+        static IL2Method methodGetCrc;
 
         // YgomSystem.ResourceManager
         static IL2Class resourceManagerClassInfo;
         static IL2Method methodExists;
         static IL2Method methodGetResource;
+        static IL2Field fieldResourceDictionary;
 
         delegate IntPtr Del_GetResource(IntPtr thisPtr, IntPtr pathPtr, IntPtr workPathPtr);
         static Hook<Del_GetResource> hookGetResource;
@@ -31,15 +33,31 @@ namespace YgoMasterClient
         delegate uint Del_LoadImmediate(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInterface, IntPtr completeHandler, bool disableErrorNotify);
         static Hook<Del_LoadImmediate> hookLoadImmediate;
 
+        static IntPtr resourceMangerInstance;
+        static IL2Dictionary_UInt32_Object resourceDictionary;
+
+        // YgoSystem.ResourceManager.RequestCompleteHandler
+        static IL2Class requestCompleteHandlerClassInfo;
+        static IL2Method methodInvoke;
+
         // YgomSystem.ResourceSystem.Resource
         static IL2Class resourceClassInfo;
+        static IL2Method methodResourceCtor;
         static IL2Method methodGetAssets;
         static IL2Method methodSetAssets;
         static IL2Method methodGetBytes;
         static IL2Method methodSetBytes;
         static IL2Method methodSetError;
+        static IL2Method methodGetRefCount;
+        static IL2Method methodSetRefCount;
+        static IL2Method methodSetResType;
+        static IL2Method methodSetDone;
+        static IL2Method methodSetSystemType;
+        static IL2Method methodSetQueueId;
         static IL2Method methodGetPath;
+        static IL2Method methodSetPath;
         static IL2Method methodGetLoadPath;
+        static IL2Method methodSetLoadPath;
 
         // UnityEngine.ImageConversionModule.ImageConversion
         static IL2Class imageConversionClassInfo;
@@ -72,6 +90,7 @@ namespace YgoMasterClient
         static IL2Method methodSpriteCreate;
         static IL2Method methodGetRect;
         static IL2Method methodGetPixelsPerUnit;
+        static IL2Method methodGetTexture;
         static IL2Class rectClassInfo;// Rect
         static IL2Class vector2ClassInfo;// Vector2
         static IL2Class objectClassInfo;// Object (UnityEngine)
@@ -127,6 +146,35 @@ namespace YgoMasterClient
             LowEnd
         }
 
+        /// <summary>
+        /// ResourceManager.Resource.Type
+        /// </summary>
+        enum ResourceManager_Resource_Type
+        {
+            None,
+            BuiltIn,
+            AssetBundle,
+            Binary,
+            Network,
+            StreamingAssets,
+            StreamingBinary,
+            LocalFile,
+            StreaminFile
+        }
+
+        /// <summary>
+        /// ResourceManager.ReqType
+        /// </summary>
+        enum ResourceManager_ReqType
+        {
+            Sound,
+            Sound2,
+            Sound3,
+            Sound4,
+            Default
+            //... (this goes on Default2-32)
+        }
+
         static AssetHelper()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
@@ -136,22 +184,36 @@ namespace YgoMasterClient
 
             resourceUtilityClassInfo = assembly.GetClass("ResourceUtility", "YgomSystem.ResourceSystem");
             methodConvertAutoPath = resourceUtilityClassInfo.GetMethod("ConvertAutoPath");
+            methodGetCrc = resourceUtilityClassInfo.GetMethod("GetCrc");
 
             resourceManagerClassInfo = assembly.GetClass("ResourceManager", "YgomSystem");
             methodExists = resourceManagerClassInfo.GetMethod("Exists");
             methodGetResource = resourceManagerClassInfo.GetMethod("getResource", x => x.GetParameters().Length == 2 && x.GetParameters()[0].Name == "path");
+            fieldResourceDictionary = resourceManagerClassInfo.GetField("resourceDictionary");
             hookGetResource = new Hook<Del_GetResource>(GetResource, methodGetResource);
             hookLoad = new Hook<Del_Load>(Load, resourceManagerClassInfo.GetMethod("load"));
             hookLoadImmediate = new Hook<Del_LoadImmediate>(LoadImmediate, resourceManagerClassInfo.GetMethod("loadImmediate"));
 
+            requestCompleteHandlerClassInfo = assembly.GetClass("RequestCompleteHandler");//, "YgomSystem");
+            methodInvoke = requestCompleteHandlerClassInfo.GetMethod("Invoke");
+
             resourceClassInfo = assembly.GetClass("Resource", "YgomSystem.ResourceSystem");
+            methodResourceCtor = resourceClassInfo.GetMethod(".ctor");
             methodGetAssets = resourceClassInfo.GetProperty("Assets").GetGetMethod();
             methodSetAssets = resourceClassInfo.GetProperty("Assets").GetSetMethod();
             methodGetBytes = resourceClassInfo.GetProperty("Bytes").GetGetMethod();
             methodSetBytes = resourceClassInfo.GetProperty("Bytes").GetSetMethod();
             methodSetError = resourceClassInfo.GetProperty("Error").GetSetMethod();
+            methodGetRefCount = resourceClassInfo.GetProperty("RefCount").GetGetMethod();
+            methodSetRefCount = resourceClassInfo.GetProperty("RefCount").GetSetMethod();
+            methodSetResType = resourceClassInfo.GetProperty("ResType").GetSetMethod();
+            methodSetDone = resourceClassInfo.GetProperty("Done").GetSetMethod();
+            methodSetSystemType = resourceClassInfo.GetProperty("SystemType").GetSetMethod();
+            methodSetQueueId = resourceClassInfo.GetProperty("queueId").GetSetMethod();
             methodGetPath = resourceClassInfo.GetProperty("Path").GetGetMethod();
+            methodSetPath = resourceClassInfo.GetProperty("Path").GetSetMethod();
             methodGetLoadPath = resourceClassInfo.GetProperty("LoadPath").GetGetMethod();
+            methodSetLoadPath = resourceClassInfo.GetProperty("LoadPath").GetSetMethod();
 
             IL2Assembly imageConversionAssembly = Assembler.GetAssembly("UnityEngine.ImageConversionModule");
             imageConversionClassInfo = imageConversionAssembly.GetClass("ImageConversion");
@@ -181,6 +243,7 @@ namespace YgoMasterClient
             methodSpriteCreate = spriteClassInfo.GetMethod("Create", x => x.GetParameters().Length == 4);
             methodGetRect = spriteClassInfo.GetProperty("rect").GetGetMethod();
             methodGetPixelsPerUnit = spriteClassInfo.GetProperty("pixelsPerUnit").GetGetMethod();
+            methodGetTexture = spriteClassInfo.GetProperty("texture").GetGetMethod();
             rectClassInfo = coreModuleAssembly.GetClass("Rect");// Rect
             vector2ClassInfo = coreModuleAssembly.GetClass("Vector2");// Vector2
             objectClassInfo = coreModuleAssembly.GetClass("Object");
@@ -286,190 +349,61 @@ namespace YgoMasterClient
             return IntPtr.Zero;
         }
 
-        static IntPtr TextureToSprite(IntPtr texture)
+        static bool TryLoadCustomFile(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, out uint result)
         {
-            return IntPtr.Zero;
-        }
-
-        static string GetObjectName(IntPtr obj)
-        {
-            string name = null;
-            IL2Object nameObj = methodGetName.Invoke(obj);
-            if (nameObj != null)
+            result = 0;
+            if (resourceMangerInstance != thisPtr)
             {
-                name = nameObj.GetValueObj<string>();
-            }
-            //Console.WriteLine("Name '" + name + "'");
-            return name;
-        }
-
-        static bool IsCustomFile(IntPtr path)
-        {
-            if (path != IntPtr.Zero)
-            {
-                // NOTE: Might be potential issue with resolving the correct resource type (SD/HD)?
-                string loadPath = ConvertAssetPath(new IL2String(path).ToString());
-                string customTexturePath = Path.Combine(Program.ClientDataDir, loadPath + ".png");
-                if (File.Exists(customTexturePath))
+                IL2Object resourceDictionaryObj = fieldResourceDictionary.GetValue(thisPtr);
+                if (resourceDictionaryObj == null)
                 {
-                    //Console.WriteLine("Custom file '" + loadPath + "'");
+                    return false;
+                }
+                resourceMangerInstance = thisPtr;
+                resourceDictionary = new IL2Dictionary_UInt32_Object(resourceDictionaryObj.ptr);
+            }
+            if (pathPtr == IntPtr.Zero)
+            {
+                return false;
+            }
+            string path = new IL2String(pathPtr).ToString();
+            if (string.IsNullOrEmpty(path))
+            {
+                return false;
+            }
+            string loadPath = ConvertAssetPath(path);
+            string customTexturePath = Path.Combine(Program.ClientDataDir, loadPath + ".png");
+            if (File.Exists(customTexturePath))
+            {
+                uint crc = methodGetCrc.Invoke(new IntPtr[] { pathPtr }).GetValueRef<uint>();
+                if (resourceDictionary.ContainsKey((int)crc))
+                {
+                    IntPtr resourcePtr = resourceDictionary[(int)crc];
+                    int refCount = methodGetRefCount.Invoke(resourcePtr).GetValueRef<int>();
+                    refCount++;
+                    methodSetRefCount.Invoke(resourcePtr, new IntPtr[] { new IntPtr(&refCount) });
+                    result = crc;
+                    if (completeHandler != IntPtr.Zero)
+                    {
+                        methodInvoke.Invoke(completeHandler, new IntPtr[] { pathPtr });
+                    }
                     return true;
                 }
-            }
-            return false;
-        }
-
-        static uint Load(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify)
-        {
-            if (IsCustomFile(path))
-            {
-                disableErrorNotify = true;
-            }
-            return hookLoad.Original(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify);
-        }
-
-        static uint LoadImmediate(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify)
-        {
-            if (IsCustomFile(path))
-            {
-                disableErrorNotify = true;
-            }
-            return hookLoadImmediate.Original(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify);
-        }
-
-        static IntPtr GetResource(IntPtr thisPtr, IntPtr pathPtr, IntPtr workPathPtr)
-        {
-            // TODO: Handle unloading and caching?
-
-            IntPtr resourcePtr = hookGetResource.Original(thisPtr, pathPtr, workPathPtr);
-            if (resourcePtr == IntPtr.Zero)
-            {
-                Console.WriteLine("TODO: Handle null resource (" + new IL2String(pathPtr).ToString() + ")");
-                return resourcePtr;
-            }
-
-            /*string path = null;// The path prior to any conversion (<_CARD_ILLUST_>, <_RESOURCE_TYPE_>, etc)
-            IL2Object pathObj = methodGetPath.Invoke(resourcePtr);
-            if (pathObj != null)
-            {
-                path = pathObj.GetValueObj<string>();
-            }*/
-
-            string loadPath = null;// The target path after conversion
-            IL2Object loadPathObj = methodGetLoadPath.Invoke(resourcePtr);
-            if (loadPathObj != null)
-            {
-                loadPath = loadPathObj.GetValueObj<string>();
-            }
-
-            if (string.IsNullOrEmpty(loadPath))
-            {
-                return resourcePtr;
-            }
-
-            IL2Object assetsArrayObj = methodGetAssets.Invoke(resourcePtr);
-            IL2Array<IntPtr> assetsArray = null;
-            if (assetsArrayObj != null)
-            {
-                bool hasDumpedTexture = false;
-                int spriteAssetIndex = -1;
-                IntPtr newTextureAsset = IntPtr.Zero;
-                assetsArray = new IL2Array<IntPtr>(assetsArrayObj.ptr);
-                for (int i = 0; i < assetsArray.Length; i++)
+                else
                 {
-                    IntPtr obj = assetsArray[i];
-                    if (obj == IntPtr.Zero) continue;
-                    IntPtr type = Import.Object.il2cpp_object_get_class(obj);
-                    if (type == IntPtr.Zero) continue;
-                    string typeName = Marshal.PtrToStringAnsi(Import.Class.il2cpp_class_get_name(type));
-                    Console.WriteLine(typeName + " - " + loadPath);
-
-                    if (type == spriteClassInfo.ptr)
+                    IntPtr resourcePtr = Import.Object.il2cpp_object_new(resourceClassInfo.ptr);
+                    if (resourcePtr == IntPtr.Zero)
                     {
-                        spriteAssetIndex = i;
+                        return false;
                     }
-                    if (type == texture2DClassInfo.ptr)
-                    {
-                        if (ShouldDumpData && !hasDumpedTexture)
-                        {
-                            hasDumpedTexture = true;
-                            // TODO: Sanitize the path (remove any bad chars)
-                            string fullPath = Path.Combine(Program.ClientDataDumpDir, loadPath + ".png");
-                            if (!File.Exists(fullPath))
-                            {
-                                byte[] buffer = TextureToPNG(obj);
-                                if (buffer != null)
-                                {
-                                    try
-                                    {
-                                        Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
-                                    }
-                                    catch { }
-                                    try
-                                    {
-                                        File.WriteAllBytes(fullPath, buffer);
-                                    }
-                                    catch { }
-                                }
-                            }
-                        }
-                        string customTexturePath = Path.Combine(Program.ClientDataDir, loadPath + ".png");
-                        if (newTextureAsset == IntPtr.Zero && File.Exists(customTexturePath))
-                        {
-                            newTextureAsset = TextureFromPNG(customTexturePath, GetObjectName(obj));
-                            if (newTextureAsset != IntPtr.Zero)
-                            {
-                                assetsArray[i] = newTextureAsset;
-                                //Console.WriteLine("Texture swapped");
-                            }
-                        }
-                    }
-                }
-                if (newTextureAsset != IntPtr.Zero && spriteAssetIndex >= 0)
-                {
-                    IntPtr oldSpriteAsset = assetsArray[spriteAssetIndex];
-                    Rect rect = methodGetRect.Invoke(oldSpriteAsset).GetValueRef<Rect>();
-                    float pixelsPerUnit = methodGetPixelsPerUnit.Invoke(oldSpriteAsset).GetValueRef<float>();
-                    Vector2 pivot = new Vector2(0.5f, 0.5f);
-                    IL2Object newSpriteAsset = methodSpriteCreate.Invoke(
-                        new IntPtr[] { newTextureAsset, new IntPtr(&rect), new IntPtr(&pivot), new IntPtr(&pixelsPerUnit) });
-                    if (newSpriteAsset != null)
-                    {
-                        assetsArray[spriteAssetIndex] = newSpriteAsset.ptr;
-                        string name = GetObjectName(oldSpriteAsset);
-                        if (!string.IsNullOrEmpty(name))
-                        {
-                            methodSetName.Invoke(newSpriteAsset.ptr, new IntPtr[] { new IL2String(name).ptr });
-                        }
-                        //Console.WriteLine("Sprite swapped");
-                    }
-                }
-            }
+                    methodResourceCtor.Invoke(resourcePtr);
 
-            if (assetsArray == null || assetsArray.Length == 0)
-            {
-                // NOTE: This resource path fixup code is a hack and might not apply to all images. Update the code if it breaks stuff
-                //       - It's done because non-existing files seem to fall back to SD
-                ResourceType resourceType = GetResourceType();
-                switch (resourceType)
-                {
-                    case ResourceType.HighEnd_HD:
-                        loadPath = loadPath.Replace("SD", "HighEnd_HD");
-                        break;
-                    case ResourceType.HighEnd:
-                    case ResourceType.LowEnd:
-                        loadPath = loadPath.Replace("HighEnd_HD", "SD");
-                        break;
-                }
-                string customTexturePath = Path.Combine(Program.ClientDataDir, loadPath + ".png");
-                if (File.Exists(customTexturePath))
-                {
+                    ResourceType resourceType = GetResourceType();
+                    IL2Array<IntPtr> assetsArray = new IL2Array<IntPtr>(2, objectClassInfo);
+
                     string assetName = Path.GetFileNameWithoutExtension(customTexturePath);
                     IntPtr newTextureAsset = TextureFromPNG(customTexturePath, assetName);
-                    assetsArray = new IL2Array<IntPtr>(2, objectClassInfo);
                     assetsArray[0] = newTextureAsset;
-                    bool error = false;
-                    methodSetError.Invoke(resourcePtr, new IntPtr[] { new IntPtr(&error) });
 
                     int width = methodGetWidth.Invoke(newTextureAsset).GetValueRef<int>();
                     int height = methodGetHeight.Invoke(newTextureAsset).GetValueRef<int>();
@@ -484,7 +418,125 @@ namespace YgoMasterClient
                         methodSetName.Invoke(newSpriteAsset.ptr, new IntPtr[] { new IL2String(assetName).ptr });
                     }
 
-                    methodSetAssets.Invoke(resourcePtr, new IntPtr[] { assetsArray.ptr });
+                    // TODO: Remove what is not required below (and/or directly set them via k__BackingField entries)
+                    bool done = true;
+                    int resType = (int)ResourceManager_Resource_Type.LocalFile;
+                    int queueId = (int)ResourceManager_ReqType.Default;
+                    int refCount = 1;
+                    IntPtr[] arg = new IntPtr[1];
+                    arg[0] = new IntPtr(&resType); methodSetRefCount.Invoke(resourcePtr, arg);
+                    arg[0] = new IntPtr(&refCount); methodSetResType.Invoke(resourcePtr, arg);
+                    arg[0] = systemTypeInstance; methodSetSystemType.Invoke(resourcePtr, arg);
+                    arg[0] = new IntPtr(&queueId); methodSetQueueId.Invoke(resourcePtr, arg);
+                    arg[0] = pathPtr; methodSetPath.Invoke(resourcePtr, arg);
+                    arg[0] = new IL2String(loadPath).ptr; methodSetLoadPath.Invoke(resourcePtr, arg);
+                    arg[0] = new IntPtr(&done); methodSetDone.Invoke(resourcePtr, arg);
+                    arg[0] = assetsArray.ptr; methodSetAssets.Invoke(resourcePtr, arg);
+
+                    resourceDictionary.Add((int)crc, resourcePtr);
+                    result = crc;
+                    if (completeHandler != IntPtr.Zero)
+                    {
+                        methodInvoke.Invoke(completeHandler, new IntPtr[] { pathPtr });
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        static uint Load(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify)
+        {
+            uint result;
+            if (TryLoadCustomFile(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify, out result))
+            {
+                return result;
+            }
+            return hookLoad.Original(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify);
+        }
+
+        static uint LoadImmediate(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify)
+        {
+            uint result;
+            if (TryLoadCustomFile(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify, out result))
+            {
+                return result;
+            }
+            return hookLoadImmediate.Original(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify);
+        }
+
+        static IntPtr GetResource(IntPtr thisPtr, IntPtr pathPtr, IntPtr workPathPtr)
+        {
+            IntPtr resourcePtr = hookGetResource.Original(thisPtr, pathPtr, workPathPtr);
+            if (resourcePtr == IntPtr.Zero)
+            {
+                return resourcePtr;
+            }
+
+            string loadPath = null;// The target path after conversion (<_CARD_ILLUST_>, <_RESOURCE_TYPE_>, etc)
+            IL2Object loadPathObj = methodGetLoadPath.Invoke(resourcePtr);
+            if (loadPathObj != null)
+            {
+                loadPath = loadPathObj.GetValueObj<string>();
+            }
+
+            IL2Object assetsArrayObj = methodGetAssets.Invoke(resourcePtr);
+            IL2Array<IntPtr> assetsArray = null;
+            if (assetsArrayObj != null)
+            {
+                bool hasDumpedTexture = false;
+                assetsArray = new IL2Array<IntPtr>(assetsArrayObj.ptr);
+                for (int i = 0; i < assetsArray.Length; i++)
+                {
+                    IntPtr obj = assetsArray[i];
+                    if (obj == IntPtr.Zero) continue;
+                    IntPtr type = Import.Object.il2cpp_object_get_class(obj);
+                    if (type == IntPtr.Zero) continue;
+                    string typeName = Marshal.PtrToStringAnsi(Import.Class.il2cpp_class_get_name(type));
+                    //Console.WriteLine(typeName + " - " + loadPath);
+
+                    if (ShouldDumpData)
+                    {
+                        if (!hasDumpedTexture)
+                        {
+                            IntPtr texture = IntPtr.Zero;
+                            if (type == spriteClassInfo.ptr)
+                            {
+                                IL2Object textureObj = methodGetTexture.Invoke(obj);
+                                if (textureObj != null)
+                                {
+                                    texture = textureObj.ptr;
+                                }
+                            }
+                            if (type == texture2DClassInfo.ptr)
+                            {
+                                texture = obj;
+                            }
+                            if (texture != IntPtr.Zero)
+                            {
+                                hasDumpedTexture = true;
+                                // TODO: Sanitize the file path
+                                string fullPath = Path.Combine(Program.ClientDataDumpDir, loadPath + ".png");
+                                if (!File.Exists(fullPath))
+                                {
+                                    byte[] buffer = TextureToPNG(texture);
+                                    if (buffer != null)
+                                    {
+                                        try
+                                        {
+                                            Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+                                        }
+                                        catch { }
+                                        try
+                                        {
+                                            File.WriteAllBytes(fullPath, buffer);
+                                        }
+                                        catch { }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -511,10 +563,33 @@ namespace YgoMasterClient
             // Images/CardPack/HighEnd_HD/tcg/CardPackTex01_0000 <--- this exists
             // /<_PLATFORM_>/ gets converted to /PC/
             // /#/ gets converted to /en-US/
+            path = FixupAssetPathResourceType(path, false);
+            return path;
+        }
+
+        static string FixupAssetPathResourceType(string path, bool fixExistingConversion)
+        {
             const string resourceTypeHeader = "<_RESOURCE_TYPE_>";
+            ResourceType resourceType = GetResourceType();
+            if (fixExistingConversion)
+            {
+                // NOTE: This resource path fixup code is a hack and might not apply to all files. Update the code if it breaks stuff.
+                // This should be used in cases where a file doesn't exist but you're working with a string that the game converted as
+                // the game will fall back to a "SD" file path on non-existing assets.
+                switch (resourceType)
+                {
+                    case ResourceType.HighEnd_HD:
+                        path = path.Replace("/SD/", "/HighEnd_HD/");
+                        break;
+                    case ResourceType.HighEnd:
+                    case ResourceType.LowEnd:
+                        path = path.Replace("/HighEnd_HD/", "/SD/");
+                        break;
+                }
+            }
             if (path.Contains(resourceTypeHeader))
             {
-                switch (GetResourceType())
+                switch (resourceType)
                 {
                     default:
                     case ResourceType.LowEnd:
@@ -526,7 +601,8 @@ namespace YgoMasterClient
                         break;
                 }
             }
-            path = path.Replace("/HighEnd/", "/HighEnd_HD/");
+
+            path = path.Replace("/HighEnd/", "/HighEnd_HD/");// "/HighEnd/" doesn't exist (but the game will often put it in)
             return path;
         }
 
@@ -536,12 +612,21 @@ namespace YgoMasterClient
         }
 
         /// <summary>
-        /// Converts a virtual file path to a path on disk (which is the file path CRCed)
+        /// Gets a file path on disk (CRCs the file path)
         /// Assumes the path has already been converted (#, _RESOURCE_TYPE_, _CARD_ILLUST_, etc)
+        /// </summary>
+        public static string GetAssetBundleOnDiskConverted(string path)
+        {
+            uint crc = YgomSystem.Hash.CRC32.GetStringCRC32(path);
+            return Path.Combine(((int)((crc & 4278190080u) >> 24)).ToString("x2"), crc.ToString("x8"));
+        }
+
+        /// <summary>
+        /// Does the path conversion and then CRCs that converted path
         /// </summary>
         public static string GetAssetBundleOnDisk(string path)
         {
-            uint crc = YgomSystem.Hash.CRC32.GetStringCRC32(path);
+            uint crc = methodGetCrc.Invoke(new IntPtr[] { new IL2String(path).ptr }).GetValueRef<uint>();
             return Path.Combine(((int)((crc & 4278190080u) >> 24)).ToString("x2"), crc.ToString("x8"));
         }
     }

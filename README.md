@@ -1,16 +1,16 @@
 Offline Yu-Gi-Oh Master Duel
 
 WIP:
-[x] Implement CustomDuel.json
-[x] Fix LocalData folder path lookup (steam id)
-[x] Hook resource functions to replace images
-[x] hook GetText to replace text (either hooked up to json of specific txt files)
-[ ] Manually create a custom shop from the old boosters (with images)
-[ ] Generate deck json files from LE data. Also generate Solo.json from LE data.
-[ ] Create option to limit cards by release year
-[ ] Move solo content into /Solo/Solo.json and /Solo/Decks/
+- [x] Implement CustomDuel.json
+- [x] Fix LocalData folder path lookup (steam id)
+- [x] Hook resource functions to replace images
+- [x] hook GetText to replace text (either hooked up to json of specific txt files)
+- [ ] Manually create a custom shop from the old boosters (with images)
+- [ ] Generate deck json files from LE data. Also generate Solo.json from LE data.
+- [ ] Create option to limit cards by release year
+- [ ] Move solo content into /Solo/Solo.json and /Solo/Decks/
 
-[ ] Support varying card rarities based on the pack (i.e. boosters throughout the years). Need to do a request.Remove("Gacha.cardList") in Act_GachaGetCardList and don't send the gacha lists in Act_ShopGetList
+- [ ] Support varying card rarities based on the pack (i.e. boosters throughout the years). Need to do a request.Remove("Gacha.cardList") in Act_GachaGetCardList and don't send the gacha lists in Act_ShopGetList
 
 Updating:
 - Run the `itemid` command and copy the data from `dump-itemid.txt` into `ItemID.cs` (make sure to clean it up, some entries are invalid)
