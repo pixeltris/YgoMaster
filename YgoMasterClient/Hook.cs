@@ -24,7 +24,7 @@ namespace YgoMasterClient
             Func = hook;
             FuncPtr = Marshal.GetFunctionPointerForDelegate((Delegate)(object)hook);
             OriginalPtr = IntPtr.Zero;
-            PInvoke.WL_HookFunction(address, FuncPtr, ref OriginalPtr);
+            PInvoke.WL_CreateHook(address, FuncPtr, ref OriginalPtr);
             Original = (T)(object)Marshal.GetDelegateForFunctionPointer(OriginalPtr, typeof(T));
         }
     }
@@ -64,6 +64,9 @@ namespace YgoMasterClient
 
         [DllImport(dllName)]
         public static extern int WL_DisableHook(IntPtr target);
+
+        [DllImport(dllName)]
+        public static extern int WL_EnableAllHooks(bool enable);
 
         [DllImport("kernel32")]
         public static extern IntPtr LoadLibrary(string lpFileName);

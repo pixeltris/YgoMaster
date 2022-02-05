@@ -312,7 +312,7 @@ namespace YgoMasterClient
                 string customTexturePath = Path.Combine(Program.ClientDataDir, loadPath + ".png");
                 if (File.Exists(customTexturePath))
                 {
-                    //Console.WriteLine("IS CUSTOM FILE '" + loadPath + "'");
+                    //Console.WriteLine("Custom file '" + loadPath + "'");
                     return true;
                 }
             }
@@ -449,7 +449,7 @@ namespace YgoMasterClient
             if (assetsArray == null || assetsArray.Length == 0)
             {
                 // NOTE: This resource path fixup code is a hack and might not apply to all images. Update the code if it breaks stuff
-                //       - It's done because for non-existing files it seems to make the path fall back to SD?
+                //       - It's done because non-existing files seem to fall back to SD
                 ResourceType resourceType = GetResourceType();
                 switch (resourceType)
                 {
@@ -488,23 +488,8 @@ namespace YgoMasterClient
                 }
             }
 
-            /*Console.WriteLine("Status" +
-                " cancel:" + methodGetCancel.Invoke(resourcePtr).GetValueRef<bool>() +
-                " error:" + methodGetError.Invoke(resourcePtr).GetValueRef<bool>() +
-                " done:" + methodGetDone.Invoke(resourcePtr).GetValueRef<bool>() +
-                " busy:" + methodGetBusy.Invoke(resourcePtr).GetValueRef<bool>());*/
-
             return resourcePtr;
         }
-
-        /* Callstack for loading card pack texture
-           - ResourceManager.getResource
-           - ResourceManager.getAsset
-           - ResourceManager.GetAsset
-           - CardPackResourceBinder.<>c__DisplayClass6_0.<LoadPackTex>b__0 <-- checks for sprite, if fails invokes YgomGame.Menu.Common.CardPackResourceBinder.LoadPackTex?
-           - Resource.HandlerData.Call
-           - ResourceManager.finishLoadAsset
-         */
 
         public static bool FileExists(string path)
         {

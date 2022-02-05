@@ -78,6 +78,7 @@ namespace YgoMasterClient
                 {
                     System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
                 }
+                PInvoke.WL_EnableAllHooks(true);
 
                 if (runConsole)
                 {
