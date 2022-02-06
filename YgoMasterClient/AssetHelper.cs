@@ -8,9 +8,11 @@ using System.IO;
 
 namespace YgoMasterClient
 {
-    unsafe static class AssetHelper
+    unsafe static partial class AssetHelper
     {
         public static bool ShouldDumpData = false;
+
+        // TODO: Put these definitions into nested classes
 
         // YgomSystem.Utility.DeviceInfo
         static IL2Method methodGetResourceType;
@@ -91,6 +93,12 @@ namespace YgoMasterClient
         static IL2Method methodGetRect;
         static IL2Method methodGetPixelsPerUnit;
         static IL2Method methodGetTexture;
+        static IL2Class monoBehaviourClassInfo;// MonoBehaviour
+        static IL2Class gameObjectClassInfo;// GameObject
+        static IL2Method methodGetComponentInChildren;
+        static IL2Class imageClassInfo;// Image
+        static IL2Method methodGetSprite;
+        static IL2Method methodSetSprite;
         static IL2Class rectClassInfo;// Rect
         static IL2Class vector2ClassInfo;// Vector2
         static IL2Class objectClassInfo;// Object (UnityEngine)
@@ -111,6 +119,11 @@ namespace YgoMasterClient
                 this.x = x;
                 this.y = y;
             }
+
+            public override string ToString()
+            {
+                return "{x:" + x + "," + "y:" + y + "}";
+            }
         }
 
         struct Rect
@@ -126,6 +139,11 @@ namespace YgoMasterClient
                 this.m_YMin = y;
                 this.m_Width = width;
                 this.m_Height = height;
+            }
+
+            public override string ToString()
+            {
+                return "{x:" + m_XMin + "," + "y:" + m_YMin + ",w:" + m_Width + ",h:" + m_Height + "}";
             }
         }
 
@@ -221,13 +239,14 @@ namespace YgoMasterClient
             methodEncodeToPNG = imageConversionClassInfo.GetMethod("EncodeToPNG");
 
             IL2Assembly coreModuleAssembly = Assembler.GetAssembly("UnityEngine.CoreModule");
+            IL2Assembly uiAssembly = Assembler.GetAssembly("UnityEngine.UI");
             texture2DClassInfo = coreModuleAssembly.GetClass("Texture2D");// Texture2D
             methodTexture2DCtor = texture2DClassInfo.GetMethod(".ctor", x => x.GetParameters().Length == 2);
             methodGetIsReadable = texture2DClassInfo.GetProperty("isReadable").GetGetMethod();
             methodGetFormat = texture2DClassInfo.GetProperty("format").GetGetMethod();
             methodReadPixels = texture2DClassInfo.GetMethod("ReadPixels", x => x.GetParameters().Length == 3);
             methodApply = texture2DClassInfo.GetMethod("Apply", x => x.GetParameters().Length == 2);
-            IL2Class textureClassInfo = coreModuleAssembly.GetClass("Texture");// Texture (putting class here as this has bitten me using it by mistake)
+            IL2Class textureClassInfo = coreModuleAssembly.GetClass("Texture");// Texture (putting class here as I've used it by mistake before...)
             methodGetWidth = textureClassInfo.GetProperty("width").GetGetMethod();
             methodGetHeight = textureClassInfo.GetProperty("height").GetGetMethod();
             methodGetFilterMode = textureClassInfo.GetProperty("filterMode").GetGetMethod();
@@ -244,6 +263,12 @@ namespace YgoMasterClient
             methodGetRect = spriteClassInfo.GetProperty("rect").GetGetMethod();
             methodGetPixelsPerUnit = spriteClassInfo.GetProperty("pixelsPerUnit").GetGetMethod();
             methodGetTexture = spriteClassInfo.GetProperty("texture").GetGetMethod();
+            monoBehaviourClassInfo = coreModuleAssembly.GetClass("MonoBehaviour");// MonoBehaviour
+            gameObjectClassInfo = coreModuleAssembly.GetClass("GameObject");// GameObject
+            methodGetComponentInChildren = gameObjectClassInfo.GetMethod("GetComponentInChildren", x => x.GetParameters().Length == 2);
+            imageClassInfo = uiAssembly.GetClass("Image");// Image
+            methodGetSprite = imageClassInfo.GetProperty("sprite").GetGetMethod();
+            methodSetSprite = imageClassInfo.GetProperty("sprite").GetSetMethod();
             rectClassInfo = coreModuleAssembly.GetClass("Rect");// Rect
             vector2ClassInfo = coreModuleAssembly.GetClass("Vector2");// Vector2
             objectClassInfo = coreModuleAssembly.GetClass("Object");
@@ -253,6 +278,8 @@ namespace YgoMasterClient
             IL2Assembly mscorlibAssembly = Assembler.GetAssembly("mscorlib");
             IL2Class fileClassInfo = mscorlibAssembly.GetClass("File");
             methodReadAllBytes = fileClassInfo.GetMethod("ReadAllBytes");
+
+            InitSolo();
         }
 
         // Load a texture / sprite https://forum.unity.com/threads/generating-sprites-dynamically-from-png-or-jpeg-files-in-c.343735
@@ -349,6 +376,33 @@ namespace YgoMasterClient
             return IntPtr.Zero;
         }
 
+        static IntPtr SpriteFromTexture(IntPtr texture, string assetName)
+        {
+            int width = methodGetWidth.Invoke(texture).GetValueRef<int>();
+            int height = methodGetHeight.Invoke(texture).GetValueRef<int>();
+            Rect rect = new Rect(0, 0, width, height);
+            float pixelsPerUnit = GetResourceType() == ResourceType.HighEnd_HD ? 100 : 50;
+            Vector2 pivot = new Vector2(0.5f, 0.5f);
+            IL2Object newSpriteAsset = methodSpriteCreate.Invoke(
+                new IntPtr[] { texture, new IntPtr(&rect), new IntPtr(&pivot), new IntPtr(&pixelsPerUnit) });
+            if (newSpriteAsset != null)
+            {
+                methodSetName.Invoke(newSpriteAsset.ptr, new IntPtr[] { new IL2String(assetName).ptr });
+                return newSpriteAsset.ptr;
+            }
+            return IntPtr.Zero;
+        }
+
+        static IntPtr SpriteFromPNG(string filePath, string assetName)
+        {
+            IntPtr newTextureAsset = TextureFromPNG(filePath, assetName);
+            if (newTextureAsset != IntPtr.Zero)
+            {
+                return SpriteFromTexture(newTextureAsset, assetName);
+            }
+            return IntPtr.Zero;
+        }
+
         static bool TryLoadCustomFile(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, out uint result)
         {
             result = 0;
@@ -405,17 +459,10 @@ namespace YgoMasterClient
                     IntPtr newTextureAsset = TextureFromPNG(customTexturePath, assetName);
                     assetsArray[0] = newTextureAsset;
 
-                    int width = methodGetWidth.Invoke(newTextureAsset).GetValueRef<int>();
-                    int height = methodGetHeight.Invoke(newTextureAsset).GetValueRef<int>();
-                    Rect rect = new Rect(0, 0, width, height);
-                    float pixelsPerUnit = resourceType == ResourceType.HighEnd_HD ? 100 : 50;
-                    Vector2 pivot = new Vector2(0.5f, 0.5f);
-                    IL2Object newSpriteAsset = methodSpriteCreate.Invoke(
-                        new IntPtr[] { newTextureAsset, new IntPtr(&rect), new IntPtr(&pivot), new IntPtr(&pixelsPerUnit) });
-                    if (newSpriteAsset != null)
+                    IntPtr newSpriteAsset = SpriteFromTexture(newTextureAsset, assetName);
+                    if (newSpriteAsset != IntPtr.Zero)
                     {
-                        assetsArray[1] = newSpriteAsset.ptr;
-                        methodSetName.Invoke(newSpriteAsset.ptr, new IntPtr[] { new IL2String(assetName).ptr });
+                        assetsArray[1] = newSpriteAsset;
                     }
 
                     // TODO: Remove what is not required below (and/or directly set them via k__BackingField entries)
@@ -464,9 +511,21 @@ namespace YgoMasterClient
             }
             return hookLoadImmediate.Original(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify);
         }
+        delegate IntPtr pfunc(IntPtr thisPtr);
 
         static IntPtr GetResource(IntPtr thisPtr, IntPtr pathPtr, IntPtr workPathPtr)
         {
+            int soloGateBgId = 0;
+            if (pathPtr != IntPtr.Zero)
+            {
+                string inputPath = new IL2String(pathPtr).ToString();
+                const string gateBgHeader = "Prefabs/Solo/BackGrounds/Front/gateBGUI";
+                if (inputPath.StartsWith(gateBgHeader) && int.TryParse(inputPath.Substring(gateBgHeader.Length), out soloGateBgId) && !FileExists(inputPath))
+                {
+                    pathPtr = new IL2String(gateBgHeader + "0001").ptr;
+                    hookLoadImmediate.Original(thisPtr, pathPtr, IntPtr.Zero, IntPtr.Zero, false);
+                }
+            }
             IntPtr resourcePtr = hookGetResource.Original(thisPtr, pathPtr, workPathPtr);
             if (resourcePtr == IntPtr.Zero)
             {
@@ -494,6 +553,15 @@ namespace YgoMasterClient
                     if (type == IntPtr.Zero) continue;
                     string typeName = Marshal.PtrToStringAnsi(Import.Class.il2cpp_class_get_name(type));
                     //Console.WriteLine(typeName + " - " + loadPath);
+
+                    if (type == gameObjectClassInfo.ptr && soloGateBgId > 0)
+                    {
+                        InjectSoloBackground(obj, soloGateBgId);
+                    }
+                    if (type == soloCardThumbSettingsClassInfo.ptr)
+                    {
+                        InjectSoloThumbs(obj);
+                    }
 
                     if (ShouldDumpData)
                     {

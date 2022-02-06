@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssetHelper.cs" />
+    <Compile Include="AssetHelper.Solo.cs" />
     <Compile Include="ConsoleHelper.cs" />
     <Compile Include="CRC32.cs" />
     <Compile Include="GameLauncher.cs" />

@@ -14,6 +14,7 @@ namespace IL2CPP
 
             Name = name;
         }
-        public IL2ClassType ReturnType { get { return new IL2ClassType(ptr); } }
+        public IL2ClassType Type { get { return new IL2ClassType(ptr); } }
+        //public IL2ClassType ReturnType { get { return new IL2ClassType(ptr); } }
     }
 }

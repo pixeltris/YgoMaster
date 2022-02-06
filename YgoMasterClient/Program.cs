@@ -38,7 +38,7 @@ namespace YgoMasterClient
             }
             if (!success)
             {
-                MessageBox.Show("Failed! Make sure the YgoMaster folder is inside game folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Failed. Make sure the YgoMaster folder is inside game folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.None);
             }
         }
 
@@ -259,6 +259,12 @@ namespace YgoMasterClient
                                                     Console.WriteLine("Done");
                                                 }
                                                 break;
+                                            case "soloreload":// Reloads custom solo data
+                                                {
+                                                    AssetHelper.LoadSoloData();
+                                                    Console.WriteLine("Done");
+                                                }
+                                                break;
                                             case "resultcodes":// Gets all network result codes found in "YgomSystem.Network"
                                                 {
                                                     StringBuilder sb = new StringBuilder();
@@ -284,8 +290,11 @@ namespace YgoMasterClient
                                                     Console.WriteLine("Done");
                                                 }
                                                 break;
+                                            // TODO: Remove "locate"/"locateraw"? It doesn't serve much purpose and "crc" is more accurate
+                                            //       - One reason to keep locate/locateraw is that it might be useful for non-existing files
+                                            //         as "crc" might do the auto conversion wrong for non-existing files (SD/HighEnd_HD)
                                             case "locate":// Finds a file on disk from the given input path which is in /LocalData/
-                                            case "locateraw":
+                                            case "locateraw":// Don't convert the file path
                                                 {
                                                     // NOTE: Some images (just cards?) resolve to /masterduel_Data/StreamingAssets/AssetBundle/
                                                     string path = consoleInput.Trim().Substring(consoleInput.Trim().IndexOf(' ') + 1);
@@ -304,6 +313,34 @@ namespace YgoMasterClient
                                                     Console.WriteLine("Converted: " + convertedPath);
                                                     Console.WriteLine(convertedPathOnDisk + " existsOnDisk: " + existsOnDisk +
                                                         " existsOnDisk(auto):" + existsOnDiskNoConvert + " exists:" + exists);
+                                                }
+                                                break;
+                                            case "crc":// Gets the CRC of a file path and shows the file in explorer if it exists
+                                                {
+                                                    string path = consoleInput.Trim().Substring(consoleInput.Trim().IndexOf(' ') + 1);
+                                                    string pathOnDisk = AssetHelper.GetAssetBundleOnDisk(path);
+                                                    string dir = "LocalData";
+                                                    foreach (string subDir in Directory.GetDirectories(dir))
+                                                    {
+                                                        dir = subDir;// The steam id folder name
+                                                        break;
+                                                    }
+                                                    string fullPath = Path.Combine(dir, "0000", pathOnDisk);
+                                                    Console.WriteLine(pathOnDisk);
+                                                    if (File.Exists(fullPath))
+                                                    {
+                                                        try
+                                                        {
+                                                            System.Diagnostics.Process.Start("explorer.exe", "/select, \"" + fullPath +"\"");
+                                                        }
+                                                        catch
+                                                        {
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        Console.WriteLine("File does not exist on disk");
+                                                    }
                                                 }
                                                 break;
                                         }

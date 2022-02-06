@@ -212,7 +212,7 @@ namespace YgoMaster
                             { "route_param", shopItem.ShopId },
                             { "route_open", isRouteOpen },
                             { "route_name_id", FixIdString(shopItem.NameText) },
-                            { "route_icon_type", shopItem.IconType },
+                            { "route_icon_type", (int)shopItem.IconType },
                             { "route_icon_data", shopItem.IconData },
                             { "route_icon_mrk", shopItem.IconMrk }
                         });

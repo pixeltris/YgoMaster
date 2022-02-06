@@ -141,15 +141,15 @@ namespace YgoMaster
                 data["category"] = (int)shopItem.Category;
                 data["subCategory"] = shopItem.SubCategory;
                 data["iconMrk"] = shopItem.IconMrk;
-                data["iconType"] = shopItem.IconType;
+                data["iconType"] = (int)shopItem.IconType;
                 data["iconData"] = shopItem.IconData;
                 data["preview"] = shopItem.Preview;
                 data["searchCategory"] = shopItem.SearchCategory.ToArray();
                 data["limitdate_ts"] = expireTime;
                 data["limit_buy_count"] = buyLimit;
                 data["now_buy_count"] = have;
-                data["list_button_type"] = 0;
-                data["confirm_text_id"] = new object[0];//?
+                data["list_button_type"] = (int)ShopItemListButtonType.Default;
+                data["confirm_text_id"] = new string[0];// Custom text for the "Purchase Confirmation" popup (entries are line breaked)
                 data["isNew"] = isNew;
 
                 Dictionary<string, object> prices = new Dictionary<string,object>();
@@ -187,7 +187,7 @@ namespace YgoMaster
                         { "price_id", price.Id },
                         { "item_category", 1 },
                         { "item_id", 1 },
-                        { "button_type", buttonType },
+                        { "button_type", 0 },
                         { "use_item_num", price.Price },
                         { "buy_count", 1 },
                         { "textId", FixIdString(price.TextId) },

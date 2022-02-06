@@ -9,7 +9,6 @@ WIP:
 - [ ] Generate deck json files from LE data. Also generate Solo.json from LE data.
 - [ ] Create option to limit cards by release year
 - [ ] Move solo content into /Solo/Solo.json and /Solo/Decks/
-
 - [ ] Support varying card rarities based on the pack (i.e. boosters throughout the years). Need to do a request.Remove("Gacha.cardList") in Act_GachaGetCardList and don't send the gacha lists in Act_ShopGetList
 
 Updating:
@@ -25,7 +24,6 @@ TODO:
 - Fix which player starts first on duels in /SoloDuel/ (they are recorded so have a specific starting duelist - remove where not required)
 - Display the correct tutorial gate in "How to Obtain" for cards obtained in solo
 - Add support for loading ydk decks on custom duels
-- Look into changing solo card info - Definition/Solo/SoloCardThumbSettings, Prefabs/VC/Solo/SoloMode, Definition/Solo/SoloDefine, Definition/Solo/SoloFlyingCardSettings
 
 Implemented:
 - Editing player profile

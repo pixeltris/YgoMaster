@@ -433,7 +433,7 @@ namespace YgoMaster
                 // NOTE: If this changes make sure to update the pack opener code to include the additional packs
                 LogWarning("Expected to find 1 standard card pack in shop data but found " + numStandardPacks);
             }
-            if (Shop.PutAllCardsInStandrdPack && Shop.StandardPack != null)
+            if (Shop.PutAllCardsInStandardPack && Shop.StandardPack != null)
             {
                 Shop.StandardPack.Cards.Clear();
                 foreach (int cardId in CardRare.Keys.OrderBy(x => x))
@@ -473,7 +473,7 @@ namespace YgoMaster
             if (isMainShop)
             {
                 Shop.DefaultSecretDuration = GetValue<long>(data, "DefaultSecretDuration");
-                Shop.PutAllCardsInStandrdPack = GetValue<bool>(data, "PutAllCardsInStandrdPack");
+                Shop.PutAllCardsInStandardPack = GetValue<bool>(data, "PutAllCardsInStandardPack");
             }
             LoadShopItems(Shop.PackShop, "PackShop", data, secretPackDuration);
             LoadShopItems(Shop.StructureShop, "StructureShop", data, secretPackDuration);
@@ -505,7 +505,7 @@ namespace YgoMaster
                 info.SecretType = (ShopItemSecretType)GetValue<int>(data, "secretType");// custom
                 bool isSecretDurationDefined = TryGetValue<long>(data, "secretDuration", out info.SecretDurationInSeconds);// custom
                 info.ExpireDateTime = GetValue<long>(data, "expireTime");// custom
-                info.IconType = GetValue<int>(data, "iconType");
+                info.IconType = (ShopItemIconType)GetValue<int>(data, "iconType");
                 info.IconData = GetValue<string>(data, "iconData");
                 info.SubCategory = GetValue<int>(data, "subCategory");
                 object previewObj = GetValue<object>(data, "preview");

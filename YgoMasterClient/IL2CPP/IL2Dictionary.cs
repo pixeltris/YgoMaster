@@ -131,6 +131,7 @@ namespace IL2CPP
         }
     }
 
+    // <primitive (int,long,byte,etc), System.Object>
     public unsafe class IL2Dictionary_Primitive_Object : IL2DictionaryExplicit
     {
         public IL2Dictionary_Primitive_Object(IntPtr ptrNew, Type primitiveType) : base(ptrNew)
@@ -138,8 +139,7 @@ namespace IL2CPP
             if (RequiresInit)
             {
                 IL2Class keyType = Assembler.GetAssembly("mscorlib").GetClass(primitiveType.Name, primitiveType.Namespace);
-                //IL2Class valueType = Assembler.GetAssembly("mscorlib").GetClass(typeof(object).Name, typeof(object).Namespace);
-                IL2Class valueType = Assembler.GetAssembly("Assembly-CSharp").GetClass("Resource", "YgomSystem.ResourceSystem");
+                IL2Class valueType = Assembler.GetAssembly("mscorlib").GetClass(typeof(object).Name, typeof(object).Namespace);
                 Init(keyType, valueType);
             }
         }

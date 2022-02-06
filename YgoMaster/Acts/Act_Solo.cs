@@ -627,6 +627,7 @@ namespace YgoMaster
                 }
                 else
                 {
+                    request.ResultCode = (int)ResultCodes.SoloCode.INVALID_CHAPTER;
                     LogWarning("Failed to start chapter " + chapterId);
                 }
             }

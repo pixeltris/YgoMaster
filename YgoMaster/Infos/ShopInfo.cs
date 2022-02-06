@@ -20,7 +20,7 @@ namespace YgoMaster
         public Dictionary<int, List<ShopItemInfo>> SecretPacksByCardId { get; private set; }
         public ShopItemInfo StandardPack;
         public long DefaultSecretDuration;
-        public bool PutAllCardsInStandrdPack;
+        public bool PutAllCardsInStandardPack;
 
         public ShopInfo()
         {
@@ -55,6 +55,7 @@ namespace YgoMaster
         public ShopCategory Category;
         /// <summary>
         /// The shop sub tab (on left of screen)
+        /// See YgomGame.Shop.ShopDef - AccessorySubCategory, PackSubCategory, ProductCategory, SpecialSubCategory, StructureSubCategory
         /// </summary>
         public int SubCategory;
 
@@ -62,7 +63,7 @@ namespace YgoMaster
         public string DescShortText;
         public string DescFullText;
         public int IconMrk;
-        public int IconType;
+        public ShopItemIconType IconType;
         public string IconData;
         public string Preview;
         public HashSet<int> SearchCategory { get; private set; }
@@ -160,6 +161,32 @@ namespace YgoMaster
         {
             TextArgs = new List<int>();
         }
+    }
+
+    /// <summary>
+    /// YgomGame.Shop.ShopDef.ListButtonType
+    /// 
+    /// This is the background style of the item price in the main store (e.g. "1 Pack X 100" has a background of gray (Default))
+    /// </summary>
+    enum ShopItemListButtonType
+    {
+        Default,
+        Highlight,
+
+        // Everything at this point and beyond is invalid (sets the background to none)
+        Invalid
+    }
+
+    /// <summary>
+    /// YgomGame.Shop.ShopDef.HighlightType
+    /// </summary>
+    enum ShopItemIconType
+    {
+        None,
+        CardThumb,
+        ItemThumb,
+        WideThumb,
+        PlayThumb
     }
 
     enum ShopItemSecretType
