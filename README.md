@@ -2,7 +2,7 @@
 
 Offline Yu-Gi-Oh! Master Duel (PC)
 
-## Pics
+## Screenshots
 
 ![Alt text](Docs/ss1.png)
 ![Alt text](Docs/ss2.png)
