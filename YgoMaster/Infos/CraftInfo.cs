@@ -7,11 +7,13 @@ namespace YgoMaster
 {
     class CraftInfo
     {
+        public Dictionary<CardRarity, CraftPointRollover> Rollover { get; private set; }
         public Dictionary<CardRarity, Dictionary<CardStyleRarity, int>> CraftRates { get; private set; }
         public Dictionary<CardRarity, Dictionary<CardStyleRarity, int>> DismantleRates { get; private set; }
 
         public CraftInfo()
         {
+            Rollover = new Dictionary<CardRarity, CraftPointRollover>();
             CraftRates = new Dictionary<CardRarity, Dictionary<CardStyleRarity, int>>();
             DismantleRates = new Dictionary<CardRarity, Dictionary<CardStyleRarity, int>>();
         }
@@ -43,6 +45,7 @@ namespace YgoMaster
 
         public void FromDictionary(Dictionary<string, object> data)
         {
+            Rollover.Clear();
             CraftRates.Clear();
             DismantleRates.Clear();
             if (data == null)
@@ -53,13 +56,35 @@ namespace YgoMaster
             Dictionary<string, object> dismantleData = null;
             if (data.ContainsKey("Craft"))
             {
-                craftData = GameServer.GetValue(data, "Craft", default(Dictionary<string, object>));
-                dismantleData = GameServer.GetValue(data, "Dismantle", default(Dictionary<string, object>));
+                Dictionary<string, object> rolloverDatas = GameServer.GetDictionary(data, "CraftPointRollover");
+                if (rolloverDatas != null)
+                {
+                    foreach (KeyValuePair<string, object> rolloverEntry in rolloverDatas)
+                    {
+                        CardRarity rarity;
+                        if (Enum.TryParse<CardRarity>(rolloverEntry.Key, out rarity) && rarity < CardRarity.UltraRare)
+                        {
+                            Dictionary<string, object> rolloverData = rolloverEntry.Value as Dictionary<string, object>;
+                            if (rolloverData == null)
+                            {
+                                continue;
+                            }
+                            CraftPointRollover rollover = new CraftPointRollover();
+                            rollover.At = GameServer.GetValue<int>(rolloverData, "at");
+                            rollover.Take = GameServer.GetValue<int>(rolloverData, "take");
+                            rollover.Give = GameServer.GetValue<int>(rolloverData, "give");
+                            Rollover[rarity] = rollover;
+                        }
+                    }
+                }
+
+                craftData = GameServer.GetDictionary(data, "Craft");
+                dismantleData = GameServer.GetDictionary(data, "Dismantle");
             }
             else if (data.ContainsKey("generate_rate_list"))
             {
-                craftData = GameServer.GetValue(data, "generate_rate_list", default(Dictionary<string, object>));
-                dismantleData = GameServer.GetValue(data, "exchange_rate_list", default(Dictionary<string, object>));
+                craftData = GameServer.GetDictionary(data, "generate_rate_list");
+                dismantleData = GameServer.GetDictionary(data, "exchange_rate_list");
             }
             if (craftData != null)
             {
@@ -119,5 +144,12 @@ namespace YgoMaster
             }
             return result;
         }
+    }
+
+    class CraftPointRollover
+    {
+        public int At;
+        public int Take;
+        public int Give;
     }
 }

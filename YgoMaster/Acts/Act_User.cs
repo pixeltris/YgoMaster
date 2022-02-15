@@ -112,7 +112,7 @@ namespace YgoMaster
             }
             request.Response["Master"] = new Dictionary<string, object>()
             {
-                { "CardRare", CardRare },// Card rarities
+                { "CardRare", GetCardRarities(request.Player) },// Card rarities
                 { "CardCr", CardCraftable },// Craftable cards
                 { "Structure", structure },// All structure decks
                 { "Regulation", Regulation },// Forbidden / limited cards
@@ -133,7 +133,7 @@ namespace YgoMaster
             request.Response["EXHDeckList"] = null;// Exhibition deck list?
             request.Response["Topics"] = new List<object>()
             {
-                new Dictionary<string, object>() {
+                /*new Dictionary<string, object>() {
                     { "sort", 1591200 },// 0 / 1591200 / omitted
                     { "body", @"{""buttons"":[{""label"":{""en_US"":""Purchase Gems""},""url"":""duel:push?GameMode=9"",""shortcut"":""Sub1""}],""contents"":[{""tp"":""H1"",""text"":{""en_US"":""To commemorate the game's release, we're currently having a special Gems sale!""}},{""tp"":""Text"",""text"":{""en_US"":""Check out the Purchase Gems page for an exclusive Gem Pack.nEach player can purchase up to 3.nThis is a deal you do not want to miss!""},""indent"":-1},{""tp"":""Spacer"",""size"":""M"",""indent"":-1},{""tp"":""Text"",""text"":{""en_US"":""<color=#00D2FF>*You can also go to the Purchase Gems page by pressing the Gem icon in the center of the top of the Home screen.</color>""},""indent"":-1}]}" },
                     { "banner", new Dictionary<string, object>() {
@@ -149,7 +149,7 @@ namespace YgoMaster
                         }},
                         { "is_coming_soon", false }
                     }},
-                }
+                }*/
             };
             /*request.Response["Duelpass"] = new Dictionary<string, object>()
             {

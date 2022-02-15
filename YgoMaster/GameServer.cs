@@ -11,22 +11,6 @@ namespace YgoMaster
 {
     partial class GameServer
     {
-        static readonly Version highestSupportedClientVersion = new Version(int.MaxValue, int.MaxValue);
-
-        static readonly string dataDirectory = "Data";
-        static readonly string decksDirectory = Path.Combine(dataDirectory, "Decks");
-        static readonly string playerSettingsFile = Path.Combine(dataDirectory, "Player.json");
-        static readonly string settingsFile = Path.Combine(dataDirectory, "Settings.json");
-
-        static readonly string deckSearchUrl = "https://ayk-deck.mo.konami.net/ayk/yocgapi/search";
-        static readonly string deckSearchDetailUrl = "https://ayk-deck.mo.konami.net/ayk/yocgapi/detail";
-        static readonly string deckSearchAttributesUrl = "https://ayk-deck.mo.konami.net/ayk/yocgapi/attributes";
-
-        static readonly string serverUrl = "http://localhost/ygo";
-        static readonly string serverPollUrl = "http://localhost/ygo/poll";
-
-        static readonly bool disableInfoLogging = false;
-
         Thread thread;
         HttpListener listener;
 
@@ -34,8 +18,6 @@ namespace YgoMaster
         {
             try
             {
-                TryCreateDirectory(dataDirectory);
-                TryCreateDirectory(decksDirectory);
                 LoadSettings();
             }
             catch (Exception e)
@@ -230,6 +212,11 @@ namespace YgoMaster
                                         break;
                                 }
 
+                                if (gameServerWebRequest.Player.RequiresSaving)
+                                {
+                                    SavePlayerNow(gameServerWebRequest.Player);
+                                }
+
                                 string jsonResponse = MiniJSON.Json.Serialize(gameServerWebRequest.Response);
                                 StringBuilder stringBuilder = new StringBuilder();
                                 stringBuilder.Append(@"{""code"":" + gameServerWebRequest.ErrorCode + @",""res"":[[" + actId + "," +
@@ -379,6 +366,8 @@ namespace YgoMaster
 
     class GameServerWebRequest
     {
+#pragma warning disable 0169// We currently don't use some members of this class. No need for these warnings
+#pragma warning disable 0649
         public Player Player;
         public string ClientVersion;
         public string ActName;
@@ -403,6 +392,9 @@ namespace YgoMaster
         // misc = IDS_SYS.FATAL_SERVER_ERROR (this just displays the error code number)
         public int ErrorCode;// The main error code "code"
         public int ResultCode;// Result / sub error code, 3rd value of "res"
+
+#pragma warning restore 0169
+#pragma warning restore 0649
 
         public void Remove(params string[] strs)
         {

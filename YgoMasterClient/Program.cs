@@ -16,9 +16,10 @@ namespace YgoMasterClient
     {
         public const string ServerUrl = "http://localhost/ygo";
         public const string ServerPollUrl = "http://localhost/ygo/poll";
-        static bool runConsole = true;
 
         public static bool IsLive;
+        public static bool LogIDS;
+        public static bool RunConsole;
 
         public static string CurrentDir;// Path of where the current assembly is (YgoMasterClient.exe)
         public static string DataDir;// Path of misc data
@@ -42,12 +43,33 @@ namespace YgoMasterClient
             }
         }
 
+        static void SetDataDirectory(string currentDir, string defaultDataDir)
+        {
+            try
+            {
+                string newDataDirFile = Path.Combine(currentDir, "DataDirectory.txt");
+                if (File.Exists(newDataDirFile))
+                {
+                    string newDir = File.ReadAllLines(newDataDirFile)[0].Trim();
+                    if (Directory.Exists(newDir))
+                    {
+                        DataDir = Path.Combine(currentDir, newDir);
+                        return;
+                    }
+                }
+            }
+            catch
+            {
+            }
+            DataDir = Path.Combine(currentDir, defaultDataDir);
+        }
+
         public static int DllMain(string arg)
         {
             try
             {
                 CurrentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                DataDir = Path.Combine(CurrentDir, "Data");
+                SetDataDirectory(CurrentDir, "Data");
                 ClientDataDir = Path.Combine(DataDir, "ClientData");
                 ClientDataDumpDir = Path.Combine(DataDir, "ClientDataDump");
 
@@ -58,12 +80,11 @@ namespace YgoMasterClient
                 if (arg == "live")
                 {
                     IsLive = true;
-                    nativeTypes.Add(typeof(AssetHelper));
+                    //nativeTypes.Add(typeof(AssetHelper));
                 }
                 else
                 {
-                    nativeTypes.Add(typeof(DuellDll));
-                    nativeTypes.Add(typeof(AssetHelper));
+                    //nativeTypes.Add(typeof(AssetHelper));
                     nativeTypes.Add(typeof(YgomGame.Utility.ItemUtil));
                     nativeTypes.Add(typeof(YgomSystem.Utility.TextData));
                     nativeTypes.Add(typeof(YgomSystem.Utility.ClientWork));
@@ -80,7 +101,13 @@ namespace YgoMasterClient
                 }
                 PInvoke.WL_EnableAllHooks(true);
 
-                if (runConsole)
+                // TODO: Load this from a file
+                RunConsole = false;
+                LogIDS = false;
+                AssetHelper.LogAssets = true;
+                AssetHelper.ShouldDumpData = false;
+
+                if (RunConsole)
                 {
                     // Use a form as an easy way to get execution on the main thread
                     Form dummyForm = new Form();
@@ -343,6 +370,55 @@ namespace YgoMasterClient
                                                     }
                                                 }
                                                 break;
+                                            case "carddata":// dumps card data
+                                                {
+                                                    string[] files = 
+                                                    {
+                                                        "Card/Data/CARD_Genre",
+                                                        "Card/Data/CARD_IntID",
+                                                        "Card/Data/CARD_Named",
+                                                        "Card/Data/CARD_Prop",
+                                                        "Card/Data/CARD_RubyIndx",
+                                                        "Card/Data/CARD_RubyName",
+                                                        "Card/Data/en-US/CARD_Desc",
+                                                        "Card/Data/en-US/CARD_Indx",
+                                                        "Card/Data/en-US/CARD_Name",
+                                                        "Card/Data/en-US/DLG_Indx",
+                                                        "Card/Data/en-US/DLG_Text",
+                                                        "Card/Data/en-US/WORD_Indx",
+                                                        "Card/Data/en-US/WORD_Text",
+                                                        "Card/Data/MD/all_gadget_monsters",
+                                                        "Card/Data/MD/all_monsters",
+                                                        "Card/Data/MD/cards_all",
+                                                        "Card/Data/MD/cards_in_maindeck",
+                                                        "Card/Data/MD/CARD_Link",
+                                                        "Card/Data/MD/CARD_Same",
+                                                        "Card/Data/MD/monsters_in_maindeck"
+                                                    };
+                                                    foreach (string file in files)
+                                                    {
+                                                        if (file.Contains("CARD_") || file.Contains("DLG_") || file.Contains("WORD_"))
+                                                        {
+                                                            byte[] buffer = AssetHelper.GetBytesDecryptionData(file);
+                                                            if (buffer != null && buffer.Length > 0)
+                                                            {
+                                                                string fullPath = Path.Combine(Program.ClientDataDumpDir, file + ".bytes");
+                                                                try
+                                                                {
+                                                                    Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+                                                                }
+                                                                catch { }
+                                                                try
+                                                                {
+                                                                    File.WriteAllBytes(fullPath, buffer);
+                                                                }
+                                                                catch { }
+                                                            }
+                                                        }
+                                                    }
+                                                    Console.WriteLine("Done");
+                                                }
+                                                break;
                                         }
                                     }
                                     catch (Exception e)
@@ -362,42 +438,6 @@ namespace YgoMasterClient
             }
             return 0;
         }
-    }
-}
-
-unsafe static class DuellDll
-{
-    delegate void Del_DLL_DuelSetPlayerType(int player, int type);
-    static Hook<Del_DLL_DuelSetPlayerType> hookDLL_DuelSetPlayerType;
-
-    delegate int Del_DLL_DuelSysInitCustom(int fDuelType, bool tag, int life0, int life1, int hand0, int hand1, bool shuf);
-    static Hook<Del_DLL_DuelSysInitCustom> hookDLL_DuelSysInitCustom;
-
-    static DuellDll()
-    {
-        IntPtr lib = PInvoke.LoadLibrary("masterduel_Data/Plugins/x86_64/duel.dll");
-        if (lib == IntPtr.Zero)
-        {
-            throw new Exception("Failed to load duel.dll");
-        }
-        hookDLL_DuelSetPlayerType = new Hook<Del_DLL_DuelSetPlayerType>(DLL_DuelSetPlayerType, PInvoke.GetProcAddress(lib, "DLL_DuelSetPlayerType"));
-        hookDLL_DuelSysInitCustom = new Hook<Del_DLL_DuelSysInitCustom>(DLL_DuelSysInitCustom, PInvoke.GetProcAddress(lib, "DLL_DuelSysInitCustom"));
-    }
-
-    static void DLL_DuelSetPlayerType(int player, int type)
-    {
-        //type = 1;
-        //Console.WriteLine("DLL_DuelSetPlayerType " + player + " " + type);
-        hookDLL_DuelSetPlayerType.Original(player, type);
-    }
-
-    static int DLL_DuelSysInitCustom(int fDuelType, bool tag, int life0, int life1, int hand0, int hand1, bool shuf)
-    {
-        //hand0 = 3;
-        //hand1 = 0;
-        //life0 = 900000;
-        //life1 = 1;
-        return hookDLL_DuelSysInitCustom.Original(fDuelType, tag, life0, life1, hand0, hand1, shuf);
     }
 }
 
@@ -459,16 +499,22 @@ namespace YgomGame.Utility
     }
 }
 
-
 namespace YgomSystem.Utility
 {
     unsafe static class TextData
     {
         static IL2Class classInfo;
         static IL2Method methodLoad;
+        static IL2Method methodGetTextString;
+        static IL2Method methodGetTextEnum;
 
-        delegate IntPtr Del_GetText(IntPtr textPtr, bool richTextEx);
-        static Hook<Del_GetText> hookGetText;
+        // System.Object.ToString
+        static IL2Method methodObjectToString;
+
+        delegate IntPtr Del_GetTextString(IntPtr textEnum, bool richTextEx);
+        delegate IntPtr Del_GetTextEnum(int textEnum, bool richTextEx, IntPtr methodInstance);
+        static Hook<Del_GetTextString> hookGetTextString;
+        static Hook<Del_GetTextEnum> hookGetTextEnum;
 
         public static Dictionary<string, string> CustomTextData = new Dictionary<string, string>();
 
@@ -477,9 +523,13 @@ namespace YgomSystem.Utility
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             classInfo = assembly.GetClass("TextData", "YgomSystem.Utility");
             methodLoad = classInfo.GetMethod("Load", x => x.GetParameters().Length == 1);
+            methodGetTextString = classInfo.GetMethod("GetText").MakeGenericMethod(new Type[] { typeof(string) });
+            hookGetTextString = new Hook<Del_GetTextString>(GetTextString, methodGetTextString);
+            methodGetTextEnum = classInfo.GetMethod("GetText").MakeGenericMethod(new IntPtr[] { CastUtils.IL2Typeof("Int32Enum", "System", "mscorlib") });
+            hookGetTextEnum = new Hook<Del_GetTextEnum>(GetTextEnum, methodGetTextEnum);
 
-            // TODO: Determine a way to get a generic address via reflection
-            hookGetText = new Hook<Del_GetText>(GetText, PInvoke.GameModuleBaseAddress + 0xE732C0);
+            // System.Object.ToString
+            methodObjectToString = Assembler.GetAssembly("mscorlib").GetClass("Object", "System").GetMethod("ToString");
 
             LoadCustomTextData();
         }
@@ -532,13 +582,16 @@ namespace YgomSystem.Utility
 
         public static string GetText(string id)
         {
-            return new IL2String(GetText(new IL2String(id).ptr, false)).ToString();
+            return new IL2String(GetTextString(new IL2String(id).ptr, false)).ToString();
         }
 
-        static IntPtr GetText(IntPtr textPtr, bool richTextEx)
+        static IntPtr GetTextString(IntPtr textString, bool richTextEx)
         {
-            string inputString = new IL2Object(textPtr).GetValueObj<string>();
-            Console.WriteLine(inputString);
+            string inputString = new IL2Object(textString).GetValueObj<string>();
+            if (Program.LogIDS)
+            {
+                Console.WriteLine(inputString);
+            }
             const string header = "IDS_SYS.IDHACK:";
             if (!string.IsNullOrEmpty(inputString) && inputString.StartsWith(header))
             {
@@ -549,7 +602,41 @@ namespace YgomSystem.Utility
             {
                 return new IL2String(customText).ptr;
             }
-            return hookGetText.Original(textPtr, richTextEx);
+            return hookGetTextString.Original(textString, richTextEx);
+        }
+
+        static IntPtr GetTextEnum(int textEnum, bool richTextEx, IntPtr methodInstance)
+        {
+            if (methodInstance != IntPtr.Zero)
+            {
+                IL2Method method = new IL2Method(methodInstance);
+                IL2ClassType enumType = method.GetParameters()[0].Type;
+                IntPtr enumKlass = Import.Class.il2cpp_class_from_type(enumType.ptr);
+                if (enumKlass != IntPtr.Zero)
+                {
+                    string enumTypeName = Marshal.PtrToStringAnsi(Import.Class.il2cpp_class_get_name(enumKlass));
+                    if (!string.IsNullOrEmpty(enumTypeName))
+                    {
+                        IntPtr boxed = Import.Object.il2cpp_value_box(enumKlass, new IntPtr(&textEnum));
+                        IL2Object strObj = methodObjectToString.Invoke(boxed, isVirtual: true);
+                        if (strObj != null)
+                        {
+                            string enumValueStr = strObj.GetValueObj<string>();
+                            string fullString = enumTypeName + "." + enumValueStr;
+                            if (Program.LogIDS)
+                            {
+                                Console.WriteLine(fullString);
+                            }
+                            string customText;
+                            if (CustomTextData.TryGetValue(fullString, out customText))
+                            {
+                                return new IL2String(customText).ptr;
+                            }
+                        }
+                    }
+                }
+            }
+            return hookGetTextEnum.Original(textEnum, richTextEx, methodInstance);
         }
     }
 

@@ -52,9 +52,8 @@ namespace IL2CPP
 
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
             public extern static IntPtr il2cpp_object_unbox(IntPtr obj);
-
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
-            public extern static IntPtr il2cpp_method_get_object(IntPtr method);
+            public extern static IntPtr il2cpp_value_box(IntPtr klass, IntPtr data);
 
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
             public extern static IntPtr il2cpp_object_get_class(IntPtr str);
@@ -132,6 +131,9 @@ namespace IL2CPP
             public extern static bool il2cpp_class_is_enum(IntPtr klass);
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
             public extern static int il2cpp_class_get_type_token(IntPtr method);
+
+            [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+            public extern static IntPtr il2cpp_class_from_type(IntPtr type);
         }
 
         public static class Property
@@ -175,6 +177,10 @@ namespace IL2CPP
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
             public extern static IntPtr il2cpp_object_get_virtual_method(IntPtr obj, IntPtr method);
 
+            [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+            public extern static IntPtr il2cpp_method_get_from_reflection(IntPtr method);
+            [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+            public extern static IntPtr il2cpp_method_get_object(IntPtr method, IntPtr refclass);
         }
 
         public static class Field
@@ -197,21 +203,6 @@ namespace IL2CPP
             public extern static int il2cpp_field_get_offset(IntPtr field);
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
             public extern static bool il2cpp_field_has_attribute(IntPtr field, IntPtr attr_class);
-        }
-
-        public static class Patch
-        {
-            [DllImport("winmm", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
-            public extern static void VRC_CreateHook(IntPtr pTarget, IntPtr pDetour, out IntPtr ppOrig);
-
-            [DllImport("winmm", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
-            public extern static void VRC_RemoveHook(IntPtr pTarget);
-
-            [DllImport("winmm", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
-            public extern static void VRC_EnableHook(IntPtr pTarget);
-
-            [DllImport("winmm", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
-            public extern static void VRC_DisableHook(IntPtr pTarget);
         }
     }
 }

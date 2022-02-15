@@ -8,6 +8,8 @@ namespace YgoMaster
 {
     partial class GameServer
     {
+        static readonly bool disableInfoLogging = false;
+
         static string FixIdString(string str)
         {
             if (string.IsNullOrEmpty(str))
@@ -40,7 +42,7 @@ namespace YgoMaster
             return (long)(time - new DateTime(1970, 1, 1)).TotalSeconds;
         }
 
-        static DateTime ConvertEpochTime(long time)
+        internal static DateTime ConvertEpochTime(long time)
         {
             return (new DateTime(1970, 1, 1)).AddSeconds(time).ToLocalTime();
         }
@@ -65,7 +67,7 @@ namespace YgoMaster
             }
         }
 
-        static List<int> Shuffle(Random rng, HashSet<int> values)
+        static List<int> Shuffle(Random rng, List<int> values)
         {
             List<int> array = new List<int>(values);
             int n = array.Count;
@@ -114,6 +116,13 @@ namespace YgoMaster
         internal static Dictionary<string, object> GetDictionary(Dictionary<string, object> values, string key)
         {
             return GetValue(values, key, default(Dictionary<string, object>));
+        }
+
+        internal static List<int> GetIntList(Dictionary<string, object> values, string key, bool ignoreZero = false)
+        {
+            List<int> result = new List<int>();
+            GetIntList(values, key, result, ignoreZero);
+            return result;
         }
 
         internal static void GetIntList(Dictionary<string, object> values, string key, List<int> result, bool ignoreZero = false)
@@ -171,7 +180,14 @@ namespace YgoMaster
                         {
                             if (typeof(T).IsEnum)
                             {
-                                result = (T)Convert.ChangeType(obj, typeof(T).GetEnumUnderlyingType());
+                                if (obj is string)
+                                {
+                                    result = (T)Enum.Parse(typeof(T), obj as string, false);
+                                }
+                                else
+                                {
+                                    result = (T)Convert.ChangeType(obj, typeof(T).GetEnumUnderlyingType());
+                                }
                             }
                             else
                             {
@@ -181,6 +197,7 @@ namespace YgoMaster
                         }
                         catch
                         {
+                            System.Diagnostics.Debugger.Break();
                         }
                     }
                     result = default(T);
@@ -194,6 +211,7 @@ namespace YgoMaster
                 }
                 catch
                 {
+                    System.Diagnostics.Debugger.Break();
                 }
             }
             result = default(T);
@@ -251,12 +269,24 @@ namespace YgoMaster
         internal static Dictionary<string, object> GetOrCreateDictionary(Dictionary<string, object> data, string name)
         {
             object obj;
-            if (data.TryGetValue(name, out obj))
+            Dictionary<string, object> result;
+            if (!data.TryGetValue(name, out obj) || (result = obj as Dictionary<string, object>) == null)
             {
-                return obj as Dictionary<string, object>;
+                result = new Dictionary<string, object>();
+                data[name] = result;
             }
-            Dictionary<string, object> result = new Dictionary<string, object>();
-            data[name] = result;
+            return result;
+        }
+
+        internal static List<object> GetOrCreateList(Dictionary<string, object> data, string name)
+        {
+            object obj;
+            List<object> result;
+            if (!data.TryGetValue(name, out obj) || (result = obj as List<object>) == null)
+            {
+                result = new List<object>();
+                data[name] = result;
+            }
             return result;
         }
 

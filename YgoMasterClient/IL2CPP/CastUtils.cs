@@ -16,6 +16,13 @@ namespace IL2CPP
 
         }
 
+        public static IntPtr IL2Typeof(string typeName, string namespaceName, string assemblyName)
+        {
+            IL2Class ilType = null;
+            ilType = Assembler.GetAssembly(assemblyName).GetClass(typeName, namespaceName);
+            return IL2Typeof(ilType);
+        }
+
         internal static IntPtr IL2Typeof(this Type type)
         {
             IL2Class ilType = null;

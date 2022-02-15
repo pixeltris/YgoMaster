@@ -24,6 +24,11 @@ namespace YgoMaster
         /// </summary>
         public string File;
 
+        public bool IsYdkDeck
+        {
+            get { return !string.IsNullOrEmpty(File) && File.ToLowerInvariant().EndsWith(".ydk"); }
+        }
+
         public DeckInfo()
         {
             Accessory = new DeckAccessoryInfo();
@@ -79,9 +84,15 @@ namespace YgoMaster
             {
                 name = "Deck";
             }
+            bool asYdk = false;
+            if (name.EndsWith(".ydk", StringComparison.InvariantCultureIgnoreCase))
+            {
+                name = name.Substring(0, name.Length - 4);
+                asYdk = true;
+            }
             for (int i = 0; i < int.MaxValue; i++)
             {
-                File = System.IO.Path.Combine(targetDir, name + (i == 0 ? "" : "-" + i) + ".json");
+                File = System.IO.Path.Combine(targetDir, name + (i == 0 ? "" : "-" + i) + (asYdk ? ".ydk" : ".json"));
                 if (!System.IO.File.Exists(File))
                 {
                     break;
@@ -124,6 +135,51 @@ namespace YgoMaster
                 { longKeys ? "Extra" : "e", ExtraDeckCards.ToDictionary(longKeys) },
                 { longKeys ? "Side" : "s", SideDeckCards.ToDictionary(longKeys) }
             };
+        }
+
+        public void FromDictionaryEx(Dictionary<string, object> data)
+        {
+            if (data == null)
+            {
+                return;
+            }
+            Name = GameServer.GetValue<string>(data, "name");
+            TimeCreated = GameServer.GetValue<uint>(data, "timeCreated");
+            TimeEdited = GameServer.GetValue<uint>(data, "timeEdited");
+            Accessory.FromDictionary(GameServer.GetDictionary(data, "accessory"));
+            DisplayCards.FromIndexedDictionary(GameServer.GetDictionary(data, "focus"));
+            MainDeckCards.FromDictionary(GameServer.GetDictionary(data, "m"));
+            ExtraDeckCards.FromDictionary(GameServer.GetDictionary(data, "e"));
+            SideDeckCards.FromDictionary(GameServer.GetDictionary(data, "s"));
+        }
+
+        public Dictionary<string, object> ToDictionaryEx()
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data["name"] = Name;
+            data["timeCreated"] = TimeCreated;
+            data["timeEdited"] = TimeEdited;
+            data["accessory"] = Accessory.ToDictionary();
+            data["focus"] = DisplayCards.ToIndexDictionary();
+            data["m"] = MainDeckCards.ToDictionary();
+            data["e"] = ExtraDeckCards.ToDictionary();
+            data["s"] = SideDeckCards.ToDictionary();
+            return data;
+        }
+
+        public Dictionary<string, object> ToDictionaryStructureDeck()
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data["structure_id"] = Id;
+            data["accessory"] = Accessory.ToDictionary();
+            data["focus"] = DisplayCards.ToDictionary();
+            data["contents"] = new Dictionary<string, object>()
+            {
+                { "m", MainDeckCards.ToDictionary() },
+                { "e", ExtraDeckCards.ToDictionary() },
+                { "s", SideDeckCards.ToDictionary() },
+            };
+            return data;
         }
     }
 

@@ -1,5 +1,5 @@
 // https://github.com/pixeltris/SonyAlphaUSB/blob/fd69cbb818f3ce0b0ccc01a734c822ecbe9d1147/WIA%20Logger/SonyAlphaUSBLoader.cpp
-// cl YgoMasterLoader.cpp /LD /Fe:../Build/YgoMasterLoader.dll (compile with x64 tools)
+// cl YgoMasterLoader.cpp /LD /DWITHDETOURS /Fe:../Build/YgoMasterLoader.dll (compile with x64 tools)
 //
 // Notes about detours:
 // - This version was used https://github.com/microsoft/Detours/releases/tag/v4.0.1
@@ -9,13 +9,17 @@
 #include <wchar.h>
 #include <stdio.h>
 #include <metahost.h>
+#if WITHDETOURS
 #include "detours.h"
+#endif
 #undef _MSC_VER
 #include "min_minhook.h"
 
 #pragma comment(lib, "mscoree.lib")
 #pragma comment(lib, "user32.lib")
+#if WITHDETOURS
 #pragma comment(lib, "detours.lib")
+#endif
 
 #ifdef __cplusplus
 #define LIBRARY_API extern "C" __declspec (dllexport)
@@ -82,10 +86,12 @@ LIBRARY_API MH_STATUS WL_EnableAllHooks(BOOL enable)
     return EnableAllHooksLL(enable);
 }
 
+#if WITHDETOURS
 LIBRARY_API BOOL DetourCreateProcessWithDll_Exported(LPCSTR lpApplicationName, LPSTR lpCommandLine, LPSECURITY_ATTRIBUTES lpProcessAttributes, LPSECURITY_ATTRIBUTES lpThreadAttributes, BOOL bInheritHandles, DWORD dwCreationFlags, LPVOID lpEnvironment, LPCSTR lpCurrentDirectory, LPSTARTUPINFOA lpStartupInfo, LPPROCESS_INFORMATION lpProcessInformation, LPCSTR lpDllName, PDETOUR_CREATE_PROCESS_ROUTINEA pfCreateProcessA)
 {
     return DetourCreateProcessWithDll(lpApplicationName, lpCommandLine, lpProcessAttributes, lpThreadAttributes, bInheritHandles, dwCreationFlags, lpEnvironment, lpCurrentDirectory, lpStartupInfo, lpProcessInformation, lpDllName, pfCreateProcessA);
 }
+#endif
 
 HRESULT LoadDotNetImpl()
 {

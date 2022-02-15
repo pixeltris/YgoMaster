@@ -8,6 +8,7 @@ namespace YgoMaster
 {
     class Player
     {
+        public bool RequiresSaving;
         public uint Code;
         public string Name;
         public int Rank;
@@ -89,6 +90,41 @@ namespace YgoMaster
                         }
                     }
                 }
+            }
+        }
+
+        public void AddItem(int itemId, int amount)
+        {
+            ItemID.Category category = ItemID.GetCategoryFromID(itemId);
+            switch (category)
+            {
+                case ItemID.Category.CONSUME:
+                    switch ((ItemID.CONSUME)itemId)
+                    {
+                        case ItemID.CONSUME.ID0001:
+                        case ItemID.CONSUME.ID0002:
+                            Gems += amount;
+                            break;
+                        case ItemID.CONSUME.ID0003: CraftPoints.Add(CardRarity.Normal, amount); break;
+                        case ItemID.CONSUME.ID0004: CraftPoints.Add(CardRarity.Rare, amount); break;
+                        case ItemID.CONSUME.ID0005: CraftPoints.Add(CardRarity.SuperRare, amount); break;
+                        case ItemID.CONSUME.ID0006: CraftPoints.Add(CardRarity.UltraRare, amount); break;
+                        case ItemID.CONSUME.ID0008: OrbPoints.Add(OrbType.Dark, amount); break;
+                        case ItemID.CONSUME.ID0009: OrbPoints.Add(OrbType.Light, amount); break;
+                        case ItemID.CONSUME.ID0010: OrbPoints.Add(OrbType.Earth, amount); break;
+                        case ItemID.CONSUME.ID0011: OrbPoints.Add(OrbType.Water, amount); break;
+                        case ItemID.CONSUME.ID0012: OrbPoints.Add(OrbType.Fire, amount); break;
+                        case ItemID.CONSUME.ID0013: OrbPoints.Add(OrbType.Wind, amount); break;
+                    }
+                    break;
+                case ItemID.Category.STRUCTURE:
+                    throw new Exception("Use GiveStructureDeck to add structure decks");
+                case ItemID.Category.CARD:
+                    Cards.Add(itemId, amount, PlayerCardKind.Dismantle, CardStyleRarity.Normal);
+                    break;
+                default:
+                    Items.Add(itemId);
+                    break;
             }
         }
     }
@@ -336,10 +372,10 @@ namespace YgoMaster
             return cards.Keys;
         }
 
-        public Dictionary<string, object> CardToDictionary(int cardId, Dictionary<int, int> cardRare)
+        public Dictionary<string, object> CardToDictionary(int cardId, Dictionary<int, int> cardRare = null)
         {
             int rarity;
-            if (!cardRare.TryGetValue(cardId, out rarity))
+            if (cardRare == null || !cardRare.TryGetValue(cardId, out rarity))
             {
                 rarity = 1;
             }
@@ -354,7 +390,7 @@ namespace YgoMaster
                 return new Dictionary<string, object>()
                 {
                     { "st", state.Time },
-                    { "r", rarity },
+                    { "r", rarity },// The card rarity. I don't think this impacts anything so the current code path sets this to 1
                     { "n", state.Get(PlayerCardKind.Dismantle, CardStyleRarity.Normal) },
                     { "p1n", state.Get(PlayerCardKind.Dismantle, CardStyleRarity.Shine) },
                     { "p2n", state.Get(PlayerCardKind.Dismantle, CardStyleRarity.Royal) },
@@ -378,7 +414,7 @@ namespace YgoMaster
             };
         }
 
-        public Dictionary<string, object> ToDictionary(Dictionary<int, int> cardRare)
+        public Dictionary<string, object> ToDictionary(Dictionary<int, int> cardRare = null)
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
             foreach (int cardId in GetIDs())
@@ -646,17 +682,28 @@ namespace YgoMaster
             }
         }
 
-        public PlayerShopItemAvailability GetAvailability(ShopItemInfo shopItem)
+        public long GetPurchasedCount(ShopItemInfo shopItem)
+        {
+            PlayerShopItemState state = GetItemState(shopItem);
+            return state != null ? state.PurchaseCount : 0;
+        }
+
+        public PlayerShopItemAvailability GetAvailability(ShopInfo shop, ShopItemInfo shopItem)
         {
             long buyLimit, expireTime;
             bool isNew;
-            return GetAvailability(shopItem, out buyLimit, out expireTime, out isNew);
+            return GetAvailability(shop, shopItem, out buyLimit, out expireTime, out isNew);
         }
 
-        public PlayerShopItemAvailability GetAvailability(ShopItemInfo shopItem, out long buyLimit, out long expireTime, out bool isNew)
+        public PlayerShopItemAvailability GetAvailability(ShopInfo shop, ShopItemInfo shopItem, out long buyLimit, out long expireTime, out bool isNew)
         {
             buyLimit = 0;
             expireTime = 0;
+            isNew = false;
+            if (shop.UnlockAllSecrets)
+            {
+                return PlayerShopItemAvailability.Available;
+            }
             PlayerShopItemState state = GetItemState(shopItem);
             isNew = state.IsNew;
             if (shopItem.SecretType != ShopItemSecretType.None)
@@ -689,17 +736,9 @@ namespace YgoMaster
                 {
                     return PlayerShopItemAvailability.Purchased;
                 }
-                if (buyLimit == 0 || shopItem.Buylimit - state.UnlockedPurchaseCount < buyLimit)
+                if (buyLimit == 0 || shopItem.Buylimit - state.PurchaseCount < buyLimit)
                 {
-                    buyLimit = shopItem.Buylimit - state.UnlockedPurchaseCount;
-                }
-            }
-            if (shopItem.ExpireDateTime > 0 && (shopItem.ExpireDateTime < expireTime || expireTime == 0))
-            {
-                expireTime = shopItem.ExpireDateTime;
-                if (expireTime < GameServer.GetEpochTime())
-                {
-                    return PlayerShopItemAvailability.Hidden;
+                    buyLimit = shopItem.Buylimit - state.PurchaseCount;
                 }
             }
             return PlayerShopItemAvailability.Available;

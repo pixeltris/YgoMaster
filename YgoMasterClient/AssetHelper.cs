@@ -10,9 +10,10 @@ namespace YgoMasterClient
 {
     unsafe static partial class AssetHelper
     {
-        public static bool ShouldDumpData = false;
+        public static bool ShouldDumpData;
+        public static bool LogAssets;
 
-        // TODO: Put these definitions into nested classes
+        // TODO: Put these definitions into nested classes (or just use more explicit names)
 
         // YgomSystem.Utility.DeviceInfo
         static IL2Method methodGetResourceType;
@@ -60,6 +61,10 @@ namespace YgoMasterClient
         static IL2Method methodSetPath;
         static IL2Method methodGetLoadPath;
         static IL2Method methodSetLoadPath;
+
+        // YgomGame.Card.Content
+        static IL2Field fieldContentInstance;
+        static IL2Method methodGetBytesDecryptionData;
 
         // UnityEngine.ImageConversionModule.ImageConversion
         static IL2Class imageConversionClassInfo;
@@ -195,6 +200,8 @@ namespace YgoMasterClient
 
         static AssetHelper()
         {
+            // Removed as there is a memory corruption issue with the custom asset loader (something being GCed?)
+            return;
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
 
             IL2Class deviceInfoClassInfo = assembly.GetClass("DeviceInfo", "YgomSystem.Utility");
@@ -232,6 +239,10 @@ namespace YgoMasterClient
             methodSetPath = resourceClassInfo.GetProperty("Path").GetSetMethod();
             methodGetLoadPath = resourceClassInfo.GetProperty("LoadPath").GetGetMethod();
             methodSetLoadPath = resourceClassInfo.GetProperty("LoadPath").GetSetMethod();
+
+            IL2Class contentClassInfo = assembly.GetClass("Content", "YgomGame.Card");
+            fieldContentInstance = contentClassInfo.GetField("s_instance");
+            methodGetBytesDecryptionData = contentClassInfo.GetMethod("GetBytesDecryptionData");
 
             IL2Assembly imageConversionAssembly = Assembler.GetAssembly("UnityEngine.ImageConversionModule");
             imageConversionClassInfo = imageConversionAssembly.GetClass("ImageConversion");
@@ -301,6 +312,10 @@ namespace YgoMasterClient
 
                     int width = methodGetWidth.Invoke(texture).GetValueRef<int>();
                     int height = methodGetHeight.Invoke(texture).GetValueRef<int>();
+                    if (width == 0 || height == 0)
+                    {
+                        return null;
+                    }
                     int depthBuffer = 0;
                     int renderTextureFormat = RenderTextureFormat_ARGB32;
                     IL2Object rt = methodGetTemporary.Invoke(new IntPtr[] { new IntPtr(&width), new IntPtr(&height), new IntPtr(&depthBuffer), new IntPtr(&renderTextureFormat) });
@@ -378,6 +393,10 @@ namespace YgoMasterClient
 
         static IntPtr SpriteFromTexture(IntPtr texture, string assetName)
         {
+            if (texture == IntPtr.Zero)
+            {
+                return IntPtr.Zero;
+            }
             int width = methodGetWidth.Invoke(texture).GetValueRef<int>();
             int height = methodGetHeight.Invoke(texture).GetValueRef<int>();
             Rect rect = new Rect(0, 0, width, height);
@@ -465,7 +484,7 @@ namespace YgoMasterClient
                         assetsArray[1] = newSpriteAsset;
                     }
 
-                    // TODO: Remove what is not required below (and/or directly set them via k__BackingField entries)
+                    // TODO: Remove what is not required (and/or directly set them via k__BackingField entries)
                     bool done = true;
                     int resType = (int)ResourceManager_Resource_Type.LocalFile;
                     int queueId = (int)ResourceManager_ReqType.Default;
@@ -511,7 +530,22 @@ namespace YgoMasterClient
             }
             return hookLoadImmediate.Original(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify);
         }
-        delegate IntPtr pfunc(IntPtr thisPtr);
+
+        public static byte[] GetBytesDecryptionData(string path)
+        {
+            IL2Object bytesArrayObj = null;
+            IL2Object instance = fieldContentInstance.GetValue();
+            if (instance != null)
+            {
+                hookLoadImmediate.Original(resourceMangerInstance, new IL2String(path).ptr, IntPtr.Zero, IntPtr.Zero, false);
+                bytesArrayObj = methodGetBytesDecryptionData.Invoke(instance, new IntPtr[] { new IL2String(path).ptr });
+                if (bytesArrayObj != null)
+                {
+                    return new IL2Array<byte>(bytesArrayObj.ptr).ToByteArray();
+                }
+            }
+            return null;
+        }
 
         static IntPtr GetResource(IntPtr thisPtr, IntPtr pathPtr, IntPtr workPathPtr)
         {
@@ -519,9 +553,14 @@ namespace YgoMasterClient
             if (pathPtr != IntPtr.Zero)
             {
                 string inputPath = new IL2String(pathPtr).ToString();
+                if (LogAssets)
+                {
+                    Console.WriteLine(inputPath);
+                }
                 const string gateBgHeader = "Prefabs/Solo/BackGrounds/Front/gateBGUI";
                 if (inputPath.StartsWith(gateBgHeader) && int.TryParse(inputPath.Substring(gateBgHeader.Length), out soloGateBgId) && !FileExists(inputPath))
                 {
+                    // NOTE: This will most likely keep the asset in the ResourceManager for the lifetime of the process (no Unload call)
                     pathPtr = new IL2String(gateBgHeader + "0001").ptr;
                     hookLoadImmediate.Original(thisPtr, pathPtr, IntPtr.Zero, IntPtr.Zero, false);
                 }
@@ -537,6 +576,40 @@ namespace YgoMasterClient
             if (loadPathObj != null)
             {
                 loadPath = loadPathObj.GetValueObj<string>();
+            }
+
+            if (ShouldDumpData && !string.IsNullOrEmpty(loadPath))
+            {
+                if (loadPath.StartsWith("External/CardCategory/") ||
+                    loadPath.StartsWith("Card/Data/"))
+                {
+                    string fullPath = Path.Combine(Program.ClientDataDumpDir, loadPath + ".bytes");
+                    if (!File.Exists(fullPath))
+                    {
+                        IL2Object bytesArrayObj = null;
+                        if (!(loadPath.Contains("CARD_") || loadPath.Contains("DLG_") || loadPath.Contains("WORD_")))
+                        {
+                            bytesArrayObj = methodGetBytes.Invoke(resourcePtr);
+                        }
+                        if (bytesArrayObj != null)
+                        {
+                            byte[] buffer = new IL2Array<byte>(bytesArrayObj.ptr).ToByteArray();
+                            if (buffer != null && buffer.Length > 0)
+                            {
+                                try
+                                {
+                                    Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+                                }
+                                catch { }
+                                try
+                                {
+                                    File.WriteAllBytes(fullPath, buffer);
+                                }
+                                catch { }
+                            }
+                        }
+                    }
+                }
             }
 
             IL2Object assetsArrayObj = methodGetAssets.Invoke(resourcePtr);

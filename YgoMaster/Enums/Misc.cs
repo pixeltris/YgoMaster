@@ -164,4 +164,40 @@ namespace YgoMaster
         DuelResult = 8,
         BundleDeals = 9
     }
+
+    /// <summary>
+    /// IDS_SCORE (IDS_SCORE.DETAIL_XXX)
+    /// </summary>
+    enum DuelResultScore
+    {
+        None,
+        DuelVistory,
+        Draw,
+        ComebackVictory,
+        QuickVictory,
+        DeckOutVictory,
+        SpecialVictories,
+        NoDamage,
+        LowLP,
+        LPOnTheBrink,
+        FewCardsLeft,
+        CardsOnTheBrink,
+        Over3000Damage,
+        Over5000Damage,
+        Over9999Damage,
+        VictoryByEffectDamageOnly,
+        Destroyed5Monsters,
+        Destroyed7Monsters,
+        Destroyed10Monsters,
+        ActivatedSpell,
+        ActivatedTrap,
+        PerformedSpecialSummon,
+        PerformedTributeSummon,
+        PerformedFusionSummon,
+        PerformedRitualSummon,
+        PerformedSynchroSummon,
+        PerformedXyzSummon,
+        PerformedPendulumSummon,
+        LinkSummon
+    }
 }

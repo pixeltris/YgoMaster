@@ -14,6 +14,7 @@ namespace YgoMaster
             Dictionary<string, object> cardList = GetDictionary(request.ActParams, "card_list");
             if (cardList != null)
             {
+                Dictionary<int, int> cardRare = GetCardRarities(request.Player);
                 Dictionary<int, Dictionary<CardStyleRarity, int>> cards = new Dictionary<int, Dictionary<CardStyleRarity, int>>();
                 PlayerCraftPoints points = new PlayerCraftPoints();
                 PlayerCraftPoints totalPoints = new PlayerCraftPoints();
@@ -40,14 +41,13 @@ namespace YgoMaster
                                 request.ResultCode = (int)ResultCodes.CraftCode.ERROR_UPDATE_FAILED;
                                 return;
                             }
-                            int rarityVal;
-                            if (!CardRare.TryGetValue(cardId, out rarityVal))
+                            CardRarity rarity;
+                            if (!TryGetCardRarity(cardId, cardRare, out rarity) && !TryGetCardRarity(cardId, CardRare, out rarity))
                             {
-                                LogWarning("Couldn't find card rarity for craft/dismantle");
+                                LogWarning("Couldn't find card " + cardId + " rarity for craft/dismantle");
                                 request.ResultCode = (int)ResultCodes.CraftCode.ERROR_UPDATE_FAILED;
                                 return;
                             }
-                            CardRarity rarity = (CardRarity)rarityVal;
                             int pointCount = 0;
                             if (isCraft)
                             {
@@ -83,7 +83,7 @@ namespace YgoMaster
                                             {
                                                 case ShopItemSecretType.FindOrCraft:
                                                 case ShopItemSecretType.Craft:
-                                                    if (request.Player.ShopState.GetAvailability(secretPack) == PlayerShopItemAvailability.Available)
+                                                    if (request.Player.ShopState.GetAvailability(Shop, secretPack) == PlayerShopItemAvailability.Available)
                                                     {
                                                         foundSecretsExtend.Add(secretPack.ShopId);
                                                     }
@@ -156,6 +156,27 @@ namespace YgoMaster
                 {
                     request.Player.CraftPoints.Add(points);
                 }
+                foreach (CardRarity rarity in Enum.GetValues(typeof(CardRarity)))
+                {
+                    CraftPointRollover rollover;
+                    if (Craft.Rollover.TryGetValue(rarity, out rollover) && rollover.At > 0 && rollover.Take > 0 && rollover.Give > 0)
+                    {
+                        // TODO: Maybe do this without the loop?
+                        while (true)
+                        {
+                            int num = request.Player.CraftPoints.Get(rarity);
+                            if (num >= rollover.At)
+                            {
+                                request.Player.CraftPoints.Subtract(rarity, rollover.Take);
+                                request.Player.CraftPoints.Add(rarity + 1, rollover.Give);
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
                 SavePlayer(request.Player);
                 request.Response["Item"] = new Dictionary<string, object>()
                 {
@@ -190,7 +211,7 @@ namespace YgoMaster
                     HowToObtainCard howToObtain = i == 0 ? HowToObtainCard.Pack : HowToObtainCard.SalesStructure;
                     foreach (ShopItemInfo shopItem in shopItems)
                     {
-                        if (!shopItem.Cards.Contains(cardId))
+                        if (!shopItem.Cards.ContainsKey(cardId))
                         {
                             continue;
                         }
@@ -199,7 +220,8 @@ namespace YgoMaster
                         {
                             case ShopItemSecretType.Find:
                             case ShopItemSecretType.FindOrCraft:
-                                isRouteOpen = request.Player.ShopState.GetAvailability(shopItem) != PlayerShopItemAvailability.Hidden;
+                            case ShopItemSecretType.Other:
+                                isRouteOpen = request.Player.ShopState.GetAvailability(Shop, shopItem) != PlayerShopItemAvailability.Hidden;
                                 break;
                             case ShopItemSecretType.None:
                                 break;

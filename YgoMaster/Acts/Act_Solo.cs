@@ -122,30 +122,8 @@ namespace YgoMaster
             return true;
         }
 
-        void OnSoloChapterComplete(GameServerWebRequest request, int chapterId)
+        void SoloUpdateChapterStatus(GameServerWebRequest request, int chapterId, DuelResultType duelResult)
         {
-            ChapterStatus currentStatus;
-            if (request.Player.SoloChapters.TryGetValue(chapterId, out currentStatus))
-            {
-                switch (currentStatus)
-                {
-                    case ChapterStatus.MYDECK_CLEAR:
-                        if (request.Player.Duel.IsMyDeck)
-                        {
-                            return;
-                        }
-                        break;
-                    case ChapterStatus.RENTAL_CLEAR:
-                        if (!request.Player.Duel.IsMyDeck)
-                        {
-                            return;
-                        }
-                        break;
-                    case ChapterStatus.COMPLETE:
-                        return;
-                }
-            }
-
             int gateId = GetChapterGateId(chapterId);
 
             Dictionary<string, object> allGateData = GetDictionary(SoloData, "gate");
@@ -181,6 +159,60 @@ namespace YgoMaster
                 LogWarning("Failed to get chapter data");
                 return;
             }
+
+            bool statusChange = true;
+            ChapterStatus currentStatus;
+            if (request.Player.SoloChapters.TryGetValue(chapterId, out currentStatus))
+            {
+                switch (currentStatus)
+                {
+                    case ChapterStatus.MYDECK_CLEAR:
+                        if (duelResult != DuelResultType.None && request.Player.Duel.IsMyDeck)
+                        {
+                            statusChange = false;
+                        }
+                        break;
+                    case ChapterStatus.RENTAL_CLEAR:
+                        if (duelResult != DuelResultType.None && !request.Player.Duel.IsMyDeck)
+                        {
+                            statusChange = false;
+                        }
+                        break;
+                    case ChapterStatus.COMPLETE:
+                        statusChange = false;
+                        break;
+                }
+            }
+
+            if (duelResult != DuelResultType.None)
+            {
+                // NOTE: The location of this means extra rewards will before anything else
+                Dictionary<string, object> extraRewards = GetDictionary(chapterData, "extraRewards");
+                if (extraRewards != null)
+                {
+                    DuelRewardInfos rewards = new DuelRewardInfos();
+                    rewards.FromDictionary(extraRewards);
+                    GiveDuelReward(request, rewards, duelResult, statusChange);
+                }
+            }
+
+            switch (duelResult)
+            {
+                case DuelResultType.Win:
+                case DuelResultType.None:
+                    break;
+                default:
+                    if (!GetSkippableChapterIds().Contains(request.Player.Duel.ChapterId))
+                    {
+                        return;
+                    }
+                    break;
+            }
+            if (!statusChange)
+            {
+                return;
+            }
+
             int myDeckSetId = GetValue<int>(chapterData, "mydeck_set_id");
             int loanerDeckSetId = GetValue<int>(chapterData, "set_id");
             int targetSetId = 0;
@@ -230,8 +262,13 @@ namespace YgoMaster
                 targetSetId = loanerDeckSetId != 0 ? loanerDeckSetId : myDeckSetId;
                 newStatus = ChapterStatus.COMPLETE;
             }
+            DuelRewardInfos duelRewards = null;
+            if (SoloRewardsInDuelResult)
+            {
+                duelRewards = new DuelRewardInfos();
+            }
             List<object> resultRewards = new List<object>();
-            List<object> resultSub = new List<object>();
+            List<object> resultSubtractItems = new List<object>();
             Dictionary<string, object> allRewardData = GetDictionary(SoloData, "reward");
             if (allRewardData == null)
             {
@@ -390,7 +427,7 @@ namespace YgoMaster
                                                         break;
                                                 }
                                                 WriteItem(request, itemId);
-                                                resultSub.Add(new Dictionary<string, object>()
+                                                resultSubtractItems.Add(new Dictionary<string, object>()
                                                 {
                                                     { "category", (int)category },
                                                     { "item_id", itemId },
@@ -430,37 +467,27 @@ namespace YgoMaster
                         {
                             case ItemID.Category.CONSUME:
                                 {
-                                    switch ((ItemID.CONSUME)itemId)
+                                    if (!SoloRewardsInDuelResult)
                                     {
-                                        case ItemID.CONSUME.ID0001:
-                                            request.Player.Gems += count;
-                                            break;
-                                        case ItemID.CONSUME.ID0003: request.Player.CraftPoints.Add(CardRarity.Normal, count); break;
-                                        case ItemID.CONSUME.ID0004: request.Player.CraftPoints.Add(CardRarity.Rare, count); break;
-                                        case ItemID.CONSUME.ID0005: request.Player.CraftPoints.Add(CardRarity.SuperRare, count); break;
-                                        case ItemID.CONSUME.ID0006: request.Player.CraftPoints.Add(CardRarity.UltraRare, count); break;
-                                        case ItemID.CONSUME.ID0008: request.Player.OrbPoints.Add(OrbType.Dark, count); break;
-                                        case ItemID.CONSUME.ID0009: request.Player.OrbPoints.Add(OrbType.Light, count); break;
-                                        case ItemID.CONSUME.ID0010: request.Player.OrbPoints.Add(OrbType.Earth, count); break;
-                                        case ItemID.CONSUME.ID0011: request.Player.OrbPoints.Add(OrbType.Water, count); break;
-                                        case ItemID.CONSUME.ID0012: request.Player.OrbPoints.Add(OrbType.Fire, count); break;
-                                        case ItemID.CONSUME.ID0013: request.Player.OrbPoints.Add(OrbType.Wind, count); break;
-                                        default:
-                                            LogWarning("Unhandled CONSUME item " + itemId);
-                                            valid = false;
-                                            break;
+                                        request.Player.AddItem(itemId, count);
                                     }
                                 }
                                 break;
                             case ItemID.Category.CARD:
                                 {
-                                    request.Player.Cards.Add(itemId, count, PlayerCardKind.NoDismantle, CardStyleRarity.Normal);
+                                    if (!SoloRewardsInDuelResult)
+                                    {
+                                        request.Player.Cards.Add(itemId, count, PlayerCardKind.NoDismantle, CardStyleRarity.Normal);
+                                    }
                                 }
                                 break;
                             case ItemID.Category.STRUCTURE:
                                 {
                                     count = 1;
-                                    GiveStructureDeck(request, itemId);
+                                    if (!SoloRewardsInDuelResult)
+                                    {
+                                        GiveStructureDeck(request, itemId);
+                                    }
                                 }
                                 break;
                             case ItemID.Category.AVATAR:
@@ -473,7 +500,10 @@ namespace YgoMaster
                             case ItemID.Category.FIELD:
                                 {
                                     count = 1;
-                                    request.Player.Items.Add(itemId);
+                                    if (!SoloRewardsInDuelResult)
+                                    {
+                                        request.Player.AddItem(itemId, count);
+                                    }
                                 }
                                 break;
                             case ItemID.Category.PROFILE_TAG:
@@ -491,18 +521,93 @@ namespace YgoMaster
                         }
                         if (valid)
                         {
-                            WriteItem(request, itemId);
-                            resultRewards.Add(new Dictionary<string, object>()
+                            if (SoloRewardsInDuelResult)
                             {
-                                { "category", (int)category },
-                                { "item_id", itemId },
-                                { "num", count },
-                                { "type", (int)category },
-                            });
+                                DuelRewardInfo duelReward = new DuelRewardInfo();
+                                duelReward.MinValue = duelReward.MaxValue = count;
+                                duelReward.Rate = 100;
+                                duelReward.Rare = SoloRewardsInDuelResultAreRare;
+                                duelReward.Ids = new List<int>();
+                                duelReward.Ids.Add(itemId);
+                                duelReward.CardNoDismantle = true;
+                                switch (category)
+                                {
+                                    case ItemID.Category.CARD:
+                                        duelReward.Type = DuelCustomRewardType.Card;
+                                        break;
+                                    default:
+                                        // This can also handle gems
+                                        duelReward.Type = DuelCustomRewardType.Item;
+                                        break;
+                                }
+                                duelRewards.Win.Add(duelReward);
+                            }
+                            else
+                            {
+                                WriteItem(request, itemId);
+                                resultRewards.Add(new Dictionary<string, object>()
+                                {
+                                    { "category", (int)category },
+                                    { "item_id", itemId },
+                                    { "num", count },
+                                    { "type", (int)category },
+                                });
+                            }
                         }
                     }
                 }
             }
+            Dictionary<string, object> unlockedPackData = null;
+            if (newStatus == ChapterStatus.COMPLETE)
+            {
+                object unlockSecretObj;
+                if (chapterData.TryGetValue("unlock_secret", out unlockSecretObj))// custom
+                {
+                    List<int> unlockSecretIds = new List<int>();
+                    if (unlockSecretObj is List<int>)
+                    {
+                        foreach (object idObj in unlockSecretObj as List<int>)
+                        {
+                            unlockSecretIds.Add((int)Convert.ChangeType(idObj, typeof(int)));
+                        }
+                    }
+                    else
+                    {
+                        unlockSecretIds.Add((int)Convert.ChangeType(unlockSecretObj, typeof(int)));
+                    }
+                    foreach (int unlockSecretId in unlockSecretIds)
+                    {
+                        ShopItemInfo secretPack;
+                        if (unlockSecretId > 0 && Shop.PacksByPackId.TryGetValue(unlockSecretId, out secretPack))
+                        {
+                            switch (secretPack.SecretType)
+                            {
+                                case ShopItemSecretType.Find:
+                                case ShopItemSecretType.FindOrCraft:
+                                case ShopItemSecretType.Other:
+                                    bool isHidden = request.Player.ShopState.GetAvailability(Shop, secretPack) == PlayerShopItemAvailability.Hidden;
+                                    if (isHidden)
+                                    {
+                                        request.Player.ShopState.New(secretPack);
+                                    }
+                                    request.Player.ShopState.Unlock(secretPack);
+                                    if ((isChapterGoal || SoloShowGateClearForAllSecretPacks) && unlockedPackData == null)
+                                    {
+                                        unlockedPackData = new Dictionary<string, object>()
+                                        {
+                                            { "nameTextId", FixIdString(secretPack.NameText) },
+                                            { "shopId", secretPack.ShopId },
+                                            { "iconMrk", secretPack.IconMrk },
+                                            { "is_extend", !isHidden }
+                                        };
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+
             request.Player.SoloChapters[chapterId] = newStatus;
             SavePlayer(request.Player);
 
@@ -512,16 +617,32 @@ namespace YgoMaster
             gateClearedData[chapterId.ToString()] = (int)newStatus;
 
             Dictionary<string, object> resultData = GetOrCreateDictionary(soloData, "Result");
-            resultData["rewards"] = resultRewards;
-            resultData["sub"] = resultSub;
-            if (isChapterGoal)
+            if (SoloRewardsInDuelResult)
             {
-                // TODO: Support unlocking secret packs
-                // "gate_clear":{"gate":6,"pack":{"nameTextId":"IDS_CARDPACK_ID2081_NAME","shopId":10002081,"iconMrk":13579,"is_extend":true}}
-                resultData["gate_clear"] = new Dictionary<string, object>()
+                GiveDuelReward(request, duelRewards, DuelResultType.Win, true);
+            }
+            // NOTE: You need the "rewards" entry (even if empty) to get the "COMPLETE" popup banner
+            if (!resultData.ContainsKey("rewards"))
+            {
+                resultData["rewards"] = resultRewards;
+            }
+            else
+            {
+                (resultData["rewards"] as List<object>).AddRange(resultRewards);
+            }
+            resultData["sub"] = resultSubtractItems;
+            if (isChapterGoal || unlockedPackData != null)
+            {
+                Dictionary<string, object> gateClear = new Dictionary<string, object>();
+                if (isChapterGoal)
                 {
-                    { "gate", gateId }
+                    gateClear["gate"] = gateId;
                 };
+                if (unlockedPackData != null)
+                {
+                    gateClear["pack"] = unlockedPackData;
+                }
+                resultData["gate_clear"] = gateClear;
             }
 
             request.Remove("Solo.Result");
@@ -537,7 +658,8 @@ namespace YgoMaster
             {
                 { "Solo", SoloData }
             };
-            WriteSolo(request);
+            request.GetOrCreateDictionary("Solo")["cleared"] = request.Player.SoloChaptersToDictionary();
+            WriteSolo_deck_info(request);
             request.Remove("Master.solo", "Solo");
         }
 
@@ -623,7 +745,7 @@ namespace YgoMaster
                 }
                 else if (IsValidNonDuelChapter(chapterId))
                 {
-                    OnSoloChapterComplete(request, chapterId);
+                    SoloUpdateChapterStatus(request, chapterId, DuelResultType.None);
                 }
                 else
                 {
@@ -640,7 +762,7 @@ namespace YgoMaster
             if (TryGetValue<int>(request.ActParams, "chapter", out chapterId))
             {
                 // Assumes the client knows what it should / shouldn't skip
-                OnSoloChapterComplete(request, chapterId);
+                SoloUpdateChapterStatus(request, chapterId, DuelResultType.None);
             }
             request.Remove("Duel", "DuelResult", "Solo.DuelResult");
         }

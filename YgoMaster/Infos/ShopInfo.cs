@@ -18,9 +18,65 @@ namespace YgoMaster
         public Dictionary<int, ShopItemInfo> AllShops { get; private set; }
         public Dictionary<int, ShopItemInfo> PacksByPackId { get; private set; }
         public Dictionary<int, List<ShopItemInfo>> SecretPacksByCardId { get; private set; }
+        
         public ShopItemInfo StandardPack;
-        public long DefaultSecretDuration;
+
+        /// <summary>
+        /// Put all cards in the main standard pack
+        /// </summary>
         public bool PutAllCardsInStandardPack;
+
+        /// <summary>
+        /// Use rarities as defined on individual packs (or the default rarities if not defined)
+        /// This only applies to rarities in the shop. When you leave the shop the regular rarities will be used.
+        /// </summary>
+        public bool PerPackRarities;
+
+        /// <summary>
+        /// Disable card style rarity (shine / royal) on cards obtained from the shop
+        /// </summary>
+        public bool DisableCardStyleRarity;
+
+        /// <summary>
+        /// Unlock all secret packs by default
+        /// </summary>
+        public bool UnlockAllSecrets;
+
+        /// <summary>
+        /// Disable the ultra rare guarantee (which is determined based on whether the previous 10 pack didn't have an UR)
+        /// </summary>
+        public bool DisableUltraRareGuarantee;
+
+        /// <summary>
+        /// Upgrade card rarity if the given card rarity is not found (and no lower rarities are found).
+        /// If this occurs and this is false no card will be given.
+        /// </summary>
+        public bool UpgradeRarityWhenNotFound;
+
+        /// <summary>
+        /// Don't show duplicate cards in an individual pack
+        /// TODO: Add another option to greatly reduce the chance of duplicates instead
+        /// </summary>
+        public bool NoDuplicatesPerPack;
+
+        // Default = the price if prices aren't defined
+        // Override = an override to replace all existing prices
+
+        public long DefaultSecretDuration;
+        public long OverrideSecretDuration;
+
+        public int DefaultPackPrice;
+        public int DefaultPackPriceX10;
+        public int OverridePackPrice;
+        public int OverridePackPriceX10;
+        public int DefaultPackCardNum;
+        public int OverridePackCardNum;
+
+        public int DefaultStructureDeckPrice;
+        public int OverrideStructureDeckPrice;
+
+        public int DefaultUnlockSecretsAtPercent;
+        public int OverrideUnlockSecretsAtPercent;
 
         public ShopInfo()
         {
@@ -62,12 +118,18 @@ namespace YgoMaster
         public string NameText;
         public string DescShortText;
         public string DescFullText;
+        public bool DescTextGenerated;// If true generate DescShortText/DescFullText based on pack info (card count, cards obtained)
         public int IconMrk;
         public ShopItemIconType IconType;
         public string IconData;
         public string Preview;
         public HashSet<int> SearchCategory { get; private set; }
         public List<ShopItemPrice> Prices { get; private set; }
+
+        /// <summary>
+        /// Release date used for IRL sets
+        /// </summary>
+        public DateTime ReleaseDate;
 
         /// <summary>
         /// Unlockable shop item which is hidden by default
@@ -86,14 +148,9 @@ namespace YgoMaster
         /// </summary>
         public int Buylimit;
 
-        /// <summary>
-        /// A fixed date/time for the shop item to expire
-        /// </summary>
-        public long ExpireDateTime;
-
         // Card pack info
         public ShopPackType PackType;
-        public HashSet<int> Cards { get; private set; }
+        public Dictionary<int, CardRarity> Cards { get; private set; }// CardRarity is only used on official sets (to support custom rarities per-pack)
         public int CardNum;
         public int Power;
         public int Flexibility;
@@ -103,11 +160,33 @@ namespace YgoMaster
         /// </summary>
         public string OddsName;
 
+        /// <summary>
+        /// The image to use when opening the pack (e.g. "CardPackTex01_0000" / "CardPackTex03_4041")
+        /// This is usually "CardPackTexXX_YYYY" where XX is is the pack type (standard/selection/secret/bonus) and YYYY is the card id on the pack)
+        /// </summary>
+        public string PackImageName;
+
+        /// <summary>
+        /// The secret packs to unlock once a certain percent of this pack has been obtained (a list of pack ids)
+        /// </summary>
+        public List<int> UnlockSecrets { get; private set; }
+        /// <summary>
+        /// The percent of completion at which to unlock linked secret packs
+        /// </summary>
+        public double UnlockSecretsAtPercent;
+
+        /// <summary>
+        /// A list of shop other ids which should have an incremented purchase count when this shop item is purchased
+        /// </summary>
+        public List<int> SetPurchased { get; private set; }
+
         public ShopItemInfo()
         {
             SearchCategory = new HashSet<int>();
             Prices = new List<ShopItemPrice>();
-            Cards = new HashSet<int>();
+            Cards = new Dictionary<int, CardRarity>();
+            UnlockSecrets = new List<int>();
+            SetPurchased = new List<int>();
         }
 
         public ShopOddsInfo GetOdds(ShopInfo shop)
@@ -143,23 +222,115 @@ namespace YgoMaster
             }
             return CardRarity.Normal;
         }
+
+        public double GetPercentComplete(Player player)
+        {
+            int numObtained;
+            return GetPercentComplete(player, out numObtained);
+        }
+
+        public double GetPercentComplete(Player player, out int numObtained)
+        {
+            numObtained = 0;
+            foreach (int cardId in Cards.Keys)
+            {
+                if (player.Cards.GetCount(cardId) > 0)
+                {
+                    numObtained++;
+                }
+            }
+            return ((double)numObtained / (double)Cards.Count) * 100.0;
+        }
+
+        public List<ShopItemInfo> DoUnlockSecrets(Player player, ShopInfo shop)
+        {
+            List<ShopItemInfo> result = null;
+            if (UnlockSecrets.Count > 0 && UnlockSecretsAtPercent > 0)
+            {
+                bool isComplete = false;
+                foreach (int id in UnlockSecrets)
+                {
+                    ShopItemInfo shopItem;
+                    if (shop.PacksByPackId.TryGetValue(id, out shopItem))
+                    {
+                        if (player.ShopState.GetAvailability(shop, shopItem) == PlayerShopItemAvailability.Hidden)
+                        {
+                            if (!isComplete)
+                            {
+                                if (GetPercentComplete(player) < UnlockSecretsAtPercent)
+                                {
+                                    return null;
+                                }
+                                result = new List<ShopItemInfo>();
+                                isComplete = true;
+                            }
+                            result.Add(shopItem);
+                            player.ShopState.Unlock(shopItem);
+                            player.ShopState.New(shopItem);
+                        }
+                    }
+                }
+            }
+            if (result != null)
+            {
+                // Handle shop unlock chains. NOTE: This will result in a stackoverflow if you have a circular reference
+                foreach (ShopItemInfo item in result)
+                {
+                    List<ShopItemInfo> additionalItems = item.DoUnlockSecrets(player, shop);
+                    if (additionalItems != null)
+                    {
+                        result.AddRange(item.DoUnlockSecrets(player, shop));
+                    }
+                }
+            }
+            return result;
+        }
+
+        public bool HasUnlockedAllSecrets(Player player, ShopInfo shop)
+        {
+            foreach (int id in UnlockSecrets)
+            {
+                ShopItemInfo shopItem;
+                if (shop.PacksByPackId.TryGetValue(id, out shopItem))
+                {
+                    if (player.ShopState.GetAvailability(shop, shopItem) == PlayerShopItemAvailability.Hidden)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        public Dictionary<CardRarity, int> GetNumCardsByRarity(Dictionary<int, int> cardRare)
+        {
+            Dictionary<CardRarity, int> result = new Dictionary<CardRarity, int>();
+            result[CardRarity.Normal] = 0;
+            result[CardRarity.Rare] = 0;
+            result[CardRarity.SuperRare] = 0;
+            result[CardRarity.UltraRare] = 0;
+            foreach (int cardId in Cards.Keys)
+            {
+                // Assumes cardRare has the correct rarities filled out
+                int rarity;
+                if (cardRare.TryGetValue(cardId, out rarity))
+                {
+                    result[(CardRarity)rarity]++;
+                }
+            }
+            return result;
+        }
     }
 
     class ShopItemPrice
     {
         public int Id;
         public int Price;
-        public string TextId;
-        public List<int> TextArgs;
-        public int ButtonType;
-        /// <summary>
-        /// Additional note (i.e. "At least 1 Super Rare guaranteed in 10 Packs")
-        /// </summary>
-        public string POP;
+        public int ItemAmount;
 
         public ShopItemPrice()
         {
-            TextArgs = new List<int>();
+            ItemAmount = 1;
         }
     }
 
@@ -178,6 +349,27 @@ namespace YgoMaster
     }
 
     /// <summary>
+    /// The button style of the given price
+    /// </summary>
+    enum ShopItemPriceButtonType
+    {
+        None,// (actually blue, but most values in MD start from 1)
+
+        /// <summary>
+        /// Normal
+        /// </summary>
+        Blue,
+        /// <summary>
+        /// Super rare guaranteed
+        /// </summary>
+        Yellow,
+        /// <summary>
+        /// Ultra rare guaranteed
+        /// </summary>
+        Pink,// Pink/purple-ish
+    }
+
+    /// <summary>
     /// YgomGame.Shop.ShopDef.HighlightType
     /// </summary>
     enum ShopItemIconType
@@ -193,7 +385,7 @@ namespace YgoMaster
     {
         None,
         /// <summary>
-        /// Unlocked by finding (or crafting) a card from the pack
+        /// Unlocked by finding or crafting a card from the pack
         /// </summary>
         FindOrCraft,
         /// <summary>
@@ -205,7 +397,11 @@ namespace YgoMaster
         /// </summary>
         Craft,
         /// <summary>
-        /// Unlocked in other ways (TODO)
+        /// Unlocked in other ways. For example:
+        /// - Obtaining a certain percentage of unique cards from another pack
+        /// - Completing specific solo chapters (one issue is there wouldn't be a visual indication unless using the gate clear stuff)
+        /// NOTE: This is implemented on a case by case basis (the requirements for the unlock don't exist on the given pack itself)
+        /// NOTE: A pack which is "Find", "Craft", "FindOrCraft" can also implicitly be "Other" (i.e. have multiple ways to unlock)
         /// </summary>
         Other
     }

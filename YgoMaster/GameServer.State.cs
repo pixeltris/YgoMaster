@@ -4,13 +4,33 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Diagnostics;
+using System.Threading;
 
 namespace YgoMaster
 {
     partial class GameServer
     {
-        Player thePlayer;
+        static readonly Version highestSupportedClientVersion = new Version(int.MaxValue, int.MaxValue);
+
+        static readonly string deckSearchUrl = "https://ayk-deck.mo.konami.net/ayk/yocgapi/search";
+        static readonly string deckSearchDetailUrl = "https://ayk-deck.mo.konami.net/ayk/yocgapi/detail";
+        static readonly string deckSearchAttributesUrl = "https://ayk-deck.mo.konami.net/ayk/yocgapi/attributes";
+
+        static readonly string serverUrl = "http://localhost/ygo";
+        static readonly string serverPollUrl = "http://localhost/ygo/poll";
+
+        static string dataDirectory;
+        static string decksDirectory;
+        static string playerSettingsFile;
+        static string settingsFile;
+
         Random rand = new Random();
+        Player thePlayer;
+
+        FileSystemWatcher decksFileWatcher;
+        Thread decksFileWatcherUpdateThread;
+        HashSet<string> decksFileWatcherDecksToUpdate;
+        DateTime decksFileWatcherLastUpdate;
 
         int NumDeckSlots;
         bool UnlockAllCards;
@@ -32,15 +52,69 @@ namespace YgoMaster
         Dictionary<string, CardCategory> CardCategoriesByName;// <categoryName, CardCategory>
         DuelSettings CustomDuelSettings;
         DateTime CustomDuelLastModified;
+        DuelRewardInfos DuelRewards;
+        /// <summary>
+        /// Cards will only be visible in the trunk if they are obtainable via the shop
+        /// </summary>
+        bool ProgressiveCardList;
+        /// <summary>
+        /// Card rarities will be determined based on the following criteria:
+        /// - Find the lowest rarity of the given card in all unlocked packs
+        /// - If the lowest found rarity is higher than the main rarity list then the pack rarity will be used, else use the main rarity
+        /// </summary>
+        bool ProgressiveCardRarities;
+        /// <summary>
+        /// In solo mode show "gate clear" in order to display the secret pack unlock for chapters which aren't flagged as the goal
+        /// </summary>
+        bool SoloShowGateClearForAllSecretPacks;
+        /// <summary>
+        /// Put all solo rewards in the duel result screen (as opposed to the reward dialog popup)
+        /// </summary>
+        bool SoloRewardsInDuelResult;
+        /// <summary>
+        /// Solo rewards in the duel result screen are flagged as rare (gold box)
+        /// </summary>
+        bool SoloRewardsInDuelResultAreRare;
 
         void LoadSettings()
         {
-            //MergeShopDumps();
+            try
+            {
+                string newDataDirFile = "DataDirectory.txt";
+                if (File.Exists(newDataDirFile))
+                {
+                    string newDir = File.ReadAllLines(newDataDirFile)[0].Trim();
+                    if (Directory.Exists(newDir))
+                    {
+                        dataDirectory = newDir;
+                    }
+                }
+            }
+            catch
+            {
+            }
+            if (string.IsNullOrEmpty(dataDirectory))
+            {
+                dataDirectory = "Data";
+            }
+            if (!Directory.Exists(dataDirectory))
+            {
+                LogWarning("Failed to find data directory '" + dataDirectory + "'");
+                return;
+            }
+            settingsFile = Path.Combine(dataDirectory, "Settings.json");
+            playerSettingsFile = Path.Combine(dataDirectory, "Player.json");
+            decksDirectory = Path.Combine(dataDirectory, "Decks");
+            TryCreateDirectory(decksDirectory);
 
             if (!File.Exists(settingsFile))
             {
                 LogWarning("Failed to load settings file");
+                return;
             }
+
+            InitDecksWatcher();
+            YdkHelper.LoadIdMap(dataDirectory);
 
             string text = File.ReadAllText(settingsFile);
             Dictionary<string, object> values = MiniJSON.Json.DeserializeStripped(text) as Dictionary<string, object>;
@@ -57,24 +131,37 @@ namespace YgoMaster
             UnlockAllSoloChapters = GetValue<bool>(values, "UnlockAllSoloChapters");
             SoloRemoveDuelTutorials = GetValue<bool>(values, "SoloRemoveDuelTutorials");
             SoloDisableNoShuffle = GetValue<bool>(values, "SoloDisableNoShuffle");
+            SoloShowGateClearForAllSecretPacks = GetValue<bool>(values, "SoloShowGateClearForAllSecretPacks");
+            SoloRewardsInDuelResult = GetValue<bool>(values, "SoloRewardsInDuelResult");
+            SoloRewardsInDuelResultAreRare = GetValue<bool>(values, "SoloRewardsInDuelResultAreRare");
+            ProgressiveCardList = GetValue<bool>(values, "ProgressiveCardList");
+            ProgressiveCardRarities = GetValue<bool>(values, "ProgressiveCardRarities");
 
             CardRare = new Dictionary<int, int>();
-            Dictionary<string, object> cardRareDict = GetValue<Dictionary<string, object>>(values, "CardRare");
-            if (cardRareDict != null)
+            string cardListFile = Path.Combine(dataDirectory, "CardList.json");
+            if (File.Exists(cardListFile))
             {
-                foreach (KeyValuePair<string, object> item in cardRareDict)
+                Dictionary<string, object> cardRareDict = MiniJSON.Json.DeserializeStripped(File.ReadAllText(cardListFile)) as Dictionary<string, object>;
+                if (cardRareDict != null)
                 {
-                    CardRare[int.Parse(item.Key)] = (int)Convert.ChangeType(item.Value, typeof(int));
+                    foreach (KeyValuePair<string, object> item in cardRareDict)
+                    {
+                        CardRare[int.Parse(item.Key)] = (int)Convert.ChangeType(item.Value, typeof(int));
+                    }
                 }
             }
 
             CardCraftable = new List<int>();
-            List<object> cardCrList = GetValue<List<object>>(values, "CardCr");
-            if (cardCrList != null)
+            string cardCraftableListFile = Path.Combine(dataDirectory, "CardCraftableList.json");
+            if (File.Exists(cardCraftableListFile))
             {
-                foreach (object id in cardCrList)
+                List<object> cardCrList = MiniJSON.Json.DeserializeStripped(File.ReadAllText(cardCraftableListFile)) as List<object>;
+                if (cardCrList != null)
                 {
-                    CardCraftable.Add((int)Convert.ChangeType(id, typeof(int)));
+                    foreach (object id in cardCrList)
+                    {
+                        CardCraftable.Add((int)Convert.ChangeType(id, typeof(int)));
+                    }
                 }
             }
             if (GetValue<bool>(values, "CardCratableAll"))
@@ -86,33 +173,235 @@ namespace YgoMaster
                 }
             }
 
-            Regulation = GetValue<Dictionary<string, object>>(values, "Regulation");
-
-            StructureDecks = new Dictionary<int, DeckInfo>();
-            Dictionary<string, object> structureDecksData = GetValue<Dictionary<string, object>>(values, "Structure");
-            if (structureDecksData != null)
+            string cardBanListFile = Path.Combine(dataDirectory, "CardBanList.json");
+            if (File.Exists(cardBanListFile))
             {
-                foreach (object obj in structureDecksData.Values)
-                {
-                    DeckInfo deck = new DeckInfo();
-                    Dictionary<string, object> deckData = obj as Dictionary<string, object>;
-                    deck.Id = GetValue<int>(deckData, "structure_id");
-                    deck.Accessory.FromDictionary(GetDictionary(deckData, "accessory"));
-                    deck.DisplayCards.FromDictionary(GetDictionary(deckData, "focus"));
-                    deck.FromDictionary(GetDictionary(deckData, "contents"));
-                    StructureDecks[deck.Id] = deck;
-                }
+                Regulation = MiniJSON.Json.DeserializeStripped(File.ReadAllText(cardBanListFile)) as Dictionary<string, object>;
             }
 
             Craft = new CraftInfo();
             Craft.FromDictionary(GetValue(values, "Craft", default(Dictionary<string, object>)));
 
+            LoadStructureDecks();
             LoadCardCategory();
             LoadShop();
             LoadSolo();
+
+            DuelRewards = new DuelRewardInfos();
+            DuelRewards.FromDictionary(GetDictionary(values, "DuelRewards"));
+
+            // TODO: Move elsewhere (these are helpers to generate files)
+            string[] args = Environment.GetCommandLineArgs();
+            if (args.Length > 0)
+            {
+                for (int i = 1; i < args.Length; i++)
+                {
+                    bool log = true;
+                    string arg = args[i].ToLowerInvariant();
+                    switch (arg)
+                    {
+                        case "--mergeshops":// Gets all logs from "/ShopDumps/" and merges them into "AllShopsMerged.json"
+                            MergeShopDumps();
+                            break;
+                        case "--shopsfromsets":// Scrapes ygo db for sets and creates shops from them based on "OfficialSetsExtraData.json"
+                            CreateShopsFromOfficialSets();
+                            break;
+                        case "--le2master":
+                            ConvertLeDataToSolo();
+                            break;
+                        case "--extractstructure":// Takes "StructureDecks.json" (obtained via "Master.Structure") and expands them into "/StructureDecks/"
+                            ExtractStructureDecks();
+                            break;
+                        case "--updateydk":// Updates "YdkIds.txt" based on a YgoMasterClient "carddata" dump and ygoprodeck cardinfo.php
+                            YdkHelper.GenerateIdMap(dataDirectory);
+                            break;
+                        default:
+                            log = false;
+                            break;
+                    }
+                    if (!log)
+                    {
+                        Console.WriteLine("Done (" + arg + ")");
+                    }
+                }
+            }
+        }
+
+        void InitDecksWatcher()
+        {
+            decksFileWatcherDecksToUpdate = new HashSet<string>();
+            decksFileWatcherUpdateThread = new Thread(delegate()
+            {
+                while (true)
+                {
+                    lock (decksFileWatcherDecksToUpdate)
+                    {
+                        if (decksFileWatcherDecksToUpdate.Count > 0 && decksFileWatcherLastUpdate <= DateTime.Now - TimeSpan.FromSeconds(1))
+                        {
+                            if (thePlayer != null)
+                            {
+                                Dictionary<string, DeckInfo> fullPathDecks = new Dictionary<string, DeckInfo>();
+                                foreach (DeckInfo deckInfo in thePlayer.Decks.Values)
+                                {
+                                    try
+                                    {
+                                        if (!string.IsNullOrEmpty(deckInfo.File))
+                                        {
+                                            fullPathDecks[Path.GetFullPath(deckInfo.File).ToLowerInvariant()] = deckInfo;
+                                        }
+                                    }
+                                    catch
+                                    {
+                                    }
+                                }
+                                foreach (string path in decksFileWatcherDecksToUpdate)
+                                {
+                                    try
+                                    {
+                                        if (File.Exists(path))
+                                        {
+                                            DeckInfo deck;
+                                            if (!fullPathDecks.TryGetValue(path.ToLowerInvariant(), out deck))
+                                            {
+                                                //Console.WriteLine("Deck added");
+                                                LoadDeck(thePlayer, path);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            DeckInfo deck;
+                                            if (fullPathDecks.TryGetValue(path.ToLowerInvariant(), out deck))
+                                            {
+                                                //Console.WriteLine("Deck removed");
+                                                thePlayer.Decks.Remove(deck.Id);
+                                            }
+                                        }
+                                    }
+                                    catch
+                                    {
+                                    }
+                                }
+                            }
+                            decksFileWatcherDecksToUpdate.Clear();
+                        }
+                    }
+                    Thread.Sleep(1000);
+                }
+            });
+            decksFileWatcherUpdateThread.Start();
+            decksFileWatcher = new FileSystemWatcher(decksDirectory);
+            decksFileWatcher.NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.FileName | NotifyFilters.LastWrite;
+            FileSystemEventHandler decksFileWatcherUpdateEvent = (object sender, FileSystemEventArgs e) =>
+            {
+                lock (decksFileWatcherDecksToUpdate)
+                {
+                    decksFileWatcherLastUpdate = DateTime.Now;
+                    decksFileWatcherDecksToUpdate.Add(Path.GetFullPath(e.FullPath));
+                }
+            };
+            decksFileWatcher.Created += decksFileWatcherUpdateEvent;
+            decksFileWatcher.Deleted += decksFileWatcherUpdateEvent;
+            decksFileWatcher.Renamed += (object sender, RenamedEventArgs e) =>
+                {
+                    // TODO: Renaming files currently isn't handled and we lose track of the file when a rename occurs
+                };
+            decksFileWatcher.EnableRaisingEvents = true;
+        }
+
+        /// <summary>
+        /// Returns all card rarities which should be visible to the game
+        /// - When using a progressive card list this will expand over time
+        /// - When using progressive card rarities the rarity of any given card can change over time
+        /// - Also used to get the card rarities for a specific pack in a shop (which can use specific rarities for that pack)
+        /// </summary>
+        Dictionary<int, int> GetCardRarities(Player player, ShopItemInfo targetShopItem = null)
+        {
+            // NOTE: This function is probably a little heavy handed, only call once per packet
+            if (targetShopItem != null)
+            {
+                Dictionary<int, int> packCardRare = new Dictionary<int, int>();
+                foreach (KeyValuePair<int, CardRarity> card in targetShopItem.Cards)
+                {
+                    CardRarity rarity = card.Value;
+                    if (rarity == CardRarity.None || !Shop.PerPackRarities)
+                    {
+                        TryGetCardRarity(card.Key, CardRare, out rarity);
+                    }
+                    if (rarity == CardRarity.None)
+                    {
+                        continue;
+                    }
+                    packCardRare[card.Key] = (int)rarity;
+                }
+                return packCardRare;
+            }
+            if ((!ProgressiveCardList && !ProgressiveCardRarities) ||
+                player.ShopState.GetAvailability(Shop, Shop.StandardPack) == PlayerShopItemAvailability.Available)
+            {
+                return CardRare;
+            }
+            Dictionary<int, int> result = ProgressiveCardList ? new Dictionary<int, int>() : new Dictionary<int, int>(CardRare);
+            Dictionary<int, int> lowestPackRarities = ProgressiveCardRarities ? new Dictionary<int, int>() : null;
+            foreach (ShopItemInfo shopItem in Shop.PackShop.Values)
+            {
+                if (ProgressiveCardList && player.ShopState.GetAvailability(Shop, shopItem) == PlayerShopItemAvailability.Hidden)
+                {
+                    continue;
+                }
+                foreach (KeyValuePair<int, CardRarity> card in shopItem.Cards)
+                {
+                    if (ProgressiveCardRarities)
+                    {
+                        CardRarity rarity;
+                        if (!TryGetCardRarity(card.Key, lowestPackRarities, out rarity) || card.Value < rarity)
+                        {
+                            lowestPackRarities[card.Key] = (int)card.Value;
+                        }
+                    }
+                    if (ProgressiveCardList)
+                    {
+                        CardRarity rarity;
+                        if (!TryGetCardRarity(card.Key, result, out rarity) &&
+                            TryGetCardRarity(card.Key, CardRare, out rarity))
+                        {
+                            result[card.Key] = (int)rarity;
+                        }
+                    }
+                }
+            }
+            if (ProgressiveCardRarities)
+            {
+                foreach (KeyValuePair<int, int> card in new Dictionary<int, int>(result))
+                {
+                    CardRarity rarity;
+                    if (TryGetCardRarity(card.Key, lowestPackRarities, out rarity) && rarity > (CardRarity)card.Value)
+                    {
+                        result[card.Key] = (int)rarity;
+                    }
+                }
+            }
+            return result;
+        }
+
+        bool TryGetCardRarity(int cardId, Dictionary<int, int> rarities, out CardRarity result)
+        {
+            result = CardRarity.None;
+            int rarity;
+            if (rarities.TryGetValue(cardId, out rarity))
+            {
+                result = (CardRarity)rarity;
+                return true;
+            }
+            return false;
         }
 
         void SavePlayer(Player player)
+        {
+            // To void saving multiple times per packet save after the request has been processed
+            player.RequiresSaving = true;
+        }
+
+        void SavePlayerNow(Player player)
         {
             //LogInfo("Save (player)");
             Dictionary<string, object> data = new Dictionary<string, object>();
@@ -143,10 +432,11 @@ namespace YgoMaster
             data["ShopState"] = player.ShopState.ToDictionary();
             if (!UnlockAllCards)
             {
-                data["Cards"] = player.Cards.ToDictionary(CardRare);
+                data["Cards"] = player.Cards.ToDictionary();
             }
             string jsonFormatted = FormatJson(MiniJSON.Json.Serialize(data));
             File.WriteAllText(playerSettingsFile, jsonFormatted);
+            player.RequiresSaving = false;
         }
 
         void LoadPlayer(Player player)
@@ -281,20 +571,9 @@ namespace YgoMaster
             }
             if (Directory.Exists(decksDirectory))
             {
-                foreach (string file in Directory.GetFiles(decksDirectory, "*json"))
+                foreach (string file in Directory.GetFiles(decksDirectory))
                 {
-                    try
-                    {
-                        DeckInfo deck = new DeckInfo();
-                        deck.File = file;
-                        LoadDeck(deck);
-                        deck.Id = player.NextDeckUId++;
-                        player.Decks[deck.Id] = deck;
-                    }
-                    catch
-                    {
-                        Debug.WriteLine("Failed to load deck " + file);
-                    }
+                    LoadDeck(player, file);
                 }
             }
             player.Duel.SelectedDeckFromDictionary(GetDictionary(data, "SelectedDeck"));
@@ -302,29 +581,46 @@ namespace YgoMaster
 
         void SaveDeck(DeckInfo deck)
         {
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            data["Name"] = deck.Name;
-            data["TimeCreated"] = deck.TimeCreated;
-            data["TimeEdited"] = deck.TimeEdited;
-            data["Accessory"] = deck.Accessory.ToDictionary();
-            data["DisplayCards"] = deck.DisplayCards.ToIndexDictionary();
-            data["MainDeckCards"] = deck.MainDeckCards.ToDictionary();
-            data["ExtraDeckCards"] = deck.ExtraDeckCards.ToDictionary();
-            data["SideDeckCards"] = deck.SideDeckCards.ToDictionary();
-            File.WriteAllText(deck.File, MiniJSON.Json.Serialize(data));
+            TryCreateDirectory(decksDirectory);
+            if (deck.IsYdkDeck)
+            {
+                YdkHelper.SaveDeck(deck);
+            }
+            else
+            {
+                File.WriteAllText(deck.File, MiniJSON.Json.Serialize(deck.ToDictionaryEx()));
+            }
+        }
+
+        void LoadDeck(Player player, string file)
+        {
+            if (file.EndsWith(".json") || file.EndsWith(".ydk"))
+            {
+                try
+                {
+                    DeckInfo deck = new DeckInfo();
+                    deck.File = file;
+                    LoadDeck(deck);
+                    deck.Id = player.NextDeckUId++;
+                    player.Decks[deck.Id] = deck;
+                }
+                catch
+                {
+                    LogWarning("Failed to load deck " + file);
+                }
+            }
         }
 
         void LoadDeck(DeckInfo deck)
         {
-            Dictionary<string, object> data = MiniJSON.Json.DeserializeStripped(File.ReadAllText(deck.File)) as Dictionary<string, object>;
-            deck.Name = GetValue<string>(data, "Name");
-            deck.TimeCreated = GetValue<uint>(data, "TimeCreated");
-            deck.TimeEdited = GetValue<uint>(data, "TimeEdited");
-            deck.Accessory.FromDictionary(GetDictionary(data, "Accessory"));
-            deck.DisplayCards.FromIndexedDictionary(GetDictionary(data, "DisplayCards"));
-            deck.MainDeckCards.FromDictionary(GetDictionary(data, "MainDeckCards"));
-            deck.ExtraDeckCards.FromDictionary(GetDictionary(data, "ExtraDeckCards"));
-            deck.SideDeckCards.FromDictionary(GetDictionary(data, "SideDeckCards"));
+            if (deck.IsYdkDeck)
+            {
+                YdkHelper.LoadDeck(deck);
+            }
+            else
+            {
+                deck.FromDictionaryEx(MiniJSON.Json.DeserializeStripped(File.ReadAllText(deck.File)) as Dictionary<string, object>);
+            }
         }
 
         void DeleteDeck(DeckInfo deck)
@@ -341,9 +637,36 @@ namespace YgoMaster
             }
         }
 
+        void LoadStructureDecks()
+        {
+            StructureDecks = new Dictionary<int, DeckInfo>();
+            string dir = Path.Combine(dataDirectory, "StructureDecks");
+            if (!Directory.Exists(dir))
+            {
+                return;
+            }
+            foreach (string file in Directory.GetFiles(dir, "*.json"))
+            {
+                Dictionary<string, object> data = MiniJSON.Json.DeserializeStripped(File.ReadAllText(file)) as Dictionary<string, object>;
+                if (data != null)
+                {
+                    DeckInfo deck = new DeckInfo();
+                    deck.Id = GetValue<int>(data, "structure_id");
+                    if (deck.Id == 0)
+                    {
+                        int.TryParse(Path.GetFileNameWithoutExtension(file), out deck.Id);
+                    }
+                    deck.Accessory.FromDictionary(GetDictionary(data, "accessory"));
+                    deck.DisplayCards.FromDictionary(GetDictionary(data, "focus"));
+                    deck.FromDictionary(GetDictionary(data, "contents"));
+                    StructureDecks[deck.Id] = deck;
+                }
+            }
+        }
+
         void LoadCardCategory()
         {
-            // This data can be extracted is at "External/CardCategory/CardCategory" (assets/resourcesassetbundle/external/cardcategory/cardcategory.bytes)
+            // This data can be extracted from "External/CardCategory/CardCategory" (assets/resourcesassetbundle/external/cardcategory/cardcategory.bytes)
             CardCategories = new Dictionary<int, CardCategory>();
             CardCategoriesByName = new Dictionary<string, CardCategory>();
             string file = Path.Combine(dataDirectory, "CardCategory.bytes");
@@ -406,7 +729,7 @@ namespace YgoMaster
                                 {
                                     shopItem.Value.SecretType = ShopItemSecretType.FindOrCraft;
                                 }
-                                foreach (int cardId in shopItem.Value.Cards)
+                                foreach (int cardId in shopItem.Value.Cards.Keys)
                                 {
                                     if (!Shop.SecretPacksByCardId.ContainsKey(cardId))
                                     {
@@ -419,28 +742,147 @@ namespace YgoMaster
                     }
                 }
             }
-            int numStandardPacks = 0;
-            foreach (ShopItemInfo item in Shop.AllShops.Values)
+            if (Shop.StandardPack == null)
             {
-                if (item.PackType == ShopPackType.Standard)
+                foreach (ShopItemInfo item in Shop.AllShops.Values)
                 {
-                    numStandardPacks++;
-                    Shop.StandardPack = item;
+                    if (item.PackType == ShopPackType.Standard)
+                    {
+                        Shop.StandardPack = item;
+                        break;
+                    }
                 }
-            }
-            if (numStandardPacks != 1 || Shop.StandardPack == null)
-            {
-                // NOTE: If this changes make sure to update the pack opener code to include the additional packs
-                LogWarning("Expected to find 1 standard card pack in shop data but found " + numStandardPacks);
             }
             if (Shop.PutAllCardsInStandardPack && Shop.StandardPack != null)
             {
                 Shop.StandardPack.Cards.Clear();
                 foreach (int cardId in CardRare.Keys.OrderBy(x => x))
                 {
-                    Shop.StandardPack.Cards.Add(cardId);
+                    Shop.StandardPack.Cards[cardId] = CardRarity.None;
                 }
             }
+
+            foreach (ShopItemInfo shopItem in Shop.PackShop.Values)
+            {
+                switch (shopItem.Category)
+                {
+                    case ShopCategory.Pack:
+                        {
+                            if (string.IsNullOrEmpty(shopItem.PackImageName) &&
+                                !Shop.PackShopImagesByCardId.TryGetValue(shopItem.IconMrk, out shopItem.PackImageName) &&
+                                !Shop.PackShopImagesByCardId.TryGetValue(0, out shopItem.PackImageName))
+                            {
+                                shopItem.PackImageName = "CardPackTex01_0000";
+                            }
+                            if (Shop.OverridePackPrice > 0)
+                            {
+                                ShopItemPrice price = shopItem.Prices.FirstOrDefault(x => x.ItemAmount == 1);
+                                if (price == null)
+                                {
+                                    // Update the price list if there's an existing price with an item amount of more than 1
+                                    if (shopItem.Prices.Count != 0)
+                                    {
+                                        foreach (ShopItemPrice existingPrice in shopItem.Prices)
+                                        {
+                                            existingPrice.Id++;
+                                        }
+                                    }
+                                    price = new ShopItemPrice();
+                                    price.Id = 1;
+                                    shopItem.Prices.Insert(0, price);
+                                }
+                                price.ItemAmount = 1;
+                                price.Price = Shop.OverridePackPrice;
+                            }
+                            if (Shop.OverridePackPriceX10 > 0)
+                            {
+                                ShopItemPrice price = shopItem.Prices.FirstOrDefault(x => x.ItemAmount > 1);
+                                if (price == null)
+                                {
+                                    price = new ShopItemPrice();
+                                    price.Id = shopItem.Prices.Count + 1;
+                                    shopItem.Prices.Add(price);
+                                }
+                                price.ItemAmount = 10;
+                                price.Price = Shop.OverridePackPriceX10;
+                            }
+                            if (shopItem.Prices.Count == 0)
+                            {
+                                if (Shop.DefaultPackPrice > 0)
+                                {
+                                    ShopItemPrice price = new ShopItemPrice();
+                                    price.Id = shopItem.Prices.Count + 1;
+                                    price.ItemAmount = 1;
+                                    price.Price = Shop.DefaultPackPrice;
+                                    shopItem.Prices.Add(price);
+                                }
+                                if (Shop.DefaultPackPriceX10 > 0)
+                                {
+                                    ShopItemPrice price = new ShopItemPrice();
+                                    price.Id = shopItem.Prices.Count + 1;
+                                    price.ItemAmount = 10;
+                                    price.Price = Shop.DefaultPackPriceX10;
+                                    shopItem.Prices.Add(price);
+                                }
+                            }
+                            if (shopItem.UnlockSecrets.Count > 0)
+                            {
+                                if (Shop.OverrideUnlockSecretsAtPercent > 0)
+                                {
+                                    shopItem.UnlockSecretsAtPercent = Shop.OverrideUnlockSecretsAtPercent;
+                                }
+                                else if (shopItem.UnlockSecretsAtPercent == 0)
+                                {
+                                    shopItem.UnlockSecretsAtPercent = Shop.DefaultUnlockSecretsAtPercent;
+                                }
+                            }
+                            switch (shopItem.SecretType)
+                            {
+                                case ShopItemSecretType.None:
+                                case ShopItemSecretType.Other:// These aren't given a duration unless explicitly defined
+                                    shopItem.SecretDurationInSeconds = 0;
+                                    break;
+                                default:
+                                    if (Shop.OverrideSecretDuration > 0)
+                                    {
+                                        shopItem.SecretDurationInSeconds = Shop.OverrideSecretDuration;
+                                    }
+                                    else if (Shop.DefaultSecretDuration > 0 && shopItem.SecretDurationInSeconds == 0)
+                                    {
+                                        shopItem.SecretDurationInSeconds = Shop.DefaultSecretDuration;
+                                    }
+                                    else if (shopItem.SecretDurationInSeconds < 0)
+                                    {
+                                        shopItem.SecretDurationInSeconds = 0;
+                                    }
+                                    break;
+                            }
+                            if (Shop.OverridePackCardNum > 0)
+                            {
+                                shopItem.CardNum = Shop.OverridePackCardNum;
+                            }
+                            else if (Shop.DefaultPackCardNum > 0 && shopItem.CardNum == 0)
+                            {
+                                shopItem.CardNum = Shop.DefaultPackCardNum;
+                            }
+                        }
+                        break;
+                    case ShopCategory.Structure:
+                        {
+                            if (Shop.OverrideStructureDeckPrice > 0 || (shopItem.Prices.Count == 0 && Shop.DefaultStructureDeckPrice > 0))
+                            {
+                                shopItem.Prices.Clear();
+                                ShopItemPrice price = new ShopItemPrice();
+                                price.Id = 1;
+                                price.ItemAmount = 1;
+                                price.Price = Shop.OverrideStructureDeckPrice > 0 ? Shop.OverrideStructureDeckPrice : Shop.DefaultStructureDeckPrice;
+                                shopItem.Prices.Add(price);
+                            }
+                        }
+                        break;
+                }
+            }
+            
 
             LoadShopPackOdds(Path.Combine(dataDirectory, "ShopPackOdds.json"));
             dir = Path.Combine(dataDirectory, "ShopPackOdds");
@@ -472,8 +914,26 @@ namespace YgoMaster
             }
             if (isMainShop)
             {
-                Shop.DefaultSecretDuration = GetValue<long>(data, "DefaultSecretDuration");
                 Shop.PutAllCardsInStandardPack = GetValue<bool>(data, "PutAllCardsInStandardPack");
+                Shop.NoDuplicatesPerPack = GetValue<bool>(data, "NoDuplicatesPerPack");
+                Shop.PerPackRarities = GetValue<bool>(data, "PerPackRarities");
+                Shop.DisableCardStyleRarity = GetValue<bool>(data, "DisableCardStyleRarity");
+                Shop.UnlockAllSecrets = GetValue<bool>(data, "UnlockAllSecrets");
+                Shop.DisableUltraRareGuarantee = GetValue<bool>(data, "DisableUltraRareGuarantee");
+                Shop.UpgradeRarityWhenNotFound = GetValue<bool>(data, "UpgradeRarityWhenNotFound");
+
+                Shop.DefaultSecretDuration = GetValue<long>(data, "DefaultSecretDuration");
+                Shop.OverrideSecretDuration = GetValue<long>(data, "OverrideSecretDuration");
+                Shop.DefaultPackPrice = GetValue<int>(data, "DefaultPackPrice");
+                Shop.DefaultPackPriceX10 = GetValue<int>(data, "DefaultPackPriceX10");
+                Shop.OverridePackPrice = GetValue<int>(data, "OverridePackPrice");
+                Shop.OverridePackPriceX10 = GetValue<int>(data, "OverridePackPriceX10");
+                Shop.DefaultStructureDeckPrice = GetValue<int>(data, "DefaultStructureDeckPrice");
+                Shop.OverrideStructureDeckPrice = GetValue<int>(data, "OverrideStructureDeckPrice");
+                Shop.DefaultUnlockSecretsAtPercent = GetValue<int>(data, "DefaultUnlockSecretsAtPercent");
+                Shop.OverrideUnlockSecretsAtPercent = GetValue<int>(data, "OverrideUnlockSecretsAtPercent");
+                Shop.DefaultPackCardNum = GetValue<int>(data, "DefaultPackCardNum");
+                Shop.OverridePackCardNum = GetValue<int>(data, "OverridePackCardNum");
             }
             LoadShopItems(Shop.PackShop, "PackShop", data, secretPackDuration);
             LoadShopItems(Shop.StructureShop, "StructureShop", data, secretPackDuration);
@@ -503,11 +963,13 @@ namespace YgoMaster
                 info.Buylimit = GetValue<int>(data, "buyLimit");// custom
                 info.SecretBuyLimit = GetValue<int>(data, "secretBuyLimit");// custom
                 info.SecretType = (ShopItemSecretType)GetValue<int>(data, "secretType");// custom
-                bool isSecretDurationDefined = TryGetValue<long>(data, "secretDuration", out info.SecretDurationInSeconds);// custom
-                info.ExpireDateTime = GetValue<long>(data, "expireTime");// custom
+                if (TryGetValue(data, "secretDuration", out info.SecretDurationInSeconds) && info.SecretDurationInSeconds <= 0)// custom
+                {
+                    info.SecretDurationInSeconds = -1;// Temporary, set to 0 in the default/override value checks
+                }
                 info.IconType = (ShopItemIconType)GetValue<int>(data, "iconType");
                 info.IconData = GetValue<string>(data, "iconData");
-                info.SubCategory = GetValue<int>(data, "subCategory");
+                info.SubCategory = GetValue<int>(data, "subCategory", 1);
                 object previewObj = GetValue<object>(data, "preview");
                 if (previewObj is string)
                 {
@@ -516,6 +978,17 @@ namespace YgoMaster
                 else if (previewObj is Dictionary<string, object>)
                 {
                     info.Preview = MiniJSON.Json.Serialize(previewObj);
+                }
+                List<int> unlockSecrets = GetIntList(data, "unlockSecrets");// custom
+                if (unlockSecrets != null && unlockSecrets.Count > 0)
+                {
+                    info.UnlockSecrets.AddRange(unlockSecrets);
+                    info.UnlockSecretsAtPercent = GetValue<double>(data, "unlockSecretsAtPercent");
+                }
+                List<int> setPurchased = GetIntList(data, "setPurchased");// custom
+                if (setPurchased != null && setPurchased.Count > 0)
+                {
+                    info.SetPurchased.AddRange(setPurchased);
                 }
                 List<object> searchCategoryList = GetValue<List<object>>(data, "searchCategory");
                 if (searchCategoryList != null)
@@ -563,7 +1036,31 @@ namespace YgoMaster
                         }
                         info.PackType = (ShopPackType)GetValue<int>(data, "packType", 1);
                         info.CardNum = GetValue<int>(data, "pack_card_num", 1);
-                        GetIntHashSet(data, "cardList", info.Cards);// custom
+                        info.PackImageName = GetValue<string>(data, "packImage");// custom
+                        object cardListObj;
+                        if (data.TryGetValue("cardList", out cardListObj))// custom
+                        {
+                            if (cardListObj is List<object>)
+                            {
+                                List<object> cardList = cardListObj as List<object>;
+                                foreach (object card in cardList)
+                                {
+                                    info.Cards[(int)Convert.ChangeType(card, typeof(int))] = CardRarity.None;
+                                }
+                            }
+                            else if (cardListObj is Dictionary<string, object>)
+                            {
+                                Dictionary<string, object> cardList = cardListObj as Dictionary<string, object>;
+                                foreach (KeyValuePair<string, object> card in cardList)
+                                {
+                                    int cardId;
+                                    if (int.TryParse(card.Key, out cardId))
+                                    {
+                                        info.Cards[cardId] = (CardRarity)(int)Convert.ChangeType(card.Value, typeof(int));
+                                    }
+                                }
+                            }
+                        }
                         if (info.Cards.Count == 0)
                         {
                             LogWarning("Card pack " + info.Id + " doesn't have any cards");
@@ -574,6 +1071,12 @@ namespace YgoMaster
                                 if (info.SecretType == ShopItemSecretType.None)
                                 {
                                     info.SecretType = ShopItemSecretType.FindOrCraft;
+                                }
+                                break;
+                            case ShopPackType.Standard:
+                                if (GetValue<bool>(data, "isMainStandardPack"))// custom
+                                {
+                                    Shop.StandardPack = info;
                                 }
                                 break;
                         }
@@ -622,38 +1125,60 @@ namespace YgoMaster
                         info.NameText = GetValue<string>(data, "nameTextId");
                         info.DescShortText = GetValue<string>(data, "descShortTextId");
                         info.DescFullText = GetValue<string>(data, "descFullTextId");
+                        info.DescTextGenerated = GetValue<bool>(data, "descGenerated");// custom
+                        info.ReleaseDate = ConvertEpochTime(GetValue<long>(data, "releaseDate"));// custom
                         info.IconMrk = GetValue<int>(data, "iconMrk");
                         info.Power = GetValue<int>(data, "power");
                         info.Flexibility = GetValue<int>(data, "flexibility");
                         info.Difficulty = GetValue<int>(data, "difficulty");
-                        info.OddsName = GetValue<string>(data, "oddsName");
+                        info.OddsName = GetValue<string>(data, "oddsName");// custom
                         break;
                 }
                 foreach (Dictionary<string, object> priceData in GetDictionaryCollection(data, "prices"))
                 {
-                    int itemId = GetValue<int>(priceData, "item_id");
-                    if (itemId != 1)
-                    {
-                        LogWarning("Unsupported item id " + itemId + " for shop");
-                        return;
-                    }
                     ShopItemPrice price = new ShopItemPrice();
-                    price.Id = (info.Prices.Count + 1);
-                    price.ButtonType = GetValue(priceData, "button_type", 1);
+                    price.Id = info.Prices.Count + 1;
                     price.Price = GetValue<int>(priceData, "use_item_num");
-                    price.POP = GetValue<string>(priceData, "POP");
-                    price.TextId = GetValue<string>(priceData, "textId");
-                    GetIntList(priceData, "textArgs", price.TextArgs);
+                    List<object> textArgs;
+                    if (TryGetValue(priceData, "textArgs", out textArgs) && textArgs.Count > 0)
+                    {
+                        price.ItemAmount = Math.Max(1, (int)Convert.ChangeType(textArgs[0], typeof(int)));
+                    }
+                    else
+                    {
+                        TryGetValue(priceData, "itemAmount", out price.ItemAmount);
+                    }
+                    price.ItemAmount = Math.Max(1, price.ItemAmount);
                     info.Prices.Add(price);
+                }
+                if (info.Prices.Count == 0)
+                {
+                    // custom
+                    int priceX1 = GetValue<int>(data, "price");
+                    if (priceX1 > 0)
+                    {
+                        info.Prices.Add(new ShopItemPrice()
+                        {
+                            Id = 1,
+                            ItemAmount = 1,
+                            Price = priceX1
+                        });
+                        if (info.Category == ShopCategory.Pack)
+                        {
+                            int priceX10 = GetValue<int>(data, "priceX10", priceX1 * 10);
+                            info.Prices.Add(new ShopItemPrice()
+                            {
+                                Id = 2,
+                                ItemAmount = 10,
+                                Price = priceX10
+                            });
+                        }
+                    }
                 }
                 if (shopItems.ContainsKey(info.ShopId))
                 {
                     LogWarning("Duplicate shop id " + info.ShopId);
                     return;
-                }
-                if (info.SecretType != ShopItemSecretType.None && !isSecretDurationDefined)
-                {
-                    info.SecretDurationInSeconds = secretPackDuration >= 0 ? secretPackDuration : Shop.DefaultSecretDuration;
                 }
                 shopItems[info.ShopId] = info;
             }
@@ -781,6 +1306,70 @@ namespace YgoMaster
             settings.RarityOnPack = GetValue<bool>(data, "RarityOnPack", true);
         }
 
+        void LoadSolo()
+        {
+            string file = Path.Combine(dataDirectory, "Solo.json");
+            if (!File.Exists(file))
+            {
+                LogWarning("Failed to load solo file");
+                return;
+            }
+            Dictionary<string, object> data = MiniJSON.Json.DeserializeStripped(File.ReadAllText(file)) as Dictionary<string, object>;
+            data = GetResData(data);
+            Dictionary<string, object> masterData;
+            if (data != null && TryGetValue(data, "Master", out masterData))
+            {
+                data = masterData;
+            }
+            if (data != null)
+            {
+                TryGetValue(data, "Solo", out SoloData);
+            }
+            LoadSoloDuels();
+        }
+
+        void LoadSoloDuels()
+        {
+            SoloDuels = new Dictionary<int, DuelSettings>();
+            int nextStoryDeckId = 1;
+            string dir = Path.Combine(dataDirectory, "SoloDuels");
+            if (!Directory.Exists(dir))
+            {
+                return;
+            }
+            foreach (string file in Directory.GetFiles(dir, "*.json", SearchOption.AllDirectories))
+            {
+                Dictionary<string, object> data = MiniJSON.Json.DeserializeStripped(File.ReadAllText(file)) as Dictionary<string, object>;
+                data = GetResData(data);
+                Dictionary<string, object> duelData;
+                if (!TryGetValue(data, "Duel", out duelData))
+                {
+                    continue;
+                }
+                int chapterId;
+                if (!TryGetValue(duelData, "chapter", out chapterId))
+                {
+                    continue;
+                }
+                DuelSettings duel = new DuelSettings();
+                duel.FromDictionary(duelData);
+                for (int i = 0; i < duel.Deck.Length; i++)
+                {
+                    if (duel.Deck[i].MainDeckCards.Count > 0)
+                    {
+                        duel.Deck[i].Id = nextStoryDeckId++;
+                    }
+                }
+                duel.SetRequiredDefaults();
+                if (SoloDuels.ContainsKey(chapterId))
+                {
+                    LogWarning("Duplicate chapter " + chapterId);
+                    continue;
+                }
+                SoloDuels[chapterId] = duel;
+            }
+        }
+
         /// <summary>
         /// Helper to merge packet logs of visting the shop to extract out desired information (card packs)
         /// </summary>
@@ -858,14 +1447,33 @@ namespace YgoMaster
                     }
                 }
             }
+            MergeShops(Path.Combine(dataDirectory, "AllShopsMerged.json"), packShop, structureShop, accessoryShop, specialShop);
+        }
+
+        void MergeShops(string outputFile,
+            Dictionary<int, Dictionary<string, object>> packShop,
+            Dictionary<int, Dictionary<string, object>> structureShop,
+            Dictionary<int, Dictionary<string, object>> accessoryShop,
+            Dictionary<int, Dictionary<string, object>> specialShop)
+        {
             StringBuilder sb = new StringBuilder();
-            Dictionary<string, Dictionary<int, Dictionary<string, object>>> allShops = new Dictionary<string,Dictionary<int,Dictionary<string,object>>>()
+            Dictionary<string, Dictionary<int, Dictionary<string, object>>> allShops = new Dictionary<string, Dictionary<int, Dictionary<string, object>>>();
+            if (packShop != null)
             {
-                { "PackShop", packShop },
-                { "StructureShop", structureShop },
-                { "AccessoryShop", accessoryShop },
-                //{ "SpecialShop", specialShop }// TODO
-            };
+                allShops["PackShop"] = packShop;
+            }
+            if (structureShop != null)
+            {
+                allShops["StructureShop"] = structureShop;
+            }
+            if (accessoryShop != null)
+            {
+                allShops["AccessoryShop"] = accessoryShop;
+            }
+            if (specialShop != null)
+            {
+                //allShops["SpecialShop"] = specialShop;// TODO
+            }
             foreach (KeyValuePair<string, Dictionary<int, Dictionary<string, object>>> shop in allShops)
             {
                 sb.AppendLine("    \"" + shop.Key + "\": {");
@@ -875,70 +1483,556 @@ namespace YgoMaster
                 }
                 sb.AppendLine("    },");
             }
-            File.WriteAllText(Path.Combine(dataDirectory, "AllShopsMerged.json"), sb.ToString());
+            File.WriteAllText(outputFile, sb.ToString());
         }
 
-        void LoadSolo()
+        // TODO: Remove. This is no longer being used (though fetching official sets is still useful)
+        void CreateShopsFromOfficialSets()
         {
-            string file = Path.Combine(dataDirectory, "Solo.json");
+            // TODO: Change this to scrape wikia/yugipedia to get more verbose info
+            string file = Path.Combine(dataDirectory, "OfficialSets.json");
+            YgoDbSetCollection collection = new YgoDbSetCollection();
             if (!File.Exists(file))
             {
-                LogWarning("Failed to load solo file");
-                return;
+                Console.WriteLine("Downloading sets...");
+                string dumpDir = Path.Combine(dataDirectory, "OfficialSetsDump");
+                TryCreateDirectory(dumpDir);
+                collection.DownloadSets(dumpDir);
+                collection.Save(file);
+                Console.WriteLine("Done");
             }
-            Dictionary<string, object> data = MiniJSON.Json.DeserializeStripped(File.ReadAllText(file)) as Dictionary<string, object>;
-            data = GetResData(data);
-            Dictionary<string, object> masterData;
-            if (data != null && TryGetValue(data, "Master", out masterData))
-            {
-                data = masterData;
-            }
-            if (data != null)
-            {
-                TryGetValue(data, "Solo", out SoloData);
-            }
-            LoadSoloDuels();
-        }
+            collection.Load(file);
 
-        void LoadSoloDuels()
-        {
-            SoloDuels = new Dictionary<int, DuelSettings>();
-            int nextStoryDeckId = 1;
-            string dir = Path.Combine(dataDirectory, "SoloDuels");
-            if (!Directory.Exists(dir))
+            const int basePackId = 9000;
+            int nextPackId = basePackId + 1;
+            const int baseStructureId = 1120900;// Should be high enough
+            int nextStructureId = baseStructureId + 1;
+
+            string extraDataFile = Path.Combine(dataDirectory, "OfficialSetsExtraData.json");
+            if (!File.Exists(extraDataFile))
             {
+                Console.WriteLine("Couldn't find extra data for official sets");
                 return;
             }
-            foreach (string file in Directory.GetFiles(dir, "*.json", SearchOption.AllDirectories))
+            Dictionary<string, object> allExtraData = MiniJSON.Json.DeserializeStripped(File.ReadAllText(extraDataFile)) as Dictionary<string, object>;
+            Dictionary<long, Dictionary<string, object>> extraDataCollection = new Dictionary<long, Dictionary<string, object>>();
+            List<object> extraDataSets = GetValue(allExtraData, "sets", default(List<object>));
+            foreach (object obj in extraDataSets)
             {
-                Dictionary<string, object> data = MiniJSON.Json.DeserializeStripped(File.ReadAllText(file)) as Dictionary<string, object>;
-                data = GetResData(data);
-                Dictionary<string, object> duelData;
-                if (!TryGetValue(data, "Duel", out duelData))
+                Dictionary<string, object> extra = obj as Dictionary<string, object>;
+                long setId;
+                if (extra != null && TryGetValue(extra, "id", out setId))
                 {
-                    continue;
+                    extraDataCollection[setId] = extra;
                 }
-                int chapterId;
-                if (!TryGetValue(duelData, "chapter", out chapterId))
+            }
+            List<object> extraDataAutoSetsListObj = GetValue(allExtraData, "autoSets", default(List<object>));
+            List<DateTime> extraDataAutoSetsList = new List<DateTime>();
+            if (extraDataAutoSetsListObj != null)
+            {
+                foreach (object obj in extraDataAutoSetsListObj)
                 {
-                    continue;
+                    extraDataAutoSetsList.Add(DateTime.Parse(obj as string));
                 }
-                DuelSettings duel = new DuelSettings();
-                duel.FromDictionary(duelData);
-                for (int i = 0; i < duel.Deck.Length; i++)
+            }
+            extraDataAutoSetsList.Sort();
+            int nextAutoSetIndex = extraDataAutoSetsList.Count > 0 ? 0 : -1;
+
+            bool isFirstPack = true;
+            Dictionary<int, Dictionary<string, object>> packShop = new Dictionary<int, Dictionary<string, object>>();
+            Dictionary<int, Dictionary<string, object>> structureShop = new Dictionary<int, Dictionary<string, object>>();
+            Dictionary<int, CardRarity> lowestCardRarity = new Dictionary<int, CardRarity>();
+            HashSet<int> usedCardIds = new HashSet<int>();
+            foreach (YgoDbSet set in collection.Sets.Values.OrderBy(x => x.ReleaseDate))
+            {
+                foreach (KeyValuePair<int, YgoDbSet.CardRarity> card in set.Cards)
                 {
-                    if (duel.Deck[i].MainDeckCards.Count > 0)
+                    if (CardRare.ContainsKey(card.Key))
                     {
-                        duel.Deck[i].Id = nextStoryDeckId++;
+                        CardRarity rarity = YgoDbSet.ConvertRarity(card.Value);
+                        if (rarity > CardRarity.None)
+                        {
+                            CardRarity currentRarity;
+                            if (!lowestCardRarity.TryGetValue(card.Key, out currentRarity) || rarity < currentRarity)
+                            {
+                                lowestCardRarity[card.Key] = rarity;
+                            }
+                        }
                     }
                 }
-                duel.SetRequiredDefaults();
-                if (SoloDuels.ContainsKey(chapterId))
+
+                string setName;
+                Dictionary<string, object> extraData;
+                if (!extraDataCollection.TryGetValue(set.Id, out extraData) ||
+                    //!GetValue<bool>(extraData, "core") ||
+                    !TryGetValue(extraData, "name", out setName))
                 {
-                    LogWarning("Duplicate chapter " + chapterId);
                     continue;
                 }
-                SoloDuels[chapterId] = duel;
+                int coverCardId = GetValue<int>(extraData, "cover");
+                if (coverCardId == 0)
+                {
+                    LogWarning("Set " + set.Id + " doesn't have a cover card");
+                    continue;
+                }
+                if (!CardRare.ContainsKey(coverCardId))
+                {
+                    LogWarning("Cover card id " + coverCardId + " is not in the game (set: " + set.Id + ")");
+                    coverCardId = 6018;// Mokey mokey
+                }
+                if (set.Type == YgoDbSetType.StarterDeck)
+                {
+                    int structureId = nextStructureId++;
+
+                    int sleeve = GetValue<int>(extraData, "sleeve");
+                    int box = GetValue<int>(extraData, "box");
+                    
+                    DeckInfo deck = new DeckInfo();
+                    deck.Id = structureId;
+                    deck.Accessory.Box = box > 0 ? box : (int)ItemID.DECK_CASE.ID1080001;
+                    deck.Accessory.Sleeve = sleeve > 0 ? sleeve : (int)ItemID.PROTECTOR.ID1070001;
+
+                    foreach (int cardId in set.Cards.Keys)
+                    {
+                        if (!CardRare.ContainsKey(cardId))
+                        {
+                            continue;
+                        }
+                        usedCardIds.Add(cardId);
+                        // TODO: Determine way to get the card type
+                        switch (cardId)
+                        {
+                            case 4021:// Flame Swordsman
+                            case 4075:// Thousand Dragon
+                                deck.ExtraDeckCards.Add(cardId);
+                                break;
+                            default:
+                                deck.MainDeckCards.Add(cardId);
+                                break;
+                        }
+                    }
+
+                    List<int> focusCards = GetIntList(extraData, "focus");
+                    if (focusCards != null && focusCards.Count > 0)
+                    {
+                        for (int i = 0; i < focusCards.Count && i < 3; i++)
+                        {
+                            deck.DisplayCards.Add(focusCards[i]);
+                        }
+                    }
+                    structureShop[structureId] = new Dictionary<string, object>()
+                    {
+                        { "releaseDate", GetEpochTime(set.ReleaseDate) },
+                        { "category", (int)ShopCategory.Structure },
+                        { "subCategory", 1 },
+                        { "price", 100 },
+                        { "iconMrk", coverCardId },
+                        { "iconType", (int)ShopItemIconType.CardThumb },
+                        { "iconData", coverCardId.ToString() },
+                        //{ "preview", },//TODO
+                        //{ "searchCategory", },//TODO
+                        { "structure_id", structureId },
+                        { "accessory", deck.Accessory.ToDictionary() },
+                        { "focus", deck.DisplayCards.ToDictionary() },
+                        { "contents", deck.ToDictionary() }
+                    };
+                    Dictionary<string, object> structureDeckData = deck.ToDictionaryStructureDeck();
+                    File.WriteAllText(Path.Combine(dataDirectory, "StructureDecks", structureId + ".json"), MiniJSON.Json.Serialize(structureDeckData));
+                }
+                else if (set.Type == YgoDbSetType.BoosterPack)
+                {
+                    int numCardsInGame = 0;
+                    foreach (KeyValuePair<int, YgoDbSet.CardRarity> card in set.Cards)
+                    {
+                        if (CardRare.ContainsKey(card.Key))
+                        {
+                            numCardsInGame++;
+                        }
+                    }
+                    if (set.Cards.Count - numCardsInGame > 10) //numCardsInGame < 55)
+                    {
+                        LogWarning("Skip set " + set.Id + " with only " + numCardsInGame + "/" + set.Cards.Count + " cards in game '" + set.Name + "'");
+                        continue;
+                    }
+
+                    if (nextAutoSetIndex >= 0 && nextAutoSetIndex < extraDataAutoSetsList.Count)
+                    {
+                        // TODO
+                        DateTime autoSetDate = extraDataAutoSetsList[nextAutoSetIndex];
+                        if (autoSetDate < set.ReleaseDate)
+                        {
+                            int numAdded = 0;
+                            int numUltra = 0, numSuper = 0, numRare = 0, numNormal = 0;
+                            foreach (KeyValuePair<int, CardRarity> card in lowestCardRarity)
+                            {
+                                if (!usedCardIds.Contains(card.Key))
+                                {
+                                    numAdded++;
+                                    usedCardIds.Add(card.Key);
+                                    switch (card.Value)
+                                    {
+                                        case CardRarity.UltraRare: numUltra++; break;
+                                        case CardRarity.SuperRare: numSuper++; break;
+                                        case CardRarity.Rare: numRare++; break;
+                                        case CardRarity.Normal: numNormal++; break;
+                                    }
+                                }
+                            }
+                            Console.WriteLine("Add " + numAdded + " " + set.ReleaseDate + " " + autoSetDate + " | " + numUltra + " " + numSuper + " " + numRare + " " + numNormal);
+                            nextAutoSetIndex++;
+                        }
+                    }
+
+                    Dictionary<int, int> cards = new Dictionary<int, int>();
+                    foreach (KeyValuePair<int, YgoDbSet.CardRarity> card in set.Cards)
+                    {
+                        if (CardRare.ContainsKey(card.Key))
+                        {
+                            usedCardIds.Add(card.Key);
+                            cards[card.Key] = (int)YgoDbSet.ConvertRarity(card.Value);
+                        }
+                    }
+                    int packId = nextPackId++;
+                    packShop[packId] = new Dictionary<string, object>()
+                    {
+                        { "packId", packId },
+                        { "packType", (int)ShopPackType.Standard },
+                        { "secretType", (int)(isFirstPack ? ShopItemSecretType.None : ShopItemSecretType.Other) },
+                        { "unlockSecrets", new int[] { nextPackId } },
+                        { "nameTextId", setName },
+                        { "descGenerated", true },
+                        { "releaseDate", GetEpochTime(set.ReleaseDate) },
+                        //{ "packImage", "YdbCardPack_" + set.Id },
+                        { "pack_card_num", Math.Min(8, GetValue<int>(extraData, "num", 8)) },
+                        //{ "category", (int)ShopCategory.Pack },// Not needed
+                        { "subCategory", 1 },
+                        { "iconMrk", coverCardId },
+                        { "iconType", (int)ShopItemIconType.ItemThumb },
+                        { "iconData", "set" + set.Id },
+                        { "preview", "[{\"type\":3,\"path\":\"set" + set.Id + "\"}]" },
+                        { "packImage", "set" + set.Id },
+                        //{ "preview", },//TODO
+                        //{ "searchCategory", },//TODO
+                        { "cardList", cards },
+                        { "price", GetValue<int>(extraData, "price") },
+                        { "oddsName", GetValue<string>(extraData, "odds") },
+                    };
+                    isFirstPack = false;
+                }
+            }
+            if (extraDataAutoSetsList.Count > 0)
+            {
+                // TODO
+                int numAddedFinal = 0;
+                foreach (KeyValuePair<int, int> card in CardRare)
+                {
+                    if (!usedCardIds.Contains(card.Key))
+                    {
+                        numAddedFinal++;
+                        usedCardIds.Add(card.Key);
+                    }
+                }
+                Console.WriteLine("Add (final) " + numAddedFinal);
+            }
+            int numAdditionalCards = 0;
+            if (packShop.Count > 0)
+            {
+                packShop[nextPackId - 1]["unlockSecrets"] = new int[] { nextPackId };
+                int packId = nextPackId++;
+                List<int> unusedCardIds = new List<int>();
+                foreach (int cid in CardRare.Keys)
+                {
+                    if (!usedCardIds.Contains(cid))
+                    {
+                        numAdditionalCards++;
+                        unusedCardIds.Add(cid);
+                    }
+                }
+                packShop[packId] = new Dictionary<string, object>()
+                {
+                    { "isMainStandardPack", true },
+                    { "packId", packId },
+                    { "packType", (int)ShopPackType.Standard },
+                    { "secretType", (int)ShopItemSecretType.Other },
+                    { "nameTextId", "All remaining cards" },
+                    { "descGenerated", true },
+                    { "pack_card_num", 8 },
+                    { "subCategory", 1 },
+                    { "iconMrk", 0 },
+                    { "iconType", (int)ShopItemIconType.ItemThumb },
+                    { "iconData", "packthumb0001" },
+                    { "preview", "[{\"type\":3,\"path\":\"packthumb0001\"}]" },
+                    { "cardList", unusedCardIds },
+                };
+            }
+            foreach (KeyValuePair<int, Dictionary<string, object>> shop in structureShop)
+            {
+                int[] otherIds = structureShop.Keys.ToList().FindAll(x => x != shop.Key).ToArray();
+                shop.Value["setPurchased"] = otherIds;
+            }
+            Console.WriteLine("realPacks: " + usedCardIds.Count + " / " + CardRare.Keys.Count + " additional: " + numAdditionalCards);
+            MergeShops(Path.Combine(dataDirectory, "GeneratedShopsFromOfficialSets.json"), packShop, structureShop, null, null);
+        }
+
+        // TODO: Remove. This is no longer being used.
+        void ConvertLeDataToSolo()
+        {
+            // TODO: Also pull in the duelist challenges (maybe via sub gates?)
+            string leDir = Path.Combine(dataDirectory, "LeData");
+            if (!Directory.Exists(leDir))
+            {
+                Console.WriteLine("Couldn't find link evolution data directory '" + leDir + "'");
+                return;
+            }
+            string duelsDir = Path.Combine(leDir, "Duels");
+            string soloDuelsDir = Path.Combine(dataDirectory, "SoloDuels");
+
+            TryCreateDirectory(soloDuelsDir);
+
+            StringBuilder soloStrings = new StringBuilder();
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            Dictionary<string, object> masterData = new Dictionary<string, object>();
+            data["Master"] = masterData;
+            Dictionary<string, object> soloData = new Dictionary<string, object>();
+            masterData["Solo"] = soloData;
+            Dictionary<string, object> allGatesData = new Dictionary<string, object>();
+            Dictionary<string, object> allChaptersData = new Dictionary<string, object>();
+            Dictionary<string, object> allRewardData = new Dictionary<string, object>();
+            soloData["gate"] = allGatesData;
+            soloData["chapter"] = allChaptersData;
+            soloData["unlock"] = new Dictionary<string, object>();
+            soloData["unlock_item"] = new Dictionary<string, object>();
+            soloData["reward"] = allRewardData;
+            Dictionary<string, string> dirs = new Dictionary<string, string>()
+            {
+                { "YuGiOh", "Yu-Gi-Oh!" },
+                { "YuGiOhGX", "Yu-Gi-Oh! GX" },
+                { "YuGiOh5D", "Yu-Gi-Oh! 5D's" },
+                { "YuGiOhZEXAL", "Yu-Gi-Oh! ZEXAL" },
+                { "YuGiOhARCV", "Yu-Gi-Oh! ARC-V" },
+                { "YuGiOhVRAINS", "Yu-Gi-Oh! VRAINS" }
+            };
+            // gate 1 - everything is a practice duel
+            // gate 2/3 - shows the wrong card flipping around
+            int nextGateId = 4;
+            int nextRewardId = 1;
+            foreach (KeyValuePair<string, string> dir in dirs)
+            {
+                int gateId = nextGateId++;
+
+                soloStrings.AppendLine("[IDS_SOLO.GATE" + (gateId.ToString().PadLeft(3, '0')) + "]");
+                soloStrings.AppendLine(dir.Value);
+                soloStrings.AppendLine("[IDS_SOLO.GATE" + (gateId.ToString().PadLeft(3, '0')) + "_EXPLANATION]]");
+                soloStrings.AppendLine("Duels featuring cards from " + dir.Value);
+
+                Dictionary<string, object> gateData = new Dictionary<string, object>();
+                gateData["priority"] = gateId;
+                gateData["parent_gate"] = 0;
+                gateData["view_gate"] = 0;
+                gateData["unlock_id"] = 0;
+                allGatesData[gateId.ToString()] = gateData;
+                Dictionary<string, object> gateChapterData = new Dictionary<string, object>();
+                allChaptersData[gateId.ToString()] = gateChapterData;
+                Dictionary<int, Dictionary<string, object>> seriesDuelDatas = new Dictionary<int, Dictionary<string, object>>();
+                foreach (string file in Directory.GetFiles(Path.Combine(duelsDir, dir.Key)))
+                {
+                    Dictionary<string, object> duelData = MiniJSON.Json.Deserialize(File.ReadAllText(file)) as Dictionary<string, object>;
+                    seriesDuelDatas[GetValue<int>(duelData, "displayIndex")] = duelData;
+                }
+                int nextChapterId = (gateId * 10000) + 1;
+                int parentChapterId = 0;
+                foreach (KeyValuePair<int, Dictionary<string, object>> duelOverviewData in seriesDuelDatas.OrderBy(x => x.Key))
+                {
+                    string deck1File = Path.Combine(leDir, GetValue<string>(duelOverviewData.Value, "playerDeck"));
+                    string deck2File = Path.Combine(leDir, GetValue<string>(duelOverviewData.Value, "opponentDeck"));
+                    Func<string, bool> validateDeck = (string path) =>
+                        {
+                            Dictionary<string, object> tempDeckData = MiniJSON.Json.Deserialize(File.ReadAllText(path)) as Dictionary<string, object>;
+                            DeckInfo deck = new DeckInfo();
+                            deck.FromDictionaryEx(tempDeckData);
+                            bool valid = true;
+                            foreach (int cardId in deck.GetAllCards())
+                            {
+                                if (!CardRare.ContainsKey(cardId))
+                                {
+                                    Console.WriteLine("Missing card " + cardId);
+                                    valid = false;
+                                }
+                            }
+                            return valid;
+                        };
+                    if (!validateDeck(deck1File) || !validateDeck(deck2File))
+                    {
+                        Console.WriteLine("Missing cards in '" + GetValue<string>(duelOverviewData.Value, "name") + "'");
+                        //continue;
+                    }
+
+                    int randSeed = 0;
+                    unchecked
+                    {
+                        byte[] nameBuffer = Encoding.UTF8.GetBytes(GetValue<string>(duelOverviewData.Value, "name"));
+                        for (int i = 0; i < nameBuffer.Length; i += 4)
+                        {
+                            if (i >= nameBuffer.Length - 4)
+                            {
+                                randSeed += nameBuffer[i];
+                            }
+                            else
+                            {
+                                randSeed += BitConverter.ToInt32(nameBuffer, i);
+                            }
+                        }
+                    }
+                    Random rand = new Random(randSeed);
+                    for (int j = 0; j < 2; j++)
+                    {
+                        int chapterId = nextChapterId++;
+                        Dictionary<string, object> chapterData = new Dictionary<string, object>();
+
+                        Dictionary<string, object> duelData = new Dictionary<string, object>();
+                        List<object> decks = new List<object>();
+                        for (int i = 0; i < 2; i++)
+                        {
+                            string targetFile = i == (j == 0 ? 0 : 1) ? deck1File : deck2File;
+                            Dictionary<string, object> inputDeckData = MiniJSON.Json.Deserialize(File.ReadAllText(targetFile)) as Dictionary<string, object>;
+                            DeckInfo deck = new DeckInfo();
+                            deck.FromDictionaryEx(inputDeckData);
+                            foreach (int cid in new List<int>(deck.MainDeckCards.GetIds()))
+                            {
+                                if (!CardRare.ContainsKey(cid))
+                                {
+                                    deck.MainDeckCards.RemoveAll(cid);
+                                    deck.MainDeckCards.Add(4844);// Pot of greed
+                                }
+                            }
+                            foreach (int cid in new List<int>(deck.ExtraDeckCards.GetIds()))
+                            {
+                                if (!CardRare.ContainsKey(cid))
+                                {
+                                    deck.ExtraDeckCards.RemoveAll(cid);
+                                }
+                            }
+                            foreach (int cid in new List<int>(deck.SideDeckCards.GetIds()))
+                            {
+                                if (!CardRare.ContainsKey(cid))
+                                {
+                                    deck.SideDeckCards.RemoveAll(cid);
+                                }
+                            }
+                            decks.Add(deck.ToDictionary(true));
+
+                            int rewardId = nextRewardId++;
+                            allRewardData[rewardId.ToString()] = new Dictionary<string, object>()
+                            {
+                                { ((int)ItemID.Category.CONSUME).ToString(), new Dictionary<string, object>() {
+                                    { ((int)ItemID.CONSUME.ID0001).ToString(), rand.Next(5, 50) }
+                                }}
+                            };
+                            // NOTE: This should probably be pulling the reward from the opponent deck only (currently it pulls from both)
+                            /*const int numCardRewards = 1;// Can increase this but the client only shows 1 reward...
+                            int rewardId = nextRewardId++;
+                            Dictionary<string, object> cardRewards = new Dictionary<string, object>();
+                            allRewardData[rewardId.ToString()] = new Dictionary<string, object>()
+                            {
+                                { ((int)ItemID.Category.CARD).ToString(), cardRewards }
+                            };
+                            List<int> deckCardIds = deck.GetAllCards(main: true, extra: true);
+                            for (int k = 0; k < numCardRewards; k++)
+                            {
+                                if (deckCardIds.Count > 0)
+                                {
+                                    int targetCardId = deckCardIds[rand.Next(deckCardIds.Count)];
+                                    deckCardIds.RemoveAll(x => x == targetCardId);
+                                    cardRewards[targetCardId.ToString()] = 1;
+                                }
+                            }*/
+                            if (i == 0)
+                            {
+                                chapterData["set_id"] = rewardId;
+                            }
+                            else
+                            {
+                                chapterData["mydeck_set_id"] = rewardId;
+                            }
+                        }
+                        duelData["Deck"] = decks;
+                        duelData["chapter"] = chapterId;
+                        int fieldId = ItemID.GetRandomId(rand, ItemID.Category.FIELD);
+                        int fieldObjId = ItemID.GetFieldObjFromField(fieldId);
+                        int avatarBaseId = ItemID.GetFieldAvatarBaseFromField(fieldId);
+                        duelData["mat"] = new List<int>() { fieldId, fieldId };
+                        duelData["duel_object"] = new List<int>() { fieldObjId, fieldObjId };
+                        duelData["avatar_home"] = new List<int>() { avatarBaseId, avatarBaseId };
+                        duelData["name"] = new List<string>() { "", "CPU" };
+                        duelData["sleeve"] = new List<int>() { 0, ItemID.GetRandomId(rand, ItemID.Category.PROTECTOR) };
+                        duelData["icon"] = new List<int>() { 0, ItemID.GetRandomId(rand, ItemID.Category.ICON) };
+                        duelData["icon_frame"] = new List<int>() { 0, ItemID.GetRandomId(rand, ItemID.Category.ICON_FRAME) };
+                        duelData["avatar"] = new List<int>() { 0, ItemID.GetRandomId(rand, ItemID.Category.AVATAR) };
+                        Dictionary<string, object> duelDataContainer = new Dictionary<string, object>();
+                        duelDataContainer["Duel"] = duelData;
+                        string outputDuelFileName = Path.Combine(soloDuelsDir, chapterId + ".json");
+                        File.WriteAllText(outputDuelFileName, MiniJSON.Json.Serialize(duelDataContainer));
+
+                        string duelName = GetValue<string>(duelOverviewData.Value, "name");
+                        string duelDesc = GetValue<string>(duelOverviewData.Value, "description");
+                        if (!string.IsNullOrEmpty(duelName))
+                        {
+                            soloStrings.AppendLine("[IDS_SOLO.CHAPTER" + chapterId + "_EXPLANATION]");
+                            soloStrings.AppendLine(duelName + (j > 0 ? " (reverse duel)" : string.Empty));
+                            if (!string.IsNullOrEmpty(duelDesc))
+                            {
+                                soloStrings.AppendLine();
+                                soloStrings.AppendLine(duelDesc);
+                            }
+                        }
+
+                        chapterData["parent_chapter"] = parentChapterId;
+                        chapterData["unlock_id"] = 0;
+                        chapterData["begin_sn"] = "";
+                        chapterData["npc_id"] = 1;// Not sure if this value matter
+                        gateChapterData[chapterId.ToString()] = chapterData;
+
+                        if (j == 0)
+                        {
+                            parentChapterId = chapterId;
+                        }
+                    }
+                }
+                if (parentChapterId > 0)
+                {
+                    gateData["clear_chapter"] = parentChapterId;
+                }
+            }
+            File.WriteAllText(Path.Combine(dataDirectory, "Solo.json"), MiniJSON.Json.Serialize(data));
+            File.WriteAllText(Path.Combine(dataDirectory, "IDS_SOLO.txt"), soloStrings.ToString());
+        }
+
+        void ExtractStructureDecks()
+        {
+            string extractFile = Path.Combine(dataDirectory, "StructureDecks.json");
+            if (!File.Exists(extractFile))
+            {
+                return;
+            }
+            string targetDir = Path.Combine(dataDirectory, "StructureDecks");
+            if (!TryCreateDirectory(targetDir))
+            {
+                return;
+            }
+            Dictionary<string, object> data = MiniJSON.Json.DeserializeStripped(File.ReadAllText(extractFile)) as Dictionary<string, object>;
+            Dictionary<string, object> structureDecksData = GetDictionary(data, "Structure");
+            if (structureDecksData != null)
+            {
+                foreach (object obj in structureDecksData.Values)
+                {
+                    Dictionary<string, object> deckData = obj as Dictionary<string, object>;
+                    int id = GetValue<int>(deckData, "structure_id");
+                    if (id > 0)
+                    {
+                        string path = Path.Combine(targetDir, id + ".json");
+                        File.WriteAllText(path, MiniJSON.Json.Serialize(obj));
+                    }
+                }
             }
         }
     }

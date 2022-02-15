@@ -147,14 +147,6 @@ namespace YgoMaster
             deck["last_set"] = id;
         }
 
-        void WriteDeckList(GameServerWebRequest request)
-        {
-            foreach (DeckInfo deck in request.Player.Decks.Values)
-            {
-                WriteDeckList(request, deck.Id);
-            }
-        }
-
         void WriteDeckList(GameServerWebRequest request, int deckId)
         {
             Dictionary<string, object> deckList = request.GetOrCreateDictionary("DeckList");
@@ -187,7 +179,7 @@ namespace YgoMaster
             Dictionary<string, object> ownedCards = GetOrCreateDictionary(cards, "have");
             foreach (int cardId in cardIds)
             {
-                Dictionary<string, object> cardData = request.Player.Cards.CardToDictionary(cardId, CardRare);
+                Dictionary<string, object> cardData = request.Player.Cards.CardToDictionary(cardId);
                 if (cardData != null)
                 {
                     ownedCards[cardId.ToString()] = cardData;
@@ -201,18 +193,6 @@ namespace YgoMaster
             cards["favorite"] = request.Player.CardFavorites.ToDictionary();
         }
 
-        void WriteSolo(GameServerWebRequest request)
-        {
-            WriteSolo_deck_info(request);
-            WriteSolo_cleared(request);
-        }
-
-        void WriteSolo_cleared(GameServerWebRequest request)
-        {
-            Dictionary<string, object> solo = request.GetOrCreateDictionary("Solo");
-            solo["cleared"] = request.Player.SoloChaptersToDictionary();
-        }
-
         void WriteSolo_deck_info(GameServerWebRequest request)
         {
             DeckInfo deck = request.Player.Duel.GetDeck(GameMode.SoloSingle);
@@ -223,6 +203,13 @@ namespace YgoMaster
                 { "valid", deck != null ? deck.IsValid(request.Player) : false },
                 { "possession", true }//request.Player.Duel.IsMyDeck }
             };
+        }
+
+        void WritePerPackRarities(GameServerWebRequest request, Dictionary<int, int> cardRare)
+        {
+            Dictionary<string, object> master = request.GetOrCreateDictionary("Master");
+            master["CardRare"] = cardRare;
+            request.Remove("Gacha.cardList");
         }
     }
 }

@@ -68,7 +68,6 @@
     <Compile Include="IL2CPP\IL2Method.cs" />
     <Compile Include="IL2CPP\IL2Object.cs" />
     <Compile Include="IL2CPP\IL2Param.cs" />
-    <Compile Include="IL2CPP\IL2Patch.cs" />
     <Compile Include="IL2CPP\IL2Property.cs" />
     <Compile Include="IL2CPP\IL2String.cs" />
     <Compile Include="IL2CPP\IL2SystemClass.cs" />

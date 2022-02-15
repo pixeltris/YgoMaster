@@ -57,7 +57,6 @@
     <Compile Include="Infos\CardCategory.cs" />
     <Compile Include="Infos\CardCollection.cs" />
     <Compile Include="Infos\CraftInfo.cs" />
-    <Compile Include="Dialogs.cs" />
     <Compile Include="Enums\Misc.cs" />
     <Compile Include="GameServer.cs" />
     <Compile Include="GameServer.State.cs" />
@@ -65,6 +64,7 @@
     <Compile Include="GameServer.Writers.cs" />
     <Compile Include="Infos\DeckInfo.cs" />
     <Compile Include="Enums\ItemID.cs" />
+    <Compile Include="Infos\DuelRewardInfo.cs" />
     <Compile Include="Lib\LZ4.cs" />
     <Compile Include="Lib\LZ4Codec.cs" />
     <Compile Include="Lib\LZ4Codec.Safe.cs" />
@@ -78,6 +78,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Infos\ShopInfo.cs" />
+    <Compile Include="YdkHelper.cs" />
+    <Compile Include="YgoDbSet.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

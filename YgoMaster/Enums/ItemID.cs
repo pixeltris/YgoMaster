@@ -35,6 +35,43 @@ namespace YgoMaster
             return result;
         }
 
+        public static int GetFieldObjFromField(int fieldId)
+        {
+            return (fieldId - 1090000) + 1100000;
+        }
+
+        public static int GetFieldAvatarBaseFromField(int fieldId)
+        {
+            return (fieldId - 1090000) + 1110000;
+        }
+
+        public static int GetRandomId(Random rand, Category category)
+        {
+            Type targetEnum = null;
+            switch (category)
+            {
+                case Category.AVATAR: targetEnum = typeof(AVATAR); break;
+                case Category.ICON: targetEnum = typeof(ICON); break;
+                case Category.ICON_FRAME: targetEnum = typeof(ICON_FRAME); break;
+                case Category.PROTECTOR: targetEnum = typeof(PROTECTOR); break;
+                case Category.DECK_CASE: targetEnum = typeof(DECK_CASE); break;
+                case Category.FIELD: targetEnum = typeof(FIELD); break;
+                case Category.FIELD_OBJ: targetEnum = typeof(FIELD_OBJ); break;
+                case Category.AVATAR_HOME: targetEnum = typeof(AVATAR_HOME); break;
+                case Category.STRUCTURE: targetEnum = typeof(STRUCTURE); break;
+                case Category.WALLPAPER: targetEnum = typeof(WALLPAPER); break;
+            }
+            if (targetEnum != null)
+            {
+                Array items = Enum.GetValues(targetEnum);
+                if (items.Length > 0)
+                {
+                    return (int)items.GetValue(rand.Next(items.Length));
+                }
+            }
+            return 0;
+        }
+
         /// <summary>
         /// YgomGame.Utility.ItemUtil.GetCategoryFromID
         /// </summary>

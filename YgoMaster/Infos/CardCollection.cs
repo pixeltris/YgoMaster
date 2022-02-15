@@ -28,6 +28,22 @@ namespace YgoMaster
             collection.Clear();
         }
 
+        public void Add(int cardId, CardStyleRarity styleRarity = CardStyleRarity.Normal)
+        {
+            collection.Add(new KeyValuePair<int, CardStyleRarity>(cardId, styleRarity));
+        }
+
+        public void RemoveAll(int cardId)
+        {
+            for (int i = collection.Count - 1; i >= 0; i--)
+            {
+                if (collection[i].Key == cardId)
+                {
+                    collection.RemoveAt(i);
+                }
+            }
+        }
+
         public List<KeyValuePair<int, CardStyleRarity>> GetCollection()
         {
             return collection;

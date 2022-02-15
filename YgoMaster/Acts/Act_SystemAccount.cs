@@ -45,10 +45,15 @@ namespace YgoMaster
             if (!string.IsNullOrEmpty(request.ClientVersion) && Version.TryParse(request.ClientVersion, out clientVersion) &&
                 clientVersion > highestSupportedClientVersion)
             {
-                Dialogs.OpenOK(request,
-                    "Unsupported client version",
-                    "Client version: " + request.ClientVersion + "\nHighest supported version: " + highestSupportedClientVersion,
-                    "Unsupported client version " + request.ClientVersion);
+                request.Response["Operation"] = new Dictionary<string, object>()
+                {
+                    { "Dialog", new Dictionary<string, object>() {
+                        { "title", "Unsupported client version" },
+                        { "buttonLabelTid", "IDS_SYS_OK" },
+                        { "lowerMessage", "Client version: " + request.ClientVersion + "\nHighest supported version: " + highestSupportedClientVersion },
+                        { "upperMessage", "Unsupported client version " + request.ClientVersion }
+                    }}
+                };
                 request.ResultCode = (int)ResultCodes.ErrorCode.MAINTE;
                 request.Remove("Server", "Response", "Download", "Operation.Dialog");
                 return;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Linq;
 
 namespace IL2CPP
 {
@@ -138,5 +139,44 @@ namespace IL2CPP
             return returnval;
         }
 
+        public IL2Method MakeGenericMethod(Type[] types)
+        {
+            return MakeGenericMethod(types.Select(x => x.IL2Typeof()).ToArray());
+        }
+        public IL2Method MakeGenericMethod(IntPtr[] intPtrs)
+        {
+            if (intPtrs == null || intPtrs.Length == 0)
+            {
+                return null;
+            }
+            IntPtr intPtrArrayPtr = intPtrs.ArrayToIntPtr(Assembler.GetAssembly("mscorlib").GetClass("Type", "System"));
+            if (intPtrArrayPtr == IntPtr.Zero)
+            {
+                return null;
+            }
+            IntPtr monoMethodInfo = Import.Method.il2cpp_method_get_object(ptr, this.ReflectedType.ptr);
+            if (monoMethodInfo == IntPtr.Zero)
+            {
+                return null;
+            }
+            IL2Method makeGenericMethodMethod = monoMethodClassInfo.GetMethod("MakeGenericMethod");
+            if (makeGenericMethodMethod == null)
+            {
+                return null;
+            }
+            IL2Object methodInfo = makeGenericMethodMethod.Invoke(monoMethodInfo, new IntPtr[] { intPtrArrayPtr });
+            if (methodInfo == null)
+            {
+                return null;
+            }
+            IntPtr result = Import.Method.il2cpp_method_get_from_reflection(methodInfo.ptr);
+            if (result == IntPtr.Zero)
+            {
+                return null;
+            }
+            return new IL2Method(result);
+        }
+
+        static IL2Class monoMethodClassInfo = Assembler.GetAssembly("mscorlib").GetClass("MonoMethod", "System.Reflection");
     }
 }
