@@ -37,7 +37,7 @@ namespace YgoMasterClient
         static Hook<Del_LoadImmediate> hookLoadImmediate;
 
         static IntPtr resourceMangerInstance;
-        static IL2Dictionary_UInt32_Object resourceDictionary;
+        static IL2DictionaryExplicit resourceDictionary;
 
         // YgoSystem.ResourceManager.RequestCompleteHandler
         static IL2Class requestCompleteHandlerClassInfo;
@@ -200,8 +200,6 @@ namespace YgoMasterClient
 
         static AssetHelper()
         {
-            // Removed as there is a memory corruption issue with the custom asset loader (something being GCed?)
-            return;
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
 
             IL2Class deviceInfoClassInfo = assembly.GetClass("DeviceInfo", "YgomSystem.Utility");
@@ -433,7 +431,8 @@ namespace YgoMasterClient
                     return false;
                 }
                 resourceMangerInstance = thisPtr;
-                resourceDictionary = new IL2Dictionary_UInt32_Object(resourceDictionaryObj.ptr);
+                resourceDictionary = new IL2DictionaryExplicit(resourceDictionaryObj.ptr,
+                    Assembler.GetAssembly("mscorlib").GetClass(typeof(uint).Name, typeof(uint).Namespace), resourceClassInfo);
             }
             if (pathPtr == IntPtr.Zero)
             {
@@ -473,6 +472,11 @@ namespace YgoMasterClient
 
                     ResourceType resourceType = GetResourceType();
                     IL2Array<IntPtr> assetsArray = new IL2Array<IntPtr>(2, objectClassInfo);
+                    if (assetsArray.ptr == IntPtr.Zero)
+                    {
+                        Console.WriteLine("Array alloc failed");
+                        return false;
+                    }
 
                     string assetName = Path.GetFileNameWithoutExtension(customTexturePath);
                     IntPtr newTextureAsset = TextureFromPNG(customTexturePath, assetName);

@@ -84,7 +84,7 @@ namespace YgoMasterClient
                 }
                 else
                 {
-                    //nativeTypes.Add(typeof(AssetHelper));
+                    nativeTypes.Add(typeof(AssetHelper));
                     nativeTypes.Add(typeof(YgomGame.Utility.ItemUtil));
                     nativeTypes.Add(typeof(YgomSystem.Utility.TextData));
                     nativeTypes.Add(typeof(YgomSystem.Utility.ClientWork));
@@ -104,7 +104,7 @@ namespace YgoMasterClient
                 // TODO: Load this from a file
                 RunConsole = false;
                 LogIDS = false;
-                AssetHelper.LogAssets = true;
+                AssetHelper.LogAssets = false;
                 AssetHelper.ShouldDumpData = false;
 
                 if (RunConsole)

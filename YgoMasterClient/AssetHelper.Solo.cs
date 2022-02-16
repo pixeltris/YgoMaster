@@ -173,8 +173,9 @@ namespace YgoMasterClient
                 if (settingsObj != null && settingsMapObj != null)
                 {
                     StringBuilder dataDump = null;
-                    IL2List_Object settingsList = new IL2List_Object(settingsObj.ptr);
-                    IL2Dictionary_Int32_Object settingsMap = new IL2Dictionary_Int32_Object(settingsMapObj.ptr);
+                    IL2ListExplicit settingsList = new IL2ListExplicit(settingsObj.ptr, thumbSettingClassInfo);
+                    /*IL2DictionaryExplicit settingsMap = new IL2DictionaryExplicit(settingsMapObj.ptr,
+                        Assembler.GetAssembly("mscorlib").GetClass(typeof(int).Name, typeof(int).Namespace), thumbSettingClassInfo);*/
                     HashSet<int> seenIds = new HashSet<int>();
                     for (int j = 0; j < settingsList.Count; j++)
                     {

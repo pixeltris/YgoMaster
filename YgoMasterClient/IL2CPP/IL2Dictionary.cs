@@ -77,9 +77,20 @@ namespace IL2CPP
 		public static new IL2Class Instance_Class = IL2Dictionary.Instance_Class.MakeGenericType(new Type[] {typeof(TKey), typeof(TValue) });
 	}
 
+    // TODO: Remove this (it's a replacement for an earlier broken hack)
     public unsafe class IL2DictionaryExplicit : IL2Base
     {
-        static System.Collections.Generic.Dictionary<Type, DictionaryClassInfo> Classes = new System.Collections.Generic.Dictionary<Type, DictionaryClassInfo>();
+        static System.Collections.Generic.Dictionary<KVClassPtr, DictionaryClassInfo> Classes = new System.Collections.Generic.Dictionary<KVClassPtr, DictionaryClassInfo>();
+        struct KVClassPtr
+        {
+            public IntPtr KeyClassPtr;
+            public IntPtr ValueClassPtr;
+            public KVClassPtr(IL2Class keyType, IL2Class valueType)
+            {
+                KeyClassPtr = keyType.ptr;
+                ValueClassPtr = valueType.ptr;
+            }
+        }
         public class DictionaryClassInfo
         {
             public IL2Class Class;
@@ -94,30 +105,25 @@ namespace IL2CPP
 
         public DictionaryClassInfo ClassInfo;
 
-        public bool RequiresInit
+        public IL2DictionaryExplicit(IntPtr ptrNew, IL2Class keyClass, IL2Class valueClass)
+            : base(ptrNew)
         {
-            get { return ClassInfo == null; }
-        }
-
-        public IL2DictionaryExplicit(IntPtr ptrNew) : base(ptrNew)
-        {
-            Classes.TryGetValue(GetType(), out ClassInfo);
-        }
-
-        protected void Init(IL2Class keyClass, IL2Class valueClass)
-        {
-            IntPtr keyType = keyClass.IL2Typeof();
-            IntPtr valueType = valueClass.IL2Typeof();
-            ClassInfo = new DictionaryClassInfo();
-            ClassInfo.Class = IL2Dictionary.Instance_Class.MakeGenericType(new IntPtr[] { keyType, valueType });
-            ClassInfo.MethodItemGet = ClassInfo.Class.GetProperty("Item").GetGetMethod();
-            ClassInfo.MethodItemSet = ClassInfo.Class.GetProperty("Item").GetSetMethod();
-            ClassInfo.MethodCountGet = ClassInfo.Class.GetProperty("Count").GetGetMethod();
-            ClassInfo.MethodAdd = ClassInfo.Class.GetMethod("Add");
-            ClassInfo.MethodRemove = ClassInfo.Class.GetMethod("Remove");
-            ClassInfo.MethodContainsKey = ClassInfo.Class.GetMethod("ContainsKey");
-            ClassInfo.MethodClear = ClassInfo.Class.GetMethod("Clear");
-            Classes[GetType()] = ClassInfo;
+            KVClassPtr kvClass = new KVClassPtr();
+            if (!Classes.TryGetValue(kvClass, out ClassInfo))
+            {
+                IntPtr keyType = keyClass.IL2Typeof();
+                IntPtr valueType = valueClass.IL2Typeof();
+                ClassInfo = new DictionaryClassInfo();
+                ClassInfo.Class = IL2Dictionary.Instance_Class.MakeGenericType(new IntPtr[] { keyType, valueType });
+                ClassInfo.MethodItemGet = ClassInfo.Class.GetProperty("Item").GetGetMethod();
+                ClassInfo.MethodItemSet = ClassInfo.Class.GetProperty("Item").GetSetMethod();
+                ClassInfo.MethodCountGet = ClassInfo.Class.GetProperty("Count").GetGetMethod();
+                ClassInfo.MethodAdd = ClassInfo.Class.GetMethod("Add");
+                ClassInfo.MethodRemove = ClassInfo.Class.GetMethod("Remove");
+                ClassInfo.MethodContainsKey = ClassInfo.Class.GetMethod("ContainsKey");
+                ClassInfo.MethodClear = ClassInfo.Class.GetMethod("Clear");
+                Classes[kvClass] = ClassInfo;
+            }
         }
 
         public int Count
@@ -128,28 +134,6 @@ namespace IL2CPP
         public void Clear()
         {
             ClassInfo.MethodClear.Invoke(ptr);
-        }
-    }
-
-    // <primitive (int,long,byte,etc), System.Object>
-    public unsafe class IL2Dictionary_Primitive_Object : IL2DictionaryExplicit
-    {
-        public IL2Dictionary_Primitive_Object(IntPtr ptrNew, Type primitiveType) : base(ptrNew)
-        {
-            if (RequiresInit)
-            {
-                IL2Class keyType = Assembler.GetAssembly("mscorlib").GetClass(primitiveType.Name, primitiveType.Namespace);
-                IL2Class valueType = Assembler.GetAssembly("mscorlib").GetClass(typeof(object).Name, typeof(object).Namespace);
-                Init(keyType, valueType);
-            }
-        }
-    }
-
-    public unsafe class IL2Dictionary_Int32_Object : IL2Dictionary_Primitive_Object
-    {
-        public IL2Dictionary_Int32_Object(IntPtr ptrNew, Type intType = null)
-            : base(ptrNew, intType != null ? intType : typeof(int))
-        {
         }
 
         public IntPtr this[int key]
@@ -178,14 +162,6 @@ namespace IL2CPP
         public bool ContainsKey(int key)
         {
             return ClassInfo.MethodContainsKey.Invoke(ptr, new IntPtr[] { new IntPtr(&key) }).GetValueRef<bool>();
-        }
-    }
-
-    public unsafe class IL2Dictionary_UInt32_Object : IL2Dictionary_Int32_Object
-    {
-        public IL2Dictionary_UInt32_Object(IntPtr ptrNew)
-            : base(ptrNew, typeof(uint))
-        {
         }
     }
 }

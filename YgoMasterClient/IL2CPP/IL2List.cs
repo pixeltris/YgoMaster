@@ -127,12 +127,57 @@ namespace IL2CPP
         public static new IL2Class Instance_Class = IL2List.Instance_Class.MakeGenericType(new Type[] { typeof(T) });
     }
 
-    // List<System.Object>
-    public class IL2List_Object : IL2List<object>
+    // TODO: Remove this (it's a replacement for an earlier broken hack)
+    public unsafe class IL2ListExplicit : IL2Base
     {
-        public IL2List_Object(IntPtr ptrNew)
+        static System.Collections.Generic.Dictionary<IntPtr, ListClassInfo> Classes = new System.Collections.Generic.Dictionary<IntPtr, ListClassInfo>();
+        public class ListClassInfo
+        {
+            public IL2Class Class;
+            public IL2Method MethodItemGet;
+            public IL2Method MethodItemSet;
+            public IL2Method MethodCountGet;
+            public IL2Method MethodAdd;
+        }
+
+        public ListClassInfo ClassInfo;
+
+        public IL2ListExplicit(IntPtr ptrNew, IL2Class type)
             : base(ptrNew)
         {
+            if (!Classes.TryGetValue(type.ptr, out ClassInfo))
+            {
+                ClassInfo = new ListClassInfo();
+                ClassInfo.Class = IL2List.Instance_Class.MakeGenericType(new IntPtr[] { type.IL2Typeof() });
+                ClassInfo.MethodItemGet = ClassInfo.Class.GetProperty("Item").GetGetMethod();
+                ClassInfo.MethodItemSet = ClassInfo.Class.GetProperty("Item").GetSetMethod();
+                ClassInfo.MethodCountGet = ClassInfo.Class.GetProperty("Count").GetGetMethod();
+                ClassInfo.MethodAdd = ClassInfo.Class.GetMethod("Add");
+                Classes[type.ptr] = ClassInfo;
+            }
+        }
+
+        public int Count
+        {
+            get { return ClassInfo.MethodCountGet.Invoke(ptr).GetValueRef<int>(); }
+        }
+
+        public IntPtr this[int index]
+        {
+            get
+            {
+                IL2Object obj = ClassInfo.MethodItemGet.Invoke(ptr, new IntPtr[] { new IntPtr(&index) });
+                return obj != null ? obj.ptr : IntPtr.Zero;
+            }
+            set
+            {
+                ClassInfo.MethodItemSet.Invoke(ptr, new IntPtr[] { new IntPtr(&index), value });
+            }
+        }
+
+        public void Add(IntPtr value)
+        {
+            ClassInfo.MethodAdd.Invoke(ptr, new IntPtr[] { value } );
         }
     }
 }
