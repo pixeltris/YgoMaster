@@ -5,6 +5,12 @@
 // - This version was used https://github.com/microsoft/Detours/releases/tag/v4.0.1
 // - It was compiled by using the nmake command (no args or edits) via "Visual Studio x64 Native Tools Command Prompt"
 // - The resulting lib "/lib.X64/detours.lib" and "/include/detours.h" were manually copied into the current directory for usage
+
+// VS2015+ (see https://docs.microsoft.com/en-us/cpp/porting/visual-cpp-change-history-2003-2015?redirectedfrom=MSDN&view=msvc-170#stdio_and_conio)
+#if defined(_MSC_VER) && (_MSC_VER >= 1900)
+#pragma comment(lib, "legacy_stdio_definitions.lib")
+#endif
+
 #include <windows.h>
 #include <wchar.h>
 #include <stdio.h>
