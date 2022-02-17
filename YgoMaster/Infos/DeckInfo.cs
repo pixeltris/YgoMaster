@@ -79,7 +79,7 @@ namespace YgoMaster
         {
             string name = Name;
             char[] invalids = System.IO.Path.GetInvalidFileNameChars();
-            String.Join("_", name.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
+            name = String.Join("_", name.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');
             if (string.IsNullOrEmpty(name))
             {
                 name = "Deck";
