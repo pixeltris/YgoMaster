@@ -517,6 +517,10 @@ namespace YgoMasterClient
 
         static uint Load(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify)
         {
+            if (LogAssets && path != IntPtr.Zero)
+            {
+                Console.WriteLine(new IL2String(path).ToString());
+            }
             uint result;
             if (TryLoadCustomFile(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify, out result))
             {
@@ -527,6 +531,10 @@ namespace YgoMasterClient
 
         static uint LoadImmediate(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify)
         {
+            if (LogAssets && path != IntPtr.Zero)
+            {
+                Console.WriteLine(new IL2String(path).ToString());
+            }
             uint result;
             if (TryLoadCustomFile(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify, out result))
             {
@@ -557,10 +565,6 @@ namespace YgoMasterClient
             if (pathPtr != IntPtr.Zero)
             {
                 string inputPath = new IL2String(pathPtr).ToString();
-                if (LogAssets)
-                {
-                    Console.WriteLine(inputPath);
-                }
                 const string gateBgHeader = "Prefabs/Solo/BackGrounds/Front/gateBGUI";
                 if (inputPath.StartsWith(gateBgHeader) && int.TryParse(inputPath.Substring(gateBgHeader.Length), out soloGateBgId) && !FileExists(inputPath))
                 {

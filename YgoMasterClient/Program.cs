@@ -43,33 +43,34 @@ namespace YgoMasterClient
             }
         }
 
-        static void SetDataDirectory(string currentDir, string defaultDataDir)
-        {
-            try
-            {
-                string newDataDirFile = Path.Combine(currentDir, "DataDirectory.txt");
-                if (File.Exists(newDataDirFile))
-                {
-                    string newDir = File.ReadAllLines(newDataDirFile)[0].Trim();
-                    if (Directory.Exists(newDir))
-                    {
-                        DataDir = Path.Combine(currentDir, newDir);
-                        return;
-                    }
-                }
-            }
-            catch
-            {
-            }
-            DataDir = Path.Combine(currentDir, defaultDataDir);
-        }
-
         public static int DllMain(string arg)
         {
             try
             {
                 CurrentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                SetDataDirectory(CurrentDir, "Data");
+                try
+                {
+                    string overrideDataDirFile = Path.Combine(CurrentDir, "DataDirClient.txt");
+                    if (!File.Exists(overrideDataDirFile))
+                    {
+                        overrideDataDirFile = Path.Combine(CurrentDir, "DataDir.txt");
+                    }
+                    if (File.Exists(overrideDataDirFile))
+                    {
+                        string newDir = Path.Combine(CurrentDir, File.ReadAllLines(overrideDataDirFile)[0].Trim());
+                        if (Directory.Exists(newDir))
+                        {
+                            DataDir = newDir;
+                        }
+                    }
+                }
+                catch
+                {
+                }
+                if (string.IsNullOrEmpty(DataDir))
+                {
+                    DataDir = Path.Combine(CurrentDir, "Data");
+                }
                 ClientDataDir = Path.Combine(DataDir, "ClientData");
                 ClientDataDumpDir = Path.Combine(DataDir, "ClientDataDump");
 
@@ -101,11 +102,27 @@ namespace YgoMasterClient
                 }
                 PInvoke.WL_EnableAllHooks(true);
 
-                // TODO: Load this from a file
-                RunConsole = false;
-                LogIDS = false;
-                AssetHelper.LogAssets = false;
-                AssetHelper.ShouldDumpData = false;
+                // TODO: Convert this to json?
+                string clientSettingsFile = Path.Combine(ClientDataDir, "ClientSettings.txt");
+                if (File.Exists(clientSettingsFile))
+                {
+                    string[] lines = File.ReadAllLines(clientSettingsFile);
+                    foreach (string line in lines)
+                    {
+                        string lineTrimmed = line.ToLowerInvariant().Trim();
+                        if (lineTrimmed.StartsWith("//"))
+                        {
+                            continue;
+                        }
+                        switch (lineTrimmed)
+                        {
+                            case "console": RunConsole = true; break;
+                            case "logids": LogIDS = true; break;
+                            case "assethelper_log": AssetHelper.LogAssets = true; break;
+                            case "assethelper_dump": AssetHelper.ShouldDumpData = true; break;
+                        }
+                    }
+                }
 
                 if (RunConsole)
                 {

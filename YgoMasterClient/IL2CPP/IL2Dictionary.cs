@@ -140,28 +140,28 @@ namespace IL2CPP
         {
             get
             {
-                IL2Object obj = ClassInfo.MethodItemGet.Invoke(ptr, new IntPtr[] { new IntPtr(&key) });
+                IL2Object obj = ClassInfo.MethodItemGet.Invoke(ptr, new IntPtr[] { new IntPtr(&key), ClassInfo.MethodItemGet.ptr });
                 return obj != null ? obj.ptr : IntPtr.Zero;
             }
             set
             {
-                ClassInfo.MethodItemSet.Invoke(ptr, new IntPtr[] { new IntPtr(&key), value });
+                ClassInfo.MethodItemSet.Invoke(ptr, new IntPtr[] { new IntPtr(&key), value, ClassInfo.MethodItemSet.ptr });
             }
         }
 
         public void Add(int key, IntPtr value)
         {
-            ClassInfo.MethodAdd.Invoke(ptr, new IntPtr[] { new IntPtr(&key), value });
+            ClassInfo.MethodAdd.Invoke(ptr, new IntPtr[] { new IntPtr(&key), value, ClassInfo.MethodAdd.ptr });
         }
 
         public bool Remove(int key)
         {
-            return ClassInfo.MethodRemove.Invoke(ptr, new IntPtr[] { new IntPtr(&key) }).GetValueRef<bool>();
+            return ClassInfo.MethodRemove.Invoke(ptr, new IntPtr[] { new IntPtr(&key), ClassInfo.MethodRemove.ptr }).GetValueRef<bool>();
         }
 
         public bool ContainsKey(int key)
         {
-            return ClassInfo.MethodContainsKey.Invoke(ptr, new IntPtr[] { new IntPtr(&key) }).GetValueRef<bool>();
+            return ClassInfo.MethodContainsKey.Invoke(ptr, new IntPtr[] { new IntPtr(&key), ClassInfo.MethodContainsKey.ptr }).GetValueRef<bool>();
         }
     }
 }

@@ -92,6 +92,11 @@ namespace YgoMaster
             PacksByPackId = new Dictionary<int, ShopItemInfo>();
             SecretPacksByCardId = new Dictionary<int, List<ShopItemInfo>>();
         }
+
+        public static int GetBaseShopId(ShopCategory category)
+        {
+            return (int)category * 10000000;
+        }
     }
 
     class ShopItemInfo
@@ -103,7 +108,7 @@ namespace YgoMaster
         }
         public int BaseShopId
         {
-            get { return (int)Category * 10000000; }
+            get { return ShopInfo.GetBaseShopId(Category); }
         }
         /// <summary>
         /// The shop tab

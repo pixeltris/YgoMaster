@@ -80,10 +80,14 @@ namespace YgoMaster
         {
             try
             {
-                string newDataDirFile = "DataDirectory.txt";
-                if (File.Exists(newDataDirFile))
+                string overrideDataDirFile = "DataDirServer.txt";
+                if (!File.Exists(overrideDataDirFile))
                 {
-                    string newDir = File.ReadAllLines(newDataDirFile)[0].Trim();
+                    overrideDataDirFile = "DataDir.txt";
+                }
+                if (File.Exists(overrideDataDirFile))
+                {
+                    string newDir = File.ReadAllLines(overrideDataDirFile)[0].Trim();
                     if (Directory.Exists(newDir))
                     {
                         dataDirectory = newDir;
@@ -1620,7 +1624,12 @@ namespace YgoMaster
                             deck.DisplayCards.Add(focusCards[i]);
                         }
                     }
-                    structureShop[structureId] = new Dictionary<string, object>()
+                    // NOTE: Focus cards are required outwise it'll bug out the shop
+                    while (deck.DisplayCards.Count < 3)
+                    {
+                        deck.DisplayCards.Add(6018);// Mokey mokey
+                    }
+                    structureShop[ShopInfo.GetBaseShopId(ShopCategory.Structure) + structureId] = new Dictionary<string, object>()
                     {
                         { "releaseDate", GetEpochTime(set.ReleaseDate) },
                         { "category", (int)ShopCategory.Structure },

@@ -9,12 +9,14 @@
 #include <wchar.h>
 #include <stdio.h>
 #include <metahost.h>
+#include <shlwapi.h>
 #if WITHDETOURS
 #include "detours.h"
 #endif
 #undef _MSC_VER
 #include "min_minhook.h"
 
+#pragma comment(lib, "shlwapi.lib")
 #pragma comment(lib, "mscoree.lib")
 #pragma comment(lib, "user32.lib")
 #if WITHDETOURS
@@ -127,14 +129,19 @@ HRESULT LoadDotNetImpl()
     {
         return result;
     }
+
+    wchar_t binaryPath[MAX_PATH] = {0};
     
-    wchar_t* binaryPath = L"YgoMasterClient.exe";
-    if (!FileExists(binaryPath))
+    HMODULE hm;
+    if(GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPWSTR)&LoadDotNetImpl, &hm))
     {
-        binaryPath = L"Build\\YgoMasterClient.exe";
-        if (!FileExists(binaryPath))
+        wchar_t dllPath[MAX_PATH] = {0};
+        GetModuleFileNameW(hm, dllPath, MAX_PATH);
+        if (wcslen(dllPath) > 0 && FileExists(dllPath))
         {
-            binaryPath = L"YgoMaster\\YgoMasterClient.exe";
+            PathRemoveFileSpecW(dllPath);
+            wcscpy(binaryPath, dllPath);
+            wcscat(binaryPath, L"\\YgoMasterClient.exe");
         }
     }
     if (!FileExists(binaryPath))

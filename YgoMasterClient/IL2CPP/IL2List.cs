@@ -166,18 +166,18 @@ namespace IL2CPP
         {
             get
             {
-                IL2Object obj = ClassInfo.MethodItemGet.Invoke(ptr, new IntPtr[] { new IntPtr(&index) });
+                IL2Object obj = ClassInfo.MethodItemGet.Invoke(ptr, new IntPtr[] { new IntPtr(&index), ClassInfo.MethodItemGet.ptr });
                 return obj != null ? obj.ptr : IntPtr.Zero;
             }
             set
             {
-                ClassInfo.MethodItemSet.Invoke(ptr, new IntPtr[] { new IntPtr(&index), value });
+                ClassInfo.MethodItemSet.Invoke(ptr, new IntPtr[] { new IntPtr(&index), value, ClassInfo.MethodItemSet.ptr });
             }
         }
 
         public void Add(IntPtr value)
         {
-            ClassInfo.MethodAdd.Invoke(ptr, new IntPtr[] { value } );
+            ClassInfo.MethodAdd.Invoke(ptr, new IntPtr[] { value, ClassInfo.MethodAdd.ptr } );
         }
     }
 }
