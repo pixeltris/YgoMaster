@@ -18,7 +18,7 @@ namespace IL2CPP
 
             uint count = 0;
             IntPtr assemblies = Import.Domain.il2cpp_domain_get_assemblies(domain, ref count);
-            IntPtr[] assembliesarr = Utils.IntPtrToStructureArray<IntPtr>(assemblies, count);
+            IntPtr[] assembliesarr = NativeUtils.IntPtrToStructureArray<IntPtr>(assemblies, count);
             foreach (IntPtr assembly in assembliesarr)
             {
                 if (assembly != IntPtr.Zero)

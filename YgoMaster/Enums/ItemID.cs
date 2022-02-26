@@ -37,11 +37,19 @@ namespace YgoMaster
 
         public static int GetFieldObjFromField(int fieldId)
         {
+            if (fieldId <= 0)
+            {
+                return (int)FIELD_OBJ.ID1100001;
+            }
             return (fieldId - 1090000) + 1100000;
         }
 
         public static int GetFieldAvatarBaseFromField(int fieldId)
         {
+            if (fieldId <= 0)
+            {
+                return (int)AVATAR_HOME.ID1110001;
+            }
             return (fieldId - 1090000) + 1110000;
         }
 

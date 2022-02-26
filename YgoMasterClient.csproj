@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BE0FAEA9-D843-4DA2-9B59-1232DC9E54E5}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>YgoMasterClient</RootNamespace>
+    <AssemblyName>YgoMasterClient</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>Build\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;YGO_MASTER_CLIENT</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>Build\</OutputPath>
+    <DefineConstants>TRACE;YGO_MASTER_CLIENT</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="YgoMasterClient\AssetHelper.cs" />
+    <Compile Include="YgoMasterClient\AssetHelper.Solo.cs" />
+    <Compile Include="YgoMasterClient\CommonDialogViewController.cs" />
+    <Compile Include="YgoMasterClient\ConsoleHelper.cs" />
+    <Compile Include="YgoMasterClient\CRC32.cs" />
+    <Compile Include="YgoMasterClient\DelegateHelper.cs" />
+    <Compile Include="YgoMasterClient\GameLauncher.cs" />
+    <Compile Include="YgoMasterClient\Hook.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\Assembler.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\CastUtils.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\IL2Array.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\IL2Assembly.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\IL2Base.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\IL2BindingFlags.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\IL2Class.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\IL2ClassType.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\IL2Dictionary.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\IL2Field.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\IL2List.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\IL2Method.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\IL2Object.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\IL2Param.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\IL2Property.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\IL2String.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\IL2SystemClass.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\IL2Utils.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\Import.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\RuntimeType.cs" />
+    <Compile Include="YgoMasterClient\IL2CPP\NativeUtils.cs" />
+    <Compile Include="YgoMasterClient\Program.cs" />
+    <Compile Include="YgoMasterClient\Properties\AssemblyInfo.cs" />
+    <Compile Include="YgoMasterClient\DuelStarter.cs" />
+    <Compile Include="YgoMasterClient\DeckEditorUtils.cs" />
+    <Compile Include="YgoMaster\DuelSettings.cs" />
+    <Compile Include="YgoMaster\Enums\ItemID.cs" />
+    <Compile Include="YgoMaster\Enums\Misc.cs" />
+    <Compile Include="YgoMaster\Infos\CardCollection.cs" />
+    <Compile Include="YgoMaster\Lib\MiniJSON.cs" />
+    <Compile Include="YgoMaster\Infos\DeckInfo.cs" />
+    <Compile Include="YgoMaster\Utils.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="YgoMaster\YdkHelper.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

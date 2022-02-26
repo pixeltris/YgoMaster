@@ -22,6 +22,8 @@
     "Limit": 0,// YgomGame.Duel.Engine.LimitedType
     "cpu": 100,
     //"cpuflag": "AttackOnly",// YgomGame.Duel.Engine.CpuParam
+    //"MyType": 1,// For AI vs AI
+    //"Type": 4,// 0 = normal, 1 = "extra", 2 = tag, 3 = speed duel, 4 = rush duel (Engine.DuelType)
     //"RandSeed": 262250261,// If no seed is specified a random one will be generated
     "targetChapterId": 10001,// The chapter id to replace (doesn't apply unless the chapter is already complete)
 }

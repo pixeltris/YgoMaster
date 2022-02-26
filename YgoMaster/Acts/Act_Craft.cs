@@ -11,7 +11,7 @@ namespace YgoMaster
 
         void Act_CraftExchangeMulti(GameServerWebRequest request, bool isCraft = false)
         {
-            Dictionary<string, object> cardList = GetDictionary(request.ActParams, "card_list");
+            Dictionary<string, object> cardList = Utils.GetDictionary(request.ActParams, "card_list");
             if (cardList != null)
             {
                 Dictionary<int, int> cardRare = GetCardRarities(request.Player);
@@ -29,22 +29,22 @@ namespace YgoMaster
                     {
                         cards[cardId] = new Dictionary<CardStyleRarity, int>()
                         {
-                            { CardStyleRarity.Normal, GetValue<int>(numObj, "num") },
-                            { CardStyleRarity.Shine, GetValue<int>(numObj, "p1_num") },
-                            { CardStyleRarity.Royal, GetValue<int>(numObj, "p2_num") }
+                            { CardStyleRarity.Normal, Utils.GetValue<int>(numObj, "num") },
+                            { CardStyleRarity.Shine, Utils.GetValue<int>(numObj, "p1_num") },
+                            { CardStyleRarity.Royal, Utils.GetValue<int>(numObj, "p2_num") }
                         };
                         foreach (KeyValuePair<CardStyleRarity, int> styleRarityNum in cards[cardId])
                         {
                             if (!isCraft && styleRarityNum.Value > request.Player.Cards.GetCount(cardId, PlayerCardKind.Dismantle, styleRarityNum.Key))
                             {
-                                LogWarning("Lacking the desired amount of cards for dismantle");
+                                Utils.LogWarning("Lacking the desired amount of cards for dismantle");
                                 request.ResultCode = (int)ResultCodes.CraftCode.ERROR_UPDATE_FAILED;
                                 return;
                             }
                             CardRarity rarity;
                             if (!TryGetCardRarity(cardId, cardRare, out rarity) && !TryGetCardRarity(cardId, CardRare, out rarity))
                             {
-                                LogWarning("Couldn't find card " + cardId + " rarity for craft/dismantle");
+                                Utils.LogWarning("Couldn't find card " + cardId + " rarity for craft/dismantle");
                                 request.ResultCode = (int)ResultCodes.CraftCode.ERROR_UPDATE_FAILED;
                                 return;
                             }
@@ -59,13 +59,13 @@ namespace YgoMaster
                             }
                             if (isCraft && !totalPoints.CanSubtract(rarity, styleRarityNum.Value * pointCount))
                             {
-                                LogWarning("Overflow of craft points when crafting");
+                                Utils.LogWarning("Overflow of craft points when crafting");
                                 request.ResultCode = (int)ResultCodes.CraftCode.ERROR_UPDATE_FAILED;
                                 return;
                             }
                             else if (!isCraft && !totalPoints.CanAdd(rarity, styleRarityNum.Value * pointCount))
                             {
-                                LogWarning("Overflow of craft points when dismantling");
+                                Utils.LogWarning("Overflow of craft points when dismantling");
                                 request.ResultCode = (int)ResultCodes.CraftCode.ERROR_UPDATE_FAILED;
                                 return;
                             }
@@ -141,7 +141,7 @@ namespace YgoMaster
                                     request.Player.ShopState.Unlock(secretPack);
                                     secretPackList.Add(new Dictionary<string, object>()
                                     {
-                                        { "nameTextId", FixIdString(secretPack.NameText) },
+                                        { "nameTextId", Utils.FixIdString(secretPack.NameText) },
                                         { "shopId", secretPack.ShopId },
                                         { "iconMrk", secretPack.IconMrk },
                                         { "is_extend", !isNewSecret },
@@ -202,7 +202,7 @@ namespace YgoMaster
             // Only taking into account shop structure decks and packs for now
             // TODO: solo rewards / starting decks
             int cardId;
-            if (TryGetValue(request.ActParams, "card_id", out cardId))
+            if (Utils.TryGetValue(request.ActParams, "card_id", out cardId))
             {
                 List<object> routes = new List<object>();
                 for (int i = 0; i < 2; i++)
@@ -233,7 +233,7 @@ namespace YgoMaster
                             { "route_category", (int)howToObtain },
                             { "route_param", shopItem.ShopId },
                             { "route_open", isRouteOpen },
-                            { "route_name_id", FixIdString(shopItem.NameText) },
+                            { "route_name_id", Utils.FixIdString(shopItem.NameText) },
                             { "route_icon_type", (int)shopItem.IconType },
                             { "route_icon_data", shopItem.IconData },
                             { "route_icon_mrk", shopItem.IconMrk }
@@ -248,7 +248,7 @@ namespace YgoMaster
                         Act_CraftGetCardRoute_TryAddStructureDeck(request, routes, cardId, itemId, HowToObtainCard.InitialDistributionStructure);
                     }
                 }
-                Dictionary<int, Dictionary<string, object>> soloAllRewardData = GetIntDictDict(SoloData, "reward");
+                Dictionary<int, Dictionary<string, object>> soloAllRewardData = Utils.GetIntDictDict(SoloData, "reward");
                 if (soloAllRewardData != null)
                 {
                     foreach (KeyValuePair<int, Dictionary<string, object>> soloRewardData in soloAllRewardData)

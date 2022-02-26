@@ -12,6 +12,7 @@ namespace YgoMasterClient
     {
         public static bool ShouldDumpData;
         public static bool LogAssets;
+        public static bool DisableFileErrorPopup;
 
         // TODO: Put these definitions into nested classes (or just use more explicit names)
 
@@ -27,7 +28,9 @@ namespace YgoMasterClient
         static IL2Class resourceManagerClassInfo;
         static IL2Method methodExists;
         static IL2Method methodGetResource;
+        static IL2Method methodGetAsset;
         static IL2Field fieldResourceDictionary;
+        static IL2Field fieldResourceManagerInstance;
 
         delegate IntPtr Del_GetResource(IntPtr thisPtr, IntPtr pathPtr, IntPtr workPathPtr);
         static Hook<Del_GetResource> hookGetResource;
@@ -114,7 +117,7 @@ namespace YgoMasterClient
         static IL2Method methodReadAllBytes;// File
 
         [StructLayout(LayoutKind.Sequential)]
-        struct Vector2
+        public struct Vector2
         {
             public float x;
             public float y;
@@ -212,7 +215,9 @@ namespace YgoMasterClient
             resourceManagerClassInfo = assembly.GetClass("ResourceManager", "YgomSystem");
             methodExists = resourceManagerClassInfo.GetMethod("Exists");
             methodGetResource = resourceManagerClassInfo.GetMethod("getResource", x => x.GetParameters().Length == 2 && x.GetParameters()[0].Name == "path");
+            methodGetAsset = resourceManagerClassInfo.GetMethod("GetAsset");
             fieldResourceDictionary = resourceManagerClassInfo.GetField("resourceDictionary");
+            fieldResourceManagerInstance = resourceManagerClassInfo.GetField("s_instance");
             hookGetResource = new Hook<Del_GetResource>(GetResource, methodGetResource);
             hookLoad = new Hook<Del_Load>(Load, resourceManagerClassInfo.GetMethod("load"));
             hookLoadImmediate = new Hook<Del_LoadImmediate>(LoadImmediate, resourceManagerClassInfo.GetMethod("loadImmediate"));
@@ -521,6 +526,10 @@ namespace YgoMasterClient
             {
                 Console.WriteLine(new IL2String(path).ToString());
             }
+            if (DisableFileErrorPopup)
+            {
+                disableErrorNotify = true;
+            }
             uint result;
             if (TryLoadCustomFile(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify, out result))
             {
@@ -535,12 +544,24 @@ namespace YgoMasterClient
             {
                 Console.WriteLine(new IL2String(path).ToString());
             }
+            if (DisableFileErrorPopup)
+            {
+                disableErrorNotify = true;
+            }
             uint result;
             if (TryLoadCustomFile(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify, out result))
             {
                 return result;
             }
             return hookLoadImmediate.Original(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify);
+        }
+
+        public static IntPtr LoadImmediateAsset(string path)
+        {
+            IntPtr mgr = fieldResourceManagerInstance.GetValue().ptr;
+            LoadImmediate(mgr, new IL2String(path).ptr, IntPtr.Zero, IntPtr.Zero, false);
+            IL2Object result = methodGetAsset.Invoke(mgr, new IntPtr[] { new IL2String(path).ptr, IntPtr.Zero });
+            return result != null ? result.ptr : IntPtr.Zero;
         }
 
         public static byte[] GetBytesDecryptionData(string path)

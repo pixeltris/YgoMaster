@@ -30,7 +30,7 @@ namespace YgoMaster
                 request.Player.Cards.Add(cardId, 1, PlayerCardKind.NoDismantle, CardStyleRarity.Normal);
             }
             Dictionary<string, object> itemsData = request.GetOrCreateDictionary("Item");
-            Dictionary<string, object> itemsHave = GetOrCreateDictionary(itemsData, "have");
+            Dictionary<string, object> itemsHave = Utils.GetOrCreateDictionary(itemsData, "have");
             itemsHave[structureDeckId.ToString()] = 1;
             int[] accessoryItemIds =
             {
@@ -101,7 +101,7 @@ namespace YgoMaster
                         packShop[shopItem.ShopId.ToString()] = data;
                         data["packId"] = shopItem.Id;
                         data["packType"] = (int)shopItem.PackType;
-                        data["nameTextId"] = FixIdString(shopItem.NameText.Replace(packBuyLimitStr, packBuyLimit.ToString()));
+                        data["nameTextId"] = Utils.FixIdString(shopItem.NameText.Replace(packBuyLimitStr, packBuyLimit.ToString()));
                         if (shopItem.DescTextGenerated)
                         {
                             int numCardsObtained;
@@ -119,14 +119,14 @@ namespace YgoMaster
                             {
                                 desc.Add((shopItem.UnlockSecretsAtPercent - percentComplete).ToString("N1") + "% left until the next pack");
                             }
-                            string descStr = FixIdString(string.Join("\n", desc));
+                            string descStr = Utils.FixIdString(string.Join("\n", desc));
                             data["descShortTextId"] = descStr;
                             data["descFullTextId"] = descStr;
                         }
                         else
                         {
-                            data["descShortTextId"] = FixIdString(shopItem.DescShortText.Replace(packBuyLimitStr, packBuyLimit.ToString()));
-                            data["descFullTextId"] = FixIdString(shopItem.DescFullText.Replace(packBuyLimitStr, packBuyLimit.ToString()));
+                            data["descShortTextId"] = Utils.FixIdString(shopItem.DescShortText.Replace(packBuyLimitStr, packBuyLimit.ToString()));
+                            data["descFullTextId"] = Utils.FixIdString(shopItem.DescFullText.Replace(packBuyLimitStr, packBuyLimit.ToString()));
                         }
                         data["power"] = shopItem.Power;
                         data["flexibility"] = shopItem.Flexibility;
@@ -226,14 +226,14 @@ namespace YgoMaster
                         { "buy_count", 1 },
                         { "textId", textId },
                         { "textArgs", price.ItemAmount > 1 ? new int[] { price.ItemAmount } : null },
-                        { "POP", FixIdString(pop) },
+                        { "POP", Utils.FixIdString(pop) },
                         { "sort", price.Id }
                         //"free_num":1 <--- used for "1 Free Pull" (also need "use_item_num" set to 0)
                     };
                 }
                 data["prices"] = prices;
 
-                Dictionary<string, object> cardList = GetOrCreateDictionary(request.GetOrCreateDictionary("Gacha"), "cardList");
+                Dictionary<string, object> cardList = Utils.GetOrCreateDictionary(request.GetOrCreateDictionary("Gacha"), "cardList");
                 if (!Shop.PerPackRarities)
                 {
                     switch (shopItem.PackType)
@@ -278,7 +278,7 @@ namespace YgoMaster
                 }
                 if (itemData != null)
                 {
-                    GetOrCreateDictionary(shopData, categoryStr)[itemData.First().Key] = itemData.First().Value;
+                    Utils.GetOrCreateDictionary(shopData, categoryStr)[itemData.First().Key] = itemData.First().Value;
                 }
             }
             else
@@ -301,9 +301,9 @@ namespace YgoMaster
         void Act_ShopPurchase(GameServerWebRequest request)
         {
             request.Player.ShopState.ClearNew();
-            int shopId = GetValue<int>(request.ActParams, "shop_id");
-            int priceId = GetValue<int>(request.ActParams, "price_id");
-            int count = GetValue<int>(request.ActParams, "count");
+            int shopId = Utils.GetValue<int>(request.ActParams, "shop_id");
+            int priceId = Utils.GetValue<int>(request.ActParams, "price_id");
+            int count = Utils.GetValue<int>(request.ActParams, "count");
             bool success = false;
             ShopItemInfo shopItem = null;
             ShopItemPrice price;
@@ -319,7 +319,7 @@ namespace YgoMaster
                 }
                 if (request.Player.Gems < price.Price)
                 {
-                    LogWarning("Lacking funds to purchase item " + shopItem.Id);
+                    Utils.LogWarning("Lacking funds to purchase item " + shopItem.Id);
                 }
                 else
                 {
@@ -331,14 +331,14 @@ namespace YgoMaster
                         case ShopCategory.Structure:
                             if (request.Player.Items.Contains(shopItem.Id))
                             {
-                                LogWarning("Tried to re-purchase owned item " + shopItem.Id);
+                                Utils.LogWarning("Tried to re-purchase owned item " + shopItem.Id);
                             }
                             else
                             {
                                 DeckInfo deck;
                                 if (!StructureDecks.TryGetValue(shopItem.Id, out deck))
                                 {
-                                    LogWarning("Failed to find structure deck " + shopItem.Id);
+                                    Utils.LogWarning("Failed to find structure deck " + shopItem.Id);
                                 }
                                 else
                                 {
@@ -360,7 +360,7 @@ namespace YgoMaster
                         case ShopCategory.Accessory:
                             if (request.Player.Items.Contains(shopItem.Id))
                             {
-                                LogWarning("Tried to re-purchase owned item " + shopItem.Id);
+                                Utils.LogWarning("Tried to re-purchase owned item " + shopItem.Id);
                             }
                             else
                             {
@@ -390,7 +390,7 @@ namespace YgoMaster
                             }
                             break;
                         case ShopCategory.Special:
-                            LogInfo("TODO: Handle special shop category");
+                            Utils.LogInfo("TODO: Handle special shop category");
                             break;
                     }
                 }
@@ -434,7 +434,7 @@ namespace YgoMaster
             else
             {
                 request.ResultCode = (int)ResultCodes.ShopCode.PROCESSING_FAILED;
-                LogWarning("Shop purchase failed!");
+                Utils.LogWarning("Shop purchase failed!");
             }
             request.Remove("Gacha.drawPackInfo", "Gacha.effects", "Gacha.info");
         }
@@ -446,7 +446,7 @@ namespace YgoMaster
             ShopOddsInfo odds = shopItem.GetOdds(Shop);
             if (odds == null)
             {
-                LogWarning("Failed to find pack odds for " + shopItem.Id);
+                Utils.LogWarning("Failed to find pack odds for " + shopItem.Id);
                 return false;
             }
             else
@@ -547,7 +547,7 @@ namespace YgoMaster
                         }
                         if (match == null)
                         {
-                            LogWarning("Failed to determine odds for card index " + cardIndex + " on pack id " + shopItem.Id);
+                            Utils.LogWarning("Failed to determine odds for card index " + cardIndex + " on pack id " + shopItem.Id);
                             //continue;
                             match = odds.CardRateList[0];
                         }
@@ -567,7 +567,7 @@ namespace YgoMaster
                         }
                         if (rarityAccumaltiveRate.Count == 0)
                         {
-                            LogWarning("Missing odds for card index " + cardIndex + " on pack id " + shopItem.Id);
+                            Utils.LogWarning("Missing odds for card index " + cardIndex + " on pack id " + shopItem.Id);
                         }
                         double rarityPercent = rand.NextDouble() * (100 - subtractPercent);
                         CardRarity rarity = CardRarity.None;
@@ -584,7 +584,7 @@ namespace YgoMaster
                         {
                             if (rarityAccumaltiveRate.Count == 0)
                             {
-                                LogWarning("Skip as all rarities cleared out for index " + cardIndex);
+                                Utils.LogWarning("Skip as all rarities cleared out for index " + cardIndex);
                                 continue;
                             }
                             rarity = rarityAccumaltiveRate.Keys.OrderByDescending(x => x).First();
@@ -594,7 +594,7 @@ namespace YgoMaster
                             isPickup = true;
                         }
                         int foundCardId = 0;
-                        List<int> shuffledCards = Shuffle(rand, new List<int>(match.Standard ? Shop.StandardPack.Cards.Keys : shopItem.Cards.Keys));
+                        List<int> shuffledCards = Utils.Shuffle(rand, new List<int>(match.Standard ? Shop.StandardPack.Cards.Keys : shopItem.Cards.Keys));
                         List<CardRarity> raritiesToTry = new List<CardRarity>();
                         {
                             CardRarity tempRarity = rarity;
@@ -639,12 +639,12 @@ namespace YgoMaster
                         }
                         if (foundCardId == 0)
                         {
-                            LogWarning("Failed to find card id for card index " + cardIndex + " on pack id " + shopItem.Id);
+                            Utils.LogWarning("Failed to find card id for card index " + cardIndex + " on pack id " + shopItem.Id);
                             continue;
                         }
                         if (rarity > originalRarity)
                         {
-                            LogWarning("Upgraded rarity from " + originalRarity + " to " + rarity + ". Consider using a different shop odds for this pack");
+                            Utils.LogWarning("Upgraded rarity from " + originalRarity + " to " + rarity + ". Consider using a different shop odds for this pack");
                         }
                         if (rarity == CardRarity.UltraRare)
                         {
@@ -670,7 +670,7 @@ namespace YgoMaster
                                     }
                                     if (styleRarityAccumaltiveRate.Count == 0)
                                     {
-                                        LogWarning("Invalid style rarity odds for card index " + cardIndex + " on pack id " + shopItem.Id);
+                                        Utils.LogWarning("Invalid style rarity odds for card index " + cardIndex + " on pack id " + shopItem.Id);
                                     }
                                     else
                                     {
@@ -869,7 +869,7 @@ namespace YgoMaster
 
         void Act_GachaGetCardList(GameServerWebRequest request)
         {
-            int cardListId = GetValue<int>(request.ActParams, "card_list_id");
+            int cardListId = Utils.GetValue<int>(request.ActParams, "card_list_id");
             if (cardListId > 0)
             {
                 List<int> cardList = null;
@@ -881,7 +881,7 @@ namespace YgoMaster
                 else
                 {
                     cardList = new List<int>();
-                    LogWarning("Failed to find shop " + cardListId);
+                    Utils.LogWarning("Failed to find shop " + cardListId);
                 }
                 request.Response["Gacha"] = new Dictionary<string, object>()
                 {
@@ -898,7 +898,7 @@ namespace YgoMaster
 
         void Act_GachaGetProbability(GameServerWebRequest request)
         {
-            int packId = GetValue<int>(request.ActParams, "gacha_id");
+            int packId = Utils.GetValue<int>(request.ActParams, "gacha_id");
             ShopItemInfo item;
             if (Shop.PacksByPackId.TryGetValue(packId, out item) && item.Cards.Count > 0)
             {

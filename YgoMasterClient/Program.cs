@@ -9,18 +9,14 @@ using System.Runtime.InteropServices;
 using IL2CPP;
 using YgoMasterClient;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace YgoMasterClient
 {
     public static class Program
     {
-        public const string ServerUrl = "http://localhost/ygo";
-        public const string ServerPollUrl = "http://localhost/ygo/poll";
-
         public static bool IsLive;
-        public static bool LogIDS;
         public static bool RunConsole;
-
         public static string CurrentDir;// Path of where the current assembly is (YgoMasterClient.exe)
         public static string DataDir;// Path of misc data
         public static string ClientDataDir;// Path of the custom client content
@@ -39,14 +35,20 @@ namespace YgoMasterClient
             }
             if (!success)
             {
-                MessageBox.Show("Failed. Make sure the YgoMaster folder is inside game folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.None);
+                MessageBox.Show("Failed. Make sure the folder is inside game folder.\n\nThis should roughly be (depending on your steam install):\n\n " +
+                    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Yu-Gi-Oh! Master Duel\\Build\\\n\nThe working directory is:\n\n" +
+                     Environment.CurrentDirectory, "Error", MessageBoxButtons.OK, MessageBoxIcon.None);
             }
         }
 
         public static int DllMain(string arg)
         {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+
             try
             {
+                IsLive = arg == "live";
+
                 CurrentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 try
                 {
@@ -73,18 +75,71 @@ namespace YgoMasterClient
                 }
                 ClientDataDir = Path.Combine(DataDir, "ClientData");
                 ClientDataDumpDir = Path.Combine(DataDir, "ClientDataDump");
+                YgoMaster.YdkHelper.LoadIdMap(DataDir);
+
+                if (!IsLive)
+                {
+                    string settingsFile = Path.Combine(DataDir, "Settings.json");
+                    if (!File.Exists(settingsFile))
+                    {
+                        throw new Exception("Failed to find '" + settingsFile + "'");
+                    }
+                    Dictionary<string, object> serverSettings = MiniJSON.Json.DeserializeStripped(File.ReadAllText(settingsFile)) as Dictionary<string, object>;
+                    if (serverSettings == null)
+                    {
+                        throw new Exception("Failed to load '" + settingsFile + "'");
+                    }
+                    YgomSystem.Network.ProtocolHttp.ServerUrl = YgoMaster.Utils.GetValue<string>(serverSettings, "ServerUrl");
+                    YgomSystem.Network.ProtocolHttp.ServerPollUrl = YgoMaster.Utils.GetValue<string>(serverSettings, "ServerPollUrl");
+                    if (string.IsNullOrEmpty(YgomSystem.Network.ProtocolHttp.ServerUrl) ||
+                        string.IsNullOrEmpty(YgomSystem.Network.ProtocolHttp.ServerPollUrl))
+                    {
+                        throw new Exception("Failed to get server url settings");
+                    }
+                }
 
                 PInvoke.WL_InitHooks();
                 PInvoke.InitGameModuleBaseAddress();
 
+                // All types with hooks must be initialized. It's also a good idea to initialize other types as there's an exception handler here
+                // NOTE: As more things are added here the load time will increase (the reflection code does a lot of linear lookups)
                 List<Type> nativeTypes = new List<Type>();
-                if (arg == "live")
+                if (IsLive)
                 {
-                    IsLive = true;
-                    //nativeTypes.Add(typeof(AssetHelper));
+                    // DeckEditorUtils
+                    nativeTypes.Add(typeof(YgomGame.Deck.DeckView));
+                    nativeTypes.Add(typeof(YgomGame.Deck.CardCollectionView));
+                    nativeTypes.Add(typeof(YgomGame.DeckEditViewController2));
+                    nativeTypes.Add(typeof(YgomGame.SubMenu.DeckEditSubMenuViewController));
+                    nativeTypes.Add(typeof(YgomGame.Menu.CommonDialogViewController));
+
+                    // Misc
+                    nativeTypes.Add(typeof(Win32Hooks));
+                    nativeTypes.Add(typeof(AssetHelper));
+                    nativeTypes.Add(typeof(YgomSystem.Utility.TextData));
+                    nativeTypes.Add(typeof(YgomSystem.Utility.ClientWork));
+                    nativeTypes.Add(typeof(YgomMiniJSON.Json));
                 }
                 else
                 {
+                    // DuelStarter
+                    nativeTypes.Add(typeof(YgomSystem.UI.ViewControllerManager));
+                    nativeTypes.Add(typeof(YgomGame.Room.RoomCreateViewController));
+                    nativeTypes.Add(typeof(YgomGame.DeckBrowser.DeckBrowserViewController));
+                    nativeTypes.Add(typeof(YgomSystem.UI.InfinityScroll.InfinityScrollView));
+                    nativeTypes.Add(typeof(YgomGame.Solo.SoloStartProductionViewController));
+                    nativeTypes.Add(typeof(YgomGame.Duel.EngineInitializerByServer));
+                    nativeTypes.Add(typeof(YgomSystem.Network.API));
+
+                    // DeckEditorUtils
+                    nativeTypes.Add(typeof(YgomGame.Deck.DeckView));
+                    nativeTypes.Add(typeof(YgomGame.Deck.CardCollectionView));
+                    nativeTypes.Add(typeof(YgomGame.DeckEditViewController2));
+                    nativeTypes.Add(typeof(YgomGame.SubMenu.DeckEditSubMenuViewController));
+                    nativeTypes.Add(typeof(YgomGame.Menu.CommonDialogViewController));
+
+                    // Misc
+                    nativeTypes.Add(typeof(Win32Hooks));
                     nativeTypes.Add(typeof(AssetHelper));
                     nativeTypes.Add(typeof(YgomGame.Utility.ItemUtil));
                     nativeTypes.Add(typeof(YgomSystem.Utility.TextData));
@@ -102,43 +157,39 @@ namespace YgoMasterClient
                 }
                 PInvoke.WL_EnableAllHooks(true);
 
-                // TODO: Convert this to json?
-                string clientSettingsFile = Path.Combine(ClientDataDir, "ClientSettings.txt");
+                string clientSettingsFile = Path.Combine(ClientDataDir, "ClientSettings.json");
                 if (File.Exists(clientSettingsFile))
                 {
-                    string[] lines = File.ReadAllLines(clientSettingsFile);
-                    foreach (string line in lines)
+                    Dictionary<string, object> clientSettings = MiniJSON.Json.DeserializeStripped(File.ReadAllText(clientSettingsFile)) as Dictionary<string, object>;
+                    if (clientSettings != null)
                     {
-                        string lineTrimmed = line.ToLowerInvariant().Trim();
-                        if (lineTrimmed.StartsWith("//"))
-                        {
-                            continue;
-                        }
-                        switch (lineTrimmed)
-                        {
-                            case "console": RunConsole = true; break;
-                            case "logids": LogIDS = true; break;
-                            case "assethelper_log": AssetHelper.LogAssets = true; break;
-                            case "assethelper_dump": AssetHelper.ShouldDumpData = true; break;
-                        }
+                        RunConsole = YgoMaster.Utils.GetValue<bool>(clientSettings, "ShowConsole");
+                        YgomSystem.Utility.TextData.LogIDS = YgoMaster.Utils.GetValue<bool>(clientSettings, "LogIDs");
+                        AssetHelper.LogAssets = YgoMaster.Utils.GetValue<bool>(clientSettings, "AssetHelperLog");
+                        AssetHelper.ShouldDumpData = YgoMaster.Utils.GetValue<bool>(clientSettings, "AssetHelperDump");
+                        AssetHelper.DisableFileErrorPopup = YgoMaster.Utils.GetValue<bool>(clientSettings, "AssetHelperDisableFileErrorPopup");
+                        YgomGame.Solo.SoloStartProductionViewController.DuelStarterShowFirstPlayer = YgoMaster.Utils.GetValue<bool>(clientSettings, "DuelStarterShowFirstPlayer");
+                        YgomGame.Deck.DeckView.DeckEditorDisableLimits = YgoMaster.Utils.GetValue<bool>(clientSettings, "DeckEditorDisableLimits");
+                        YgomGame.Deck.DeckView.DeckEditorConvertStyleRarity = YgoMaster.Utils.GetValue<bool>(clientSettings, "DeckEditorConvertStyleRarity");
+                        YgomGame.DeckEditViewController2.DeckEditorShowStats = YgoMaster.Utils.GetValue<bool>(clientSettings, "DeckEditorShowStats");
                     }
                 }
 
+                // Only needed on "live" as the incoming thread wont be the main thread
+                Win32Hooks.Invoke(delegate
+                {
+                    Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+                });
+
                 if (RunConsole)
                 {
-                    // Use a form as an easy way to get execution on the main thread
-                    Form dummyForm = new Form();
-                    dummyForm.Opacity = 0;
-                    dummyForm.FormBorderStyle = FormBorderStyle.None;
-                    dummyForm.Show();
-                    dummyForm.Hide();
                     ConsoleHelper.ShowConsole();
                     new Thread(delegate()
                         {
                             while (true)
                             {
                                 string consoleInput = Console.ReadLine();
-                                dummyForm.Invoke((MethodInvoker)delegate
+                                Win32Hooks.Invoke(delegate
                                 {
                                     try
                                     {
@@ -162,7 +213,9 @@ namespace YgoMasterClient
                                                             {
                                                                 categories[cat] = new List<string>();
                                                             }
+                                                            //name = name.Replace("\"", "\\\"");
                                                             string prefix = name == "deleted" ? "//" : "";
+                                                            //categories[cat].Add(prefix + "[Name(\"" + name + "\")]" + fieldName + " = " + id + ",");
                                                             categories[cat].Add(prefix + fieldName + " = " + id + ",//" + name);
                                                         }
                                                     }
@@ -436,6 +489,14 @@ namespace YgoMasterClient
                                                     Console.WriteLine("Done");
                                                 }
                                                 break;
+                                            case "updatejson":// Update the json data store (useful for testing)
+                                                YgomSystem.Utility.ClientWork.UpdateJson(splitted[1], splitted[2]);
+                                                Console.WriteLine("Done");
+                                                break;
+                                            case "updatejsonraw":// Update the json data store (useful for testing)
+                                                YgomSystem.Utility.ClientWork.UpdateJson(splitted[1]);
+                                                Console.WriteLine("Done");
+                                                break;
                                         }
                                     }
                                     catch (Exception e)
@@ -454,6 +515,40 @@ namespace YgoMasterClient
                 return 1;
             }
             return 0;
+        }
+    }
+}
+
+unsafe static class Win32Hooks
+{
+    delegate int Del_PeekMessageA(IntPtr lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg);
+    static Hook<Del_PeekMessageA> hookPeekMessageA;
+
+    static List<Action> actions = new List<Action>();
+
+    static Win32Hooks()
+    {
+        hookPeekMessageA = new Hook<Del_PeekMessageA>(PeekMessageA, PInvoke.GetProcAddress(PInvoke.GetModuleHandle("user32.dll"), "PeekMessageA"));
+    }
+
+    static int PeekMessageA(IntPtr lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg)
+    {
+        lock (actions)
+        {
+            for (int i = actions.Count - 1; i >= 0; i--)
+            {
+                actions[i]();
+                actions.RemoveAt(i);
+            }
+        }
+        return hookPeekMessageA.Original(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
+    }
+
+    public static void Invoke(Action action)
+    {
+        lock (actions)
+        {
+            actions.Add(action);
         }
     }
 }
@@ -520,6 +615,9 @@ namespace YgomSystem.Utility
 {
     unsafe static class TextData
     {
+        public const string HackID = "IDS_SYS.IDHACK:";
+        public static bool LogIDS;
+
         static IL2Class classInfo;
         static IL2Method methodLoad;
         static IL2Method methodGetTextString;
@@ -605,14 +703,13 @@ namespace YgomSystem.Utility
         static IntPtr GetTextString(IntPtr textString, bool richTextEx)
         {
             string inputString = new IL2Object(textString).GetValueObj<string>();
-            if (Program.LogIDS)
+            if (LogIDS)
             {
                 Console.WriteLine(inputString);
             }
-            const string header = "IDS_SYS.IDHACK:";
-            if (!string.IsNullOrEmpty(inputString) && inputString.StartsWith(header))
+            if (!string.IsNullOrEmpty(inputString) && inputString.StartsWith(HackID))
             {
-                return new IL2String(inputString.Substring(header.Length)).ptr;
+                return new IL2String(inputString.Substring(HackID.Length)).ptr;
             }
             string customText;
             if (CustomTextData.TryGetValue(inputString, out customText))
@@ -640,7 +737,7 @@ namespace YgomSystem.Utility
                         {
                             string enumValueStr = strObj.GetValueObj<string>();
                             string fullString = enumTypeName + "." + enumValueStr;
-                            if (Program.LogIDS)
+                            if (LogIDS)
                             {
                                 Console.WriteLine(fullString);
                             }
@@ -697,6 +794,12 @@ namespace YgomSystem.Utility
             return methodGetStringByJsonPath.Invoke(new IntPtr[] { new IL2String(jsonPath).ptr, new IL2String(defaultValue).ptr }).GetValueObj<string>();
         }
 
+        public static IntPtr GetByJsonPath(string jsonPath)
+        {
+            IL2Object obj = methodGetByJsonPath.Invoke(new IntPtr[] { new IL2String(jsonPath).ptr });
+            return obj != null ? obj.ptr : IntPtr.Zero;
+        }
+
         // Custom func to take a json path and get a re-serialized string back
         public static string SerializePath(string jsonPath)
         {
@@ -705,7 +808,7 @@ namespace YgomSystem.Utility
             {
                 return null;
             }
-            return YgomMiniJSON.Json.Serialize(obj);
+            return YgomMiniJSON.Json.Serialize(obj.ptr);
         }
     }
 }
@@ -714,10 +817,13 @@ namespace YgomSystem.Network
 {
     unsafe static class ProtocolHttp
     {
+        public static string ServerUrl;
+        public static string ServerPollUrl;
+
         static IL2Class classInfo;
         static IL2Method methodGetServerDefaultUrl;
 
-        delegate void Del_GetServerDefaultUrl(int type, IntPtr* outUrl, IntPtr* outPollingUrl);
+        delegate void Del_GetServerDefaultUrl(int type, out IntPtr url, out IntPtr pollingUrl);
         static Hook<Del_GetServerDefaultUrl> hookGetServerDefaultUrl;
 
         static ProtocolHttp()
@@ -729,15 +835,15 @@ namespace YgomSystem.Network
             hookGetServerDefaultUrl = new Hook<Del_GetServerDefaultUrl>(GetServerDefaultUrl, methodGetServerDefaultUrl);
         }
 
-        static void GetServerDefaultUrl(int type, IntPtr* outUrl, IntPtr* outPollingUrl)
+        static void GetServerDefaultUrl(int type, out IntPtr url, out IntPtr pollingUrl)
         {
             // This doesn't work for some reason...
-            *outUrl = new IL2String(Program.ServerUrl).ptr;
-            *outPollingUrl = new IL2String(Program.ServerPollUrl).ptr;
+            url = new IL2String(ServerUrl).ptr;
+            pollingUrl = new IL2String(ServerPollUrl).ptr;
             // But this does...
-            YgomSystem.Utility.ClientWork.UpdateJson("$.Server.urls", "{\"System.info\":\"" + Program.ServerUrl + "\"}");
-            YgomSystem.Utility.ClientWork.UpdateValue("$.Server.url", Program.ServerUrl);
-            YgomSystem.Utility.ClientWork.UpdateValue("$.Server.url_polling", Program.ServerUrl);
+            YgomSystem.Utility.ClientWork.UpdateJson("$.Server.urls", "{\"System.info\":\"" + ServerUrl + "\"}");
+            YgomSystem.Utility.ClientWork.UpdateValue("$.Server.url", ServerUrl);
+            YgomSystem.Utility.ClientWork.UpdateValue("$.Server.url_polling", ServerUrl);
         }
     }
 }
@@ -837,14 +943,15 @@ namespace YgomMiniJSON
             methodSerialize = classInfo.GetMethod("Serialize");
         }
 
-        public static IL2Object Deserialize(string json)
+        public static IntPtr Deserialize(string json)
         {
-            return methodDeserialize.Invoke(new IntPtr[] { new IL2String(json).ptr });
+            IL2Object result = methodDeserialize.Invoke(new IntPtr[] { new IL2String(json).ptr });
+            return result != null ? result.ptr : IntPtr.Zero;
         }
 
-        public static string Serialize(IL2Object obj)
+        public static string Serialize(IntPtr ptr)
         {
-            return methodSerialize.Invoke(new IntPtr[] { obj.ptr }).GetValueObj<string>();
+            return methodSerialize.Invoke(new IntPtr[] { ptr }).GetValueObj<string>();
         }
     }
 }

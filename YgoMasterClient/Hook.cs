@@ -13,10 +13,12 @@ namespace YgoMasterClient
         public T Original;
         public IntPtr FuncPtr;
         public IntPtr OriginalPtr;
+        public IL2Method Method;
 
         public Hook(T hook, IL2Method method)
             : this(hook, Marshal.ReadIntPtr(method.ptr))
         {
+            this.Method = method;
         }
 
         public Hook(T hook, IntPtr address)
@@ -73,5 +75,11 @@ namespace YgoMasterClient
 
         [DllImport("kernel32")]
         public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
+
+        [DllImport("kernel32")]
+        public static extern IntPtr GetModuleHandle(string lpModuleName);
+
+        [DllImport("user32")]
+        public static extern IntPtr SetWindowTextW(IntPtr hWnd, [MarshalAs(UnmanagedType.LPWStr)] string lpString);
     }
 }

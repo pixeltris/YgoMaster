@@ -1,0 +1,11 @@
+{
+    "ShowConsole": false,
+    "LogIDs": false,
+    "AssetHelperLog": false,
+    "AssetHelperDump": false,
+    "AssetHelperDisableFileErrorPopup": false,
+    "DeckEditorDisableLimits": false,
+    "DeckEditorConvertStyleRarity": true,
+    "DeckEditorShowStats": true,
+    "DuelStarterShowFirstPlayer": true,
+}

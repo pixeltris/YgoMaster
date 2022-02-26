@@ -110,5 +110,19 @@ namespace YgoMaster
             request.Remove("Response");
             request.Remove("Download");
         }
+
+        void Act_SystemSetLanguage(GameServerWebRequest request)
+        {
+            string lang;
+            if (Utils.TryGetValue(request.ActParams, "lang", out lang))
+            {
+                request.Response["Persistence"] = new Dictionary<string, object>()
+                {
+                    { "System", new Dictionary<string, object>() {
+                        { "lang", lang }
+                    }}
+                };
+            }
+        }
     }
 }

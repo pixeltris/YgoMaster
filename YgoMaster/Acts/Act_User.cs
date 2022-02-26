@@ -60,7 +60,7 @@ namespace YgoMaster
         void Act_UserSetProfile(GameServerWebRequest request)
         {
             Dictionary<string, object> args;
-            if (TryGetValue(request.ActParams, "param", out args))
+            if (Utils.TryGetValue(request.ActParams, "param", out args))
             {
                 foreach (KeyValuePair<string, object> arg in args)
                 {
@@ -86,7 +86,7 @@ namespace YgoMaster
                             }
                             break;
                         default:
-                            LogWarning("Unhandled player profile arg '" + arg.Key + "' = " + MiniJSON.Json.Serialize(arg.Value));
+                            Utils.LogWarning("Unhandled player profile arg '" + arg.Key + "' = " + MiniJSON.Json.Serialize(arg.Value));
                             break;
                     }
                 }
@@ -102,13 +102,7 @@ namespace YgoMaster
             Dictionary<string, object> structure = new Dictionary<string, object>();
             foreach (DeckInfo deck in StructureDecks.Values)
             {
-                structure[deck.Id.ToString()] = new Dictionary<string, object>()
-                {
-                    { "structure_id", deck.Id },
-                    { "accessory", deck.Accessory.ToDictionary() },
-                    { "focus", deck.DisplayCards.ToDictionary() },
-                    { "contents", deck.ToDictionary() }
-                };
+                structure[deck.Id.ToString()] = deck.ToDictionaryStructureDeck();
             }
             request.Response["Master"] = new Dictionary<string, object>()
             {

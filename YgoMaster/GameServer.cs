@@ -6,6 +6,7 @@ using System.Net;
 using System.Threading;
 using System.IO;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace YgoMaster
 {
@@ -22,7 +23,7 @@ namespace YgoMaster
             }
             catch (Exception e)
             {
-                LogWarning("Loading data threw an exception" + Environment.NewLine + e.ToString());
+                Console.WriteLine("[ERROR] Loading data threw an exception" + Environment.NewLine + e.ToString());
                 return;
             }
 
@@ -31,12 +32,12 @@ namespace YgoMaster
                     listener = new HttpListener();
                     try
                     {
-                        listener.Prefixes.Add("http://*:80/");
+                        listener.Prefixes.Add(bindIP);
                         listener.Start();
                     }
                     catch
                     {
-                        Console.WriteLine("[ERROR] Port 80 is already in use");
+                        Console.WriteLine("[ERROR] Failed to bind to " + bindIP + " (try running as admin)");
                         return;
                     }
                     Console.WriteLine("Initialized");
@@ -52,6 +53,7 @@ namespace YgoMaster
                         }
                     }
                 });
+            thread.CurrentCulture = CultureInfo.InvariantCulture;
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
         }
@@ -85,7 +87,7 @@ namespace YgoMaster
                 long maxContentLength = ushort.MaxValue;
 
                 actsHeader = context.Request.Headers["x_acts"];
-                LogInfo("Req " + actsHeader);
+                Utils.LogInfo("Req " + actsHeader);
                 if (!string.IsNullOrEmpty(actsHeader) && context.Request.ContentLength64 <= maxContentLength)
                 {
                     requestBuffer = new byte[context.Request.ContentLength64];
@@ -99,14 +101,14 @@ namespace YgoMaster
                         Dictionary<string, object> actInfo;
                         int actId;
                         string actName;
-                        if (vals != null && TryGetValue(vals, "acts", out actsList) && actsList.Count > 0 &&
-                            (actInfo = actsList[0] as Dictionary<string, object>) != null && TryGetValue(actInfo, "act", out actName) &&
-                            TryGetValue(actInfo, "id", out actId))
+                        if (vals != null && Utils.TryGetValue(vals, "acts", out actsList) && actsList.Count > 0 &&
+                            (actInfo = actsList[0] as Dictionary<string, object>) != null && Utils.TryGetValue(actInfo, "act", out actName) &&
+                            Utils.TryGetValue(actInfo, "id", out actId))
                         {
                             GameServerWebRequest gameServerWebRequest = new GameServerWebRequest();
                             gameServerWebRequest.ActName = actName;
-                            TryGetValue(actInfo, "params", out gameServerWebRequest.ActParams);
-                            TryGetValue(vals, "v", out gameServerWebRequest.ClientVersion);
+                            Utils.TryGetValue(actInfo, "params", out gameServerWebRequest.ActParams);
+                            Utils.TryGetValue(vals, "v", out gameServerWebRequest.ClientVersion);
                             gameServerWebRequest.Response = new Dictionary<string, object>();
 
                             string customStr = null;
@@ -124,6 +126,9 @@ namespace YgoMaster
                                 {
                                     case "System.info":
                                         Act_SystemInfo(gameServerWebRequest);
+                                        break;
+                                    case "System.set_language":
+                                        Act_SystemSetLanguage(gameServerWebRequest);
                                         break;
                                     case "Account.auth":
                                         Act_AccountAuth(gameServerWebRequest);
@@ -207,7 +212,7 @@ namespace YgoMaster
                                         Act_DuelEnd(gameServerWebRequest);
                                         break;
                                     default:
-                                        LogInfo("Unhandled act " + actsHeader);
+                                        Utils.LogInfo("Unhandled act " + actsHeader);
                                         Debug.WriteLine("Unhandled act " + actsHeader + " " + MiniJSON.Json.Serialize(vals));
                                         break;
                                 }
@@ -313,7 +318,7 @@ namespace YgoMaster
                 }
                 string errorMsg = "Exception when processing message. Exception: " + e + Environment.NewLine +
                     " Token: " + requestToken + Environment.NewLine + "Request: " + requestString;
-                LogWarning(errorMsg);
+                Utils.LogWarning(errorMsg);
                 Debug.WriteLine(errorMsg);
             }
             finally

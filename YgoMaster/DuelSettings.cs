@@ -9,18 +9,21 @@ namespace YgoMaster
     // TODO: Maybe just change this code to be Dictionary<string, object> rather than listing all entries (but keep Deck)
     class DuelSettings
     {
+#pragma warning disable 0169
+#pragma warning disable 0649
         public const int PlayerIndex = 0;
         public const int CpuIndex = 1;
         public const int MaxPlayers = 4;
 
-        public int NumPlayers;
         public bool IsCustomDuel;
 
         static string[] ignoreZero = { "life", "hnum" };
         
+        // Custom (used for custom duels) - these are 1/2 instead of 0/1 so that 0 can denote defauling to CPU (which is actually 1)
+        public int OpponentType;
+        public int OpponentPartnerType;
+
         // Use the same names as in the packet (using reflection here to reduce the amount of manual work)
-#pragma warning disable 0169
-#pragma warning disable 0649
         public uint RandSeed;
         public int FirstPlayer;
         public bool noshuffle;
@@ -74,7 +77,6 @@ namespace YgoMaster
 
         public DuelSettings()
         {
-            NumPlayers = 2;
             FirstPlayer = -1;
             Auto = -1;
             surrender = true;
@@ -109,7 +111,18 @@ namespace YgoMaster
 
         public void SetRequiredDefaults()
         {
-            for (int i = 0; i < NumPlayers; i++)
+            // cpu int.MaxValue is used by DuelStarter to state the default value should be used
+            // TODO: Maybe set 100 to the default in DuelStarter and go from 100 to -100 instead?
+            if (cpu == int.MaxValue)
+            {
+                cpu = 100;
+            }
+            if (Type == 2)// tag duel (they are bugged, the decks don't load resulting in an instant victory / defeat)
+            {
+                tag = true;
+            }
+
+            for (int i = 0; i < MaxPlayers; i++)
             {
                 if (hnum[i] == -1) hnum[i] = 0;
                 if (life[i] == -1) life[i] = 0;
@@ -119,13 +132,26 @@ namespace YgoMaster
                 if (avatar_home[i] == -1) avatar_home[i] = Deck[i].Accessory.AvBase;
                 if (duel_object[i] == -1) duel_object[i] = Deck[i].Accessory.FieldObj;
 
-                //if (avatar[i] == 0) avatar[i] = 1000001;
+                if (avatar[i] < 0) avatar[i] = 0;//if (avatar[i] == 0) avatar[i] = 1000001;
                 if (mat[i] <= 0) mat[i] = 1090001;
                 if (sleeve[i] <= 0) sleeve[i] = 1070001;
-                if (icon[i] <= 0) icon[i] = 1100001;
+                if (icon[i] <= 0) icon[i] = 1010001;
                 if (icon_frame[i] <= 0) icon_frame[i] = 1030001;
-                if (duel_object[i] <= 0) duel_object[i] = 1100001;
+                if (duel_object[i] <= 0) duel_object[i] = ItemID.GetFieldObjFromField(mat[i]); //duel_object[i] = 1100001;
                 if (wallpaper[i] <= 0) wallpaper[i] = 1130001;
+
+                if (string.IsNullOrEmpty(name[i]))
+                {
+                    bool isCPU = false;
+                    switch (i)
+                    {
+                        case 0: isCPU = MyType == 1; break;
+                        case 1: isCPU = OpponentType == 0 || OpponentType == 2; break;
+                        case 2: isCPU = MyPartnerType == 1; break;
+                        case 3: isCPU = OpponentPartnerType == 0 || OpponentPartnerType == 2; break;
+                    }
+                    name[i] = isCPU ? "CPU" : "Duelist";
+                }
             }
             /*if (Bgms.Count == 0)
             {
@@ -133,6 +159,14 @@ namespace YgoMaster
                 Bgms.Add("BGM_DUEL_KEYCARD_03");
                 Bgms.Add("BGM_DUEL_CLIMAX_03");
             }*/
+        }
+
+        public void CopyDecksFrom(DuelSettings other)
+        {
+            for (int i = 0; i < Deck.Length && i < other.Deck.Length; i++)
+            {
+                Deck[i].CopyFrom(other.Deck[i]);
+            }
         }
 
         public void CopyFrom(DuelSettings other)
@@ -186,7 +220,7 @@ namespace YgoMaster
                 }
                 else
                 {
-                    GameServer.LogWarning("Failed to copy duel settings property " + property.Name);
+                    Utils.LogWarning("Failed to copy duel settings property " + property.Name);
                 }
             }
             for (int i = 0; i < Deck.Length && i < other.Deck.Length; i++)
@@ -247,7 +281,9 @@ namespace YgoMaster
                     {
                         for (int i = 0; i < objList.Count && i < Deck.Length; i++)
                         {
-                            Deck[i].FromDictionary(objList[i] as Dictionary<string, object>, true);
+                            // Changed to Ex for additional info for the duel starter (additional info not used by client)
+                            Deck[i].FromDictionaryEx(objList[i] as Dictionary<string, object>, true);
+                            //Deck[i].FromDictionary(objList[i] as Dictionary<string, object>, true);
                         }
                     }
                     else
@@ -274,7 +310,7 @@ namespace YgoMaster
 
             // NOTE: This will always be set when logging solo duel packets. Change it based on "Solo.detail"
             int firstPlayer;
-            if (GameServer.TryGetValue(data, "FirstPlayer", out firstPlayer))
+            if (Utils.TryGetValue(data, "FirstPlayer", out firstPlayer))
             {
                 FirstPlayer = firstPlayer;
             }
@@ -287,11 +323,6 @@ namespace YgoMaster
             {
                 if (field.IsStatic)
                 {
-                    continue;
-                }
-                if (field.Name == "FirstPlayer" && (int)field.GetValue(this) == -1)
-                {
-                    GameServer.LogWarning("FirstPlayer not set");
                     continue;
                 }
                 result[field.Name] = field.GetValue(this);
@@ -322,7 +353,7 @@ namespace YgoMaster
                         List<object> objListList = new List<object>();
                         Type elementType = property.PropertyType.GetElementType().GetGenericArguments()[0];
                         Array array = property.GetValue(this, null) as Array;
-                        for (int i = 0; i < array.Length && i < NumPlayers; i++)
+                        for (int i = 0; i < array.Length && i < MaxPlayers; i++)
                         {
                             List<object> objList = new List<object>();
                             System.Collections.IList list = array.GetValue(i) as System.Collections.IList;
@@ -337,9 +368,11 @@ namespace YgoMaster
                     else if (property.PropertyType.GetElementType() == typeof(DeckInfo))
                     {
                         List<object> objList = new List<object>();
-                        for (int i = 0; i < Deck.Length && i < NumPlayers; i++)
+                        for (int i = 0; i < Deck.Length && i < MaxPlayers; i++)
                         {
-                            objList.Add(Deck[i].ToDictionary(true));
+                            // Changed to Ex for additional info for the duel starter (additional info not used by client)
+                            objList.Add(Deck[i].ToDictionaryEx(true));
+                            //objList.Add(Deck[i].ToDictionary(true));
                         }
                         result[property.Name] = objList;
                     }
@@ -348,7 +381,7 @@ namespace YgoMaster
                         List<object> objList = new List<object>();
                         Type elementType = property.PropertyType.GetElementType();
                         Array array = property.GetValue(this, null) as Array;
-                        for (int i = 0; i < array.Length && i < NumPlayers; i++)
+                        for (int i = 0; i < array.Length && i < MaxPlayers; i++)
                         {
                             objList.Add(array.GetValue(i));
                         }
@@ -368,6 +401,38 @@ namespace YgoMaster
                 }
             }
             return result;
+        }
+
+        public Dictionary<string, object> ToDictionaryForSoloStart()
+        {
+            Dictionary<string, object> result = new Dictionary<string, object>()
+            {
+                { "avatar", avatar },
+                { "icon", icon },
+                { "icon_frame", icon_frame },
+                { "sleeve", sleeve },
+                { "mat", mat },
+                { "duel_object", duel_object },
+                { "avatar_home", avatar_home }
+            };
+            return result;
+        }
+
+        public bool AreAllEqual(int[] values)
+        {
+            if (values.Length <= 0)
+            {
+                return true;
+            }
+            int firstVal = values[0];
+            for (int i = 1; i < values.Length; i++)
+            {
+                if (values[i] != firstVal)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

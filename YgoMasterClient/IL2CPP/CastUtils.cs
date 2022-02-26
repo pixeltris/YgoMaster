@@ -13,7 +13,15 @@ namespace IL2CPP
             if (typeof(T1) == typeof(string))
                 return (T1)(object)(new IL2String(ptr).ToString());
             return (T1)typeof(T1).GetConstructors().First(x => x.GetParameters().Length == 1).Invoke(new object[] { ptr });
+        }
 
+        public static IL2Class GetClass(this Type type)
+        {
+            IL2Class ilType = null;
+            ilType = Assembler.GetAssembly("mscorlib").GetClass(type.Name, type.Namespace);
+            if (ilType == null)
+                ilType = (IL2Class)type.GetFields().First(x => x.IsStatic && x.FieldType == typeof(IL2Class)).GetValue(null);
+            return ilType;
         }
 
         public static IntPtr IL2Typeof(string typeName, string namespaceName, string assemblyName)

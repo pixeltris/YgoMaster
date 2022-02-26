@@ -31,6 +31,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 namespace MiniJSON {
     // Example usage:
@@ -74,6 +75,21 @@ namespace MiniJSON {
     /// All numbers are parsed to doubles.
     /// </summary>
     public static class Json {
+        public static string Format(string json)
+        {
+            // https://stackoverflow.com/questions/4580397/json-formatter-in-c/24782322#24782322
+            const string INDENT_STRING = "    ";
+            int indentation = 0;
+            int quoteCount = 0;
+            var result =
+                from ch in json
+                let quotes = ch == '"' ? quoteCount++ : quoteCount
+                let lineBreak = ch == ',' && quotes % 2 == 0 ? ch + Environment.NewLine + String.Concat(Enumerable.Repeat(INDENT_STRING, indentation)) : null
+                let openChar = ch == '{' || ch == '[' ? ch + Environment.NewLine + String.Concat(Enumerable.Repeat(INDENT_STRING, ++indentation)) : ch.ToString()
+                let closeChar = ch == '}' || ch == ']' ? Environment.NewLine + String.Concat(Enumerable.Repeat(INDENT_STRING, --indentation)) + ch : ch.ToString()
+                select lineBreak == null ? openChar.Length > 1 ? openChar : closeChar : lineBreak;
+            return String.Concat(result);
+        }
         public static object DeserializeStripped(string json)
         {
             if (json == null)

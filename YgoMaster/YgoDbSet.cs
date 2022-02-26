@@ -55,7 +55,7 @@ namespace YgoMaster
             }
             result["id"] = Id;
             result["name"] = Name;
-            result["date"] = GameServer.GetEpochTime(ReleaseDate);
+            result["date"] = Utils.GetEpochTime(ReleaseDate);
             result["type"] = (int)Type;
             result["ids"] = ids;
             result["r"] = rarities;
@@ -65,12 +65,12 @@ namespace YgoMaster
         public void FromDictionary(Dictionary<string, object> data)
         {
             Cards.Clear();
-            Id = GameServer.GetValue<long>(data, "id");
-            Name = GameServer.GetValue<string>(data, "name");
-            ReleaseDate = GameServer.ConvertEpochTime(GameServer.GetValue<long>(data, "date"));
-            Type = GameServer.GetValue<YgoDbSetType>(data, "type");
-            List<object> ids = GameServer.GetValue<List<object>>(data, "ids");
-            List<object> rarities = GameServer.GetValue<List<object>>(data, "r");
+            Id = Utils.GetValue<long>(data, "id");
+            Name = Utils.GetValue<string>(data, "name");
+            ReleaseDate = Utils.ConvertEpochTime(Utils.GetValue<long>(data, "date"));
+            Type = Utils.GetValue<YgoDbSetType>(data, "type");
+            List<object> ids = Utils.GetValue<List<object>>(data, "ids");
+            List<object> rarities = Utils.GetValue<List<object>>(data, "r");
             for (int i = 0; i < ids.Count && i < rarities.Count; i++)
             {
                 Cards[(int)Convert.ChangeType(ids[i], typeof(int))] = (CardRarity)(int)Convert.ChangeType(rarities[i], typeof(int));
@@ -227,7 +227,7 @@ namespace YgoMaster
                 return;
             }
             Dictionary<string, object> data = MiniJSON.Json.DeserializeStripped(File.ReadAllText(file)) as Dictionary<string, object>;
-            List<object> sets = GameServer.GetValue(data, "sets", default(List<object>));
+            List<object> sets = Utils.GetValue(data, "sets", default(List<object>));
             if (sets != null)
             {
                 foreach (object setObj in sets)

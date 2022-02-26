@@ -9,7 +9,7 @@ namespace YgoMaster
     {
         void Act_DeckGetDeckList(GameServerWebRequest request)
         {
-            int deckId = GetValue<int>(request.ActParams, "deck_id");
+            int deckId = Utils.GetValue<int>(request.ActParams, "deck_id");
             DeckInfo deck;
             if (request.Player.Decks.TryGetValue(deckId, out deck))
             {
@@ -20,7 +20,7 @@ namespace YgoMaster
 
         void Act_DeckDeleteDeck(GameServerWebRequest request)
         {
-            int deckId = GetValue<int>(request.ActParams, "deck_id");
+            int deckId = Utils.GetValue<int>(request.ActParams, "deck_id");
             DeckInfo deck;
             if (request.Player.Decks.TryGetValue(deckId, out deck))
             {
@@ -37,16 +37,16 @@ namespace YgoMaster
         void Act_DeckUpdate(GameServerWebRequest request)
         {
             DeckInfo deck = new DeckInfo();
-            deck.Id = GetValue(request.ActParams, "deck_id", 0);
-            deck.Name = GetValue(request.ActParams, "name", "Deck");
-            Dictionary<string, object> accessory = GetDictionary(request.ActParams, "accessory");
+            deck.Id = Utils.GetValue(request.ActParams, "deck_id", 0);
+            deck.Name = Utils.GetValue(request.ActParams, "name", "Deck");
+            Dictionary<string, object> accessory = Utils.GetDictionary(request.ActParams, "accessory");
             deck.Accessory.FromDictionary(accessory);
-            Dictionary<string, object> displayCards = GetDictionary(request.ActParams, "pick_cards");
+            Dictionary<string, object> displayCards = Utils.GetDictionary(request.ActParams, "pick_cards");
             if (displayCards != null)
             {
                 deck.DisplayCards.FromIndexedDictionary(displayCards);
             }
-            Dictionary<string, object> deckListObj = GetDictionary(request.ActParams, "deck_list");
+            Dictionary<string, object> deckListObj = Utils.GetDictionary(request.ActParams, "deck_list");
             if (deckListObj != null)
             {
                 deck.FromDictionary(deckListObj);
@@ -55,7 +55,7 @@ namespace YgoMaster
             {
                 deck.Id = request.Player.NextDeckUId++;
                 request.Player.Decks[deck.Id] = deck;
-                deck.TimeCreated = GetEpochTime();
+                deck.TimeCreated = Utils.GetEpochTime();
                 deck.GetNewFilePath(decksDirectory);
             }
             else
@@ -84,7 +84,7 @@ namespace YgoMaster
                 }
             }
             deck.Accessory.Sanitize(request.Player);
-            deck.TimeEdited = GetEpochTime();
+            deck.TimeEdited = Utils.GetEpochTime();
             SaveDeck(deck);
             WriteDeck(request, deck.Id);
             WriteDeckList(request, deck.Id);
@@ -92,18 +92,18 @@ namespace YgoMaster
 
         void Act_DeckSetDeckAccessory(GameServerWebRequest request)
         {
-            int deckId = GetValue<int>(request.ActParams, "deck_id");
+            int deckId = Utils.GetValue<int>(request.ActParams, "deck_id");
             DeckInfo deck;
             if (!request.Player.Decks.TryGetValue(deckId, out deck))
             {
                 WriteDeckRemoval(request, deck.Id, true);
                 return;
             }
-            Dictionary<string, object> args = GetValue(request.ActParams, "param", default(Dictionary<string, object>));
+            Dictionary<string, object> args = Utils.GetValue(request.ActParams, "param", default(Dictionary<string, object>));
             if (args != null)
             {
                 int value;
-                if (TryGetValue(args, "deck_case", out value))
+                if (Utils.TryGetValue(args, "deck_case", out value))
                 {
                     if (!request.Player.Items.Contains(value) && !UnlockAllItems)
                     {
@@ -117,24 +117,24 @@ namespace YgoMaster
                     }
                     deck.Accessory.Box = value;
                 }
-                if (TryGetValue(args, "protector", out value))
+                if (Utils.TryGetValue(args, "protector", out value))
                 {
                     deck.Accessory.Sleeve = value;
                 }
-                if (TryGetValue(args, "field", out value))
+                if (Utils.TryGetValue(args, "field", out value))
                 {
                     deck.Accessory.Field = value;
                 }
-                if (TryGetValue(args, "field_obj", out value))
+                if (Utils.TryGetValue(args, "field_obj", out value))
                 {
                     deck.Accessory.FieldObj = value;
                 }
-                if (TryGetValue(args, "field_avatar_base", out value))
+                if (Utils.TryGetValue(args, "field_avatar_base", out value))
                 {
                     deck.Accessory.AvBase = value;
                 }
                 deck.Accessory.Sanitize(request.Player);
-                Dictionary<string, object> pickCards = GetDictionary(args, "pick_cards");
+                Dictionary<string, object> pickCards = Utils.GetDictionary(args, "pick_cards");
                 if (pickCards != null)
                 {
                     deck.DisplayCards.FromIndexedDictionary(pickCards);
@@ -146,7 +146,7 @@ namespace YgoMaster
 
         void Act_DeckSetFavoriteCards(GameServerWebRequest request)
         {
-            request.Player.CardFavorites.FromDictionary(GetDictionary(request.ActParams, "card_list"));
+            request.Player.CardFavorites.FromDictionary(Utils.GetDictionary(request.ActParams, "card_list"));
             SavePlayer(request.Player);
             WriteCards_favorite(request);
         }
@@ -156,8 +156,8 @@ namespace YgoMaster
             GameMode mode;
             int deckId;
             DeckInfo deck;
-            if (TryGetValue(request.ActParams, "mode", out mode) &&
-                TryGetValue(request.ActParams, "deck_id", out deckId) &&
+            if (Utils.TryGetValue(request.ActParams, "mode", out mode) &&
+                Utils.TryGetValue(request.ActParams, "deck_id", out deckId) &&
                 request.Player.Decks.TryGetValue(deckId, out deck))
             {
                 request.Player.Duel.SetDeckId(mode, deckId);

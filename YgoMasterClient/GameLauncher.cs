@@ -349,38 +349,38 @@ namespace YgoMasterClient
             Success,
         }
 
-        [DllImport(loaderDll)]
+        [DllImport(loaderDll, SetLastError = true)]
         static extern int DetourCreateProcessWithDll_Exported(string lpApplicationName, string lpCommandLine, IntPtr lpProcessAttributes, IntPtr lpThreadAttributes, bool bInheritHandles, int dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, ref STARTUPINFO lpStartupInfo, out PROCESS_INFORMATION lpProcessInformation, string lpDllName, IntPtr pfCreateProcessA);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool CreateProcess(string lpApplicationName, string lpCommandLine, IntPtr lpProcessAttributes, IntPtr lpThreadAttributes,
             bool bInheritHandles, int dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, ref STARTUPINFO lpStartupInfo, out PROCESS_INFORMATION lpProcessInformation);
 
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll", SetLastError = true)]
         static extern uint ResumeThread(IntPtr hThread);
 
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll", SetLastError = true)]
         static extern uint SuspendThread(IntPtr hThread);
 
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool TerminateProcess(IntPtr hProcess, uint exitCode);
 
-        [DllImport("psapi.dll", CharSet = CharSet.Auto)]
+        [DllImport("psapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         static extern bool EnumProcessModulesEx([In] IntPtr hProcess, IntPtr lphModule, int cb, [Out] out int lpcbNeeded, int dwFilterFlag);
 
         [DllImport("psapi.dll", SetLastError = true)]
         static extern bool GetModuleInformation(IntPtr hProcess, IntPtr hModule, out MODULEINFO lpmodinfo, int cb);
 
-        [DllImport("psapi.dll", CharSet = CharSet.Auto)]
+        [DllImport("psapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         static extern uint GetModuleFileNameEx(IntPtr hProcess, IntPtr hModule, [Out] StringBuilder lpBaseName, [In] [MarshalAs(UnmanagedType.U4)] int nSize);
 
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool WaitForDebugEvent(out DEBUG_EVENT lpDebugEvent, uint dwMilliseconds);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool ContinueDebugEvent(int processId, int threadId, uint continuteStatus);
 
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll", SetLastError = true)]
         static extern void DebugSetProcessKillOnExit(bool killOnExit);
 
         [DllImport("kernel32.dll", SetLastError = true)]

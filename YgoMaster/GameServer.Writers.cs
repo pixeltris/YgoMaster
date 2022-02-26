@@ -58,7 +58,7 @@ namespace YgoMaster
                 return;
             }
             Dictionary<string, object> item = request.GetOrCreateDictionary("Item");
-            Dictionary<string, object> have = GetOrCreateDictionary(item, "have");
+            Dictionary<string, object> have = Utils.GetOrCreateDictionary(item, "have");
             switch ((ItemID.CONSUME)itemId)
             {
                 case ItemID.CONSUME.ID0001: have[itemId.ToString()] = request.Player.Gems; break;
@@ -83,7 +83,7 @@ namespace YgoMaster
         {
             if (deckNotFound)
             {
-                LogWarning("Client sent an invalid deck id " + id + ". Removing it.");
+                Utils.LogWarning("Client sent an invalid deck id " + id + ". Removing it.");
             }
             WriteDeck_num_empty(request);
             request.Remove("Deck.list." + id);
@@ -176,7 +176,7 @@ namespace YgoMaster
         void WriteCards_have(GameServerWebRequest request, HashSet<int> cardIds)
         {
             Dictionary<string, object> cards = request.GetOrCreateDictionary("Cards");
-            Dictionary<string, object> ownedCards = GetOrCreateDictionary(cards, "have");
+            Dictionary<string, object> ownedCards = Utils.GetOrCreateDictionary(cards, "have");
             foreach (int cardId in cardIds)
             {
                 Dictionary<string, object> cardData = request.Player.Cards.CardToDictionary(cardId);

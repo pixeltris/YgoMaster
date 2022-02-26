@@ -90,11 +90,11 @@ namespace IL2CPP
         }
         public IL2Object Invoke(params IL2Object[] paramtbl)
         {
-            return Invoke(IntPtr.Zero, Utils.IL2ObjecToIntPtr(paramtbl));
+            return Invoke(IntPtr.Zero, NativeUtils.IL2ObjecToIntPtr(paramtbl));
         }
         public IL2Object Invoke(IntPtr obj, IL2Object[] paramtbl, bool isVirtual = false, bool ex = true)
         {
-            return Invoke(obj, Utils.IL2ObjecToIntPtr(paramtbl), isVirtual, ex);
+            return Invoke(obj, NativeUtils.IL2ObjecToIntPtr(paramtbl), isVirtual, ex);
         }
         public IL2Object Invoke(IL2Object obj, IntPtr[] paramtbl, bool isVirtual = false, bool ex = true)
         {
@@ -128,7 +128,7 @@ namespace IL2CPP
                 returnval = Import.Method.il2cpp_runtime_invoke(@m, obj, pointerArray, new IntPtr(&err));
                 if (err != IntPtr.Zero && ex)
                 {
-                    Console.WriteLine("Error: " + Utils.BuildMessage(err));
+                    Console.WriteLine("Error: " + NativeUtils.BuildMessage(err));
                     Console.WriteLine("Src: " + new IL2Method(@m).Name);
                 }
             }

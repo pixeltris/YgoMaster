@@ -438,13 +438,13 @@ namespace YgoMaster
                 if (int.TryParse(entry.Key, out cardId) && cardCountData != null)
                 {
                     State state = new State();
-                    state.Time = GameServer.GetValue<long>(cardCountData, "st");
-                    state.NumNormal = GameServer.GetValue<byte>(cardCountData, "n");
-                    state.NumShine = GameServer.GetValue<byte>(cardCountData, "p1n");
-                    state.NumRoyal = GameServer.GetValue<byte>(cardCountData, "p2n");
-                    state.NumNormal_NoDismantle = GameServer.GetValue<byte>(cardCountData, "p_n");
-                    state.NumShine_NoDismantle = GameServer.GetValue<byte>(cardCountData, "p_p1n");
-                    state.NumRoyal_NoDismantle = GameServer.GetValue<byte>(cardCountData, "p_p2n");
+                    state.Time = Utils.GetValue<long>(cardCountData, "st");
+                    state.NumNormal = Utils.GetValue<byte>(cardCountData, "n");
+                    state.NumShine = Utils.GetValue<byte>(cardCountData, "p1n");
+                    state.NumRoyal = Utils.GetValue<byte>(cardCountData, "p2n");
+                    state.NumNormal_NoDismantle = Utils.GetValue<byte>(cardCountData, "p_n");
+                    state.NumShine_NoDismantle = Utils.GetValue<byte>(cardCountData, "p_p1n");
+                    state.NumRoyal_NoDismantle = Utils.GetValue<byte>(cardCountData, "p_p2n");
                     cards[cardId] = state;
                 }
             }
@@ -510,7 +510,7 @@ namespace YgoMaster
 
             public void Set(int count, PlayerCardKind kind)
             {
-                Time = GameServer.GetEpochTime();
+                Time = Utils.GetEpochTime();
                 byte countByte = IntToByte(count);
                 switch (kind)
                 {
@@ -529,7 +529,7 @@ namespace YgoMaster
 
             public void Set(int count, PlayerCardKind kind, CardStyleRarity styleRarity)
             {
-                Time = GameServer.GetEpochTime();
+                Time = Utils.GetEpochTime();
                 byte countByte = IntToByte(count);
                 switch (kind)
                 {
@@ -656,7 +656,7 @@ namespace YgoMaster
         {
             PlayerShopItemState state = GetItemState(shopItem);
             state.Unlocked = true;
-            state.UnlockedTime = GameServer.GetEpochTime();
+            state.UnlockedTime = Utils.GetEpochTime();
             state.UnlockedPurchaseCount = 0;
         }
 
@@ -715,7 +715,7 @@ namespace YgoMaster
                 if (shopItem.SecretDurationInSeconds > 0)
                 {
                     expireTime = state.UnlockedTime + shopItem.SecretDurationInSeconds;
-                    if (expireTime < GameServer.GetEpochTime())
+                    if (expireTime < Utils.GetEpochTime())
                     {
                         Lock(shopItem);
                         return PlayerShopItemAvailability.Hidden;
@@ -776,7 +776,7 @@ namespace YgoMaster
             {
                 return;
             }
-            List<object> guaranteesObj = GameServer.GetValue(data, "UltraRareGuaranteedPacks", default(List<object>));
+            List<object> guaranteesObj = Utils.GetValue(data, "UltraRareGuaranteedPacks", default(List<object>));
             if (guaranteesObj != null)
             {
                 foreach (object obj in guaranteesObj)
@@ -784,7 +784,7 @@ namespace YgoMaster
                     UltraRareGuaranteedPacks.Add((int)Convert.ChangeType(obj, typeof(int)));
                 }
             }
-            Dictionary<string, object> shops = GameServer.GetValue(data, "ShopItems", default(Dictionary<string, object>));
+            Dictionary<string, object> shops = Utils.GetValue(data, "ShopItems", default(Dictionary<string, object>));
             if (shops != null)
             {
                 foreach (KeyValuePair<string, object> shop in shops)
@@ -794,11 +794,11 @@ namespace YgoMaster
                     if (int.TryParse(shop.Key, out shopId) && stateData != null)
                     {
                         PlayerShopItemState state = new PlayerShopItemState();
-                        state.Unlocked = GameServer.GetValue<bool>(stateData, "Unlocked");
-                        state.UnlockedTime = GameServer.GetValue<long>(stateData, "UnlockedTime");
-                        state.IsNew = GameServer.GetValue<bool>(stateData, "IsNew");
-                        state.PurchaseCount = GameServer.GetValue<long>(stateData, "PurchaseCount");
-                        state.UnlockedPurchaseCount = GameServer.GetValue<long>(stateData, "UnlockedPurchaseCount");
+                        state.Unlocked = Utils.GetValue<bool>(stateData, "Unlocked");
+                        state.UnlockedTime = Utils.GetValue<long>(stateData, "UnlockedTime");
+                        state.IsNew = Utils.GetValue<bool>(stateData, "IsNew");
+                        state.PurchaseCount = Utils.GetValue<long>(stateData, "PurchaseCount");
+                        state.UnlockedPurchaseCount = Utils.GetValue<long>(stateData, "UnlockedPurchaseCount");
                         ShopItems[shopId] = state;
                     }
                 }

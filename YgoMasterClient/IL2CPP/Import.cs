@@ -85,7 +85,7 @@ namespace IL2CPP
             unsafe public static IntPtr CreateNewObject<T>(T value, IL2Class type) where T : struct
             {
                 IntPtr result = il2cpp_object_new(type.ptr);
-                byte[] buffer = Utils.StructToByteArray(value);
+                byte[] buffer = NativeUtils.StructToByteArray(value);
                 Marshal.Copy(buffer, 0, result + 0x10, buffer.Length);
                 return result;
             }

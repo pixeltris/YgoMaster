@@ -31,7 +31,7 @@ namespace YgoMaster
         HashSet<int> GetAllSoloChapterIds()
         {
             HashSet<int> result = new HashSet<int>();
-            Dictionary<string, object> allChapterData = GetDictionary(SoloData, "chapter");
+            Dictionary<string, object> allChapterData = Utils.GetDictionary(SoloData, "chapter");
             foreach (KeyValuePair<string, object> gateChapterData in allChapterData)
             {
                 Dictionary<string, object> chapters = gateChapterData.Value as Dictionary<string, object>;
@@ -53,43 +53,43 @@ namespace YgoMaster
         bool IsValidNonDuelChapter(int chapterId)
         {
             int gateId = GetChapterGateId(chapterId);
-            Dictionary<string, object> allChapterData = GetDictionary(SoloData, "chapter");
+            Dictionary<string, object> allChapterData = Utils.GetDictionary(SoloData, "chapter");
             if (allChapterData == null)
             {
                 return false;
             }
-            Dictionary<string, object> chapterGateData = GetDictionary(allChapterData, gateId.ToString());
+            Dictionary<string, object> chapterGateData = Utils.GetDictionary(allChapterData, gateId.ToString());
             if (chapterGateData == null)
             {
                 return false;
             }
-            Dictionary<string, object> chapterData = GetDictionary(chapterGateData, chapterId.ToString());
+            Dictionary<string, object> chapterData = Utils.GetDictionary(chapterGateData, chapterId.ToString());
             if (chapterData == null)
             {
                 return false;
             }
-            if (!string.IsNullOrWhiteSpace(GetValue<string>(chapterData, "begin_sn")))
+            if (!string.IsNullOrWhiteSpace(Utils.GetValue<string>(chapterData, "begin_sn")))
             {
                 // This is a scenario chapter
                 return true;
             }
-            if (GetValue<int>(chapterData, "unlock_id") != 0)
+            if (Utils.GetValue<int>(chapterData, "unlock_id") != 0)
             {
                 // This is a lock
                 return true;
             }
             // TODO: Change the final check from "clear_chapter" (on the gate) to "npc_id" on the chapter. It should be non-zero for duels
-            Dictionary<string, object> allGateData = GetDictionary(SoloData, "gate");
+            Dictionary<string, object> allGateData = Utils.GetDictionary(SoloData, "gate");
             if (allGateData == null)
             {
                 return false;
             }
-            Dictionary<string, object> gateData = GetDictionary(allGateData, gateId.ToString());
+            Dictionary<string, object> gateData = Utils.GetDictionary(allGateData, gateId.ToString());
             if (gateData == null)
             {
                 return false;
             }
-            if (GetValue<int>(gateData, "clear_chapter") == chapterId)
+            if (Utils.GetValue<int>(gateData, "clear_chapter") == chapterId)
             {
                 // This is the goal/clear chapter
                 return true;
@@ -102,23 +102,23 @@ namespace YgoMaster
             myDeckSetId = 0;
             loanerDeckSetId = 0;
             int gateId = GetChapterGateId(chapterId);
-            Dictionary<string, object> allChapterData = GetDictionary(SoloData, "chapter");
+            Dictionary<string, object> allChapterData = Utils.GetDictionary(SoloData, "chapter");
             if (allChapterData == null)
             {
                 return false;
             }
-            Dictionary<string, object> chapterGateData = GetDictionary(allChapterData, gateId.ToString());
+            Dictionary<string, object> chapterGateData = Utils.GetDictionary(allChapterData, gateId.ToString());
             if (chapterGateData == null)
             {
                 return false;
             }
-            Dictionary<string, object> chapterData = GetDictionary(chapterGateData, chapterId.ToString());
+            Dictionary<string, object> chapterData = Utils.GetDictionary(chapterGateData, chapterId.ToString());
             if (chapterData == null)
             {
                 return false;
             }
-            myDeckSetId = GetValue<int>(chapterData, "mydeck_set_id");
-            loanerDeckSetId = GetValue<int>(chapterData, "set_id");
+            myDeckSetId = Utils.GetValue<int>(chapterData, "mydeck_set_id");
+            loanerDeckSetId = Utils.GetValue<int>(chapterData, "set_id");
             return true;
         }
 
@@ -126,37 +126,37 @@ namespace YgoMaster
         {
             int gateId = GetChapterGateId(chapterId);
 
-            Dictionary<string, object> allGateData = GetDictionary(SoloData, "gate");
+            Dictionary<string, object> allGateData = Utils.GetDictionary(SoloData, "gate");
             if (allGateData == null)
             {
-                LogWarning("Failed to get all gate data");
+                Utils.LogWarning("Failed to get all gate data");
                 return;
             }
-            Dictionary<string, object> gateData = GetDictionary(allGateData, gateId.ToString());
+            Dictionary<string, object> gateData = Utils.GetDictionary(allGateData, gateId.ToString());
             if (gateData == null)
             {
-                LogWarning("Failed to get gate " + gateId);
+                Utils.LogWarning("Failed to get gate " + gateId);
                 return;
             }
-            bool isChapterGoal = GetValue<int>(gateData, "clear_chapter") == chapterId;
+            bool isChapterGoal = Utils.GetValue<int>(gateData, "clear_chapter") == chapterId;
 
             ChapterStatus newStatus = ChapterStatus.OPEN;
-            Dictionary<string, object> allChapterData = GetDictionary(SoloData, "chapter");
+            Dictionary<string, object> allChapterData = Utils.GetDictionary(SoloData, "chapter");
             if (allChapterData == null)
             {
-                LogWarning("Failed to get all chapter data");
+                Utils.LogWarning("Failed to get all chapter data");
                 return;
             }
-            Dictionary<string, object> chapterGateData = GetDictionary(allChapterData, gateId.ToString());
+            Dictionary<string, object> chapterGateData = Utils.GetDictionary(allChapterData, gateId.ToString());
             if (chapterGateData == null)
             {
-                LogWarning("Failed to get gate data");
+                Utils.LogWarning("Failed to get gate data");
                 return;
             }
-            Dictionary<string, object> chapterData = GetDictionary(chapterGateData, chapterId.ToString());
+            Dictionary<string, object> chapterData = Utils.GetDictionary(chapterGateData, chapterId.ToString());
             if (chapterData == null)
             {
-                LogWarning("Failed to get chapter data");
+                Utils.LogWarning("Failed to get chapter data");
                 return;
             }
 
@@ -187,7 +187,7 @@ namespace YgoMaster
             if (duelResult != DuelResultType.None)
             {
                 // NOTE: The location of this means extra rewards will before anything else
-                Dictionary<string, object> extraRewards = GetDictionary(chapterData, "extraRewards");
+                Dictionary<string, object> extraRewards = Utils.GetDictionary(chapterData, "extraRewards");
                 if (extraRewards != null)
                 {
                     DuelRewardInfos rewards = new DuelRewardInfos();
@@ -213,8 +213,8 @@ namespace YgoMaster
                 return;
             }
 
-            int myDeckSetId = GetValue<int>(chapterData, "mydeck_set_id");
-            int loanerDeckSetId = GetValue<int>(chapterData, "set_id");
+            int myDeckSetId = Utils.GetValue<int>(chapterData, "mydeck_set_id");
+            int loanerDeckSetId = Utils.GetValue<int>(chapterData, "set_id");
             int targetSetId = 0;
             if (SoloDuels.ContainsKey(chapterId))
             {
@@ -222,7 +222,7 @@ namespace YgoMaster
                 {
                     if (myDeckSetId == 0)
                     {
-                        LogWarning("Completed chapter with own deck but no option for it");
+                        Utils.LogWarning("Completed chapter with own deck but no option for it");
                         return;
                     }
                     targetSetId = myDeckSetId;
@@ -239,7 +239,7 @@ namespace YgoMaster
                 {
                     if (loanerDeckSetId == 0)
                     {
-                        LogWarning("Completed chapter with loaner deck but no option for it");
+                        Utils.LogWarning("Completed chapter with loaner deck but no option for it");
                         return;
                     }
                     targetSetId = loanerDeckSetId;
@@ -257,7 +257,7 @@ namespace YgoMaster
             {
                 if (!IsValidNonDuelChapter(chapterId))
                 {
-                    LogWarning("Unknown chapter type unknown for " + chapterId + " (but will attempt to set it to complete)");
+                    Utils.LogWarning("Unknown chapter type unknown for " + chapterId + " (but will attempt to set it to complete)");
                 }
                 targetSetId = loanerDeckSetId != 0 ? loanerDeckSetId : myDeckSetId;
                 newStatus = ChapterStatus.COMPLETE;
@@ -269,26 +269,26 @@ namespace YgoMaster
             }
             List<object> resultRewards = new List<object>();
             List<object> resultSubtractItems = new List<object>();
-            Dictionary<string, object> allRewardData = GetDictionary(SoloData, "reward");
+            Dictionary<string, object> allRewardData = Utils.GetDictionary(SoloData, "reward");
             if (allRewardData == null)
             {
-                LogWarning("Failed to get all reward data");
+                Utils.LogWarning("Failed to get all reward data");
                 return;
             }
-            int unlockId = GetValue<int>(chapterData, "unlock_id");
+            int unlockId = Utils.GetValue<int>(chapterData, "unlock_id");
             if (unlockId != 0)
             {
-                Dictionary<string, object> allUnlockData = GetDictionary(SoloData, "unlock");
-                Dictionary<string, object> allUnlockItemData = GetDictionary(SoloData, "unlock_item");
+                Dictionary<string, object> allUnlockData = Utils.GetDictionary(SoloData, "unlock");
+                Dictionary<string, object> allUnlockItemData = Utils.GetDictionary(SoloData, "unlock_item");
                 if (allUnlockData == null || allUnlockItemData == null)
                 {
-                    LogWarning("Failed to get all unlock data");
+                    Utils.LogWarning("Failed to get all unlock data");
                     return;
                 }
-                Dictionary<string, object> unlockData = GetDictionary(allUnlockData, unlockId.ToString());
+                Dictionary<string, object> unlockData = Utils.GetDictionary(allUnlockData, unlockId.ToString());
                 if (unlockData == null)
                 {
-                    LogWarning("Failed to get unlock data for unlock_id " + unlockId);
+                    Utils.LogWarning("Failed to get unlock data for unlock_id " + unlockId);
                     return;
                 }
                 /////////////////////////////////////////////////////////////////////////
@@ -312,10 +312,10 @@ namespace YgoMaster
                                     foreach (object itemSet in itemSetList)
                                     {
                                         int itemSetId = (int)Convert.ChangeType(itemSet, typeof(int));
-                                        Dictionary<string, object> itemsByCategory = GetDictionary(allUnlockItemData, itemSetId.ToString());
+                                        Dictionary<string, object> itemsByCategory = Utils.GetDictionary(allUnlockItemData, itemSetId.ToString());
                                         if (itemsByCategory == null)
                                         {
-                                            LogWarning("Failed to find unlock_item " + itemSetId + " for unlock_id" + unlockId + " on chapter " + chapterId);
+                                            Utils.LogWarning("Failed to find unlock_item " + itemSetId + " for unlock_id" + unlockId + " on chapter " + chapterId);
                                             continue;
                                         }
                                         foreach (KeyValuePair<string, object> itemCategory in itemsByCategory)
@@ -395,7 +395,7 @@ namespace YgoMaster
                                                                 }
                                                                 break;
                                                             default:
-                                                                LogWarning("Unhandled CONSUME requirement item " + itemId);
+                                                                Utils.LogWarning("Unhandled CONSUME requirement item " + itemId);
                                                                 break;
                                                         }
                                                         break;
@@ -413,7 +413,7 @@ namespace YgoMaster
                                                         }
                                                         break;
                                                     case ItemID.Category.STRUCTURE:
-                                                        LogWarning("Removing a structure deck isn't supported");
+                                                        Utils.LogWarning("Removing a structure deck isn't supported");
                                                         break;
                                                     case ItemID.Category.AVATAR:
                                                     case ItemID.Category.ICON:
@@ -445,7 +445,7 @@ namespace YgoMaster
             }
             if (targetSetId != 0)
             {
-                Dictionary<string, object> rewardData = GetDictionary(allRewardData, targetSetId.ToString());
+                Dictionary<string, object> rewardData = Utils.GetDictionary(allRewardData, targetSetId.ToString());
                 foreach (KeyValuePair<string, object> reward in rewardData)
                 {
                     Dictionary<string, object> rewardItems = reward.Value as Dictionary<string, object>;
@@ -515,7 +515,7 @@ namespace YgoMaster
                                 valid = false;
                                 break;
                             default:
-                                LogWarning("Unhandled reward category " + category);
+                                Utils.LogWarning("Unhandled reward category " + category);
                                 valid = false;
                                 break;
                         }
@@ -595,7 +595,7 @@ namespace YgoMaster
                                     {
                                         unlockedPackData = new Dictionary<string, object>()
                                         {
-                                            { "nameTextId", FixIdString(secretPack.NameText) },
+                                            { "nameTextId", Utils.FixIdString(secretPack.NameText) },
                                             { "shopId", secretPack.ShopId },
                                             { "iconMrk", secretPack.IconMrk },
                                             { "is_extend", !isHidden }
@@ -612,11 +612,11 @@ namespace YgoMaster
             SavePlayer(request.Player);
 
             Dictionary<string, object> soloData = request.GetOrCreateDictionary("Solo");
-            Dictionary<string, object> clearedData = GetOrCreateDictionary(soloData, "cleared");
-            Dictionary<string, object> gateClearedData = GetOrCreateDictionary(clearedData, gateId.ToString());
+            Dictionary<string, object> clearedData = Utils.GetOrCreateDictionary(soloData, "cleared");
+            Dictionary<string, object> gateClearedData = Utils.GetOrCreateDictionary(clearedData, gateId.ToString());
             gateClearedData[chapterId.ToString()] = (int)newStatus;
 
-            Dictionary<string, object> resultData = GetOrCreateDictionary(soloData, "Result");
+            Dictionary<string, object> resultData = Utils.GetOrCreateDictionary(soloData, "Result");
             if (SoloRewardsInDuelResult)
             {
                 GiveDuelReward(request, duelRewards, DuelResultType.Win, true);
@@ -650,7 +650,7 @@ namespace YgoMaster
 
         void Act_SoloInfo(GameServerWebRequest request)
         {
-            if (GetValue<bool>(request.ActParams, "back"))
+            if (Utils.GetValue<bool>(request.ActParams, "back"))
             {
                 return;
             }
@@ -666,7 +666,7 @@ namespace YgoMaster
         void Act_SoloDetail(GameServerWebRequest request)
         {
             int chapterId;
-            if (TryGetValue(request.ActParams, "chapter", out chapterId))
+            if (Utils.TryGetValue(request.ActParams, "chapter", out chapterId))
             {
                 Dictionary<string, object> chapterInfo = new Dictionary<string, object>();
                 DuelSettings duel = GetSoloDuelSettings(request.Player, chapterId);
@@ -690,7 +690,7 @@ namespace YgoMaster
                 }
                 else if (!IsValidNonDuelChapter(chapterId))
                 {
-                    LogWarning("Failed to find info for chapter " + chapterId);
+                    Utils.LogWarning("Failed to find info for chapter " + chapterId);
                 }
                 request.Response["Solo"] = new Dictionary<string, object>()
                 {
@@ -704,7 +704,7 @@ namespace YgoMaster
         void Act_SoloSetUseDeckType(GameServerWebRequest request)
         {
             int chapterId, deckType;
-            if (TryGetValue(request.ActParams, "chapter", out chapterId) && TryGetValue(request.ActParams, "deck_type", out deckType))
+            if (Utils.TryGetValue(request.ActParams, "chapter", out chapterId) && Utils.TryGetValue(request.ActParams, "deck_type", out deckType))
             {
                 request.Player.Duel.IsMyDeck = (SoloDeckType)deckType == SoloDeckType.POSSESSION;
             }
@@ -719,7 +719,7 @@ namespace YgoMaster
         void Act_SoloStart(GameServerWebRequest request)
         {
             int chapterId;
-            if (TryGetValue<int>(request.ActParams, "chapter", out chapterId))
+            if (Utils.TryGetValue<int>(request.ActParams, "chapter", out chapterId))
             {
                 int myDeckSetId;
                 int loanerDeckSetId;
@@ -732,16 +732,7 @@ namespace YgoMaster
                 DuelSettings duelSettings = CreateSoloDuelSettingsInstance(request.Player, chapterId);
                 if (duelSettings != null)
                 {
-                    request.Response["Duel"] = new Dictionary<string, object>()
-                    {
-                        { "avatar", duelSettings.avatar },
-                        { "icon", duelSettings.icon },
-                        { "icon_frame", duelSettings.icon_frame },
-                        { "sleeve", duelSettings.sleeve },
-                        { "mat", duelSettings.mat },
-                        { "duel_object", duelSettings.duel_object },
-                        { "avatar_home", duelSettings.avatar_home }
-                    };
+                    request.Response["Duel"] = duelSettings.ToDictionaryForSoloStart();
                 }
                 else if (IsValidNonDuelChapter(chapterId))
                 {
@@ -750,7 +741,7 @@ namespace YgoMaster
                 else
                 {
                     request.ResultCode = (int)ResultCodes.SoloCode.INVALID_CHAPTER;
-                    LogWarning("Failed to start chapter " + chapterId);
+                    Utils.LogWarning("Failed to start chapter " + chapterId);
                 }
             }
             request.Remove("Solo.Result", "Duel", "DuelResult");
@@ -759,7 +750,7 @@ namespace YgoMaster
         void Act_SoloSkip(GameServerWebRequest request)
         {
             int chapterId;
-            if (TryGetValue<int>(request.ActParams, "chapter", out chapterId))
+            if (Utils.TryGetValue<int>(request.ActParams, "chapter", out chapterId))
             {
                 // Assumes the client knows what it should / shouldn't skip
                 SoloUpdateChapterStatus(request, chapterId, DuelResultType.None);

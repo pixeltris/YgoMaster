@@ -26,7 +26,7 @@ namespace IL2CPP
 				{
 					throw new ArgumentOutOfRangeException();
 				}
-                return Utils.PtrToStruct<T>(((IntPtr)((long*)ptr + 4) + index * Marshal.SizeOf(typeof(T))));
+                return NativeUtils.PtrToStruct<T>(((IntPtr)((long*)ptr + 4) + index * Marshal.SizeOf(typeof(T))));
 				//return *(T*)((IntPtr)((long*)ptr + 4) + index * sizeof(T));
 			}
 			set
@@ -35,7 +35,7 @@ namespace IL2CPP
 				{
 					throw new ArgumentOutOfRangeException();
 				}
-                byte[] buffer = Utils.StructToByteArray(value);
+                byte[] buffer = NativeUtils.StructToByteArray(value);
                 Marshal.Copy(buffer, 0, ((IntPtr)((long*)ptr + 4) + index * Marshal.SizeOf(typeof(T))), buffer.Length);
 				//*(IntPtr*)((IntPtr)((long*)ptr + 4) + index * sizeof(T)) = new IntPtr(&value);
 			}

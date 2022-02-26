@@ -10,7 +10,7 @@ namespace IL2CPP
 			ptr = ptrNew;
         }
 
-		public int Count
+		/*public int Count
 		{
 			get { return Instance_Class.GetProperty("Count").GetGetMethod().Invoke(ptr).GetValueRef<int>(); }
 		}
@@ -18,7 +18,7 @@ namespace IL2CPP
 		public void Clear()
 		{
 			Instance_Class.GetMethod("Clear").Invoke(ptr, ex: false);
-		}
+		}*/
 
 		public static IL2Class Instance_Class = Assembler.GetAssembly("mscorlib").GetClass("Dictionary`2", "System.Collections.Generic");
 	}
@@ -45,6 +45,18 @@ namespace IL2CPP
 		{
 			return Instance_Class.GetMethod("FindEntry").Invoke(ptr, new IntPtr[] { key }).GetValueRef<int>();
 		}
+
+        private static IL2Method methodContainsKey = null;
+        public bool ContainsKey(string key)
+        {
+            if (methodContainsKey == null)
+            {
+                methodContainsKey = Instance_Class.GetMethod("ContainsKey");
+                if (methodContainsKey == null)
+                    return false;
+            }
+            return methodContainsKey.Invoke(ptr, new IntPtr[] { new IL2String(key).ptr, methodContainsKey.ptr }).GetValueRef<bool>();
+        }
 
 		private static IL2Method methodAdd = null;
 		public void Add(IntPtr key, IntPtr value)
@@ -73,6 +85,29 @@ namespace IL2CPP
 
 			return result.GetValueRef<bool>();
 		}
+
+        private static IL2Method methodGetCount = null;
+        public int Count
+        {
+            get
+            {
+                if (methodGetCount == null)
+                {
+                    methodGetCount = Instance_Class.GetProperty("Count").GetGetMethod();
+                }
+                return methodGetCount.Invoke(ptr).GetValueRef<int>();
+            }
+        }
+
+        private static IL2Method methodClear = null;
+        public void Clear()
+        {
+            if (methodClear == null)
+            {
+                methodClear = Instance_Class.GetMethod("Clear");
+            }
+            methodClear.Invoke(ptr);
+        }
 
 		public static new IL2Class Instance_Class = IL2Dictionary.Instance_Class.MakeGenericType(new Type[] {typeof(TKey), typeof(TValue) });
 	}

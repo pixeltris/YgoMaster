@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace IL2CPP
 {
-    public static class Utils
+    public static class NativeUtils
     {
         unsafe public static IntPtr ArrayToIntPtr(this IEnumerable<IntPtr> array, IL2Class typeobject = null)
         {

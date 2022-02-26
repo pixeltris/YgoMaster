@@ -39,6 +39,7 @@ namespace YgoMaster
             TrayCards = new CardCollection();
         }
 
+#if !YGO_MASTER_CLIENT
         public bool IsValid(Player player)
         {
             if (MainDeckCards.Count < 40 || MainDeckCards.Count > 60 || ExtraDeckCards.Count > 15 || SideDeckCards.Count > 15)
@@ -64,6 +65,7 @@ namespace YgoMaster
             }
             return true;
         }
+#endif
 
         public List<int> GetAllCards(bool main = true, bool extra = true, bool side = false, bool tray = false)
         {
@@ -114,16 +116,31 @@ namespace YgoMaster
             TrayCards.CopyFrom(other.TrayCards);
         }
 
+        public void Clear()
+        {
+            Id = 0;
+            Name = null;
+            File = null;
+            TimeCreated = 0;
+            TimeEdited = 0;
+            Accessory.Clear();
+            DisplayCards.Clear();
+            MainDeckCards.Clear();
+            ExtraDeckCards.Clear();
+            SideDeckCards.Clear();
+            TrayCards.Clear();
+        }
+
         public void FromDictionary(Dictionary<string, object> data, bool longKeys = false)
         {
             if (data == null)
             {
                 return;
             }
-            MainDeckCards.FromDictionary(GameServer.GetDictionary(data, longKeys ? "Main" : "m"), longKeys);
-            ExtraDeckCards.FromDictionary(GameServer.GetDictionary(data, longKeys ? "Extra" : "e"), longKeys);
-            SideDeckCards.FromDictionary(GameServer.GetDictionary(data, longKeys ? "Side" : "s"), longKeys);
-            TrayCards.FromDictionary(GameServer.GetDictionary(data, longKeys ? "Tray" : "t"), longKeys);
+            MainDeckCards.FromDictionary(Utils.GetDictionary(data, longKeys ? "Main" : "m"), longKeys);
+            ExtraDeckCards.FromDictionary(Utils.GetDictionary(data, longKeys ? "Extra" : "e"), longKeys);
+            SideDeckCards.FromDictionary(Utils.GetDictionary(data, longKeys ? "Side" : "s"), longKeys);
+            TrayCards.FromDictionary(Utils.GetDictionary(data, longKeys ? "Tray" : "t"), longKeys);
         }
 
         public Dictionary<string, object> ToDictionary(bool longKeys = false)
@@ -137,33 +154,38 @@ namespace YgoMaster
             };
         }
 
-        public void FromDictionaryEx(Dictionary<string, object> data)
+        public void FromDictionaryEx(Dictionary<string, object> data, bool longKeys = false)
         {
             if (data == null)
             {
                 return;
             }
-            Name = GameServer.GetValue<string>(data, "name");
-            TimeCreated = GameServer.GetValue<uint>(data, "timeCreated");
-            TimeEdited = GameServer.GetValue<uint>(data, "timeEdited");
-            Accessory.FromDictionary(GameServer.GetDictionary(data, "accessory"));
-            DisplayCards.FromIndexedDictionary(GameServer.GetDictionary(data, "focus"));
-            MainDeckCards.FromDictionary(GameServer.GetDictionary(data, "m"));
-            ExtraDeckCards.FromDictionary(GameServer.GetDictionary(data, "e"));
-            SideDeckCards.FromDictionary(GameServer.GetDictionary(data, "s"));
+            Name = Utils.GetValue<string>(data, "name");
+            TimeCreated = Utils.GetValue<uint>(data, "ct");
+            TimeEdited = Utils.GetValue<uint>(data, "et");
+            Accessory.FromDictionary(Utils.GetDictionary(data, "accessory"));
+            DisplayCards.FromIndexedDictionary(Utils.GetDictionary(data, "pick_cards"));
+            if (data.ContainsKey("focus"))
+            {
+                DisplayCards.FromIndexedDictionary(Utils.GetDictionary(data, "focus"));
+            }
+            MainDeckCards.FromDictionary(Utils.GetDictionary(data, longKeys ? "Main" : "m"), longKeys);
+            ExtraDeckCards.FromDictionary(Utils.GetDictionary(data, longKeys ? "Extra" : "e"), longKeys);
+            SideDeckCards.FromDictionary(Utils.GetDictionary(data, longKeys ? "Side" : "s"), longKeys);
+            TrayCards.FromDictionary(Utils.GetDictionary(data, longKeys ? "Tray" : "t"), longKeys);
         }
 
-        public Dictionary<string, object> ToDictionaryEx()
+        public Dictionary<string, object> ToDictionaryEx(bool longKeys = false)
         {
             Dictionary<string, object> data = new Dictionary<string, object>();
             data["name"] = Name;
-            data["timeCreated"] = TimeCreated;
-            data["timeEdited"] = TimeEdited;
+            data["ct"] = TimeCreated;
+            data["et"] = TimeEdited;
             data["accessory"] = Accessory.ToDictionary();
-            data["focus"] = DisplayCards.ToIndexDictionary();
-            data["m"] = MainDeckCards.ToDictionary();
-            data["e"] = ExtraDeckCards.ToDictionary();
-            data["s"] = SideDeckCards.ToDictionary();
+            data["pick_cards"] = DisplayCards.ToIndexDictionary();
+            data[longKeys ? "Main" : "m"] = MainDeckCards.ToDictionary(longKeys);
+            data[longKeys ? "Extra" : "e"] = ExtraDeckCards.ToDictionary(longKeys);
+            data[longKeys ? "Side" : "s"] = SideDeckCards.ToDictionary(longKeys);
             return data;
         }
 
@@ -211,19 +233,29 @@ namespace YgoMaster
             AvBase = other.AvBase;
         }
 
+        public void Clear()
+        {
+            Box = 0;
+            Sleeve = 0;
+            Field = 0;
+            FieldObj = 0;
+            AvBase = 0;
+        }
+
         public void FromDictionary(Dictionary<string, object> dict)
         {
             if (dict == null)
             {
                 return;
             }
-            Box = GameServer.GetValue<int>(dict, "box");
-            Sleeve = GameServer.GetValue<int>(dict, "sleeve");
-            Field = GameServer.GetValue<int>(dict, "field");
-            FieldObj = GameServer.GetValue<int>(dict, "object");
-            AvBase = GameServer.GetValue<int>(dict, "av_base");
+            Box = Utils.GetValue<int>(dict, "box");
+            Sleeve = Utils.GetValue<int>(dict, "sleeve");
+            Field = Utils.GetValue<int>(dict, "field");
+            FieldObj = Utils.GetValue<int>(dict, "object");
+            AvBase = Utils.GetValue<int>(dict, "av_base");
         }
 
+#if !YGO_MASTER_CLIENT
         public void Sanitize(Player player)
         {
             Box = Sanitize<ItemID.DECK_CASE>(player, Box);
@@ -252,5 +284,6 @@ namespace YgoMaster
             }
             return 0;
         }
+#endif
     }
 }

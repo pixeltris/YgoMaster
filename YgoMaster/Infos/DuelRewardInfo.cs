@@ -48,15 +48,15 @@ namespace YgoMaster
             }
             Win.Clear();
             Lose.Clear();
-            ChapterStatusChangedMultiplier = GameServer.GetValue<double>(data, "ChapterStatusChangedMultiplier");
-            ChapterStatusChangedNoRewards = GameServer.GetValue<bool>(data, "ChapterStatusChangedNoRewards");
-            ChapterStatusChangedOnly = GameServer.GetValue<bool>(data, "ChapterStatusChangedOnly");
-            List<object> winData = GameServer.GetValue(data, "win", default(List<object>));
+            ChapterStatusChangedMultiplier = Utils.GetValue<double>(data, "ChapterStatusChangedMultiplier");
+            ChapterStatusChangedNoRewards = Utils.GetValue<bool>(data, "ChapterStatusChangedNoRewards");
+            ChapterStatusChangedOnly = Utils.GetValue<bool>(data, "ChapterStatusChangedOnly");
+            List<object> winData = Utils.GetValue(data, "win", default(List<object>));
             if (winData != null)
             {
                 ParseRewards(Win, winData);
             }
-            List<object> loseData = GameServer.GetValue(data, "lose", default(List<object>));
+            List<object> loseData = Utils.GetValue(data, "lose", default(List<object>));
             if (loseData != null)
             {
                 ParseRewards(Lose, loseData);
@@ -70,21 +70,21 @@ namespace YgoMaster
                 Dictionary<string, object> data = obj as Dictionary<string, object>;
                 if (data != null)
                 {
-                    DuelCustomRewardType type = GameServer.GetValue<DuelCustomRewardType>(data, "type");
+                    DuelCustomRewardType type = Utils.GetValue<DuelCustomRewardType>(data, "type");
                     if (type == DuelCustomRewardType.None)
                     {
                         return;
                     }
                     DuelRewardInfo reward = new DuelRewardInfo();
                     reward.Type = type;
-                    reward.Rate = GameServer.GetValue<double>(data, "rate");
-                    reward.Rare = GameServer.GetValue<bool>(data, "rare");
+                    reward.Rate = Utils.GetValue<double>(data, "rate");
+                    reward.Rare = Utils.GetValue<bool>(data, "rare");
                     switch (type)
                     {
                         case DuelCustomRewardType.Gem:
                             {
                                 int value;
-                                if (GameServer.TryGetValue(data, "value", out value))
+                                if (Utils.TryGetValue(data, "value", out value))
                                 {
                                     reward.MinValue = value;
                                     reward.MaxValue = value;
@@ -92,8 +92,8 @@ namespace YgoMaster
                                 else
                                 {
                                     int min, max;
-                                    if (GameServer.TryGetValue(data, "min", out min) &&
-                                        GameServer.TryGetValue(data, "max", out max))
+                                    if (Utils.TryGetValue(data, "min", out min) &&
+                                        Utils.TryGetValue(data, "max", out max))
                                     {
                                         if (min > max)
                                         {
@@ -117,12 +117,12 @@ namespace YgoMaster
                             break;
                         case DuelCustomRewardType.Item:
                             {
-                                reward.Rate = GameServer.GetValue<double>(data, "rate");
+                                reward.Rate = Utils.GetValue<double>(data, "rate");
                                 if (reward.Rate == 0)
                                 {
                                     continue;
                                 }
-                                List<object> idsObjList = GameServer.GetValue(data, "ids", default(List<object>));
+                                List<object> idsObjList = Utils.GetValue(data, "ids", default(List<object>));
                                 if (idsObjList != null && idsObjList.Count > 0)
                                 {
                                     reward.Ids = new List<int>();
@@ -138,9 +138,9 @@ namespace YgoMaster
                                 reward.CardRate = new List<double>();
                                 reward.CardRare = new List<bool>();
                                 reward.Ids = new List<int>();
-                                reward.CardNoDismantle = GameServer.GetValue<bool>(data, "cardNoDismantle");
-                                reward.CardOwnedLimit = GameServer.GetValue<int>(data, "cardOwnedLimit");
-                                List<object> cardRateObjList = GameServer.GetValue(data, "cardRate", default(List<object>));
+                                reward.CardNoDismantle = Utils.GetValue<bool>(data, "cardNoDismantle");
+                                reward.CardOwnedLimit = Utils.GetValue<int>(data, "cardOwnedLimit");
+                                List<object> cardRateObjList = Utils.GetValue(data, "cardRate", default(List<object>));
                                 if (cardRateObjList != null)
                                 {
                                     foreach (object rateObj in cardRateObjList)
@@ -148,7 +148,7 @@ namespace YgoMaster
                                         reward.CardRate.Add((int)Convert.ChangeType(rateObj, typeof(int)));
                                     }
                                 }
-                                List<object> cardRareObjList = GameServer.GetValue(data, "cardRare", default(List<object>));
+                                List<object> cardRareObjList = Utils.GetValue(data, "cardRare", default(List<object>));
                                 if (cardRareObjList != null)
                                 {
                                     foreach (object rareObj in cardRareObjList)
@@ -156,7 +156,7 @@ namespace YgoMaster
                                         reward.CardRare.Add((bool)Convert.ChangeType(rareObj, typeof(bool)));
                                     }
                                 }
-                                List<object> idsObjList = GameServer.GetValue(data, "ids", default(List<object>));
+                                List<object> idsObjList = Utils.GetValue(data, "ids", default(List<object>));
                                 if (idsObjList != null)
                                 {
                                     foreach (object idObj in idsObjList)

@@ -6,11 +6,11 @@ using System.IO;
 
 namespace YgoMaster
 {
-    partial class GameServer
+    static class Utils
     {
         static readonly bool disableInfoLogging = false;
 
-        static string FixIdString(string str)
+        public static string FixIdString(string str)
         {
             if (string.IsNullOrEmpty(str))
             {
@@ -23,7 +23,7 @@ namespace YgoMaster
             return "IDS_SYS_IDHACK:" + str;
         }
 
-        internal static void LogInfo(string str)
+        public static void LogInfo(string str)
         {
             if (!disableInfoLogging)
             {
@@ -31,23 +31,23 @@ namespace YgoMaster
             }
         }
 
-        internal static void LogWarning(string str)
+        public static void LogWarning(string str)
         {
             Console.WriteLine("[WARNING] " + str);
         }
 
-        internal static long GetEpochTime(DateTime time = default(DateTime))
+        public static long GetEpochTime(DateTime time = default(DateTime))
         {
             time = (time == default(DateTime) ? DateTime.UtcNow : time);
             return (long)(time - new DateTime(1970, 1, 1)).TotalSeconds;
         }
 
-        internal static DateTime ConvertEpochTime(long time)
+        public static DateTime ConvertEpochTime(long time)
         {
             return (new DateTime(1970, 1, 1)).AddSeconds(time).ToLocalTime();
         }
 
-        static bool TryCreateDirectory(string dir)
+        public static bool TryCreateDirectory(string dir)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace YgoMaster
             }
         }
 
-        static List<int> Shuffle(Random rng, List<int> values)
+        public static List<int> Shuffle(Random rng, List<int> values)
         {
             List<int> array = new List<int>(values);
             int n = array.Count;
@@ -81,23 +81,7 @@ namespace YgoMaster
             return array;
         }
 
-        static string FormatJson(string json)
-        {
-            // https://stackoverflow.com/questions/4580397/json-formatter-in-c/24782322#24782322
-            const string INDENT_STRING = "    ";
-            int indentation = 0;
-            int quoteCount = 0;
-            var result =
-                from ch in json
-                let quotes = ch == '"' ? quoteCount++ : quoteCount
-                let lineBreak = ch == ',' && quotes % 2 == 0 ? ch + Environment.NewLine + String.Concat(Enumerable.Repeat(INDENT_STRING, indentation)) : null
-                let openChar = ch == '{' || ch == '[' ? ch + Environment.NewLine + String.Concat(Enumerable.Repeat(INDENT_STRING, ++indentation)) : ch.ToString()
-                let closeChar = ch == '}' || ch == ']' ? Environment.NewLine + String.Concat(Enumerable.Repeat(INDENT_STRING, --indentation)) + ch : ch.ToString()
-                select lineBreak == null ? openChar.Length > 1 ? openChar : closeChar : lineBreak;
-            return String.Concat(result);
-        }
-
-        internal static Dictionary<int, Dictionary<string, object>> GetIntDictDict(Dictionary<string, object> values, string key)
+        public static Dictionary<int, Dictionary<string, object>> GetIntDictDict(Dictionary<string, object> values, string key)
         {
             Dictionary<int, Dictionary<string, object>> result = new Dictionary<int, Dictionary<string, object>>();
             Dictionary<string, object> dict = GetDictionary(values, key);
@@ -113,19 +97,19 @@ namespace YgoMaster
             return result;
         }
 
-        internal static Dictionary<string, object> GetDictionary(Dictionary<string, object> values, string key)
+        public static Dictionary<string, object> GetDictionary(Dictionary<string, object> values, string key)
         {
             return GetValue(values, key, default(Dictionary<string, object>));
         }
 
-        internal static List<int> GetIntList(Dictionary<string, object> values, string key, bool ignoreZero = false)
+        public static List<int> GetIntList(Dictionary<string, object> values, string key, bool ignoreZero = false)
         {
             List<int> result = new List<int>();
             GetIntList(values, key, result, ignoreZero);
             return result;
         }
 
-        internal static void GetIntList(Dictionary<string, object> values, string key, List<int> result, bool ignoreZero = false)
+        public static void GetIntList(Dictionary<string, object> values, string key, List<int> result, bool ignoreZero = false)
         {
             List<object> items;
             if (TryGetValue(values, key, out items))
@@ -141,7 +125,7 @@ namespace YgoMaster
             }
         }
 
-        internal static void GetIntHashSet(Dictionary<string, object> values, string key, HashSet<int> result, bool ignoreZero = false)
+        public static void GetIntHashSet(Dictionary<string, object> values, string key, HashSet<int> result, bool ignoreZero = false)
         {
             List<object> items;
             if (TryGetValue(values, key, out items))
@@ -157,7 +141,7 @@ namespace YgoMaster
             }
         }
 
-        internal static T GetValue<T>(Dictionary<string, object> values, string key, T defaultValue = default(T))
+        public static T GetValue<T>(Dictionary<string, object> values, string key, T defaultValue = default(T))
         {
             T result;
             if (TryGetValue(values, key, out result))
@@ -167,7 +151,7 @@ namespace YgoMaster
             return defaultValue;
         }
 
-        internal static bool TryGetValue<T>(Dictionary<string, object> values, string key, out T result)
+        public static bool TryGetValue<T>(Dictionary<string, object> values, string key, out T result)
         {
             object obj;
             if (values.TryGetValue(key, out obj) && obj != null)
@@ -218,7 +202,7 @@ namespace YgoMaster
             return false;
         }
 
-        internal static List<Dictionary<string, object>> GetDictionaryCollection(Dictionary<string, object> data, string key)
+        public static List<Dictionary<string, object>> GetDictionaryCollection(Dictionary<string, object> data, string key)
         {
             // Accepts the following formats:
             /*
@@ -266,7 +250,7 @@ namespace YgoMaster
             return result;
         }
 
-        internal static Dictionary<string, object> GetOrCreateDictionary(Dictionary<string, object> data, string name)
+        public static Dictionary<string, object> GetOrCreateDictionary(Dictionary<string, object> data, string name)
         {
             object obj;
             Dictionary<string, object> result;
@@ -278,7 +262,7 @@ namespace YgoMaster
             return result;
         }
 
-        internal static List<object> GetOrCreateList(Dictionary<string, object> data, string name)
+        public static List<object> GetOrCreateList(Dictionary<string, object> data, string name)
         {
             object obj;
             List<object> result;
@@ -290,7 +274,7 @@ namespace YgoMaster
             return result;
         }
 
-        internal static Dictionary<string, object> GetResData(Dictionary<string, object> data)
+        public static Dictionary<string, object> GetResData(Dictionary<string, object> data)
         {
             if (data != null && data.ContainsKey("code") && data.ContainsKey("res"))
             {

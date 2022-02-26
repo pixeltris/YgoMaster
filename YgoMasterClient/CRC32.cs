@@ -304,7 +304,7 @@ namespace YgomSystem.Hash
                             }
                             while (array.Length > 0);
                         }
-                        catch (Exception ex)
+                        catch// (Exception ex)
                         {
                             //DebugUtil.LogError(ex.Message);
                             num = 4294967295u;

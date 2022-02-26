@@ -200,4 +200,56 @@ namespace YgoMaster
         PerformedPendulumSummon,
         LinkSummon
     }
+
+    /// <summary>
+    /// YgomGame.Duel.Engine.CpuParam
+    /// </summary>
+    enum DuelCpuParam : uint
+    {
+        None = 0,
+        Simple = 0x02000000,
+        AttackOnly = 0x04000000,
+        MyTurnOnly = 0x10000000,
+        Light = 0x20000000,
+        Fool = 0x40000000,
+        Def = 0x80000000,
+    }
+
+    /// <summary>
+    /// YgomGame.Duel.Engine.LimitedType
+    /// </summary>
+    enum DuelLimitedType
+    {
+        None,
+        NormalSummon,
+        SpecialSummon,
+        Set,
+        Tribute,
+        ChangePos,
+        Attack,
+        Draw2,
+        Turn20,
+        Damage,
+        Beginner,
+        Beginner2,
+        Vs2on1,
+        Vs2on1_Hand,
+        FirstDraw,
+        Vs3on1,
+        Survival_1on3 = 256,
+        Survival_3on3,
+        Survival_1on2
+    }
+
+    /// <summary>
+    /// YgomGame.Duel.Engine.DuelType
+    /// </summary>
+    enum DuelType
+    {
+        Normal = 0,
+        Extra = 1,
+        Tag = 2,
+        Speed = 3,//Quick = 3,
+        Rush = 4
+    }
 }

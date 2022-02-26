@@ -56,7 +56,7 @@ namespace YgoMaster
             Dictionary<string, object> dismantleData = null;
             if (data.ContainsKey("Craft"))
             {
-                Dictionary<string, object> rolloverDatas = GameServer.GetDictionary(data, "CraftPointRollover");
+                Dictionary<string, object> rolloverDatas = Utils.GetDictionary(data, "CraftPointRollover");
                 if (rolloverDatas != null)
                 {
                     foreach (KeyValuePair<string, object> rolloverEntry in rolloverDatas)
@@ -70,21 +70,21 @@ namespace YgoMaster
                                 continue;
                             }
                             CraftPointRollover rollover = new CraftPointRollover();
-                            rollover.At = GameServer.GetValue<int>(rolloverData, "at");
-                            rollover.Take = GameServer.GetValue<int>(rolloverData, "take");
-                            rollover.Give = GameServer.GetValue<int>(rolloverData, "give");
+                            rollover.At = Utils.GetValue<int>(rolloverData, "at");
+                            rollover.Take = Utils.GetValue<int>(rolloverData, "take");
+                            rollover.Give = Utils.GetValue<int>(rolloverData, "give");
                             Rollover[rarity] = rollover;
                         }
                     }
                 }
 
-                craftData = GameServer.GetDictionary(data, "Craft");
-                dismantleData = GameServer.GetDictionary(data, "Dismantle");
+                craftData = Utils.GetDictionary(data, "Craft");
+                dismantleData = Utils.GetDictionary(data, "Dismantle");
             }
             else if (data.ContainsKey("generate_rate_list"))
             {
-                craftData = GameServer.GetDictionary(data, "generate_rate_list");
-                dismantleData = GameServer.GetDictionary(data, "exchange_rate_list");
+                craftData = Utils.GetDictionary(data, "generate_rate_list");
+                dismantleData = Utils.GetDictionary(data, "exchange_rate_list");
             }
             if (craftData != null)
             {

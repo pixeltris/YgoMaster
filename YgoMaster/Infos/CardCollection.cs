@@ -85,20 +85,20 @@ namespace YgoMaster
             {
                 return;
             }
-            Dictionary<string, object> ids = GameServer.GetDictionary(dict, longKeys ? "CardIds" : "ids");
-            Dictionary<string, object> r = GameServer.GetDictionary(dict, longKeys ? "Rare" : "r");
+            Dictionary<string, object> ids = Utils.GetDictionary(dict, longKeys ? "CardIds" : "ids");
+            Dictionary<string, object> r = Utils.GetDictionary(dict, longKeys ? "Rare" : "r");
             if (ids != null)
             {
                 if (r != null && ids.Count != r.Count)
                 {
-                    GameServer.LogWarning("Card style rarity length missmatch " + ids.Count + " - " + r.Count);
+                    Utils.LogWarning("Card style rarity length missmatch " + ids.Count + " - " + r.Count);
                 }
                 else
                 {
                     for (int i = 0; i < displayedCardsCount; i++)
                     {
-                        int cardId = GameServer.GetValue<int>(ids, (i + 1).ToString());
-                        CardStyleRarity styleRarity = (r == null ? CardStyleRarity.Normal : (CardStyleRarity)GameServer.GetValue<int>(r, (i + 1).ToString()));
+                        int cardId = Utils.GetValue<int>(ids, (i + 1).ToString());
+                        CardStyleRarity styleRarity = (r == null ? CardStyleRarity.Normal : (CardStyleRarity)Utils.GetValue<int>(r, (i + 1).ToString()));
                         collection.Add(new KeyValuePair<int, CardStyleRarity>(cardId, styleRarity));
                     }
                 }
@@ -130,12 +130,12 @@ namespace YgoMaster
             }
             List<object> ids;
             List<object> r;
-            if (GameServer.TryGetValue(dict, longKeys ? "CardIds" : "ids", out ids))
+            if (Utils.TryGetValue(dict, longKeys ? "CardIds" : "ids", out ids))
             {
-                GameServer.TryGetValue(dict, longKeys ? "Rare" : "r", out r);
+                Utils.TryGetValue(dict, longKeys ? "Rare" : "r", out r);
                 if (r != null && ids.Count != r.Count)
                 {
-                    GameServer.LogWarning("Card style rarity length missmatch " + ids.Count + " - " + r.Count);
+                    Utils.LogWarning("Card style rarity length missmatch " + ids.Count + " - " + r.Count);
                 }
                 else
                 {

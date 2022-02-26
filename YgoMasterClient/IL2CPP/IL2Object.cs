@@ -27,7 +27,7 @@ namespace IL2CPP
         /// <returns></returns>
         unsafe public T1 GetValueRef<T1>() where T1 : struct//where T1 : unmanaged
         {
-            return Utils.PtrToStruct<T1>(ptr + 0x10);
+            return NativeUtils.PtrToStruct<T1>(ptr + 0x10);
             //return *(T1*)(ptr + 0x10).ToPointer();
         }
 
@@ -58,7 +58,7 @@ namespace IL2CPP
                 uint length = Import.Object.il2cpp_array_get_byte_length(ptr);
                 byte[] buffer = new byte[size * length];
                 Marshal.Copy(((IntPtr)(long*)ptr + 4), buffer, 0, (int)length);
-                return Utils.StructsFromByteArray<T1>(buffer);
+                return NativeUtils.StructsFromByteArray<T1>(buffer);
                 /*result = new T1[length];
                 fixed (T1* b = result)
                 {

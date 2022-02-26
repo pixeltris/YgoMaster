@@ -28,23 +28,46 @@ namespace YgoMaster
             Side
         }
 
+        public static long GetOfficialId(long ydkId)
+        {
+            long result;
+            ydkIdToOfficialId.TryGetValue(ydkId, out result);
+            return result;
+        }
+
+        public static long GetYdkId(long officialId)
+        {
+            long result;
+            officialIdToYdkId.TryGetValue(officialId, out result);
+            return result;
+        }
+
         public static void LoadDeck(DeckInfo deck)
         {
             if (!File.Exists(deck.File))
             {
                 return;
             }
+            if (string.IsNullOrEmpty(deck.Name))
+            {
+                deck.Name = Path.GetFileNameWithoutExtension(deck.File) + ".ydk";
+            }
+            LoadDeck(deck, File.ReadAllText(deck.File));
+        }
+
+        public static void LoadDeck(DeckInfo deck, string str)
+        {
             deck.DisplayCards.Clear();
             deck.MainDeckCards.Clear();
             deck.ExtraDeckCards.Clear();
             deck.SideDeckCards.Clear();
             deck.TrayCards.Clear();
-            if (string.IsNullOrEmpty(deck.Name))
+            if (string.IsNullOrEmpty(str))
             {
-                deck.Name = Path.GetFileNameWithoutExtension(deck.File) + ".ydk";
+                return;
             }
+            string[] lines = str.Replace("\r", "").Split('\n');
             DeckType deckType = DeckType.Main;
-            string[] lines = File.ReadAllLines(deck.File);
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i].Trim();
@@ -157,7 +180,11 @@ namespace YgoMaster
                                 long.TryParse(splitted[1], out officialId))
                             {
                                 ydkIdToOfficialId[ydkId] = officialId;
-                                officialIdToYdkId[officialId] = ydkId;
+                                // There are duplicates, the first should be the original card art
+                                if (!officialIdToYdkId.ContainsKey(officialId))
+                                {
+                                    officialIdToYdkId[officialId] = ydkId;
+                                }
                             }
                         }
                     }
@@ -270,6 +297,24 @@ namespace YgoMaster
                         {
                             ydkIdToOfficialId[ydkId] = cardInfo.Id;
                             officialIdToYdkId[cardInfo.Id] = ydkId;
+
+                            object cardImagesObj;
+                            if (data.TryGetValue("card_images", out cardImagesObj))
+                            {
+                                List<object> cardImagesList = cardImagesObj as List<object>;
+                                if (cardImagesList != null)
+                                {
+                                    foreach (object obj in cardImagesList)
+                                    {
+                                        Dictionary<string, object> cardImageData = obj as Dictionary<string, object>;
+                                        if (cardImageData != null && cardImageData.ContainsKey("id"))
+                                        {
+                                            long imageYdkId = (long)Convert.ChangeType(cardImageData["id"], typeof(long));
+                                            ydkIdToOfficialId[imageYdkId] = cardInfo.Id;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

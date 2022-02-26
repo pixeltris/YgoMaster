@@ -138,6 +138,7 @@ namespace IL2CPP
             public IL2Method MethodItemSet;
             public IL2Method MethodCountGet;
             public IL2Method MethodAdd;
+            public IL2Method MethodClear;
         }
 
         public ListClassInfo ClassInfo;
@@ -153,6 +154,7 @@ namespace IL2CPP
                 ClassInfo.MethodItemSet = ClassInfo.Class.GetProperty("Item").GetSetMethod();
                 ClassInfo.MethodCountGet = ClassInfo.Class.GetProperty("Count").GetGetMethod();
                 ClassInfo.MethodAdd = ClassInfo.Class.GetMethod("Add");
+                ClassInfo.MethodClear = ClassInfo.Class.GetMethod("Clear");
                 Classes[type.ptr] = ClassInfo;
             }
         }
@@ -175,9 +177,20 @@ namespace IL2CPP
             }
         }
 
+        public T GetRef<T>(int index) where T : struct
+        {
+            IL2Object obj = ClassInfo.MethodItemGet.Invoke(ptr, new IntPtr[] { new IntPtr(&index), ClassInfo.MethodItemGet.ptr });
+            return obj != null ? obj.GetValueRef<T>() : default(T);
+        }
+
         public void Add(IntPtr value)
         {
             ClassInfo.MethodAdd.Invoke(ptr, new IntPtr[] { value, ClassInfo.MethodAdd.ptr } );
+        }
+
+        public void Clear()
+        {
+            ClassInfo.MethodClear.Invoke(ptr, new IntPtr[] { ClassInfo.MethodAdd.ptr });
         }
     }
 }

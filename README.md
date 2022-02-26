@@ -25,6 +25,8 @@ Compile `YgoMaster.sln` and `YgoMasterLoader.cpp` (for the cpp read the top of t
 
 Copy the `Build` folder (the folder, not the contents of the folder) into the game folder and run `YgoMaster.exe` / `YgoMasterClient.exe`.
 
+*You need to fully download the game via Steam and use the same language setting as set on there. If these requirements aren't met you'll get a popup with the text "FILE LOAD ERROR".*
+
 ## Related
 
 - https://github.com/SethPDA/MasterDuel-Modding/wiki
