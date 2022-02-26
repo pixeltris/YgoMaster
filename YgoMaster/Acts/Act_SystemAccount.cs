@@ -59,6 +59,13 @@ namespace YgoMaster
                 return;
             }
 
+            request.Player.Lang = Utils.GetValue<string>(request.ActParams, "lang");
+            if (!string.IsNullOrEmpty(request.Player.Lang))
+            {
+                // Only using this for topic text which uses underscores
+                request.Player.Lang = request.Player.Lang.Replace("-", "_");
+            }
+
             // NOTE: These aren't normally set here, but doing it here is good enough
             request.Response["Persistence"] = new Dictionary<string, object>()
             {

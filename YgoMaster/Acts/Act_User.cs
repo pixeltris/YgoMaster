@@ -125,26 +125,88 @@ namespace YgoMaster
             request.Response["TDeckList"] = null;// Tournament deck list?
             request.Response["EXHDeck"] = new object[0];// Exhibition deck list?
             request.Response["EXHDeckList"] = null;// Exhibition deck list?
-            request.Response["Topics"] = new List<object>()
+            // TODO: Move this information into a data file
+            string lang = !string.IsNullOrEmpty(request.Player.Lang) ? request.Player.Lang : "en_US";
+            Dictionary<string, object> body = new Dictionary<string,object>()
             {
-                /*new Dictionary<string, object>() {
-                    { "sort", 1591200 },// 0 / 1591200 / omitted
-                    { "body", @"{""buttons"":[{""label"":{""en_US"":""Purchase Gems""},""url"":""duel:push?GameMode=9"",""shortcut"":""Sub1""}],""contents"":[{""tp"":""H1"",""text"":{""en_US"":""To commemorate the game's release, we're currently having a special Gems sale!""}},{""tp"":""Text"",""text"":{""en_US"":""Check out the Purchase Gems page for an exclusive Gem Pack.nEach player can purchase up to 3.nThis is a deal you do not want to miss!""},""indent"":-1},{""tp"":""Spacer"",""size"":""M"",""indent"":-1},{""tp"":""Text"",""text"":{""en_US"":""<color=#00D2FF>*You can also go to the Purchase Gems page by pressing the Gem icon in the center of the top of the Home screen.</color>""},""indent"":-1}]}" },
-                    { "banner", new Dictionary<string, object>() {
-                        { "image", "Images/Notification/Shop/Gem001" },
-                        //{ "image", "" },
-                        { "pattern", TopicsBannerPatern.GEM },
-                        //{ "image_text", "" }
-                        { "image_text", new string[] {// Either null or 4 entries
-                            "Sale underway!\nDon't miss out!",
-                            "Jan 19 01:00 - Mar 31 04:59",
-                            "",
-                            ""
-                        }},
-                        { "is_coming_soon", false }
-                    }},
-                }*/
+                { "contents", new List<object>() {
+                    new Dictionary<string, object>()
+                    {
+                        { "tp", "H1" },
+                        { "text", new Dictionary<string, object>() { { lang,  "About" } } },
+                    },
+                    new Dictionary<string, object>()
+                    {
+                        { "tp", "Text" },
+                        { "text", new Dictionary<string, object>() { { lang,  "Experience \"Yu-Gi-Oh! Master Duel\" without an internet connection.\n\nProgress is not shared with your Steam account." } } },
+                        { "indent", -1 },
+                    },
+                    new Dictionary<string, object>()
+                    {
+                        { "tp", "H1" },
+                        { "text", new Dictionary<string, object>() { { lang,  "Documentation" } } },
+                    },
+                    new Dictionary<string, object>()
+                    {
+                        { "tp", "Text" },
+                        { "text", new Dictionary<string, object>() { { lang,  "https://github.com/pixeltris/YgoMaster" } } },
+                        { "indent", -1 },
+                    },
+                    new Dictionary<string, object>()
+                    {
+                        { "tp", "H1" },
+                        { "text", new Dictionary<string, object>() { { lang,  "Issues" } } },
+                    },
+                    new Dictionary<string, object>()
+                    {
+                        { "tp", "Text" },
+                        { "text", new Dictionary<string, object>() { { lang,  "https://github.com/pixeltris/YgoMaster/issues" } } },
+                        { "indent", -1 },
+                    },
+                }}
             };
+            if (ShowTopics)
+            {
+                request.Response["Topics"] = new List<object>()
+                {
+                    new Dictionary<string, object>() {
+                        { "sort", 1591200 },// 0 / 1591200 / omitted
+                        { "body", MiniJSON.Json.Serialize(body) },
+                        { "banner", new Dictionary<string, object>() {
+                            { "image", "Images/Notification/System/Notice001" },//{ "image", "Card/Images/Illust/<_CARD_ILLUST_>/4007" },
+                            { "pattern", TopicsBannerPatern.NOTIFY },
+                            { "image_text", new string[] {// Either null or 4 entries
+                                "YgoMaster",//"<color=#EEE>YgoMaster</color>",
+                                "",
+                                "",
+                                ""
+                            }},
+                            { "is_coming_soon", false }
+                        }},
+                    }
+                    /*new Dictionary<string, object>() {
+                        { "sort", 1591200 },// 0 / 1591200 / omitted
+                        { "body", @"{""buttons"":[{""label"":{""en_US"":""Purchase Gems""},""url"":""duel:push?GameMode=9"",""shortcut"":""Sub1""}],""contents"":[{""tp"":""H1"",""text"":{""en_US"":""To commemorate the game's release, we're currently having a special Gems sale!""}},{""tp"":""Text"",""text"":{""en_US"":""Check out the Purchase Gems page for an exclusive Gem Pack.nEach player can purchase up to 3.nThis is a deal you do not want to miss!""},""indent"":-1},{""tp"":""Spacer"",""size"":""M"",""indent"":-1},{""tp"":""Text"",""text"":{""en_US"":""<color=#00D2FF>*You can also go to the Purchase Gems page by pressing the Gem icon in the center of the top of the Home screen.</color>""},""indent"":-1}]}" },
+                        { "banner", new Dictionary<string, object>() {
+                            { "image", "Images/Notification/Shop/Gem001" },
+                            //{ "image", "" },
+                            { "pattern", TopicsBannerPatern.GEM },
+                            //{ "image_text", "" }
+                            { "image_text", new string[] {// Either null or 4 entries
+                                "Sale underway!\nDon't miss out!",
+                                "Jan 19 01:00 - Mar 31 04:59",
+                                "",
+                                ""
+                            }},
+                            { "is_coming_soon", false }
+                        }},
+                    }*/
+                };
+            }
+            else
+            {
+                request.Response["Topics"] = new object[0];// Required
+            }
             /*request.Response["Duelpass"] = new Dictionary<string, object>()
             {
                 { "season_id", 1 },

@@ -10,18 +10,18 @@ namespace YgoMaster
     /// </summary>
     enum TopicsBannerPatern
     {
-        NOTIFY = 1,
-        ACCESSORY,
-        PACK ,
-        GEM,
-        SPECIAL,
-        STANDARD,
-        EVENT,
-        DUELPASS,
-        MAINTENANCE,
-        UPDATE,
-        DUELLIVE,
-        STRUCTURE
+        NOTIFY = 1,// White text (middle)
+        ACCESSORY,// White text (bottom left) with faded blue line above
+        PACK,// Not sure, results in file error as a card id needs to be specified
+        GEM,// White text (middle left)
+        SPECIAL,// White text (bottom left) with faded white line above. Also 2 blank images (probably card pack / card id?)
+        STANDARD,// Orange text (low)
+        EVENT,// White text (middle) with white line underneath
+        DUELPASS,// Small white text (top left)
+        MAINTENANCE,// Orange text (middle)
+        UPDATE,// Black text (bottom middle)
+        DUELLIVE,// Small white text (bottom-ish middle)
+        STRUCTURE,// Not sure, result in file error as a card id needs to be specified
     }
 
     /// <summary>

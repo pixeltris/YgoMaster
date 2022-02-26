@@ -31,6 +31,7 @@ namespace YgoMaster
         public PlayerOrbPoints OrbPoints { get; private set; }
         public PlayerDuelState Duel { get; private set; }
 
+        public string Lang;// Temporary / not saved. Used to display topic text in "User.home"
         public int NextDeckUId = 1;
 
         public Player(uint code)

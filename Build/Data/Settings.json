@@ -2,6 +2,7 @@
     "ServerUrl": "http://localhost:4989/ygo",
     "ServerPollUrl": "http://localhost:4989/ygo/poll",
     "BindIP": "http://localhost:4989/",
+    "ShowTopics": true,
     "DeckSlots": 999,
     "UnlockAllCards": false,
     "UnlockAllItems": false,

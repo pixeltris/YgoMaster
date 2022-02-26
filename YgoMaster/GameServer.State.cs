@@ -73,6 +73,10 @@ namespace YgoMaster
         /// Solo rewards in the duel result screen are flagged as rare (gold box)
         /// </summary>
         bool SoloRewardsInDuelResultAreRare;
+        /// <summary>
+        /// Show information about YgoMaster in the topics panel on the home screen
+        /// </summary>
+        bool ShowTopics;
 
         void LoadSettings()
         {
@@ -146,6 +150,7 @@ namespace YgoMaster
             SoloRewardsInDuelResultAreRare = Utils.GetValue<bool>(values, "SoloRewardsInDuelResultAreRare");
             ProgressiveCardList = Utils.GetValue<bool>(values, "ProgressiveCardList");
             ProgressiveCardRarities = Utils.GetValue<bool>(values, "ProgressiveCardRarities");
+            ShowTopics = Utils.GetValue<bool>(values, "ShowTopics");
 
             CardRare = new Dictionary<int, int>();
             string cardListFile = Path.Combine(dataDirectory, "CardList.json");
