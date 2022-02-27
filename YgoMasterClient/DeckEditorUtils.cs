@@ -259,6 +259,7 @@ namespace YgomGame
         public static bool DeckEditorShowStats;
         public static int NumCards;
         public static int NumOwnedCards;
+        public static int NumOwnedCardsEstimate;
         public static int NumFilteredCards;
 
         static IntPtr currentInstance;
@@ -393,8 +394,30 @@ namespace YgomGame
             IntPtr cardsHavePtr = YgomSystem.Utility.ClientWork.GetByJsonPath("$.Cards.have");
             if (cardsHavePtr != IntPtr.Zero)
             {
-                IL2Dictionary<string, object> cardsHave = new IL2Dictionary<string, object>(cardsHavePtr);
-                NumOwnedCards = cardsHave.Count;
+                IL2Dictionary<string, object> cardsHaveIL2 = new IL2Dictionary<string, object>(cardsHavePtr);
+                int count = cardsHaveIL2.Count;
+                if (count != NumOwnedCardsEstimate)
+                {
+                    NumOwnedCardsEstimate = count;
+                    NumOwnedCards = 0;
+                    Dictionary<string, object> cardsHave = MiniJSON.Json.Deserialize(YgomMiniJSON.Json.Serialize(cardsHavePtr)) as Dictionary<string, object>;
+                    if (cardsHave != null)
+                    {
+                        foreach (KeyValuePair<string, object> entry in cardsHave)
+                        {
+                            int cardId;
+                            Dictionary<string, object> cardData = entry.Value as Dictionary<string, object>;
+                            if (int.TryParse(entry.Key, out cardId) && cardData != null)
+                            {
+                                int totalNum = YgoMaster.Utils.GetValue<int>(cardData, "tn");
+                                if (totalNum > 0)
+                                {
+                                    NumOwnedCards++;
+                                }
+                            }
+                        }
+                    }
+                }
             }
             else
             {
