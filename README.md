@@ -13,7 +13,7 @@ Offline Yu-Gi-Oh! Master Duel (PC)
 - YDK / YDKe support
 - Card collection stats / deck editor sub menu improvements
 
-[Some features can be modded into the live game (at your own risk).](LiveMods.md)
+[Some features can be modded into the live game (at your own risk).](Docs/LiveMods.md)
 
 ## Requirements
 
