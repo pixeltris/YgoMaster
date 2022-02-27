@@ -10,11 +10,14 @@ using IL2CPP;
 using YgoMasterClient;
 using System.Windows.Forms;
 using System.Globalization;
+using System.Security.Principal;
+using System.Diagnostics;
 
 namespace YgoMasterClient
 {
     public static class Program
     {
+        public static Random Rand = new Random();
         public static bool IsLive;
         public static bool RunConsole;
         public static string CurrentDir;// Path of where the current assembly is (YgoMasterClient.exe)
@@ -27,6 +30,24 @@ namespace YgoMasterClient
             bool success;
             if ((args.Length > 0 && args[0].ToLower() == "live") || !File.Exists("YgoMaster.exe"))
             {
+                using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+                {
+                    WindowsPrincipal principal = new WindowsPrincipal(identity);
+                    if (!principal.IsInRole(WindowsBuiltInRole.Administrator))
+                    {
+                        string path = Assembly.GetExecutingAssembly().Location;
+                        if (!File.Exists(path))
+                        {
+                            path = "YgoMasterClient.exe";
+                        }
+                        Process process = new Process();
+                        process.StartInfo.Arguments = "live";
+                        process.StartInfo.FileName = path;
+                        process.StartInfo.Verb = "runas";
+                        process.Start();
+                        return;
+                    }
+                }
                 success = GameLauncher.Launch(GameLauncherMode.Inject);
             }
             else
@@ -104,59 +125,42 @@ namespace YgoMasterClient
                 // All types with hooks must be initialized. It's also a good idea to initialize other types as there's an exception handler here
                 // NOTE: As more things are added here the load time will increase (the reflection code does a lot of linear lookups)
                 List<Type> nativeTypes = new List<Type>();
-                if (IsLive)
-                {
-                    // DeckEditorUtils
-                    nativeTypes.Add(typeof(YgomGame.Deck.DeckView));
-                    nativeTypes.Add(typeof(YgomGame.Deck.CardCollectionView));
-                    nativeTypes.Add(typeof(YgomGame.DeckEditViewController2));
-                    nativeTypes.Add(typeof(YgomGame.SubMenu.DeckEditSubMenuViewController));
-                    nativeTypes.Add(typeof(YgomGame.Menu.CommonDialogViewController));
-
-                    // Misc
-                    nativeTypes.Add(typeof(Win32Hooks));
-                    nativeTypes.Add(typeof(AssetHelper));
-                    nativeTypes.Add(typeof(YgomSystem.Utility.TextData));
-                    nativeTypes.Add(typeof(YgomSystem.Utility.ClientWork));
-                    nativeTypes.Add(typeof(YgomMiniJSON.Json));
-                }
-                else
-                {
-                    // DuelStarter
-                    nativeTypes.Add(typeof(YgomSystem.UI.ViewControllerManager));
-                    nativeTypes.Add(typeof(YgomGame.Room.RoomCreateViewController));
-                    nativeTypes.Add(typeof(YgomGame.DeckBrowser.DeckBrowserViewController));
-                    nativeTypes.Add(typeof(YgomSystem.UI.InfinityScroll.InfinityScrollView));
-                    nativeTypes.Add(typeof(YgomGame.Solo.SoloStartProductionViewController));
-                    nativeTypes.Add(typeof(YgomGame.Duel.EngineInitializerByServer));
-                    nativeTypes.Add(typeof(YgomSystem.Network.API));
-
-                    // DeckEditorUtils
-                    nativeTypes.Add(typeof(YgomGame.Deck.DeckView));
-                    nativeTypes.Add(typeof(YgomGame.Deck.CardCollectionView));
-                    nativeTypes.Add(typeof(YgomGame.DeckEditViewController2));
-                    nativeTypes.Add(typeof(YgomGame.SubMenu.DeckEditSubMenuViewController));
-                    nativeTypes.Add(typeof(YgomGame.Menu.CommonDialogViewController));
-
-                    // Misc
-                    nativeTypes.Add(typeof(Win32Hooks));
-                    nativeTypes.Add(typeof(AssetHelper));
-                    nativeTypes.Add(typeof(YgomGame.Utility.ItemUtil));
-                    nativeTypes.Add(typeof(YgomSystem.Utility.TextData));
-                    nativeTypes.Add(typeof(YgomSystem.Utility.ClientWork));
-                    nativeTypes.Add(typeof(YgomSystem.Network.ProtocolHttp));
-                    nativeTypes.Add(typeof(YgomSystem.LocalFileSystem.WindowsStorageIO));
-                    nativeTypes.Add(typeof(YgomSystem.LocalFileSystem.StandardStorageIO));
-                    nativeTypes.Add(typeof(YgomMiniJSON.Json));
-                    nativeTypes.Add(typeof(Steamworks.SteamAPI));
-                    nativeTypes.Add(typeof(Steamworks.SteamUtils));
-                }
+                // DuelStarter
+                nativeTypes.Add(typeof(YgomSystem.UI.ViewControllerManager));
+                nativeTypes.Add(typeof(YgomGame.Room.RoomCreateViewController));
+                nativeTypes.Add(typeof(YgomGame.DeckBrowser.DeckBrowserViewController));
+                nativeTypes.Add(typeof(YgomSystem.UI.InfinityScroll.InfinityScrollView));
+                nativeTypes.Add(typeof(YgomGame.Solo.SoloSelectChapterViewController));
+                nativeTypes.Add(typeof(YgomGame.Solo.SoloStartProductionViewController));
+                nativeTypes.Add(typeof(YgomGame.Duel.EngineInitializerByServer));
+                nativeTypes.Add(typeof(YgomSystem.Network.API));
+                nativeTypes.Add(typeof(YgomSystem.Network.Request));
+                nativeTypes.Add(typeof(YgomSystem.Network.RequestStructure));
+                // DeckEditorUtils
+                nativeTypes.Add(typeof(YgomGame.Deck.DeckView));
+                nativeTypes.Add(typeof(YgomGame.Deck.CardCollectionView));
+                nativeTypes.Add(typeof(YgomGame.DeckEditViewController2));
+                nativeTypes.Add(typeof(YgomGame.SubMenu.DeckEditSubMenuViewController));
+                nativeTypes.Add(typeof(YgomGame.Menu.CommonDialogViewController));
+                // Misc
+                nativeTypes.Add(typeof(Win32Hooks));
+                nativeTypes.Add(typeof(AssetHelper));
+                nativeTypes.Add(typeof(YgomGame.Utility.ItemUtil));
+                nativeTypes.Add(typeof(YgomSystem.Utility.TextData));
+                nativeTypes.Add(typeof(YgomSystem.Utility.ClientWork));
+                nativeTypes.Add(typeof(YgomSystem.Network.ProtocolHttp));
+                nativeTypes.Add(typeof(YgomSystem.LocalFileSystem.WindowsStorageIO));
+                nativeTypes.Add(typeof(YgomSystem.LocalFileSystem.StandardStorageIO));
+                nativeTypes.Add(typeof(YgomMiniJSON.Json));
+                nativeTypes.Add(typeof(Steamworks.SteamAPI));
+                nativeTypes.Add(typeof(Steamworks.SteamUtils));
                 foreach (Type type in nativeTypes)
                 {
                     System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
                 }
                 PInvoke.WL_EnableAllHooks(true);
 
+                bool changeWindowTitleOnLiveMod = false;
                 string clientSettingsFile = Path.Combine(ClientDataDir, "ClientSettings.json");
                 if (File.Exists(clientSettingsFile))
                 {
@@ -169,16 +173,31 @@ namespace YgoMasterClient
                         AssetHelper.ShouldDumpData = YgoMaster.Utils.GetValue<bool>(clientSettings, "AssetHelperDump");
                         AssetHelper.DisableFileErrorPopup = YgoMaster.Utils.GetValue<bool>(clientSettings, "AssetHelperDisableFileErrorPopup");
                         YgomGame.Solo.SoloStartProductionViewController.DuelStarterShowFirstPlayer = YgoMaster.Utils.GetValue<bool>(clientSettings, "DuelStarterShowFirstPlayer");
+                        YgomGame.Solo.SoloSelectChapterViewController.DuelStarterLiveChapterId = YgoMaster.Utils.GetValue<int>(clientSettings, "DuelStarterLiveChapterId");
                         YgomGame.Deck.DeckView.DeckEditorDisableLimits = YgoMaster.Utils.GetValue<bool>(clientSettings, "DeckEditorDisableLimits");
                         YgomGame.Deck.DeckView.DeckEditorConvertStyleRarity = YgoMaster.Utils.GetValue<bool>(clientSettings, "DeckEditorConvertStyleRarity");
                         YgomGame.DeckEditViewController2.DeckEditorShowStats = YgoMaster.Utils.GetValue<bool>(clientSettings, "DeckEditorShowStats");
+                        changeWindowTitleOnLiveMod = YgoMaster.Utils.GetValue<bool>(clientSettings, "ChangeWindowTitleOnLiveMod");
                     }
                 }
 
-                // Only needed on "live" as the incoming thread wont be the main thread
                 Win32Hooks.Invoke(delegate
                 {
+                    // Only needed on "live" as the incoming thread wont be the main thread
                     Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+
+                    // Modify the window title when running as "live" to indicate the game is modded
+                    if (changeWindowTitleOnLiveMod && IsLive)
+                    {
+                        Process process = Process.GetCurrentProcess();
+                        IntPtr windowHandle = process.MainWindowHandle;
+                        string windowTitle = process.MainWindowTitle;
+                        const string windowTitleSuffix = " - (modded)";
+                        if (windowHandle != IntPtr.Zero && !string.IsNullOrEmpty(windowTitle) && !windowTitle.Contains(windowTitleSuffix))
+                        {
+                            PInvoke.SetWindowTextW(windowHandle, windowTitle.TrimEnd() + windowTitleSuffix);
+                        }
+                    }
                 });
 
                 if (RunConsole)
@@ -428,7 +447,7 @@ namespace YgoMasterClient
                                                     {
                                                         try
                                                         {
-                                                            System.Diagnostics.Process.Start("explorer.exe", "/select, \"" + fullPath +"\"");
+                                                            Process.Start("explorer.exe", "/select, \"" + fullPath +"\"");
                                                         }
                                                         catch
                                                         {
@@ -757,6 +776,7 @@ namespace YgomSystem.Utility
     unsafe static class ClientWork
     {
         static IL2Class classInfo;
+        static IL2Method methodDeleteByJsonPath;
         static IL2Method methodUpdateJsonRaw;
         static IL2Method methodUpdateJson;
         static IL2Method methodUpdateValue;
@@ -767,11 +787,17 @@ namespace YgomSystem.Utility
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             classInfo = assembly.GetClass("ClientWork", "YgomSystem.Utility");
+            methodDeleteByJsonPath = classInfo.GetMethod("deleteByJsonPath");
             methodUpdateJsonRaw = classInfo.GetMethod("updateJson", x => x.GetParameters().Length == 1);
             methodUpdateJson = classInfo.GetMethod("updateJson", x => x.GetParameters().Length == 2);
             methodUpdateValue = classInfo.GetMethod("updateValue", x => x.GetParameters().Length == 3);
             methodGetByJsonPath = classInfo.GetMethod("getByJsonPath", x => x.GetParameters().Length == 1);
             methodGetStringByJsonPath = classInfo.GetMethod("getStringByJsonPath", x => x.GetParameters().Length == 2);
+        }
+
+        public static void DeleteByJsonPath(string jsonPath, bool keep = false)
+        {
+            methodDeleteByJsonPath.Invoke(new IntPtr[] { new IL2String(jsonPath).ptr, new IntPtr(&keep) });
         }
 
         public static void UpdateJson(string jsonString)
@@ -810,6 +836,10 @@ namespace YgomSystem.Utility
             }
             return YgomMiniJSON.Json.Serialize(obj.ptr);
         }
+        public static Dictionary<string, object> GetDict(string jsonPath)
+        {
+            return MiniJSON.Json.Deserialize(SerializePath(jsonPath)) as Dictionary<string, object>;
+        }
     }
 }
 
@@ -828,6 +858,10 @@ namespace YgomSystem.Network
 
         static ProtocolHttp()
         {
+            if (Program.IsLive)
+            {
+                return;
+            }
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             classInfo = assembly.GetClass("ProtocolHttp", "YgomSystem.Network");
             methodGetServerDefaultUrl = classInfo.GetMethod("GetServerDefaultUrl");
@@ -860,6 +894,10 @@ namespace YgomSystem.LocalFileSystem
 
         static WindowsStorageIO()
         {
+            if (Program.IsLive)
+            {
+                return;
+            }
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             classInfo = assembly.GetClass("WindowsStorageIO", "YgomSystem.LocalFileSystem");
             methodGetSteamUserDirectoryName = classInfo.GetMethod("GetSteamUserDirectoryName");
@@ -884,6 +922,10 @@ namespace YgomSystem.LocalFileSystem
 
         static StandardStorageIO()
         {
+            if (Program.IsLive)
+            {
+                return;
+            }
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             classInfo = assembly.GetClass("StandardStorageIO", "YgomSystem.LocalFileSystem");
             methodSetupStorageDirectory = classInfo.GetMethod("setupStorageDirectory");
@@ -984,6 +1026,10 @@ namespace Steamworks
 
         static SteamAPI()
         {
+            if (Program.IsLive)
+            {
+                return;
+            }
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp-firstpass");
             classInfo = assembly.GetClass("SteamAPI", "Steamworks");
             methodInit = classInfo.GetMethod("Init");
@@ -1039,6 +1085,10 @@ namespace Steamworks
 
         static SteamUtils()
         {
+            if (Program.IsLive)
+            {
+                return;
+            }
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp-firstpass");
             classInfo = assembly.GetClass("SteamUtils", "Steamworks");
             methodIsOverlayEnabled = classInfo.GetMethod("IsOverlayEnabled");

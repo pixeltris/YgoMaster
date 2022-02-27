@@ -79,7 +79,7 @@ namespace YgoMasterClient
         [DllImport("kernel32")]
         public static extern IntPtr GetModuleHandle(string lpModuleName);
 
-        [DllImport("user32")]
-        public static extern IntPtr SetWindowTextW(IntPtr hWnd, [MarshalAs(UnmanagedType.LPWStr)] string lpString);
+        [DllImport("user32", CharSet = CharSet.Unicode)]
+        public static extern IntPtr SetWindowTextW(IntPtr hWnd, string lpString);
     }
 }

@@ -10,8 +10,61 @@ using YgoMasterClient;
 using YgoMaster;
 using System.Reflection;
 
+// TODO:
+// Merge the live / non-live duel starters (they currently take a different code path). It would make sense to keep live and remove non-live.
+//  - live sends a regular "Duel.begin" with "Solo/SoloStartProduction" including the chapter id and then in the
+//    hook of "RequestStructure.Complete" it checks for the "Duel.begin" response and injects the custom duel data
+//  - non-live sends a regular "Duel.begin" with "Solo/SoloStartProduction" but modifies the request inside the
+//    hook of "YgomSystem.Network.API.Duel_begin" and inserts "duelStarterData" which contains the custom duel data which is
+//    then detected by the server and sent back to the client (with inserted random seed)
+
 namespace YgomGame.Solo
 {
+    static unsafe class SoloSelectChapterViewController
+    {
+        public static int DuelStarterLiveChapterId;
+        public static bool DuelStarterLiveNotLiveTest = false;
+
+        static IL2Field fieldChapterId;
+
+        delegate void Del_CallApiSoloStart(IntPtr thisPtr, IntPtr chapterData);
+        static Hook<Del_CallApiSoloStart> hookCallApiSoloStart;
+
+        static SoloSelectChapterViewController()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            IL2Class classInfo = assembly.GetClass("SoloSelectChapterViewController", "YgomGame.Solo");
+            IL2Class chapterClassInfo = classInfo.GetNestedType("Chapter");
+            fieldChapterId = chapterClassInfo.GetField("id");
+            IL2Class accessDialogClassInfo = classInfo.GetNestedType("AccessDialogManager").GetNestedType("AccessDialog");
+            hookCallApiSoloStart = new Hook<Del_CallApiSoloStart>(CallApiSoloStart, accessDialogClassInfo.GetMethod("CallApiSoloStart"));
+        }
+
+        static void CallApiSoloStart(IntPtr thisPtr, IntPtr chapterData)
+        {
+            if (chapterData != IntPtr.Zero)
+            {
+                if (fieldChapterId.GetValue(chapterData).GetValueRef<int>() == DuelStarterLiveChapterId)
+                {
+                    int clearStatus;
+                    string clearStatusStr = YgomSystem.Utility.ClientWork.SerializePath("$.Solo.cleared." +
+                        (DuelStarterLiveChapterId / 10000) + "." + DuelStarterLiveChapterId);
+                    if (!string.IsNullOrEmpty(clearStatusStr) && int.TryParse(clearStatusStr, out clearStatus) && clearStatus == 3)
+                    {
+                        IntPtr manager = YgomSystem.Menu.ContentViewControllerManager.GetManager();
+                        if (manager != IntPtr.Zero)
+                        {
+                            YgomGame.Room.RoomCreateViewController.IsNextInstanceHacked = true;
+                            YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "Room/RoomCreate");
+                            return;
+                        }
+                    }
+                }
+            }
+            hookCallApiSoloStart.Original(thisPtr, chapterData);
+        }
+    }
+
     static unsafe class SoloStartProductionViewController
     {
         public static bool DuelStarterShowFirstPlayer;
@@ -25,10 +78,6 @@ namespace YgomGame.Solo
 
         static SoloStartProductionViewController()
         {
-            if (Program.IsLive)
-            {
-                return;
-            }
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("SoloStartProductionViewController", "YgomGame.Solo");
             fieldStep = classInfo.GetField("step");
@@ -46,7 +95,7 @@ namespace YgomGame.Solo
                     DuelStarterFirstPlayer = settings.FirstPlayer;
                     if (DuelStarterFirstPlayer < 0)
                     {
-                        DuelStarterFirstPlayer = new Random().Next(2);
+                        DuelStarterFirstPlayer = Program.Rand.Next(2);
                     }
                     if (DuelStarterShowFirstPlayer)
                     {
@@ -87,10 +136,6 @@ namespace YgomSystem.Network
 
         static API()
         {
-            if (Program.IsLive)
-            {
-                return;
-            }
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("API", "YgomSystem.Network");
             hookDuel_begin = new Hook<Del_Duel_begin>(Duel_begin, classInfo.GetMethod("Duel_begin"));
@@ -105,13 +150,143 @@ namespace YgomSystem.Network
                 {
                     rule = new Dictionary<string, object>();
                 }
-                DuelSettings settings = new DuelSettings();
-                settings.CopyFrom(YgomGame.Room.RoomCreateViewController.Settings);
-                settings.FirstPlayer = YgomGame.Solo.SoloStartProductionViewController.DuelStarterFirstPlayer;
-                rule["duelStarterData"] = settings.ToDictionary();
+                if (Program.IsLive || YgomGame.Solo.SoloSelectChapterViewController.DuelStarterLiveNotLiveTest)
+                {
+                    // Remove entries not valid for practice duels
+                    rule.Remove("FirstPlayer");
+                }
+                else
+                {
+                    DuelSettings settings = new DuelSettings();
+                    settings.CopyFrom(YgomGame.Room.RoomCreateViewController.Settings);
+                    settings.FirstPlayer = YgomGame.Solo.SoloStartProductionViewController.DuelStarterFirstPlayer;
+                    rule["duelStarterData"] = settings.ToDictionary();
+                }
                 rulePtr = YgomMiniJSON.Json.Deserialize(MiniJSON.Json.Serialize(rule));
             }
             return hookDuel_begin.Original(rulePtr);
+        }
+    }
+
+    static unsafe class RequestStructure
+    {
+        static IL2Method methodGetCommand;
+
+        delegate void Del_Complete(IntPtr thisPtr);
+        static Hook<Del_Complete> hookComplete;
+
+        static RequestStructure()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            IL2Class classInfo = assembly.GetClass("NetworkMain").GetNestedType("RequestStructure");
+            methodGetCommand = classInfo.GetProperty("Command").GetGetMethod();
+            hookComplete = new Hook<Del_Complete>(Complete, classInfo.GetMethod("Complete"));
+        }
+
+        static void SetDuelRequiredDefaults(DuelSettings settings)
+        {
+            Dictionary<string, object> userProfile = YgomSystem.Utility.ClientWork.GetDict("$.User.profile");
+            if (userProfile != null)
+            {
+                if (string.IsNullOrEmpty(settings.name[0]))
+                {
+                    settings.name[0] = Utils.GetValue<string>(userProfile, "name");
+                }
+                if (settings.icon[0] <= 0)
+                {
+                    settings.icon[0] = Utils.GetValue<int>(userProfile, "icon_id");
+                }
+                if (settings.icon_frame[0] <= 0)
+                {
+                    settings.icon_frame[0] = Utils.GetValue<int>(userProfile, "icon_frame_id");
+                }
+                if (settings.avatar[0] <= 0)
+                {
+                    settings.avatar[0] = Utils.GetValue<int>(userProfile, "avatar_id");
+                }
+            }
+            if (settings.RandSeed == 0)
+            {
+                settings.RandSeed = (uint)Program.Rand.Next();
+            }
+            settings.SetRequiredDefaults();
+        }
+
+        static void Complete(IntPtr thisPtr)
+        {
+            if (YgomGame.Room.RoomCreateViewController.IsHacked)
+            {
+                IL2Object cmdObj = methodGetCommand.Invoke(thisPtr);
+                if (cmdObj != null)
+                {
+                    string cmd = cmdObj.GetValueObj<string>();
+                    switch (cmd)
+                    {
+                        case "Duel.begin":
+                            {
+                                if (Program.IsLive || YgomGame.Solo.SoloSelectChapterViewController.DuelStarterLiveNotLiveTest)
+                                {
+                                    DuelSettings settings = new DuelSettings();
+                                    settings.CopyFrom(YgomGame.Room.RoomCreateViewController.Settings);
+                                    settings.FirstPlayer = YgomGame.Solo.SoloStartProductionViewController.DuelStarterFirstPlayer;
+                                    SetDuelRequiredDefaults(settings);
+                                    YgomSystem.Utility.ClientWork.DeleteByJsonPath("Duel");
+                                    YgomSystem.Utility.ClientWork.UpdateJson(MiniJSON.Json.Serialize(new Dictionary<string, object>()
+                                    {
+                                        { "Duel", settings.ToDictionary() }
+                                    }));
+                                }
+                            }
+                            break;
+                        case "Solo.start":
+                            {
+                                DuelSettings settings = new DuelSettings();
+                                settings.CopyFrom(YgomGame.Room.RoomCreateViewController.Settings);
+                                SetDuelRequiredDefaults(settings);
+                                YgomSystem.Utility.ClientWork.DeleteByJsonPath("Duel");
+                                YgomSystem.Utility.ClientWork.UpdateJson(MiniJSON.Json.Serialize(new Dictionary<string, object>()
+                                {
+                                    { "Duel", settings.ToDictionaryForSoloStart() }
+                                }));
+
+                                // Open the duel loading screen (the client will automatically send "Duel.begin")
+                                IntPtr manager = YgomSystem.Menu.ContentViewControllerManager.GetManager();
+                                if (Program.IsLive || YgomGame.Solo.SoloSelectChapterViewController.DuelStarterLiveNotLiveTest)
+                                {
+                                    Dictionary<string, object> args = new Dictionary<string, object>()
+                                    {
+                                        { "chapter", YgomGame.Solo.SoloSelectChapterViewController.DuelStarterLiveChapterId }
+                                    };
+                                    YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "Solo/SoloStartProduction", args);
+                                }
+                                else
+                                {
+                                    YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "Solo/SoloStartProduction");
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
+            hookComplete.Original(thisPtr);
+        }
+    }
+
+    static unsafe class Request
+    {
+        static IL2Method methodEntry;
+
+        static Request()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            IL2Class requestClassInfo = assembly.GetClass("Request", "YgomSystem.Network");
+            methodEntry = requestClassInfo.GetMethod("Entry");
+        }
+
+        public static IntPtr Entry(string command, string param, float timeout = 30)
+        {
+            IL2Object result = methodEntry.Invoke(new IntPtr[] { new IL2String(command).ptr, YgomMiniJSON.Json.Deserialize(param), new IntPtr(&timeout) });
+            return result != null ? result.ptr : IntPtr.Zero;
         }
     }
 }
@@ -130,10 +305,6 @@ namespace YgomGame.Duel
 
         static EngineInitializerByServer()
         {
-            if (Program.IsLive)
-            {
-                return;
-            }
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("EngineInitializerByServer", "YgomGame.Duel");
             hookget_rivalType = new Hook<Del_get_rivalType>(get_rivalType, classInfo.GetProperty("rivalType").GetGetMethod());
@@ -211,10 +382,6 @@ namespace YgomGame.Room
 
         static RoomCreateViewController()
         {
-            if (Program.IsLive)
-            {
-                return;
-            }
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             ClassInfo = assembly.GetClass("RoomCreateViewController", "YgomGame.Room");
             hookOnCreatedView = new Hook<Del_OnCreatedView>(OnCreatedView, ClassInfo.GetMethod("OnCreatedView"));
@@ -276,17 +443,8 @@ namespace YgomGame.Room
                 // Update the duel settings
                 duelSettingsManager.DuelSettingsFromUI();
 
-                // For some reason various duel data needs to be pre-set (in similar way to "Solo.start")
-                DuelSettings settings = new DuelSettings();
-                settings.CopyFrom(duelSettingsManager.Settings);
-                settings.SetRequiredDefaults();
-                YgomSystem.Utility.ClientWork.UpdateJson(MiniJSON.Json.Serialize(new Dictionary<string, object>()
-                {
-                    { "Duel", settings.ToDictionaryForSoloStart() }
-                }));
-
-                IntPtr manager = YgomSystem.Menu.ContentViewControllerManager.GetManager();
-                YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "Solo/SoloStartProduction");
+                YgomSystem.Network.Request.Entry("Solo.start", "{\"chapter\":" +
+                    YgomGame.Solo.SoloSelectChapterViewController.DuelStarterLiveChapterId + "}");
             }
             else
             {
@@ -1019,10 +1177,6 @@ namespace YgomGame.DeckBrowser
 
         static DeckBrowserViewController()
         {
-            if (Program.IsLive)
-            {
-                return;
-            }
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("DeckBrowserViewController", "YgomGame.DeckBrowser");
             hookSelectDeck = new Hook<Del_SelectDeck>(SelectDeck, classInfo.GetMethod("SelectDeck"));
@@ -1230,10 +1384,6 @@ namespace YgomSystem.UI.InfinityScroll
 
         static InfinityScrollView()
         {
-            if (Program.IsLive)
-            {
-                return;
-            }
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("InfinityScrollView", "YgomSystem.UI.InfinityScroll");
             hookUpdateData = new Hook<Del_UpdateData>(UpdateData, classInfo.GetMethod("UpdateData"));

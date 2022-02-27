@@ -87,6 +87,23 @@ namespace YgoMasterClient
                 {
                     if (processes.Length == 1)
                     {
+                        foreach (ProcessModule module in processes[0].Modules)
+                        {
+                            try
+                            {
+                                if (!string.IsNullOrEmpty(module.ModuleName))
+                                {
+                                    if (module.ModuleName.Equals(loaderDll, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        System.Windows.Forms.MessageBox.Show("Already injected");
+                                        return true;
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                            }
+                        }
                         if (!DllInjector.Inject(processes[0].Handle, dllPath))
                         {
                             System.Windows.Forms.MessageBox.Show("Inject failed");
@@ -94,7 +111,7 @@ namespace YgoMasterClient
                     }
                     else
                     {
-                        System.Windows.Forms.MessageBox.Show("Couldn't find masterduel");
+                        System.Windows.Forms.MessageBox.Show("Process '" + targetProcessName + "' not found (or multiple)");
                     }
                 }
                 finally

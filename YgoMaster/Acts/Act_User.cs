@@ -138,7 +138,7 @@ namespace YgoMaster
                     new Dictionary<string, object>()
                     {
                         { "tp", "Text" },
-                        { "text", new Dictionary<string, object>() { { lang,  "Experience \"Yu-Gi-Oh! Master Duel\" without an internet connection.\n\nProgress is not shared with your Steam account." } } },
+                        { "text", new Dictionary<string, object>() { { lang,  "Play \"Yu-Gi-Oh! Master Duel\" without an internet connection.\n\nProgress is not shared with the live game." } } },
                         { "indent", -1 },
                     },
                     new Dictionary<string, object>()

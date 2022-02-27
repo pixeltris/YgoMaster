@@ -8,4 +8,6 @@
     "DeckEditorConvertStyleRarity": true,
     "DeckEditorShowStats": true,
     "DuelStarterShowFirstPlayer": true,
+    "DuelStarterLiveChapterId": 10002,
+    "ChangeWindowTitleOnLiveMod": true,
 }

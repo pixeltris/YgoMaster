@@ -497,6 +497,7 @@ namespace YgomGame.SubMenu
             SubMenuViewController.AddMenuItem(thisPtr, "Save file", OnSave);
             SubMenuViewController.AddMenuItem(thisPtr, "Open decks folder", OnOpenDecksFolder);
             SubMenuViewController.AddMenuItem(thisPtr, "Clear deck", OnClear);
+            SubMenuViewController.AddMenuItem(thisPtr, "Card collection stats", OnCardCollectionStats);
         }
 
         static void LoadDeckFromFile(string path)
@@ -718,6 +719,161 @@ namespace YgomGame.SubMenu
             {
                 YgomGame.Menu.CommonDialogViewController.OpenErrorDialog("Error", "Failed to find / create decks folder", "OK", null);
             }
+        };
+
+        static string GetPercentStr(int num, int owned)
+        {
+            string valStr = "100";
+            if (owned == 0)
+            {
+                valStr = "0";
+            }
+            else if (owned < num)
+            {
+                valStr = (((double)owned / (double)num) * 100.0).ToString("N2");
+            }
+            return " (" + valStr + "%)";
+        }
+
+        static Action OnCardCollectionStats = () =>
+        {
+            // TODO: Add section at the end of the dialog which states the number of cards which can / cannot be dismantled?
+
+            // TODO: Change these to Dictionary<YgoMaster.CardRarity, int>
+            int numCards = 0;
+            int numCardsN = 0, numCardsR = 0, numCardsSR = 0, numCardsUR = 0;
+            
+            int numOwned = 0;
+            int numOwnedN = 0, numOwnedR = 0, numOwnedSR = 0, numOwnedUR = 0;
+
+            int numOwnedDup = 0;
+            int numOwnedDupN = 0, numOwnedDupR = 0, numOwnedDupSR = 0, numOwnedDupUR = 0;
+
+            int numOwnedExtra = 0;
+            int numOwnedExtraN = 0, numOwnedExtraR = 0, numOwnedExtraSR = 0, numOwnedExtraUR = 0;
+
+            int numOwnedTotal = 0;
+
+            Dictionary<string, object> cardRare = MiniJSON.Json.Deserialize(YgomSystem.Utility.ClientWork.SerializePath("$.Master.CardRare")) as Dictionary<string, object>;
+            if (cardRare != null)
+            {
+                foreach (KeyValuePair<string, object> entry in cardRare)
+                {
+                    int cardId;
+                    if (int.TryParse(entry.Key, out cardId))
+                    {
+                        YgoMaster.CardRarity rarity = (YgoMaster.CardRarity)(int)Convert.ChangeType(entry.Value, typeof(int));
+                        switch (rarity)
+                        {
+                            case YgoMaster.CardRarity.Normal:
+                                numCards++;
+                                numCardsN++;
+                                break;
+                            case YgoMaster.CardRarity.Rare:
+                                numCards++;
+                                numCardsR++;
+                                break;
+                            case YgoMaster.CardRarity.SuperRare:
+                                numCards++;
+                                numCardsSR++;
+                                break;
+                            case YgoMaster.CardRarity.UltraRare:
+                                numCards++;
+                                numCardsUR++;
+                                break;
+                        }
+                    }
+                }
+            }
+            Dictionary<string, object> cardsHave = MiniJSON.Json.Deserialize(YgomSystem.Utility.ClientWork.SerializePath("$.Cards.have")) as Dictionary<string, object>;
+            if (cardsHave != null)
+            {
+                foreach (KeyValuePair<string, object> entry in cardsHave)
+                {
+                    int cardId;
+                    Dictionary<string, object> cardData = entry.Value as Dictionary<string, object>;
+                    if (int.TryParse(entry.Key, out cardId) && cardData != null)
+                    {
+                        int totalNum = YgoMaster.Utils.GetValue<int>(cardData, "tn");
+                        if (totalNum > 0)
+                        {
+                            YgoMaster.CardRarity rarity = (YgoMaster.CardRarity)YgoMaster.Utils.GetValue<int>(cardRare, entry.Key);
+                            switch (rarity)
+                            {
+                                case YgoMaster.CardRarity.Normal:
+                                    numOwned++;
+                                    numOwnedN++;
+                                    numOwnedDup += Math.Min(3, totalNum);
+                                    numOwnedDupN += Math.Min(3, totalNum);
+                                    numOwnedExtra += Math.Max(0, totalNum - 3);
+                                    numOwnedExtraN += Math.Max(0, totalNum - 3);
+                                    numOwnedTotal += totalNum;
+                                    break;
+                                case YgoMaster.CardRarity.Rare:
+                                    numOwned++;
+                                    numOwnedR++;
+                                    numOwnedDup += Math.Min(3, totalNum);
+                                    numOwnedDupR += Math.Min(3, totalNum);
+                                    numOwnedExtra += Math.Max(0, totalNum - 3);
+                                    numOwnedExtraR += Math.Max(0, totalNum - 3);
+                                    numOwnedTotal += totalNum;
+                                    break;
+                                case YgoMaster.CardRarity.SuperRare:
+                                    numOwned++;
+                                    numOwnedSR++;
+                                    numOwnedDup += Math.Min(3, totalNum);
+                                    numOwnedDupSR += Math.Min(3, totalNum);
+                                    numOwnedExtra += Math.Max(0, totalNum - 3);
+                                    numOwnedExtraSR += Math.Max(0, totalNum - 3);
+                                    numOwnedTotal += totalNum;
+                                    break;
+                                case YgoMaster.CardRarity.UltraRare:
+                                    numOwned++;
+                                    numOwnedUR++;
+                                    numOwnedDup += Math.Min(3, totalNum);
+                                    numOwnedDupUR += Math.Min(3, totalNum);
+                                    numOwnedExtra += Math.Max(0, totalNum - 3);
+                                    numOwnedExtraUR += Math.Max(0, totalNum - 3);
+                                    numOwnedTotal += totalNum;
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // NOTE: Removed percentages on the card pool. It's nice to have, but confusing relative to the other percentages.
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Owned total: " + numOwnedTotal);
+            sb.AppendLine("");
+            sb.AppendLine("[Card pool]");
+            sb.AppendLine("Total: " + numCards);
+            sb.AppendLine("N: " + numCardsN);// + GetPercentStr(numCards, numCardsN));
+            sb.AppendLine("R: " + numCardsR);// + GetPercentStr(numCards, numCardsR));
+            sb.AppendLine("SR: " + numCardsSR);// + GetPercentStr(numCards, numCardsSR));
+            sb.AppendLine("UR: " + numCardsUR);// + GetPercentStr(numCards, numCardsUR));
+            sb.AppendLine("");
+            sb.AppendLine("[Owned cards (1x)]");
+            sb.AppendLine("Total: " + numOwned + GetPercentStr(numCards, numOwned));
+            sb.AppendLine("N: " + numOwnedN + GetPercentStr(numCardsN, numOwnedN));
+            sb.AppendLine("R: " + numOwnedR + GetPercentStr(numCardsR, numOwnedR));
+            sb.AppendLine("SR: " + numOwnedSR + GetPercentStr(numCardsSR, numOwnedSR));
+            sb.AppendLine("UR: " + numOwnedUR + GetPercentStr(numCardsUR, numOwnedUR));
+            sb.AppendLine("");
+            sb.AppendLine("[Owned cards (up to 3x)]");
+            sb.AppendLine("Total: " + numOwnedDup + GetPercentStr(numCards * 3, numOwnedDup));
+            sb.AppendLine("N: " + numOwnedDupN + GetPercentStr(numCardsN * 3, numOwnedDupN));
+            sb.AppendLine("R: " + numOwnedDupR + GetPercentStr(numCardsR * 3, numOwnedDupR));
+            sb.AppendLine("SR: " + numOwnedDupSR + GetPercentStr(numCardsSR * 3, numOwnedDupSR));
+            sb.AppendLine("UR: " + numOwnedDupUR + GetPercentStr(numCardsUR * 3, numOwnedDupUR));
+            sb.AppendLine("");
+            sb.AppendLine("[Extra cards (over 3x)]");
+            sb.AppendLine("Total: " + numOwnedExtra);
+            sb.AppendLine("N: " + numOwnedExtraN);
+            sb.AppendLine("R: " + numOwnedExtraR);
+            sb.AppendLine("SR: " + numOwnedExtraSR);
+            sb.AppendLine("UR: " + numOwnedExtraUR);
+            YgomGame.Menu.CommonDialogViewController.OpenConfirmationDialogScroll("Card collection info", sb.ToString(), "OK", null, null, true, 720);
         };
 
         static void PopViewController()

@@ -193,6 +193,10 @@ namespace YgoMaster
             {
                 Regulation = MiniJSON.Json.DeserializeStripped(File.ReadAllText(cardBanListFile)) as Dictionary<string, object>;
             }
+            if (Utils.GetValue<bool>(values, "DisableBanList"))
+            {
+                Regulation.Clear();
+            }
 
             Craft = new CraftInfo();
             Craft.FromDictionary(Utils.GetValue(values, "Craft", default(Dictionary<string, object>)));

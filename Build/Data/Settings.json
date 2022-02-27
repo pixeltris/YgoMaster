@@ -13,6 +13,7 @@
     "SoloRewardsInDuelResult": false,
     "SoloRewardsInDuelResultAreRare": false,
     "CardCratableAll": false,
+    "DisableBanList": false,
     "ProgressiveCardList": false,
     "ProgressiveCardRarities": false,
     "DefaultGems": 2000,
@@ -27,11 +28,12 @@
         //1120001,// Starting Deck (STRUCTURE)
     ],
     "Craft": {
-        "CraftPointRollover": {
-           "Normal": { "at": 1000, "take": 500, "give": 30 },
-           "Rare": { "at": 1000, "take": 500, "give": 30 },
-           "SuperRare": { "at": 1000, "take": 500, "give": 30 }
-        },
+        // Disabled craft point rollover (as this isn't something in the normal game)
+        //"CraftPointRollover": {
+        //   "Normal": { "at": 1000, "take": 500, "give": 30 },
+        //   "Rare": { "at": 1000, "take": 500, "give": 30 },
+        //   "SuperRare": { "at": 1000, "take": 500, "give": 30 }
+        //},
         "Craft": {
             // Cost of crafting cards
             "Normal": {

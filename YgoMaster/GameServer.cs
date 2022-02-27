@@ -37,7 +37,7 @@ namespace YgoMaster
                     }
                     catch
                     {
-                        Console.WriteLine("[ERROR] Failed to bind to " + bindIP + " (try running as admin)");
+                        Console.WriteLine("[ERROR] Failed to bind to " + bindIP + " (ensure the program isn't already running, or try running as admin)");
                         return;
                     }
                     Console.WriteLine("Initialized");

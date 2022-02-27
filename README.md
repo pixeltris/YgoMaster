@@ -2,32 +2,59 @@
 
 Offline Yu-Gi-Oh! Master Duel (PC)
 
-## Screenshots
-
-![Alt text](Docs/ss1.png)
-![Alt text](Docs/ss2.png)
-![Alt text](Docs/ss3.png)
-![Alt text](Docs/ss4.png)
+*Online (PvP) functionality is not implemented. Progress is not shared with the live game.*
 
 ## Features
 
 - Create decks
 - Open packs
 - Solo content
-- Custom duels (by replacing the first chapter - see `CustomDuel.json`)
-- ydk support
+- Custom duels
+- YDK / YDKe support
+- Card collection stats / deck editor sub menu improvements
 
-Online functionality is not implemented.
+[Some features can be modded into the live game (at your own risk).](LiveMods.md)
+
+## Requirements
+
+- .NET Framework 4.0 (or above).
+- The game fully downloaded via Steam (~5GB).
+
+*You must complete the tutorial on Steam to fully download the game.*
+
+*YgoMaster is portable. It can be used on any machine without Steam installed (after being fully downloaded).*
 
 ## Usage
 
-Compile `YgoMaster.sln` and `YgoMasterLoader.cpp` (for the cpp read the top of the file).
+- Download the latest release from https://github.com/pixeltris/YgoMaster/releases
+- Copy the `Build` folder (the folder, not the contents of the folder) into the game folder.
+- Run `YgoMaster.exe` / `YgoMasterClient.exe`.
+- In the game settings change the language to match the language set via Steam.
 
-Copy the `Build` folder (the folder, not the contents of the folder) into the game folder and run `YgoMaster.exe` / `YgoMasterClient.exe`.
+Additionally...
 
-*You need to fully download the game via Steam and use the same language setting as set on there. If these requirements aren't met you'll get a popup with the text "FILE LOAD ERROR".*
+- [It's recommended that you tailor the server settings to your preferences.](Docs/Settings.md)
+- The custom duel starter UI can be accessed via the DUEL button on the home screen.
+- If you see `FILE LOAD ERROR` (or other popups) [follow these instructions](Docs/FileLoadError.md).
+
+## Compiling from source
+
+- Compile `YgoMaster.sln` with Visual Studio.
+- Compile `YgoMasterLoader/YgoMasterLoader.cpp` with `cl` (read the top of the cpp file).
+- Copy the `Build` folder into the game folder as mentioned above.
+
+*Do not run `YgoMaster` from Visual Studio. Run it from the `Build` folder directly (or set the debugger working directory to point to it).*
 
 ## Related
 
 - https://github.com/SethPDA/MasterDuel-Modding/wiki
 - https://www.nexusmods.com/yugiohmasterduel/mods
+
+## Screenshots
+
+![Alt text](Docs/Pics/ss1.png)
+![Alt text](Docs/Pics/ss2.png)
+![Alt text](Docs/Pics/ss3.png)
+![Alt text](Docs/Pics/ss4.png)
+![Alt text](Docs/Pics/ss5.png)
+![Alt text](Docs/Pics/ss6.png)
