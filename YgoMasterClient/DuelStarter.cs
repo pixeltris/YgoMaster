@@ -44,7 +44,8 @@ namespace YgomGame.Solo
         {
             if (chapterData != IntPtr.Zero)
             {
-                if (fieldChapterId.GetValue(chapterData).GetValueRef<int>() == DuelStarterLiveChapterId)
+                if (fieldChapterId.GetValue(chapterData).GetValueRef<int>() == DuelStarterLiveChapterId &&
+                    (Program.IsLive || DuelStarterLiveNotLiveTest))
                 {
                     int clearStatus;
                     string clearStatusStr = YgomSystem.Utility.ClientWork.SerializePath("$.Solo.cleared." +
