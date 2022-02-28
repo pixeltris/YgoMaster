@@ -81,4 +81,4 @@ There are currently issues with the custom content loader. It eats ram with larg
 
 An alternative to this is manually creating unity files and placing them in the right location. Setting `ShowConsole` / `AssetHelperLog` to true in `ClientSettings.json` can be used to find files, and the command `crc` to locate where a file should be placed on disk from it's input path. `AssetHelperDump` will also dump image files into `/Data/ClientDataDump/` as they are loaded.
 
-![Alt text](Docs/Pics/ImportedCard.png)
+![Alt text](Pics/ImportedCard.png)
