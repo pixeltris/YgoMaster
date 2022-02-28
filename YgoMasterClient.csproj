@@ -55,6 +55,7 @@
     <Compile Include="YgoMasterClient\ConsoleHelper.cs" />
     <Compile Include="YgoMasterClient\CRC32.cs" />
     <Compile Include="YgoMasterClient\DelegateHelper.cs" />
+    <Compile Include="YgoMasterClient\DuelClientUtils.cs" />
     <Compile Include="YgoMasterClient\GameLauncher.cs" />
     <Compile Include="YgoMasterClient\Hook.cs" />
     <Compile Include="YgoMasterClient\IL2CPP\Assembler.cs" />

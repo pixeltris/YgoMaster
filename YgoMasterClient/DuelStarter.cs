@@ -299,7 +299,7 @@ namespace YgomSystem.Network
 // This is bugged unfortunately. While you can force control of the opponent, the client doesn't handle it properly
 // - Cannot see opponents cards
 // - Cannot change phases
-// - Deck does some weird drawing thing
+// - Deck does some weird card draw thing
 // - Drawn card is positioned incorrectly (empty space in hand)
 namespace YgomGame.Duel
 {

@@ -9,5 +9,6 @@
     "DeckEditorShowStats": true,
     "DuelStarterShowFirstPlayer": true,
     "DuelStarterLiveChapterId": 10002,
+    "DuelClientShowRemainingCardsInDeck": false,
     "ChangeWindowTitleOnLiveMod": true,
 }

@@ -51,7 +51,7 @@ namespace IL2CPP
                 {
                     methodItemSet = Instance_Class.GetProperty("Item").GetSetMethod();
                 }
-                methodItemSet.Invoke(ptr, new IntPtr[] { new IntPtr(&index), value });
+                methodItemSet.Invoke(ptr, new IntPtr[] { new IntPtr(&index), value, methodItemSet.ptr });
             }*/
         }
 
@@ -66,7 +66,7 @@ namespace IL2CPP
             {
                 methodItemSet = Instance_Class.GetProperty("Item").GetSetMethod();
             }
-            methodItemSet.Invoke(ptr, new IntPtr[] { new IntPtr(&index), value });
+            methodItemSet.Invoke(ptr, new IntPtr[] { new IntPtr(&index), value, methodItemSet.ptr });
         }
 
         private static IL2Method methodClear;

@@ -125,6 +125,10 @@ namespace YgoMasterClient
                 // All types with hooks must be initialized. It's also a good idea to initialize other types as there's an exception handler here
                 // NOTE: As more things are added here the load time will increase (the reflection code does a lot of linear lookups)
                 List<Type> nativeTypes = new List<Type>();
+                // DuelClientUtils
+                nativeTypes.Add(typeof(YgomGame.Duel.Engine));
+                nativeTypes.Add(typeof(YgomGame.Duel.EngineApiUtil));
+                nativeTypes.Add(typeof(YgomGame.Duel.GenericCardListController));
                 // DuelStarter
                 nativeTypes.Add(typeof(YgomGame.Menu.ContentViewControllerManager));
                 nativeTypes.Add(typeof(YgomGame.Menu.BaseMenuViewController));
@@ -179,6 +183,7 @@ namespace YgoMasterClient
                         YgomGame.Deck.DeckView.DeckEditorDisableLimits = YgoMaster.Utils.GetValue<bool>(clientSettings, "DeckEditorDisableLimits");
                         YgomGame.Deck.DeckView.DeckEditorConvertStyleRarity = YgoMaster.Utils.GetValue<bool>(clientSettings, "DeckEditorConvertStyleRarity");
                         YgomGame.DeckEditViewController2.DeckEditorShowStats = YgoMaster.Utils.GetValue<bool>(clientSettings, "DeckEditorShowStats");
+                        YgomGame.Duel.GenericCardListController.DuelClientShowRemainingCardsInDeck = YgoMaster.Utils.GetValue<bool>(clientSettings, "DuelClientShowRemainingCardsInDeck");
                         changeWindowTitleOnLiveMod = YgoMaster.Utils.GetValue<bool>(clientSettings, "ChangeWindowTitleOnLiveMod");
                     }
                 }
