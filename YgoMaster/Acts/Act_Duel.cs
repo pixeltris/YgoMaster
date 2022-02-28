@@ -191,6 +191,10 @@ namespace YgoMaster
                     {
                         duelSettings.RandSeed = (uint)rand.Next();
                     }
+                    if (duelSettings.bgms.Count == 0)
+                    {
+                        duelSettings.SetRandomBgm(rand);
+                    }
                     request.Response["Duel"] = duelSettings.ToDictionary();
                 }
             }

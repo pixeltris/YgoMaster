@@ -901,7 +901,7 @@ namespace YgomGame.SubMenu
 
         static void PopViewController()
         {
-            IntPtr manager = YgomSystem.Menu.ContentViewControllerManager.GetManager();
+            IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
             IntPtr view = YgomSystem.UI.ViewControllerManager.GetViewController(manager, classInfo.IL2Typeof());
             if (view != IntPtr.Zero)
             {

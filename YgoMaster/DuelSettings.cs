@@ -81,6 +81,7 @@ namespace YgoMaster
             Auto = -1;
             surrender = true;
             MyPartnerType = 1;
+            cpu = int.MaxValue;
 
             foreach (PropertyInfo property in GetType().GetProperties())
             {
@@ -107,6 +108,33 @@ namespace YgoMaster
             {
                 Deck[i] = new DeckInfo();
             }
+        }
+
+        public int GetBgmValue()
+        {
+            if (bgms != null && bgms.Count > 0)
+            {
+                int value;
+                int.TryParse(bgms[0].Trim().Split('_').Last(), out value);
+                return value;
+            }
+            return 0;
+        }
+
+        public void BgmsFromValue(int value)
+        {
+            bgms.Clear();
+            if (value > 0)
+            {
+                bgms.Add("BGM_DUEL_NORMAL_" + value.ToString().PadLeft(2, '0'));
+                bgms.Add("BGM_DUEL_KEYCARD_" + value.ToString().PadLeft(2, '0'));
+                bgms.Add("BGM_DUEL_CLIMAX_" + value.ToString().PadLeft(2, '0'));
+            }
+        }
+
+        public void SetRandomBgm(Random rand)
+        {
+            BgmsFromValue(rand.Next(1, (8 + 1)));
         }
 
         public void SetRequiredDefaults()

@@ -52,7 +52,7 @@ namespace YgomGame.Solo
                         (DuelStarterLiveChapterId / 10000) + "." + DuelStarterLiveChapterId);
                     if (!string.IsNullOrEmpty(clearStatusStr) && int.TryParse(clearStatusStr, out clearStatus) && clearStatus == 3)
                     {
-                        IntPtr manager = YgomSystem.Menu.ContentViewControllerManager.GetManager();
+                        IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
                         if (manager != IntPtr.Zero)
                         {
                             YgomGame.Room.RoomCreateViewController.IsNextInstanceHacked = true;
@@ -210,6 +210,10 @@ namespace YgomSystem.Network
             {
                 settings.RandSeed = (uint)Program.Rand.Next();
             }
+            if (settings.bgms.Count == 0)
+            {
+                settings.SetRandomBgm(Program.Rand);
+            }
             settings.SetRequiredDefaults();
         }
 
@@ -251,7 +255,7 @@ namespace YgomSystem.Network
                                 }));
 
                                 // Open the duel loading screen (the client will automatically send "Duel.begin")
-                                IntPtr manager = YgomSystem.Menu.ContentViewControllerManager.GetManager();
+                                IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
                                 if (Program.IsLive || YgomGame.Solo.SoloSelectChapterViewController.DuelStarterLiveNotLiveTest)
                                 {
                                     Dictionary<string, object> args = new Dictionary<string, object>()
@@ -368,12 +372,16 @@ namespace YgomGame.Room
             {
                 if (activeViewController != IntPtr.Zero)
                 {
-                    IntPtr manager = YgomSystem.Menu.ContentViewControllerManager.GetManager();
+                    IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
                     IntPtr roomView = YgomSystem.UI.ViewControllerManager.GetViewController(manager, YgomGame.Room.RoomCreateViewController.ClassInfo.IL2Typeof());
                     return roomView != IntPtr.Zero && roomView == activeViewController;
                 }
                 return false;
             }
+        }
+        public static IntPtr HackedInstance
+        {
+            get { return activeViewController; }
         }
 
         public static DuelSettings Settings
@@ -427,6 +435,15 @@ namespace YgomGame.Room
             IntPtr duelStartButtonTextObj = UnityEngine.GameObject.FindGameObjectByName(duelStartButtonObj, "TextTMP");
             IntPtr duelStartButtonTextComponent = UnityEngine.GameObject.GetComponent(duelStartButtonTextObj, bindingTextType);
             YgomSystem.UI.BindingTextMeshProUGUI.SetTextId(duelStartButtonTextComponent, duelSettingsManager.ButtonText);
+        }
+
+        public static void NotificationStackRemove(IntPtr thisPtr)
+        {
+            if (activeViewController == thisPtr)
+            {
+                duelSettingsManager.DuelSettingsFromUI();
+                activeViewController = IntPtr.Zero;
+            }
         }
 
         static void SetData(IntPtr thisPtr)
@@ -531,9 +548,9 @@ namespace YgomGame.Room
 
         public static void OnUpdateData(IntPtr isv)
         {
-            if (IsHacked && isv == activeViewController)
+            if (IsHacked)
             {
-                IntPtr manager = YgomSystem.Menu.ContentViewControllerManager.GetManager();
+                IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
                 IntPtr roomView = YgomSystem.UI.ViewControllerManager.GetViewController(manager, YgomGame.Room.RoomCreateViewController.ClassInfo.IL2Typeof());
                 if (roomView != IntPtr.Zero && fieldIsv.GetValue(roomView).ptr == isv)
                 {
@@ -559,6 +576,7 @@ namespace YgomGame.Room
                 public IntPtr FieldPart2; public IntPtr Mate1; public IntPtr Mate2; public IntPtr MateBase1; public IntPtr MateBase2;
                 public IntPtr Icon1; public IntPtr Icon2; public IntPtr IconFrame1; public IntPtr IconFrame2;
                 public IntPtr Player1; public IntPtr Player2; /*public IntPtr Player3; public IntPtr Player4;*/
+                public IntPtr BGM;
             }
 
             DuelSettings settings;
@@ -833,6 +851,7 @@ namespace YgomGame.Room
                 DuelLimitedType limitedType;
                 Enum.TryParse<DuelLimitedType>(GetButtonValueString(buttons.Limit), out limitedType);
                 settings.Limit = (int)limitedType;
+                settings.BgmsFromValue(GetButtonValueI32(buttons.BGM));
                 settings.MyType = GetButtonValueBool(buttons.Player1) ? 0 : 1;
                 settings.OpponentType = GetButtonValueBool(buttons.Player2) ? 1 : 2;
                 //settings.MyPartnerType = GetButtonValueBool(buttons.Player3) ? 0 : 1;
@@ -869,6 +888,7 @@ namespace YgomGame.Room
                 SetButtonIndexFromString(buttons.Cpu, settings.cpu == int.MaxValue ? null : settings.cpu.ToString());
                 SetButtonIndexFromString(buttons.CpuFlag, settings.cpuflag);
                 SetButtonIndexFromString(buttons.Limit, ((DuelLimitedType)settings.Limit).ToString());
+                SetButtonIndexFromI32(buttons.BGM, settings.GetBgmValue());
                 SetButtonIndexFromBool(buttons.Player1, settings.MyType == 0);
                 SetButtonIndexFromBool(buttons.Player2, settings.OpponentType == 1);
                 //SetButtonIndexFromBool(buttons.Player3, settings.MyPartnerType == 0);
@@ -899,7 +919,11 @@ namespace YgomGame.Room
 
             public void InitButtons(IntPtr viewController)
             {
-                settings = new DuelSettings();
+                bool hasExistingSetting = settings != null;
+                if (!hasExistingSetting)
+                {
+                    settings = new DuelSettings();
+                }
                 buttons = new Buttons();
                 IL2ListExplicit infosList = new IL2ListExplicit(fieldInfos.GetValue(viewController).ptr, templateInfoClass);
                 IntPtr isv = fieldIsv.GetValue(viewController).ptr;
@@ -941,6 +965,12 @@ namespace YgomGame.Room
                 duelType.Add(DuelType.Speed.ToString());
                 duelType.Add(DuelType.Rush.ToString());
                 //duelType.Add(DuelType.Tag.ToString());
+                List<string> bgmStrings = new List<string>();
+                bgmStrings.Add("Random");
+                for (int i = 1; i <= 8; i++)
+                {
+                    bgmStrings.Add(i.ToString());
+                }
 
                 AddLabel(infosList, "Decks");
                 AddDeckDetailsButton(infosList, isv, 0);
@@ -960,6 +990,7 @@ namespace YgomGame.Room
                 buttons.Cpu = AddButton(infosList, isv, "Cpu", cpuParamStrings.ToArray());
                 buttons.CpuFlag = AddButton(infosList, isv, "CpuFlag", cpuFlagStrings.ToArray());
                 buttons.Limit = AddButton(infosList, isv, "Limit", limitedTypeStrings.ToArray());
+                buttons.BGM = AddButton(infosList, isv, "BGM", bgmStrings.ToArray());
                 buttons.Player1 = AddButton(infosList, isv, "P1", new string[] { "Player", "CPU" }, false, 0);
                 buttons.Player2 = AddButton(infosList, isv, "P2", new string[] { "Player", "CPU" }, false, 1);
                 //buttons.Player3 = AddButton(infosList, isv, "P3", new string[] { "Player", "CPU" }, false, 1);
@@ -989,6 +1020,11 @@ namespace YgomGame.Room
                 AddLabel(infosList, "Extra");
                 buttons.OpenDeckEditor = AddButton(infosList, isv, "Open deck editor");
                 buttons.ClearAllDecks = AddButton(infosList, isv, "Clear selected decks");
+
+                if (hasExistingSetting)
+                {
+                    DuelSettingsToUI();
+                }
             }
 
             void AddDeckDetailsButton(IL2ListExplicit infosList, IntPtr isv, int deckIndex)
@@ -1014,7 +1050,7 @@ namespace YgomGame.Room
                     }
                     else if (buttonPtr == buttons.OpenDeckEditor)
                     {
-                        IntPtr manager = YgomSystem.Menu.ContentViewControllerManager.GetManager();
+                        IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
                         YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "DeckEdit/DeckSelect");
                     }
                     else if (buttonPtr == buttons.LoadIncludingDecks)
@@ -1081,7 +1117,7 @@ namespace YgomGame.Room
                             }
                             else
                             {
-                                IntPtr manager = YgomSystem.Menu.ContentViewControllerManager.GetManager();
+                                IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
                                 YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "DeckEdit/DeckSelect",
                                     new Dictionary<string, object>()
                                     {
@@ -1189,7 +1225,7 @@ namespace YgomGame.DeckBrowser
 
         static void SelectDeck(IntPtr thisPtr, int mode, int deckId, int tournamentId, int rentalId)
         {
-            IntPtr manager = YgomSystem.Menu.ContentViewControllerManager.GetManager();
+            IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
             IntPtr roomView = YgomSystem.UI.ViewControllerManager.GetViewController(manager, YgomGame.Room.RoomCreateViewController.ClassInfo.IL2Typeof());
             if (roomView != IntPtr.Zero)
             {
@@ -1203,7 +1239,7 @@ namespace YgomGame.DeckBrowser
     }
 }
 
-namespace YgomSystem.Menu
+namespace YgomGame.Menu
 {
     unsafe static class ContentViewControllerManager
     {
@@ -1220,6 +1256,30 @@ namespace YgomSystem.Menu
         {
             IL2Object result = methodGetManager.Invoke();
             return result != null ? result.ptr : IntPtr.Zero;
+        }
+    }
+
+    // This is only used to hook NotificationStackRemove, unfortunately the ViewController implementation is shared between many functions
+    // (and therefore cannot be hooked without impacting other things)
+    unsafe static class BaseMenuViewController
+    {
+        delegate void Del_NotificationStackRemove(IntPtr thisPtr);
+        static Hook<Del_NotificationStackRemove> hookNotificationStackRemove;
+
+        static BaseMenuViewController()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            IL2Class classInfo = assembly.GetClass("BaseMenuViewController", "YgomGame.Menu");
+            hookNotificationStackRemove = new Hook<Del_NotificationStackRemove>(NotificationStackRemove, classInfo.GetMethod("NotificationStackRemove"));
+        }
+
+        static void NotificationStackRemove(IntPtr thisPtr)
+        {
+            if (thisPtr == YgomGame.Room.RoomCreateViewController.HackedInstance)
+            {
+                YgomGame.Room.RoomCreateViewController.NotificationStackRemove(thisPtr);
+            }
+            hookNotificationStackRemove.Original(thisPtr);
         }
     }
 }

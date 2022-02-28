@@ -126,6 +126,8 @@ namespace YgoMasterClient
                 // NOTE: As more things are added here the load time will increase (the reflection code does a lot of linear lookups)
                 List<Type> nativeTypes = new List<Type>();
                 // DuelStarter
+                nativeTypes.Add(typeof(YgomGame.Menu.ContentViewControllerManager));
+                nativeTypes.Add(typeof(YgomGame.Menu.BaseMenuViewController));
                 nativeTypes.Add(typeof(YgomSystem.UI.ViewControllerManager));
                 nativeTypes.Add(typeof(YgomGame.Room.RoomCreateViewController));
                 nativeTypes.Add(typeof(YgomGame.DeckBrowser.DeckBrowserViewController));
