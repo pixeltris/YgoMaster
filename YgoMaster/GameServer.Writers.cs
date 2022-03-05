@@ -211,5 +211,20 @@ namespace YgoMaster
             master["CardRare"] = cardRare;
             request.Remove("Gacha.cardList");
         }
+
+        void WriteToken(GameServerWebRequest request)
+        {
+            if (!MultiplayerEnabled && string.IsNullOrEmpty(request.Player.Token))
+            {
+                request.Player.Token = request.Player.Code.ToString();
+            }
+            request.Response["Persistence"] = new Dictionary<string, object>()
+            {
+                { "System", new Dictionary<string, object>() {
+                    { "token", Convert.ToBase64String(Encoding.UTF8.GetBytes(request.Player.Token)) },
+                    { "pcode", request.Player.Code },
+                }},
+            };
+        }
     }
 }

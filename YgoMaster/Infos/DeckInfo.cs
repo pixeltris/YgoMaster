@@ -79,6 +79,7 @@ namespace YgoMaster
 
         public void GetNewFilePath(string targetDir)
         {
+            Utils.TryCreateDirectory(targetDir);
             string name = Name;
             char[] invalids = System.IO.Path.GetInvalidFileNameChars();
             name = String.Join("_", name.Split(invalids, StringSplitOptions.RemoveEmptyEntries)).TrimEnd('.');

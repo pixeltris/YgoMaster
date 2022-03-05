@@ -21,14 +21,15 @@ namespace YgoMaster
         static string serverPollUrl;
 
         static string dataDirectory;
-        static string decksDirectory;
-        static string playerSettingsFile;
+        static string playersDirectory;
         static string settingsFile;
 
         Random rand = new Random();
-        Player thePlayer;
 
-        FileSystemWatcher decksFileWatcher;
+        Player localPlayer;
+        FileSystemWatcher localPlayerDecksFileWatcher;
+        Dictionary<string, Player> playersByToken = new Dictionary<string, Player>();
+        uint nextPlayerCode;
 
         int NumDeckSlots;
         bool UnlockAllCards;
@@ -77,6 +78,11 @@ namespace YgoMaster
         /// Show information about YgoMaster in the topics panel on the home screen
         /// </summary>
         bool ShowTopics;
+        /// <summary>
+        /// Allows mulitple connections. Players are saved seperately
+        /// NOTE: Incomplete
+        /// </summary>
+        bool MultiplayerEnabled;
 
         void LoadSettings()
         {
@@ -109,9 +115,11 @@ namespace YgoMaster
                 return;
             }
             settingsFile = Path.Combine(dataDirectory, "Settings.json");
-            playerSettingsFile = Path.Combine(dataDirectory, "Player.json");
-            decksDirectory = Path.Combine(dataDirectory, "Decks");
-            Utils.TryCreateDirectory(decksDirectory);
+            playersDirectory = Path.Combine(dataDirectory, "Players");
+            if (!MultiplayerEnabled)
+            {
+                Utils.TryCreateDirectory(GetDecksDirectory(null));
+            }
 
             if (!File.Exists(settingsFile))
             {
@@ -119,8 +127,10 @@ namespace YgoMaster
                 return;
             }
 
-            InitDecksWatcher();
             YdkHelper.LoadIdMap(dataDirectory);
+
+            //DuelSimulator sim = new DuelSimulator(dataDirectory);
+            //sim.Init();
 
             string text = File.ReadAllText(settingsFile);
             Dictionary<string, object> values = MiniJSON.Json.DeserializeStripped(text) as Dictionary<string, object>;
@@ -129,13 +139,14 @@ namespace YgoMaster
                 throw new Exception("Failed to parse settings json");
             }
 
-            serverUrl = YgoMaster.Utils.GetValue<string>(values, "ServerUrl");
-            serverPollUrl = YgoMaster.Utils.GetValue<string>(values, "ServerPollUrl");
-            bindIP = YgoMaster.Utils.GetValue<string>(values, "BindIP");
+            serverUrl = Utils.GetValue<string>(values, "ServerUrl");
+            serverPollUrl = Utils.GetValue<string>(values, "ServerPollUrl");
+            bindIP = Utils.GetValue<string>(values, "BindIP");
             if (string.IsNullOrEmpty(serverUrl) || string.IsNullOrEmpty(serverPollUrl) || string.IsNullOrEmpty(bindIP))
             {
                 throw new Exception("Failed to get server url settings");
             }
+            MultiplayerEnabled = Utils.GetValue<bool>(values, "MultiplayerEnabled");
 
             NumDeckSlots = Utils.GetValue<int>(values, "DeckSlots", 20);
             Utils.GetIntHashSet(values, "DefaultItems", DefaultItems = new HashSet<int>(), ignoreZero: true);
@@ -209,6 +220,39 @@ namespace YgoMaster
             DuelRewards = new DuelRewardInfos();
             DuelRewards.FromDictionary(Utils.GetDictionary(values, "DuelRewards"));
 
+            if (MultiplayerEnabled)
+            {
+                nextPlayerCode = 1;
+                string playersDir = Path.Combine(dataDirectory, "Players");
+                if (Directory.Exists(playersDir))
+                {
+                    foreach (string dir in Directory.GetDirectories(Path.Combine(playersDir)))
+                    {
+                        uint playerCode;
+                        if (uint.TryParse(new DirectoryInfo(dir).Name, out playerCode) && playerCode > 0)
+                        {
+                            if (playerCode > nextPlayerCode)
+                            {
+                                nextPlayerCode = playerCode + 1;
+                            }
+                            string playerFile = Path.Combine(dir, "Player.json");
+                            if (File.Exists(playerFile))
+                            {
+                                Dictionary<string, object> playerData = MiniJSON.Json.DeserializeStripped(File.ReadAllText(playerFile)) as Dictionary<string, object>;
+                                uint playerCodeInData;
+                                string token;
+                                if (playerData != null && Utils.TryGetValue(playerData, "Code", out playerCodeInData) && playerCodeInData == playerCode &&
+                                    Utils.TryGetValue(playerData, "token", out token) && !string.IsNullOrEmpty(token))
+                                {
+                                    playersByToken[token] = null;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            InitDecksWatcher();
+
             // TODO: Move elsewhere (these are helpers to generate files)
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length > 0)
@@ -248,15 +292,19 @@ namespace YgoMaster
 
         void InitDecksWatcher()
         {
+            if (MultiplayerEnabled)
+            {
+                return;
+            }
             object updateDecksLocker = new object();
             Action<string, string> updateDecks = (string srcPath, string dstPath) =>
             {
                 lock (updateDecksLocker)
                 {
-                    if (thePlayer != null)
+                    if (localPlayer != null)
                     {
                         Dictionary<string, DeckInfo> fullPathDecks = new Dictionary<string, DeckInfo>();
-                        foreach (DeckInfo deckInfo in thePlayer.Decks.Values)
+                        foreach (DeckInfo deckInfo in localPlayer.Decks.Values)
                         {
                             try
                             {
@@ -283,7 +331,7 @@ namespace YgoMaster
                                     }
                                     else
                                     {
-                                        LoadDeck(thePlayer, dstPath);
+                                        LoadDeck(localPlayer, dstPath);
                                     }
                                 }
                             }
@@ -293,7 +341,7 @@ namespace YgoMaster
                                 if (!fullPathDecks.TryGetValue(srcPath.ToLowerInvariant(), out deck))
                                 {
                                     //Console.WriteLine("Deck added");
-                                    LoadDeck(thePlayer, srcPath);
+                                    LoadDeck(localPlayer, srcPath);
                                 }
                             }
                             else
@@ -302,7 +350,7 @@ namespace YgoMaster
                                 if (fullPathDecks.TryGetValue(srcPath.ToLowerInvariant(), out deck))
                                 {
                                     //Console.WriteLine("Deck removed");
-                                    thePlayer.Decks.Remove(deck.Id);
+                                    localPlayer.Decks.Remove(deck.Id);
                                 }
                             }
                         }
@@ -312,22 +360,22 @@ namespace YgoMaster
                     }
                 }
             };
-            decksFileWatcher = new FileSystemWatcher(decksDirectory);
-            decksFileWatcher.NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.FileName | NotifyFilters.LastWrite;
+            localPlayerDecksFileWatcher = new FileSystemWatcher(GetDecksDirectory(null));
+            localPlayerDecksFileWatcher.NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.FileName | NotifyFilters.LastWrite;
             FileSystemEventHandler decksFileWatcherUpdateEvent = (object sender, FileSystemEventArgs e) =>
                 {
                     string fullPath = Path.GetFullPath(e.FullPath);
                     updateDecks(fullPath, fullPath);
                 };
-            decksFileWatcher.Created += decksFileWatcherUpdateEvent;
-            decksFileWatcher.Deleted += decksFileWatcherUpdateEvent;
-            decksFileWatcher.Renamed += (object sender, RenamedEventArgs e) =>
+            localPlayerDecksFileWatcher.Created += decksFileWatcherUpdateEvent;
+            localPlayerDecksFileWatcher.Deleted += decksFileWatcherUpdateEvent;
+            localPlayerDecksFileWatcher.Renamed += (object sender, RenamedEventArgs e) =>
                 {
                     string oldFullPath = Path.GetFullPath(e.OldFullPath);
                     string newFullPath = Path.GetFullPath(e.FullPath);
                     updateDecks(oldFullPath, newFullPath);
                 };
-            decksFileWatcher.EnableRaisingEvents = true;
+            localPlayerDecksFileWatcher.EnableRaisingEvents = true;
         }
 
         /// <summary>
@@ -427,6 +475,10 @@ namespace YgoMaster
         {
             //LogInfo("Save (player)");
             Dictionary<string, object> data = new Dictionary<string, object>();
+            if (MultiplayerEnabled)
+            {
+                data["Token"] = player.Token;
+            }
             data["Code"] = player.Code;
             data["Name"] = player.Name;
             data["Rank"] = player.Rank;
@@ -457,16 +509,45 @@ namespace YgoMaster
                 data["Cards"] = player.Cards.ToDictionary();
             }
             string jsonFormatted = MiniJSON.Json.Format(MiniJSON.Json.Serialize(data));
-            File.WriteAllText(playerSettingsFile, jsonFormatted);
+            string dir = GetPlayerDirectory(player);
+            if (MultiplayerEnabled)
+            {
+                Utils.TryCreateDirectory(dir);
+            }
+            try
+            {
+                File.WriteAllText(Path.Combine(dir, "Player.json"), jsonFormatted);
+            }
+            catch
+            {
+            }
             player.RequiresSaving = false;
+        }
+
+        string GetPlayerDirectory(Player player)
+        {
+            if (MultiplayerEnabled)
+            {
+                return Path.Combine(dataDirectory, player.Code.ToString());
+            }
+            else
+            {
+                return dataDirectory;
+            }
+        }
+
+        string GetDecksDirectory(Player player)
+        {
+            return Path.Combine(GetPlayerDirectory(player), "Decks");
         }
 
         void LoadPlayer(Player player)
         {
             Dictionary<string, object> data = null;
-            if (File.Exists(GameServer.playerSettingsFile))
+            string path = Path.Combine(GetPlayerDirectory(player), "Player.json");
+            if (!string.IsNullOrEmpty(path) && File.Exists(path))
             {
-                data = MiniJSON.Json.DeserializeStripped(File.ReadAllText(GameServer.playerSettingsFile)) as Dictionary<string, object>;
+                data = MiniJSON.Json.DeserializeStripped(File.ReadAllText(path)) as Dictionary<string, object>;
             }
             if (data == null)
             {
@@ -478,6 +559,7 @@ namespace YgoMaster
             {
                 player.Code = code;
             }
+            player.Token = Utils.GetValue<string>(data, "Token");
             player.Name = Utils.GetValue<string>(data, "Name", "Duelist");
             player.Rank = Utils.GetValue<int>(data, "Rank", (int)StandardRank.ROOKIE);
             player.Rate = Utils.GetValue<int>(data, "Rate");
@@ -591,9 +673,10 @@ namespace YgoMaster
                     }
                 }
             }
-            if (Directory.Exists(decksDirectory))
+            string decksDir = GetDecksDirectory(player);
+            if (Directory.Exists(decksDir))
             {
-                foreach (string file in Directory.GetFiles(decksDirectory))
+                foreach (string file in Directory.GetFiles(decksDir))
                 {
                     LoadDeck(player, file);
                 }
@@ -603,7 +686,11 @@ namespace YgoMaster
 
         void SaveDeck(DeckInfo deck)
         {
-            Utils.TryCreateDirectory(decksDirectory);
+            if (string.IsNullOrEmpty(deck.File))
+            {
+                return;
+            }
+            Utils.TryCreateDirectory(Path.GetDirectoryName(deck.File));
             if (deck.IsYdkDeck)
             {
                 YdkHelper.SaveDeck(deck);

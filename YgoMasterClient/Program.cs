@@ -98,27 +98,6 @@ namespace YgoMasterClient
                 ClientDataDumpDir = Path.Combine(DataDir, "ClientDataDump");
                 YgoMaster.YdkHelper.LoadIdMap(DataDir);
 
-                if (!IsLive)
-                {
-                    string settingsFile = Path.Combine(DataDir, "Settings.json");
-                    if (!File.Exists(settingsFile))
-                    {
-                        throw new Exception("Failed to find '" + settingsFile + "'");
-                    }
-                    Dictionary<string, object> serverSettings = MiniJSON.Json.DeserializeStripped(File.ReadAllText(settingsFile)) as Dictionary<string, object>;
-                    if (serverSettings == null)
-                    {
-                        throw new Exception("Failed to load '" + settingsFile + "'");
-                    }
-                    YgomSystem.Network.ProtocolHttp.ServerUrl = YgoMaster.Utils.GetValue<string>(serverSettings, "ServerUrl");
-                    YgomSystem.Network.ProtocolHttp.ServerPollUrl = YgoMaster.Utils.GetValue<string>(serverSettings, "ServerPollUrl");
-                    if (string.IsNullOrEmpty(YgomSystem.Network.ProtocolHttp.ServerUrl) ||
-                        string.IsNullOrEmpty(YgomSystem.Network.ProtocolHttp.ServerPollUrl))
-                    {
-                        throw new Exception("Failed to get server url settings");
-                    }
-                }
-
                 PInvoke.WL_InitHooks();
                 PInvoke.InitGameModuleBaseAddress();
 
@@ -154,6 +133,7 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomGame.Utility.ItemUtil));
                 nativeTypes.Add(typeof(YgomSystem.Utility.TextData));
                 nativeTypes.Add(typeof(YgomSystem.Utility.ClientWork));
+                nativeTypes.Add(typeof(YgomSystem.Utility.ClientWorkUtil));
                 nativeTypes.Add(typeof(YgomSystem.Network.ProtocolHttp));
                 nativeTypes.Add(typeof(YgomSystem.LocalFileSystem.WindowsStorageIO));
                 nativeTypes.Add(typeof(YgomSystem.LocalFileSystem.StandardStorageIO));
@@ -173,6 +153,9 @@ namespace YgoMasterClient
                     Dictionary<string, object> clientSettings = MiniJSON.Json.DeserializeStripped(File.ReadAllText(clientSettingsFile)) as Dictionary<string, object>;
                     if (clientSettings != null)
                     {
+                        YgomSystem.Network.ProtocolHttp.ServerUrl = YgoMaster.Utils.GetValue<string>(clientSettings, "ServerUrl");
+                        YgomSystem.Network.ProtocolHttp.ServerPollUrl = YgoMaster.Utils.GetValue<string>(clientSettings, "ServerPollUrl");
+                        YgomSystem.Utility.ClientWorkUtil.MultiplayerToken = YgoMaster.Utils.GetValue<string>(clientSettings, "MultiplayerToken");
                         RunConsole = YgoMaster.Utils.GetValue<bool>(clientSettings, "ShowConsole");
                         YgomSystem.Utility.TextData.LogIDS = YgoMaster.Utils.GetValue<bool>(clientSettings, "LogIDs");
                         AssetHelper.LogAssets = YgoMaster.Utils.GetValue<bool>(clientSettings, "AssetHelperLog");
@@ -185,7 +168,20 @@ namespace YgoMasterClient
                         YgomGame.DeckEditViewController2.DeckEditorShowStats = YgoMaster.Utils.GetValue<bool>(clientSettings, "DeckEditorShowStats");
                         YgomGame.Duel.GenericCardListController.DuelClientShowRemainingCardsInDeck = YgoMaster.Utils.GetValue<bool>(clientSettings, "DuelClientShowRemainingCardsInDeck");
                         changeWindowTitleOnLiveMod = YgoMaster.Utils.GetValue<bool>(clientSettings, "ChangeWindowTitleOnLiveMod");
+                        if (string.IsNullOrEmpty(YgomSystem.Network.ProtocolHttp.ServerUrl) ||
+                            string.IsNullOrEmpty(YgomSystem.Network.ProtocolHttp.ServerPollUrl))
+                        {
+                            throw new Exception("Failed to get server url settings");
+                        }
                     }
+                    else
+                    {
+                        throw new Exception("Failed to load '" + clientSettingsFile + "'");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Failed to find '" + clientSettingsFile + "'");
                 }
 
                 Win32Hooks.Invoke(delegate
@@ -846,6 +842,34 @@ namespace YgomSystem.Utility
         public static Dictionary<string, object> GetDict(string jsonPath)
         {
             return MiniJSON.Json.Deserialize(SerializePath(jsonPath)) as Dictionary<string, object>;
+        }
+    }
+
+    unsafe static class ClientWorkUtil
+    {
+        public static string MultiplayerToken;
+
+        delegate IntPtr Del_GetToken();
+        static Hook<Del_GetToken> hookGetToken;
+
+        static ClientWorkUtil()
+        {
+            if (Program.IsLive)
+            {
+                return;
+            }
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            IL2Class classInfo = assembly.GetClass("ClientWorkUtil", "YgomSystem.Utility");
+            hookGetToken = new Hook<Del_GetToken>(GetToken, classInfo.GetMethod("GetToken"));
+        }
+
+        static IntPtr GetToken()
+        {
+            if (!string.IsNullOrEmpty(MultiplayerToken))
+            {
+                return new IL2String(Convert.ToBase64String(Encoding.UTF8.GetBytes(MultiplayerToken))).ptr;
+            }
+            return hookGetToken.Original();
         }
     }
 }

@@ -9,6 +9,7 @@ namespace YgoMaster
     class Player
     {
         public bool RequiresSaving;
+        public string Token;
         public uint Code;
         public string Name;
         public int Rank;

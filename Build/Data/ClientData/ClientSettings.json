@@ -1,4 +1,6 @@
 {
+    "ServerUrl": "http://localhost:4989/ygo",
+    "ServerPollUrl": "http://localhost:4989/ygo/poll",
     "ShowConsole": false,
     "LogIDs": false,
     "AssetHelperLog": false,

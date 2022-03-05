@@ -4,9 +4,9 @@
     "BindIP": "http://localhost:4989/",
     "ShowTopics": true,
     "DeckSlots": 999,
-    "UnlockAllCards": false,
-    "UnlockAllItems": false,
-    "UnlockAllSoloChapters": false,
+    "UnlockAllCards": false,// [WARNING] Enabling this permanently wipes your saved cards (all cards are set to 3x without any shine/royal and any newly obtained cards don't save)
+    "UnlockAllItems": false,// [WARNING] Enabling this permanently wipes your saved items
+    "UnlockAllSoloChapters": false,// [WARNING] Enabling this permanently wipes your saved solo progress
     "SoloRemoveDuelTutorials": true,
     "SoloDisableNoShuffle": false,
     "SoloShowGateClearForAllSecretPacks": false,

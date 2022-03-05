@@ -9,6 +9,7 @@ namespace YgoMaster
     {
         void Act_AccountAuth(GameServerWebRequest request)
         {
+            WriteToken(request);
             request.Response["Server"] = new Dictionary<string, object>()
             {
                 { "urls_deck_ext", new Dictionary<string, object>() {
@@ -66,14 +67,7 @@ namespace YgoMaster
                 request.Player.Lang = request.Player.Lang.Replace("-", "_");
             }
 
-            // NOTE: These aren't normally set here, but doing it here is good enough
-            request.Response["Persistence"] = new Dictionary<string, object>()
-            {
-                { "System", new Dictionary<string, object>() {
-                    { "token", Convert.ToBase64String(Encoding.UTF8.GetBytes("sessionToken")) },
-                    { "pcode", request.Player.Code },
-                }},
-            };
+            WriteToken(request);
 
             Dictionary<string, object> urls = new Dictionary<string, object>();
             urls["Account.auth"] = serverUrl;

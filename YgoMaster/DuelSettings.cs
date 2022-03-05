@@ -181,6 +181,17 @@ namespace YgoMaster
                     name[i] = isCPU ? "CPU" : "Duelist";
                 }
             }
+
+            // BGMs Based on field IDs (from logs of solo):
+            // BGM_DUEL_NORMAL_01 - 1090001,1090002,1090003,1090004
+            // BGM_DUEL_NORMAL_02 - 1090003,1090005
+            // BGM_DUEL_NORMAL_03 - 1090001,1090004
+            // BGM_DUEL_NORMAL_04 - 1090005,1090006
+            // BGM_DUEL_NORMAL_05 - 1090007
+            // BGM_DUEL_NORMAL_06 - 1090003
+            // BGM_DUEL_NORMAL_07 - none
+            // BGM_DUEL_NORMAL_08 - none
+
             /*if (Bgms.Count == 0)
             {
                 Bgms.Add("BGM_DUEL_NORMAL_03");

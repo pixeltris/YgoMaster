@@ -56,7 +56,7 @@ namespace YgoMaster
                 deck.Id = request.Player.NextDeckUId++;
                 request.Player.Decks[deck.Id] = deck;
                 deck.TimeCreated = Utils.GetEpochTime();
-                deck.GetNewFilePath(decksDirectory);
+                deck.GetNewFilePath(GetDecksDirectory(request.Player));
             }
             else
             {
@@ -72,7 +72,7 @@ namespace YgoMaster
                 if (deck.Name != existingDeck.Name)
                 {
                     DeleteDeck(deck);
-                    deck.GetNewFilePath(decksDirectory);
+                    deck.GetNewFilePath(GetDecksDirectory(request.Player));
                 }
                 if (accessory == null)
                 {

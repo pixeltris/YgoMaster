@@ -111,14 +111,38 @@ namespace YgoMaster
                             Utils.TryGetValue(vals, "v", out gameServerWebRequest.ClientVersion);
                             gameServerWebRequest.Response = new Dictionary<string, object>();
 
-                            string customStr = null;
-
-                            if (thePlayer == null)
+                            if (MultiplayerEnabled)
                             {
-                                thePlayer = new Player(1111111111);
-                                LoadPlayer(thePlayer);
+                                lock (playersByToken)
+                                {
+                                    if (string.IsNullOrEmpty(sessionToken) || !playersByToken.TryGetValue(sessionToken, out gameServerWebRequest.Player))
+                                    {
+                                        if (string.IsNullOrEmpty(sessionToken))
+                                        {
+                                            while (true)
+                                            {
+                                                sessionToken = Guid.NewGuid().ToString();
+                                                if (!playersByToken.ContainsKey(sessionToken))
+                                                {
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        playersByToken[sessionToken] = gameServerWebRequest.Player = new Player(nextPlayerCode++);
+                                        LoadPlayer(gameServerWebRequest.Player);
+                                        WriteToken(gameServerWebRequest);
+                                    }
+                                }
                             }
-                            gameServerWebRequest.Player = thePlayer;
+                            else
+                            {
+                                if (localPlayer == null)
+                                {
+                                    localPlayer = new Player(1111111111);
+                                    LoadPlayer(localPlayer);
+                                }
+                                gameServerWebRequest.Player = localPlayer;
+                            }
 
                             if (gameServerWebRequest.Player != null)
                             {
@@ -255,17 +279,12 @@ namespace YgoMaster
                                 }
                                 stringBuilder.Append("}");
 
-                                if (!string.IsNullOrEmpty(customStr))
-                                {
-                                    stringBuilder.Length = 0;
-                                    stringBuilder.Append(customStr);
-                                }
-                                else if (!string.IsNullOrEmpty(gameServerWebRequest.StringResponse))
+                                if (!string.IsNullOrEmpty(gameServerWebRequest.StringResponse))
                                 {
                                     stringBuilder.Length = 0;
                                     stringBuilder.Append(gameServerWebRequest.StringResponse);
                                 }
-                                Debug.WriteLine(stringBuilder.ToString());
+                                //Debug.WriteLine(stringBuilder.ToString());
 
                                 byte[] responseBuffer = Serialize(stringBuilder.ToString());
                                 context.Response.Headers[HttpResponseHeader.ContentType] = "application/octet-stream";
