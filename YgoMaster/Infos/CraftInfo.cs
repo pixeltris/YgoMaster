@@ -9,12 +9,14 @@ namespace YgoMaster
     {
         public Dictionary<CardRarity, CraftPointRollover> Rollover { get; private set; }
         public Dictionary<CardRarity, Dictionary<CardStyleRarity, int>> CraftRates { get; private set; }
+        public Dictionary<CardRarity, Dictionary<CardStyleRarity, double>> CraftStyleRarityRates { get; private set; }
         public Dictionary<CardRarity, Dictionary<CardStyleRarity, int>> DismantleRates { get; private set; }
 
         public CraftInfo()
         {
             Rollover = new Dictionary<CardRarity, CraftPointRollover>();
             CraftRates = new Dictionary<CardRarity, Dictionary<CardStyleRarity, int>>();
+            CraftStyleRarityRates = new Dictionary<CardRarity, Dictionary<CardStyleRarity, double>>();
             DismantleRates = new Dictionary<CardRarity, Dictionary<CardStyleRarity, int>>();
         }
 
@@ -47,12 +49,14 @@ namespace YgoMaster
         {
             Rollover.Clear();
             CraftRates.Clear();
+            CraftStyleRarityRates.Clear();
             DismantleRates.Clear();
             if (data == null)
             {
                 return;
             }
             Dictionary<string, object> craftData = null;
+            Dictionary<string, object> craftStyleRarityData = null;
             Dictionary<string, object> dismantleData = null;
             if (data.ContainsKey("Craft"))
             {
@@ -79,6 +83,7 @@ namespace YgoMaster
                 }
 
                 craftData = Utils.GetDictionary(data, "Craft");
+                craftStyleRarityData = Utils.GetDictionary(data, "CraftStyleRarity");
                 dismantleData = Utils.GetDictionary(data, "Dismantle");
             }
             else if (data.ContainsKey("generate_rate_list"))
@@ -90,13 +95,17 @@ namespace YgoMaster
             {
                 RatesFromDictionary(craftData, CraftRates);
             }
+            if (craftStyleRarityData != null)
+            {
+                RatesFromDictionary(craftStyleRarityData, CraftStyleRarityRates);
+            }
             if (dismantleData != null)
             {
                 RatesFromDictionary(dismantleData, DismantleRates);
             }
         }
 
-        void RatesFromDictionary(Dictionary<string, object> data, Dictionary<CardRarity, Dictionary<CardStyleRarity, int>> rates)
+        void RatesFromDictionary<T>(Dictionary<string, object> data, Dictionary<CardRarity, Dictionary<CardStyleRarity, T>> rates)
         {
             foreach (KeyValuePair<string, object> rarityData in data)
             {
@@ -105,7 +114,7 @@ namespace YgoMaster
                 {
                     continue;
                 }
-                rates[rarity] = new Dictionary<CardStyleRarity,int>();
+                rates[rarity] = new Dictionary<CardStyleRarity, T>();
                 Dictionary<string, object> rarityItems = rarityData.Value as Dictionary<string, object>;
                 if (rarityItems != null)
                 {
@@ -116,7 +125,7 @@ namespace YgoMaster
                         {
                             continue;
                         }
-                        rates[rarity][styleRarity] = (int)Convert.ChangeType(item.Value, typeof(int));
+                        rates[rarity][styleRarity] = (T)Convert.ChangeType(item.Value, typeof(T));
                     }
                 }
             }

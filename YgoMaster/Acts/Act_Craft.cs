@@ -111,7 +111,44 @@ namespace YgoMaster
                     {
                         if (isCraft)
                         {
-                            request.Player.Cards.Add(card.Key, styleCount.Value, PlayerCardKind.Dismantle, styleCount.Key);
+                            // The original code didn't take into account upgrading of card style rarity. This is hacked in after the fact
+                            int rarity;
+                            if (styleCount.Key == CardStyleRarity.Normal && cardRare.TryGetValue(card.Key, out rarity) &&
+                                Craft.CraftStyleRarityRates.ContainsKey((CardRarity)rarity))
+                            {
+                                for (int i = 0; i < styleCount.Value; i++)
+                                {
+                                    Dictionary<CardStyleRarity, double> styleRarityAccumaltiveRate = new Dictionary<CardStyleRarity, double>();
+                                    double styleRarityTotalPercent = 0;
+                                    foreach (KeyValuePair<CardStyleRarity, double> rate in Craft.CraftStyleRarityRates[(CardRarity)rarity].OrderBy(x => x.Key))
+                                    {
+                                        if (rate.Value <= 0)
+                                        {
+                                            continue;
+                                        }
+                                        styleRarityTotalPercent += rate.Value;
+                                        styleRarityAccumaltiveRate[rate.Key] = styleRarityTotalPercent;
+                                    }
+                                    CardStyleRarity styleRarity = styleCount.Key;
+                                    if (styleRarityAccumaltiveRate.Count > 0)
+                                    {
+                                        double styleRarityPercent = rand.NextDouble() * 100;
+                                        foreach (KeyValuePair<CardStyleRarity, double> rate in styleRarityAccumaltiveRate.OrderBy(x => x.Key))
+                                        {
+                                            if (styleRarityPercent < rate.Value)
+                                            {
+                                                styleRarity = rate.Key;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    request.Player.Cards.Add(card.Key, 1, PlayerCardKind.Dismantle, styleRarity);
+                                }
+                            }
+                            else
+                            {
+                                request.Player.Cards.Add(card.Key, styleCount.Value, PlayerCardKind.Dismantle, styleCount.Key);
+                            }
                         }
                         else
                         {

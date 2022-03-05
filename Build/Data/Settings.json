@@ -55,6 +55,27 @@
                 "Royal": 999999
             }
         },
+        "CraftStyleRarity": {
+            // Shine/royal chance when crafting (delete to disable this)
+            "Normal": {
+                "Normal": 90,
+                "Shine": 10
+            },
+            "Rare": {
+                "Normal": 90,
+                "Shine": 10
+            },
+            "SuperRare": {
+                "Normal": 90,
+                "Shine": 9,
+                "Royal": 1
+            },
+            "UltraRare": {
+                "Normal": 90,
+                "Shine": 9,
+                "Royal": 1
+            }
+        },
         "Dismantle": {
             // Rewards for dismantling cards
             "Normal": {
