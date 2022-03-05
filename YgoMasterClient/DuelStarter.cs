@@ -557,7 +557,7 @@ namespace YgomGame.Room
                     // This shouldn't be required, but there's some bug where the deck names get swapped out.
                     // I think something in the ISV caches the string pointers and they can become invalid?
                     // TODO: Look into this issue more instead of doing this hack (annoyingly reproducing it is inconsistent)
-                    duelSettingsManager.UpdateDeckNames();
+                    //duelSettingsManager.UpdateDeckNames();
                 }
             }
         }
@@ -575,7 +575,7 @@ namespace YgomGame.Room
                 public IntPtr Sleeve1; public IntPtr Sleeve2; public IntPtr Field1; public IntPtr Field2; public IntPtr FieldPart1;
                 public IntPtr FieldPart2; public IntPtr Mate1; public IntPtr Mate2; public IntPtr MateBase1; public IntPtr MateBase2;
                 public IntPtr Icon1; public IntPtr Icon2; public IntPtr IconFrame1; public IntPtr IconFrame2;
-                public IntPtr Player1; public IntPtr Player2; /*public IntPtr Player3; public IntPtr Player4;*/
+                public IntPtr Player1; /*public IntPtr Player2; public IntPtr Player3; public IntPtr Player4;*/
                 public IntPtr BGM;
             }
 
@@ -853,7 +853,7 @@ namespace YgomGame.Room
                 settings.Limit = (int)limitedType;
                 settings.BgmsFromValue(GetButtonValueI32(buttons.BGM));
                 settings.MyType = GetButtonValueBool(buttons.Player1) ? 0 : 1;
-                settings.OpponentType = GetButtonValueBool(buttons.Player2) ? 1 : 2;
+                //settings.OpponentType = GetButtonValueBool(buttons.Player2) ? 1 : 2;
                 //settings.MyPartnerType = GetButtonValueBool(buttons.Player3) ? 0 : 1;
                 //settings.OpponentPartnerType = GetButtonValueBool(buttons.Player4) ? 1 : 2;
                 SetTeamValue(GetButtonValueI32(buttons.LP1), settings.life, 0, 2, false);
@@ -890,7 +890,7 @@ namespace YgomGame.Room
                 SetButtonIndexFromString(buttons.Limit, ((DuelLimitedType)settings.Limit).ToString());
                 SetButtonIndexFromI32(buttons.BGM, settings.GetBgmValue());
                 SetButtonIndexFromBool(buttons.Player1, settings.MyType == 0);
-                SetButtonIndexFromBool(buttons.Player2, settings.OpponentType == 1);
+                //SetButtonIndexFromBool(buttons.Player2, settings.OpponentType == 1);
                 //SetButtonIndexFromBool(buttons.Player3, settings.MyPartnerType == 0);
                 //SetButtonIndexFromBool(buttons.Player4, settings.OpponentPartnerType == 1);
                 SetButtonIndexFromI32(buttons.LP1, settings.AreAllEqual(settings.life) ? -1 : settings.life[0]);
@@ -992,7 +992,7 @@ namespace YgomGame.Room
                 buttons.Limit = AddButton(infosList, isv, "Limit", limitedTypeStrings.ToArray());
                 buttons.BGM = AddButton(infosList, isv, "BGM", bgmStrings.ToArray());
                 buttons.Player1 = AddButton(infosList, isv, "P1", new string[] { "Player", "CPU" }, false, 0);
-                buttons.Player2 = AddButton(infosList, isv, "P2", new string[] { "Player", "CPU" }, false, 1);
+                //buttons.Player2 = AddButton(infosList, isv, "P2", new string[] { "Player", "CPU" }, false, 1);
                 //buttons.Player3 = AddButton(infosList, isv, "P3", new string[] { "Player", "CPU" }, false, 1);
                 //buttons.Player4 = AddButton(infosList, isv, "P4", new string[] { "Player", "CPU" }, false, 1);
                 buttons.LP1 = AddButton(infosList, isv, "LP1", lpStrings);
@@ -1029,8 +1029,9 @@ namespace YgomGame.Room
 
             void AddDeckDetailsButton(IL2ListExplicit infosList, IntPtr isv, int deckIndex)
             {
+                // NOTE: Changed from string.Empty to "   " as I think there's a bug with empty strings in IL2String
                 DeckInfo deckInfo = settings.Deck[deckIndex];
-                IntPtr button = AddButton(infosList, isv, "Deck" + (deckIndex + 1), new string[] { string.Empty });
+                IntPtr button = AddButton(infosList, isv, "Deck" + (deckIndex + 1), new string[] { "   " });//string.Empty });
                 buttons.Decks[button] = deckInfo;
             }
 
@@ -1196,7 +1197,7 @@ namespace YgomGame.Room
                 {
                     return Path.GetFileName(deck.File);
                 }
-                return string.Empty;
+                return "   ";//string.Empty;
             }
         }
     }
