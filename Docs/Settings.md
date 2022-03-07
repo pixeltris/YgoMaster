@@ -45,6 +45,7 @@ You can copy/paste/move/rename (but not modify the contents of) files in this fo
 - `DeckEditorShowStats` - displays card collection stats in the deck editor.
 - `DeckEditorConvertStyleRarity` - adjusts shine/royal based on owned cards when using the deck editor sub menu import options (if disabled this will preserve shine/royal status on the imported data).
 - `DuelClientShowRemainingCardsInDeck` - shows the remaining cards in your deck when you click on your deck (ordered by card id).
+- `DuelClientMillenniumEye` - reveal any card you click. If "Display Face-Down Cards as Transparent" is enabled all face downs will be visible.
 
 ## File list
 

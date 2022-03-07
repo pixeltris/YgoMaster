@@ -167,6 +167,7 @@ namespace YgoMasterClient
                         YgomGame.Deck.DeckView.DeckEditorConvertStyleRarity = YgoMaster.Utils.GetValue<bool>(clientSettings, "DeckEditorConvertStyleRarity");
                         YgomGame.DeckEditViewController2.DeckEditorShowStats = YgoMaster.Utils.GetValue<bool>(clientSettings, "DeckEditorShowStats");
                         YgomGame.Duel.GenericCardListController.DuelClientShowRemainingCardsInDeck = YgoMaster.Utils.GetValue<bool>(clientSettings, "DuelClientShowRemainingCardsInDeck");
+                        YgomGame.Duel.EngineApiUtil.DuelClientMillenniumEye = YgoMaster.Utils.GetValue<bool>(clientSettings, "DuelClientMillenniumEye");
                         changeWindowTitleOnLiveMod = YgoMaster.Utils.GetValue<bool>(clientSettings, "ChangeWindowTitleOnLiveMod");
                         if (string.IsNullOrEmpty(YgomSystem.Network.ProtocolHttp.ServerUrl) ||
                             string.IsNullOrEmpty(YgomSystem.Network.ProtocolHttp.ServerPollUrl))

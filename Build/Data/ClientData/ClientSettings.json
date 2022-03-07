@@ -12,5 +12,6 @@
     "DuelStarterShowFirstPlayer": true,
     "DuelStarterLiveChapterId": 10002,
     "DuelClientShowRemainingCardsInDeck": false,
+    "DuelClientMillenniumEye": false,
     "ChangeWindowTitleOnLiveMod": true,
 }

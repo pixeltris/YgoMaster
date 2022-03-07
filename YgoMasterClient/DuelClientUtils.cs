@@ -40,6 +40,8 @@ namespace YgomGame.Duel
 
     unsafe static class EngineApiUtil
     {
+        public static bool DuelClientMillenniumEye;
+        
         delegate bool Del_IsCardKnown(IntPtr thisPtr, int player, int position, int index, bool face);
         static Hook<Del_IsCardKnown> hookIsCardKnown;
         delegate bool Del_IsInsight(IntPtr thisPtr, int player, int position, int index);
@@ -55,7 +57,7 @@ namespace YgomGame.Duel
 
         static bool IsCardKnown(IntPtr thisPtr, int player, int position, int index, bool face)
         {
-            if (GenericCardListController.IsUpdatingCustomCardList)
+            if (GenericCardListController.IsUpdatingCustomCardList || EngineApiUtil.DuelClientMillenniumEye)
             {
                 return true;
             }
@@ -64,7 +66,7 @@ namespace YgomGame.Duel
 
         static bool IsInsight(IntPtr thisPtr, int player, int position, int index)
         {
-            if (GenericCardListController.IsUpdatingCustomCardList)
+            if (GenericCardListController.IsUpdatingCustomCardList || EngineApiUtil.DuelClientMillenniumEye)
             {
                 return true;
             }
