@@ -44,6 +44,7 @@ You can copy/paste/move/rename (but not modify the contents of) files in this fo
 - `DeckEditorDisableLimits` - lets you add banned cards and more than 3 of any card in the deck editor.
 - `DeckEditorShowStats` - displays card collection stats in the deck editor.
 - `DeckEditorConvertStyleRarity` - adjusts shine/royal based on owned cards when using the deck editor sub menu import options (if disabled this will preserve shine/royal status on the imported data).
+- `DuelClientShowRemainingCardsInDeck` - shows the remaining cards in your deck when you click on your deck (ordered by card id).
 
 ## File list
 

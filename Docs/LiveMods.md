@@ -33,7 +33,7 @@ An alternative to the above is running `YgoMaster.exe live` using your favorite 
 
 ## Breaking deck editor limits
 
-When breaking deck editor limits the server will not save your deck. You must therefore use the save / load / clipboard functionalities provided in the deck editor sub menu. Adding more than 75 cards (60 main + 15 extra) seems to breaks the game.
+When breaking deck editor limits the server will not save your deck. You must therefore use the save / load / clipboard functionalities provided in the deck editor sub menu. Starting a duel with more than 75 cards (60 main + 15 extra) seems to break the game.
 
 To enable this set `DeckEditorDisableLimits` to `true` in `/Data/ClientData/ClientSettings.json`.
 
