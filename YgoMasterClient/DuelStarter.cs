@@ -557,7 +557,21 @@ namespace YgomGame.Room
                     // This shouldn't be required, but there's some bug where the deck names get swapped out.
                     // I think something in the ISV caches the string pointers and they can become invalid?
                     // TODO: Look into this issue more instead of doing this hack (annoyingly reproducing it is inconsistent)
-                    //duelSettingsManager.UpdateDeckNames();
+                    duelSettingsManager.UpdateDeckNames();
+                }
+            }
+        }
+
+        public static void OnPopChildViewController(IntPtr manager)
+        {
+            if (IsHacked)
+            {
+                IntPtr contentManager = YgomGame.Menu.ContentViewControllerManager.GetManager();
+                IntPtr roomView = YgomSystem.UI.ViewControllerManager.GetViewController(contentManager, YgomGame.Room.RoomCreateViewController.ClassInfo.IL2Typeof());
+                if (roomView != IntPtr.Zero && manager == contentManager)
+                {
+                    // Another hack... (this time when re-entering the view controller sometimes the deck name gets swapped out, so update it)
+                    duelSettingsManager.UpdateDeckNames();
                 }
             }
         }
@@ -1291,7 +1305,6 @@ namespace YgomSystem.UI
     {
         static IL2Method methodGetViewControllerManagerWithName;
         static IL2Method methodPopChildViewController;
-        static IL2Method methodPopChildViewController2;
         static IL2Method methodPushChildViewControllerWithArgs;
         static IL2Method methodPushChildViewControllerObj;
         static IL2Method methodSwapBottomChildViewController;
@@ -1302,6 +1315,8 @@ namespace YgomSystem.UI
 
         delegate void Del_PushChildViewController(IntPtr thisPtr, IntPtr prefabpathPtr);
         static Hook<Del_PushChildViewController> hookPushChildViewController;
+        delegate void Del_PopChildViewController2(IntPtr thisPtr, IntPtr popTatget);
+        static Hook<Del_PopChildViewController2> hookPopChildViewController2;
         delegate IntPtr Del_LoadViewControllerPrefab(IntPtr thisPtr, IntPtr prefabpathPtr);
         static Hook<Del_LoadViewControllerPrefab> hookLoadViewControllerPrefab;
 
@@ -1312,7 +1327,7 @@ namespace YgomSystem.UI
             methodGetViewControllerManagerWithName = classInfo.GetMethod("GetViewControllerManagerWithName");
             methodLoadViewControllerPrefab = classInfo.GetMethod("LoadViewControllerPrefab");
             methodPopChildViewController = classInfo.GetMethod("PopChildViewController", x => x.GetParameters().Length == 0);
-            methodPopChildViewController2 = classInfo.GetMethod("PopChildViewController", x => x.GetParameters().Length == 1);
+            hookPopChildViewController2 = new Hook<Del_PopChildViewController2>(PopChildViewController, classInfo.GetMethod("PopChildViewController", x => x.GetParameters().Length == 1));
             hookPushChildViewController = new Hook<Del_PushChildViewController>(PushChildViewControllerHook, classInfo.GetMethod("PushChildViewController", x => x.GetParameters().Length == 1 && x.GetParameters()[0].Name == "prefabpath"));
             methodPushChildViewControllerWithArgs = classInfo.GetMethod("PushChildViewController", x => x.GetParameters().Length == 2 && x.GetParameters()[0].Name == "prefabpath");
             methodPushChildViewControllerObj = classInfo.GetMethod("PushChildViewController", x => x.GetParameters()[0].Name == "prefab");
@@ -1388,7 +1403,8 @@ namespace YgomSystem.UI
 
         public static void PopChildViewController(IntPtr thisPtr, IntPtr popTarget)
         {
-            methodPopChildViewController2.Invoke(thisPtr, new IntPtr[] { popTarget });
+            hookPopChildViewController2.Original(thisPtr, popTarget);
+            YgomGame.Room.RoomCreateViewController.OnPopChildViewController(thisPtr);
         }
 
         public static IntPtr LoadViewControllerPrefab(IntPtr thisPtr, string prefabpath)
