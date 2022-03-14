@@ -53,7 +53,9 @@
     <Compile Include="Acts\Act_Deck.cs" />
     <Compile Include="Acts\Act_Shop.cs" />
     <Compile Include="Acts\Act_User.cs" />
+    <Compile Include="Enums\Card.cs" />
     <Compile Include="Enums\Duel.cs" />
+    <Compile Include="WikiDump\HtmlAgilityPack.Merged.cs" />
     <Compile Include="Sim\DuelSimulator.DllContent.cs" />
     <Compile Include="DuelSettings.cs" />
     <Compile Include="Sim\DuelSimulator.cs" />
@@ -85,6 +87,7 @@
     <Compile Include="Infos\ShopInfo.cs" />
     <Compile Include="YdkHelper.cs" />
     <Compile Include="YgoDbSet.cs" />
+    <Compile Include="WikiDump\YgoWikiDecks.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

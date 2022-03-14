@@ -372,15 +372,155 @@ namespace YgoMaster
             }
         }
 
-        class GameCardInfo
+        public class GameCardInfo
         {
             public int Index;
-            public int Id;
             public string Name;
             public string Desc;
+
+            public int PropA;
+            public int PropB;
+
+            // TODO: Move this info elsewhere, not super important for the ydk stuff
+            public int Id { get { return PropA & 0xFFFF; } }
+            public CardKind Kind { get { return (CardKind)((PropA >> 16) & 0x3F); } }
+            public int Attr { get { return (PropA >> (16 + 6)) & 0xF; } }
+            public int Level { get { return (PropA >> (16 + 6 + 4)) & 0xF; } }
+            public int LvType { get { return (PropA >> (16 + 6 + 4 + 4)) & 0x3; } }
+            public int Atk { get { return (PropB & 0x1FF) * 10; } }
+            public int Def { get { return ((PropB >> 9) & 0x1FF) * 10; } }
+            public CardIcon Icon { get { return (CardIcon)((PropB >> (9 + 9)) & 0x7); } }
+            public int Type { get { return (PropB >> (9 + 9 + 3)) & 0x1F; } }
+            public int Scale { get { return (PropB >> (9 + 9 + 3 + 5)) & 0xF; } }
+            public bool Exist { get { return ((PropB >> (9 + 9 + 3 + 5 + 4)) & 0x1) > 0; } }
+
+            public bool IsMonster
+            {
+                get
+                {
+                    switch (Frame)
+                    {
+                        case CardFrame.Magic:
+                        case CardFrame.Trap:
+                            return false;
+                        default:
+                            return true;
+                    }
+                }
+            }
+
+            public bool IsExtraDeck
+            {
+                get { return !IsMainDeck; }
+            }
+
+            public bool IsMainDeck
+            {
+                get
+                {
+                    switch (Frame)
+                    {
+                        default:
+                        case CardFrame.Normal:
+                        case CardFrame.Effect:
+                        case CardFrame.Ritual:
+                        case CardFrame.Magic:
+                        case CardFrame.Trap:
+                        case CardFrame.Pend:
+                        case CardFrame.PendFx:
+                            return true;
+                        case CardFrame.Fusion:
+                        case CardFrame.FusionPend:
+                        case CardFrame.XyzPend:
+                        case CardFrame.Xyz:
+                        case CardFrame.Dsync:
+                        case CardFrame.Sync:
+                        case CardFrame.SyncPend:
+                        case CardFrame.Link:
+                            return false;
+                        case CardFrame.Token:
+                        case CardFrame.Oberisk:
+                        case CardFrame.Osiris:
+                        case CardFrame.Ra:
+                            return false;
+                    }
+                }
+            }
+
+            public CardFrame Frame
+            {
+                get
+                {
+                    switch (Kind)
+                    {
+                        default:
+                        case CardKind.Normal:
+                        case CardKind.Tuner:
+                            return CardFrame.Normal;
+                        case CardKind.Effect:
+                        case CardKind.Toon:
+                        case CardKind.Spirit:
+                        case CardKind.Union:
+                        case CardKind.Dual:
+                        case CardKind.God:
+                        case CardKind.Dummy:
+                        case CardKind.TunerFx:
+                        case CardKind.Dtuner:
+                        case CardKind.Dsync:
+                        case CardKind.Flip:
+                        case CardKind.SpEffect:
+                        case CardKind.SpToon:
+                        case CardKind.SpSpirit:
+                        case CardKind.SpTuner:
+                        case CardKind.SpDtuner:
+                        case CardKind.FlipTuner:
+                        case CardKind.UnionTuner:
+                            return CardFrame.Effect;
+                        case CardKind.Fusion:
+                        case CardKind.FusionFx:
+                        case CardKind.FusionTuner:
+                            return CardFrame.Fusion;
+                        case CardKind.FusionPend:
+                            return CardFrame.FusionPend;
+                        case CardKind.Ritual:
+                        case CardKind.RitualFx:
+                        case CardKind.RitualSpirit:
+                            return CardFrame.Ritual;
+                        case CardKind.Token:
+                            return CardFrame.Token;
+                        case CardKind.Magic:
+                            return CardFrame.Magic;
+                        case CardKind.Trap:
+                            return CardFrame.Trap;
+                        case CardKind.Sync:
+                        case CardKind.SyncFx:
+                        case CardKind.SyncTuner:
+                            return CardFrame.Sync;
+                        case CardKind.SyncPend:
+                            return CardFrame.SyncPend;
+                        case CardKind.Xyz:
+                        case CardKind.XyzFx:
+                            return CardFrame.Xyz;
+                        case CardKind.XyzPend:
+                            return CardFrame.XyzPend;
+                        case CardKind.Pend:
+                        case CardKind.PendNTuner:// maybe fx?
+                            return CardFrame.Pend;
+                        case CardKind.PendFx:
+                        case CardKind.PendFlip:
+                        case CardKind.PendTuner:
+                        case CardKind.SpPend:
+                        case CardKind.PendSpirit:
+                            return CardFrame.PendFx;
+                        case CardKind.Link:
+                        case CardKind.LinkFx:
+                            return CardFrame.Link;
+                    }
+                }
+            }
         }
 
-        static Dictionary<int, GameCardInfo> LoadCardDataFromGame(string dataDir)
+        public static Dictionary<int, GameCardInfo> LoadCardDataFromGame(string dataDir)
         {
             // https://github.com/pixeltris/Lotd/blob/36c8a54d4fa58345974957c0bb061b2878ee9353/Lotd/FileFormats/bin/CardManager.cs#L221
             Dictionary<int, GameCardInfo> cardsById = new Dictionary<int, GameCardInfo>();
@@ -415,10 +555,8 @@ namespace YgoMaster
                 }
                 foreach (GameCardInfo card in cardsByIndex)
                 {
-                    int a1 = cardPropReader.ReadInt32();
-                    int a2 = cardPropReader.ReadInt32();
-
-                    card.Id = a1 & 0xFFFF;
+                    card.PropA = cardPropReader.ReadInt32();
+                    card.PropB = cardPropReader.ReadInt32();
                     if (card.Id > 0)
                     {
                         cardsById[card.Id] = card;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Net;
 
 namespace YgoMaster
 {
@@ -286,6 +287,322 @@ namespace YgoMaster
                 }
             }
             return data;
+        }
+
+        public static string GetInnerText(string html)
+        {
+            html = html.Trim();
+            if ((html.StartsWith("<") && html.EndsWith(">")) || (html.Contains("<a") && html.Contains("</a>")))
+            {
+                string[] nameEntries = FindAllContentBetween(html, 0, html.Length, ">", "<");
+                if (nameEntries.Length > 0)
+                {
+                    return nameEntries.Last();
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+            return html;
+        }
+
+        public static string FindFirstContentBetween(string html, int startIndex, int endIndex, string str1, string str2)
+        {
+            string[] result = FindAllContentBetween(html, startIndex, endIndex, str1, str2, 1);
+            return result.Length > 0 ? result[0] : null;
+        }
+
+        public static string[] FindAllContentBetween(string html, int startIndex, int endIndex, string str1, string str2)
+        {
+            return FindAllContentBetween(html, startIndex, endIndex, str1, str2, int.MaxValue);
+        }
+
+        public static string[] FindAllContentBetween(string html, int startIndex, int endIndex, string str1, string str2, int limit, bool trimEmpty = false)
+        {
+            if (startIndex < 0 && endIndex >= 0)
+            {
+                throw new Exception();
+            }
+            if (endIndex < 0)
+            {
+                endIndex = int.MaxValue;
+            }
+
+            List<string> result = new List<string>();
+            int index = startIndex;
+            int foundCount = 0;
+            while ((index = html.IndexOf(str1, index)) >= 0 &&
+                    index < endIndex)
+            {
+                int firstItemEndIndex = html.IndexOf(str2, index + str1.Length);
+                if (firstItemEndIndex >= 0)
+                {
+                    int offset = index + str1.Length;
+                    string entry = html.Substring(offset, firstItemEndIndex - offset);
+                    if (!trimEmpty || !string.IsNullOrEmpty(entry.Replace("\r", string.Empty).Replace("\n", string.Empty).Trim()))
+                    {
+                        result.Add(entry);
+                    }
+                }
+                index++;
+                foundCount++;
+                if (foundCount >= limit)
+                {
+                    break;
+                }
+            }
+            return result.ToArray();
+        }
+
+        public static string RemoveAllBracePairs(string str, Dictionary<char, char> bracePairs = null)
+        {
+            if (bracePairs == null)
+            {
+                bracePairs = new Dictionary<char, char>() { { '{', '}' }, { '[', ']' }, { '(', ')' } };
+            }
+            StringBuilder sb = new StringBuilder();
+            int braceDepth = 0;
+            char currentBraceChar = (char)0;
+            for (int i = 0; i < str.Length; i++)
+            {
+                char c = str[i];
+                if (currentBraceChar != (char)0)
+                {
+                    if (c == currentBraceChar)
+                    {
+                        braceDepth++;
+                    }
+                    else if (c == bracePairs[currentBraceChar])
+                    {
+                        braceDepth--;
+                        if (braceDepth == 0)
+                        {
+                            currentBraceChar = (char)0;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (KeyValuePair<char, char> bracePair in bracePairs)
+                    {
+                        if (c == bracePair.Key)
+                        {
+                            currentBraceChar = c;
+                            braceDepth++;
+                            break;
+                        }
+                    }
+                    if (braceDepth == 0)
+                    {
+                        sb.Append(c);
+                    }
+                }
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Returns a list of card names (tolower) and card count from a textual card list
+        /// </summary>
+        public static Dictionary<string, int> GetCardNamesLowerAndCount(string text)
+        {
+            Dictionary<string, int> result = new Dictionary<string,int>();
+            string[] lines = text.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string line in lines)
+            {
+                string tempLine = RemoveAllBracePairs(line);
+                tempLine = tempLine.Trim(new char[] { ':', '-', '|', ' ', '\t' });
+                bool ignoreLine = false;
+                bool end = false;
+                switch (tempLine.ToLowerInvariant().TrimEnd('s'))
+                {
+                    case "monster":
+                    case "magic":
+                    case "spell":
+                    case "trap":
+                    case "toon monster":
+                    case "spirit monster":
+                    case "gemini monster":
+                    case "union monster":
+                    case "xyz monster":
+                    case "flip monster":
+                    case "non-tribute monster":
+                    case "tribute monster":
+                    case "ritual monster":
+                    case "normal monster":
+                    case "effect monster":
+                    case "tuner monster":
+                    case "dark tuner monster":
+                    case "dark synchro monster":
+                    case "fusion monster":
+                    case "synchro monster":
+                    case "pendulum monster":
+                    case "monster card":
+                    case "spell card":
+                    case "magic card":
+                    case "trap card":
+                    case "extra deck card":
+                    case "main deck":
+                    case "extra deck":
+                    case "fusion deck":
+                    case "":
+                        ignoreLine = true;
+                        break;
+                    case "side deck":
+                    case "side deck card":
+                        end = true;
+                        break;
+                }
+                if (ignoreLine)
+                {
+                    continue;
+                }
+                if (end)
+                {
+                    break;
+                }
+                int count = 1;
+                string name = tempLine.Trim(new char[] { ':', '-', '|', ' ', '\t' }).ToLowerInvariant();
+                string strip2 = "\"x\" can not be assigned to a declared";
+                if (name.Contains(strip2))
+                {
+                    name = name.Substring(0, name.IndexOf(strip2)).Trim();
+                }
+                string[] stripStrings = { "(favorite)", "(d)" };
+                foreach (string stripString in stripStrings)
+                {
+                    if (name.EndsWith(stripString))
+                    {
+                        name = name.Substring(0, name.Length - stripString.Length).Trim();
+                    }
+                }
+                string[] nameSplitted = name.Split();
+                if (nameSplitted.Length > 0)
+                {
+                    for (int i = 0; i < 2; i++)
+                    {
+                        string element = i == 0 ? nameSplitted.First() : nameSplitted.Last();
+                        bool hadBrace = element.Contains("(");
+                        bool hadX = element.ToLowerInvariant().Count(x => x == 'x') == 1 ||
+                            element.ToLowerInvariant().Count(x => x == '*') == 1 ||
+                            element.ToLowerInvariant().Count(x => x == '×') == 1;
+                        element = element.Replace("(", "").Replace(")", "").Replace("x", "").Replace("*", "").Replace("×", "");
+                        int num;
+                        if (int.TryParse(element, out num) && num >= 1)
+                        {
+                            if (hadX || hadBrace)
+                            {
+                                name = string.Join(" ", nameSplitted, i == 0 ? 1 : 0, nameSplitted.Length - 1);
+                                count = num;
+                                break;
+                            }
+                        }
+                    }
+                }
+                name = name.Trim();
+                if (!result.ContainsKey(name))
+                {
+                    result[name] = count;
+                }
+                else
+                {
+                    result[name] += count;
+                }
+            }
+            return result;
+        }
+
+        public static string DownloadString(string url)
+        {
+            return DownloadString(url, null);
+        }
+
+        public static string DownloadString(string url, string referer, int downloadAttempts = 5, int downloadFailWaitMilliseconds = 200)
+        {
+            using (WebClient client = new WebClient())
+            {
+                client.Proxy = null;
+                client.Encoding = Encoding.UTF8;
+
+                if (!string.IsNullOrEmpty(referer))
+                {
+                    client.Headers[HttpRequestHeader.Referer] = referer;
+                }
+
+                for (int i = 0; i < downloadAttempts; i++)
+                {
+                    try
+                    {
+                        return client.DownloadString(url);
+                    }
+                    catch (WebException e)
+                    {
+                        HttpWebResponse response = (HttpWebResponse)e.Response;
+                        if (response.StatusCode == HttpStatusCode.NotFound ||
+                            response.StatusCode == HttpStatusCode.Forbidden)
+                        {
+                            return null;
+                        }
+                    }
+                    catch
+                    {
+                        if (downloadFailWaitMilliseconds > 0 && i < downloadAttempts - 1)
+                        {
+                            System.Threading.Thread.Sleep(downloadFailWaitMilliseconds);
+                        }
+                    }
+                }
+
+                return null;
+            }
+        }
+
+        public static bool DownloadFile(string url, string filename)
+        {
+            return DownloadFile(url, null, filename);
+        }
+
+        public static bool DownloadFile(string url, string referer, string filename, int downloadAttempts = 5, int downloadFailWaitMilliseconds = 200)
+        {
+            using (WebClient client = new WebClient())
+            {
+                client.Proxy = null;
+                client.Encoding = Encoding.UTF8;
+
+                if (!string.IsNullOrEmpty(referer))
+                {
+                    client.Headers[HttpRequestHeader.Referer] = referer;
+                }
+
+                for (int i = 0; i < downloadAttempts; i++)
+                {
+                    try
+                    {
+                        client.DownloadFile(url, filename);
+                        return true;
+                    }
+                    catch (WebException e)
+                    {
+                        HttpWebResponse response = (HttpWebResponse)e.Response;
+                        if (response != null &&
+                            (response.StatusCode == HttpStatusCode.NotFound ||
+                            response.StatusCode == HttpStatusCode.Forbidden))
+                        {
+                            return false;
+                        }
+                    }
+                    catch
+                    {
+                        if (downloadFailWaitMilliseconds > 0 && i < downloadAttempts - 1)
+                        {
+                            System.Threading.Thread.Sleep(downloadFailWaitMilliseconds);
+                        }
+                    }
+                }
+
+                return false;
+            }
         }
     }
 }

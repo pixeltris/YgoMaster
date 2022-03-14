@@ -84,6 +84,7 @@
     <Compile Include="YgoMasterClient\DuelStarter.cs" />
     <Compile Include="YgoMasterClient\DeckEditorUtils.cs" />
     <Compile Include="YgoMaster\DuelSettings.cs" />
+    <Compile Include="YgoMaster\Enums\Card.cs" />
     <Compile Include="YgoMaster\Enums\Duel.cs" />
     <Compile Include="YgoMaster\Enums\ItemID.cs" />
     <Compile Include="YgoMaster\Enums\Misc.cs" />

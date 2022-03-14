@@ -29,6 +29,11 @@ namespace YgoMaster
             get { return !string.IsNullOrEmpty(File) && File.ToLowerInvariant().EndsWith(".ydk"); }
         }
 
+        /// <summary>
+        /// Maximum deck name length as defined by the client
+        /// </summary>
+        public const int NameMaxLength = 70;
+
         public DeckInfo()
         {
             Accessory = new DeckAccessoryInfo();
@@ -286,5 +291,17 @@ namespace YgoMaster
             return 0;
         }
 #endif
+
+        /// <summary>
+        /// Sets values based on a fresh master duel account without any modifications (red deck case, grassy duel mat, standard sleeve)
+        /// </summary>
+        public void SetDefault()
+        {
+            Box = (int)ItemID.DECK_CASE.ID1080001;
+            Sleeve = (int)ItemID.PROTECTOR.ID1070001;
+            Field = (int)ItemID.FIELD.ID1090001;
+            FieldObj = (int)ItemID.FIELD_OBJ.ID1100001;
+            AvBase = 0;
+        }
     }
 }

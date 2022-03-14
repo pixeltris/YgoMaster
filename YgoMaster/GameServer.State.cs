@@ -278,6 +278,11 @@ namespace YgoMaster
                         case "--updateydk":// Updates "YdkIds.txt" based on a YgoMasterClient "carddata" dump and ygoprodeck cardinfo.php
                             YdkHelper.GenerateIdMap(dataDirectory);
                             break;
+#if WITH_WIKI_DUMPER
+                        case "--wiki-decks":
+                            YgoWikiDecks.Dump(dataDirectory, CardRare);
+                            break;
+#endif
                         default:
                             log = false;
                             break;

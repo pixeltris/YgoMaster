@@ -189,10 +189,6 @@ namespace YgoMaster
     /// </summary>
     class YgoDbSetCollection
     {
-        private const int downloadAttempts = 5;// Downloads attempts per file
-        private const int downloadFailWaitMilliseconds = 200;// Wait time between download attempts        
-        public static int SetImagesPixelHeight = 250;// The output height of processed set images
-
         public Dictionary<long, YgoDbSet> Sets { get; private set; }
 
         public YgoDbSet this[long id]
@@ -265,7 +261,7 @@ namespace YgoMaster
             if (!File.Exists(setsListFile))
             {
                 string url = baseUrl + "/card_list.action?request_locale=" + locale;
-                string html = DownloadString(url);
+                string html = Utils.DownloadString(url);
                 if (string.IsNullOrEmpty(html))
                 {
                     throw new Exception("Failed to load sets url " + url);
@@ -290,8 +286,8 @@ namespace YgoMaster
                 {
                     int nextListIndex = html.IndexOf("class=\"list_title", listIndex + 1);
 
-                    string setTypeStr = FindFirstContentBetween(html, listIndex, nextListIndex, "<tr class=\"pack_l", "</tr>");
-                    setTypeStr = FindAllContentBetween(setTypeStr, 0, int.MaxValue, "<th>", "</th>")[1];
+                    string setTypeStr = Utils.FindFirstContentBetween(html, listIndex, nextListIndex, "<tr class=\"pack_l", "</tr>");
+                    setTypeStr = Utils.FindAllContentBetween(setTypeStr, 0, int.MaxValue, "<th>", "</th>")[1];
                     YgoDbSetType setType = YgoDbSetType.Unknown;
 
                     switch (setTypeStr.ToLower())
@@ -340,7 +336,7 @@ namespace YgoMaster
                             throw new NotImplementedException("Unhandled set type " + setTypeStr);
                     }
 
-                    string[] sets = FindAllContentBetween(html, listIndex, nextListIndex, "<div class=\"pack", "</div>");
+                    string[] sets = Utils.FindAllContentBetween(html, listIndex, nextListIndex, "<div class=\"pack", "</div>");
 
                     for (int i = 0; i < sets.Length; i++)
                     {
@@ -350,7 +346,7 @@ namespace YgoMaster
                             continue;
                         }
 
-                        string setName = FindFirstContentBetween(sets[i], 0, int.MaxValue, "<strong>", "</strong>");
+                        string setName = Utils.FindFirstContentBetween(sets[i], 0, int.MaxValue, "<strong>", "</strong>");
                         int pidIndex = sets[i].IndexOf("&pid=") + 5;
                         int pidEndIndex = sets[i].IndexOfAny(new char[] { ' ', '&', '\"' }, pidIndex);
                         long setId = long.Parse(sets[i].Substring(pidIndex, pidEndIndex - pidIndex));
@@ -363,7 +359,7 @@ namespace YgoMaster
                         if (!File.Exists(filename))
                         {
                             string url = baseUrl + "/card_search.action?ope=1&rp=99999&pid=" + setId + "&request_locale=" + locale;
-                            string setHtml = DownloadString(url);
+                            string setHtml = Utils.DownloadString(url);
                             if (string.IsNullOrEmpty(setHtml))
                             {
                                 throw new Exception("Failed to load sets url " + url);
@@ -395,7 +391,7 @@ namespace YgoMaster
                     Sets[setInfo.Id] = setInfo;
 
                     // Get the release date
-                    string releaseDateStr = FindFirstContentBetween(html, 0, int.MaxValue, "id=\"previewed\">", "</p>");
+                    string releaseDateStr = Utils.FindFirstContentBetween(html, 0, int.MaxValue, "id=\"previewed\">", "</p>");
                     if (string.IsNullOrEmpty(releaseDateStr))
                     {
                         switch (setInfo.Type)
@@ -479,7 +475,7 @@ namespace YgoMaster
                     }
 
                     // Get the card list html
-                    html = FindFirstContentBetween(html, 0, int.MaxValue, "class=\"box_list\"", "<!--.box_list-->");
+                    html = Utils.FindFirstContentBetween(html, 0, int.MaxValue, "class=\"box_list\"", "<!--.box_list-->");
 
                     string mainCardHeader = "card_status";
                     int idx = 0;
@@ -487,10 +483,10 @@ namespace YgoMaster
                     {
                         int nextIdx = html.IndexOf(mainCardHeader, idx + 1);
 
-                        int cardId = int.Parse(FindFirstContentBetween(html, idx, nextIdx, "cid=", "\""));
+                        int cardId = int.Parse(Utils.FindFirstContentBetween(html, idx, nextIdx, "cid=", "\""));
                         YgoDbSet.CardRarity rarity = YgoDbSet.CardRarity.Common;
 
-                        string rarityStr = FindFirstContentBetween(html, idx, nextIdx, "/rarity/icon_", ".png");
+                        string rarityStr = Utils.FindFirstContentBetween(html, idx, nextIdx, "/rarity/icon_", ".png");
                         if (rarityStr != null)
                         {
                             switch (rarityStr)
@@ -631,151 +627,6 @@ namespace YgoMaster
                     }
                 }
             }
-        }
-
-        private string DownloadString(string url)
-        {
-            return DownloadString(url, null);
-        }
-
-        private string DownloadString(string url, string referer)
-        {
-            using (WebClient client = new WebClient())
-            {
-                client.Proxy = null;
-                client.Encoding = Encoding.UTF8;
-
-                if (!string.IsNullOrEmpty(referer))
-                {
-                    client.Headers[HttpRequestHeader.Referer] = referer;
-                }
-
-                for (int i = 0; i < downloadAttempts; i++)
-                {
-                    try
-                    {
-                        return client.DownloadString(url);
-                    }
-                    catch (WebException e)
-                    {
-                        HttpWebResponse response = (HttpWebResponse)e.Response;
-                        if (response.StatusCode == HttpStatusCode.NotFound ||
-                            response.StatusCode == HttpStatusCode.Forbidden)
-                        {
-                            return null;
-                        }
-                    }
-                    catch
-                    {
-                        if (downloadFailWaitMilliseconds > 0)
-                        {
-                            System.Threading.Thread.Sleep(downloadFailWaitMilliseconds);
-                        }
-                    }
-                }
-
-                return null;
-            }
-        }
-
-        private bool DownloadFile(string url, string filename)
-        {
-            return DownloadFile(url, null, filename);
-        }
-
-        private bool DownloadFile(string url, string referer, string filename)
-        {
-            using (WebClient client = new WebClient())
-            {
-                client.Proxy = null;
-
-                if (!string.IsNullOrEmpty(referer))
-                {
-                    client.Headers[HttpRequestHeader.Referer] = referer;
-                }
-
-                for (int i = 0; i < downloadAttempts; i++)
-                {
-                    try
-                    {
-                        client.DownloadFile(url, filename);
-                        return true;
-                    }
-                    catch (WebException e)
-                    {
-                        HttpWebResponse response = (HttpWebResponse)e.Response;
-                        if (response != null &&
-                            (response.StatusCode == HttpStatusCode.NotFound ||
-                            response.StatusCode == HttpStatusCode.Forbidden))
-                        {
-                            return false;
-                        }
-                    }
-                    catch
-                    {
-                        if (downloadFailWaitMilliseconds > 0)
-                        {
-                            System.Threading.Thread.Sleep(downloadFailWaitMilliseconds);
-                        }
-                    }
-                }
-
-                return false;
-            }
-        }
-
-        private string MakeSafeFileName(string filename)
-        {
-            string replaceChar = "_";
-            foreach (char c in Path.GetInvalidFileNameChars())
-            {
-                filename = filename.Replace(c.ToString(), replaceChar);
-            }
-            return filename;
-        }
-
-        private string FindFirstContentBetween(string html, int startIndex, int endIndex, string str1, string str2)
-        {
-            string[] result = FindAllContentBetween(html, startIndex, endIndex, str1, str2, 1);
-            return result.Length > 0 ? result[0] : null;
-        }
-
-        private string[] FindAllContentBetween(string html, int startIndex, int endIndex, string str1, string str2)
-        {
-            return FindAllContentBetween(html, startIndex, endIndex, str1, str2, int.MaxValue);
-        }
-
-        private string[] FindAllContentBetween(string html, int startIndex, int endIndex, string str1, string str2, int limit)
-        {
-            if (startIndex < 0 && endIndex >= 0)
-            {
-                throw new Exception();
-            }
-            if (endIndex < 0)
-            {
-                endIndex = int.MaxValue;
-            }
-
-            List<string> result = new List<string>();
-            int index = startIndex;
-            int foundCount = 0;
-            while ((index = html.IndexOf(str1, index)) > 0 &&
-                    index < endIndex)
-            {
-                int firstItemEndIndex = html.IndexOf(str2, index + str1.Length);
-                if (firstItemEndIndex >= 0)
-                {
-                    int offset = index + str1.Length;
-                    result.Add(html.Substring(offset, firstItemEndIndex - offset));
-                }
-                index++;
-                foundCount++;
-                if (foundCount >= limit)
-                {
-                    break;
-                }
-            }
-            return result.ToArray();
         }
     }
 }

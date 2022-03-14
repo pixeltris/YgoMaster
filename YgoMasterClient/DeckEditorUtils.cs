@@ -504,6 +504,17 @@ namespace YgomGame.SubMenu
         delegate void Del_OnCreatedView(IntPtr thisPtr);
         static Hook<Del_OnCreatedView> hookOnCreatedView;
 
+        // Used when importing cards by name
+        class BasicCardInfo
+        {
+            public int Id;
+            public string Name;
+            public bool IsExtraDeck;
+        }
+        static bool allCardNamesLoaded;
+        static Dictionary<int, BasicCardInfo> allCards = new Dictionary<int, BasicCardInfo>();
+        static Dictionary<string, BasicCardInfo> allCardsByNameLower = new Dictionary<string, BasicCardInfo>();
+
         static DeckEditSubMenuViewController()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
@@ -511,10 +522,50 @@ namespace YgomGame.SubMenu
             hookOnCreatedView = new Hook<Del_OnCreatedView>(OnCreatedView, classInfo.GetMethod("OnCreatedView"));
         }
 
+        static bool LoadAllCardNames()
+        {
+            if (allCardNamesLoaded)
+            {
+                return allCards.Count > 0;
+            }
+            Dictionary<string, object> cardRare = MiniJSON.Json.Deserialize(YgomSystem.Utility.ClientWork.SerializePath("$.Master.CardRare")) as Dictionary<string, object>;
+            if (cardRare != null)
+            {
+                IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+                IL2Class contentClassInfo = assembly.GetClass("Content", "YgomGame.Card");
+                IntPtr contentInstance = contentClassInfo.GetField("s_instance").GetValue().ptr;
+                IL2Method methodGetName = contentClassInfo.GetMethod("GetName");
+                IL2Method methodIsExtraDeckCard = contentClassInfo.GetMethod("IsExtraDeckCard");
+                foreach (KeyValuePair<string, object> entry in cardRare)
+                {
+                    int cardId;
+                    if (int.TryParse(entry.Key, out cardId))
+                    {
+                        bool replaceAlnum = true;
+                        IL2Object stringObj = methodGetName.Invoke(contentInstance, new IntPtr[] { new IntPtr(&cardId), new IntPtr(&replaceAlnum) });
+                        if (stringObj != null)
+                        {
+                            string name = stringObj.GetValueObj<string>();
+                            BasicCardInfo cardInfo = new BasicCardInfo()
+                            {
+                                Id = cardId,
+                                Name = name,
+                                IsExtraDeck = methodIsExtraDeckCard.Invoke(contentInstance, new IntPtr[] { new IntPtr(&cardId) }).GetValueRef<bool>()
+                            };
+                            allCards[cardId] = cardInfo;
+                            allCardsByNameLower[name.ToLowerInvariant()] = cardInfo;
+                        }
+                    }
+                }
+                allCardNamesLoaded = true;
+            }
+            return allCards.Count > 0;
+        }
+
         static void OnCreatedView(IntPtr thisPtr)
         {
             hookOnCreatedView.Original(thisPtr);
-            SubMenuViewController.AddMenuItem(thisPtr, "From clipboard (YDKe / YDK / JSON)", OnLoadFromClipboard);
+            SubMenuViewController.AddMenuItem(thisPtr, "From clipboard (YDKe / YDK / JSON / TXT)", OnLoadFromClipboard);
             SubMenuViewController.AddMenuItem(thisPtr, "To clipboard (YDKe)", OnSaveToClipboardYDKe);
             SubMenuViewController.AddMenuItem(thisPtr, "Load file", OnLoad);
             SubMenuViewController.AddMenuItem(thisPtr, "Save file", OnSave);
@@ -551,7 +602,7 @@ namespace YgomGame.SubMenu
                 text = text.Trim().Trim('\r', '\n');
                 if (text.StartsWith("ydke://", StringComparison.OrdinalIgnoreCase))
                 {
-                    string[] splitted = text.Substring(7).Split(new char[] { '!' }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] splitted = text.Substring(7).Split(new char[] { '!' });
                     for (int i = 0; i < 3; i++)
                     {
                         if (i < splitted.Length && !string.IsNullOrEmpty(splitted[i]))
@@ -579,14 +630,157 @@ namespace YgomGame.SubMenu
                 {
                     deck.FromDictionaryEx(MiniJSON.Json.DeserializeStripped(text) as Dictionary<string, object>);
                 }
+                else if (text.Contains("<table") && text.Contains("</table>"))
+                {
+                    if (LoadAllCardNames())
+                    {
+                        int numFailed = 0;
+                        StringBuilder failedSb = new StringBuilder();
+                        string[] tables = YgoMaster.Utils.FindAllContentBetween(text, 0, text.Length, "<table", "</table>");
+                        foreach (string table in tables)
+                        {
+                            string[] tableEntries = YgoMaster.Utils.FindAllContentBetween(table, 0, table.Length, "<tr", "</tr>");
+                            if (tableEntries.Length == 0)
+                            {
+                                failedSb.AppendLine("Failed to rows");
+                                numFailed++;
+                                continue;
+                            }
+                            string[] headers = YgoMaster.Utils.FindAllContentBetween(tableEntries[0], 0, tableEntries[0].Length, "<th", "</th>");
+                            int nameColumnIndex = -1;
+                            int quantityColumnIndex = -1;
+                            for (int i = 0; i < headers.Length; i++)
+                            {
+                                string header = headers[i] + "<";
+                                string[] items = YgoMaster.Utils.FindAllContentBetween(header, 0, header.Length, ">", "<", int.MaxValue, true);
+                                if (items.Length > 0)
+                                {
+                                    switch (items.Last().ToLowerInvariant())
+                                    {
+                                        case "english name":
+                                        case "name":
+                                        case "card":
+                                            nameColumnIndex = i;
+                                            break;
+                                        case "qty":
+                                        case "quantity":
+                                        case "count":
+                                            quantityColumnIndex = i;
+                                            break;
+                                    }
+                                }
+                            }
+                            if (nameColumnIndex >= 0)
+                            {
+                                foreach (string tableEntry in tableEntries)
+                                {
+                                    string[] columns = YgoMaster.Utils.FindAllContentBetween(tableEntry, 0, tableEntry.Length, "<td", "</td>");
+                                    if (columns.Length > nameColumnIndex && (columns.Length > quantityColumnIndex || quantityColumnIndex == -1))
+                                    {
+                                        string name = YgoMaster.Utils.GetInnerText(columns[nameColumnIndex].TrimStart('>')).ToLowerInvariant();
+                                        string quantityStr =quantityColumnIndex == -1 ? "1" : YgoMaster.Utils.GetInnerText(columns[quantityColumnIndex].TrimStart('>'));
+                                        int quantity;
+                                        BasicCardInfo cardInfo;
+                                        if (int.TryParse(quantityStr, out quantity) && allCardsByNameLower.TryGetValue(name, out cardInfo))
+                                        {
+                                            if (cardInfo.IsExtraDeck)
+                                            {
+                                                for (int i = 0; i < quantity; i++)
+                                                {
+                                                    deck.ExtraDeckCards.Add(cardInfo.Id);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                for (int i = 0; i < quantity; i++)
+                                                {
+                                                    deck.MainDeckCards.Add(cardInfo.Id);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            failedSb.AppendLine(name + " (x" + quantityStr + ")");
+                                            numFailed++;
+                                        }
+                                    }
+                                    else if (!tableEntry.Contains("<th"))
+                                    {
+                                        failedSb.AppendLine("Failed to find name / quantity for row");
+                                        numFailed++;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                failedSb.AppendLine("Failed to find name / quantity columns");
+                                numFailed++;
+                            }
+                        }
+                        if (numFailed > 0)
+                        {
+                            Clipboard.SetText(failedSb.ToString());
+                            YgomGame.Menu.CommonDialogViewController.OpenConfirmationDialogScroll("Info", "Failed to copy " + numFailed +
+                                " rows. Text has been copied to the clipboard.\n\n" + failedSb.ToString(), "OK", null, null, true, 500);
+                        }
+                    }
+                    else
+                    {
+                        YgomGame.Menu.CommonDialogViewController.OpenErrorDialog("Error", "Failed to load card data", "OK", null);
+                        return;
+                    }
+                }
                 else if (text.Contains("#main"))
                 {
                     YgoMaster.YdkHelper.LoadDeck(deck, text);
                 }
                 else
                 {
-                    YgomGame.Menu.CommonDialogViewController.OpenErrorDialog("Error", "Not a valid YDK / JSON file", "OK", null);
-                    return;
+                    if (LoadAllCardNames())
+                    {
+                        int numFailed = 0;
+                        StringBuilder failedSb = new StringBuilder();
+                        Dictionary<string, int> cardNames = YgoMaster.Utils.GetCardNamesLowerAndCount(text);
+                        foreach (KeyValuePair<string, int> cardName in cardNames)
+                        {
+                            string name = cardName.Key;
+                            int count = cardName.Value;
+                            BasicCardInfo cardInfo;
+                            if (allCardsByNameLower.TryGetValue(name, out cardInfo))
+                            {
+                                if (cardInfo.IsExtraDeck)
+                                {
+                                    for (int i = 0; i < count; i++)
+                                    {
+                                        deck.ExtraDeckCards.Add(cardInfo.Id);
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < count; i++)
+                                    {
+                                        deck.MainDeckCards.Add(cardInfo.Id);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                failedSb.AppendLine(name + " (x" + count + ")");
+                                numFailed++;
+                            }
+                        }
+                        if (numFailed > 0)
+                        {
+                            Clipboard.SetText(failedSb.ToString());
+                            YgomGame.Menu.CommonDialogViewController.OpenConfirmationDialogScroll("Info", "Failed to copy " + numFailed +
+                                " rows. Text has been copied to the clipboard.\n\n" + failedSb.ToString(), "OK", null, null, true, 500);
+                        }
+                    }
+                    else
+                    {
+                        YgomGame.Menu.CommonDialogViewController.OpenErrorDialog("Error", "Failed to load card data", "OK", null);
+                        return;
+                    }
                 }
                 if (deck.GetAllCards().Count > 0)
                 {
