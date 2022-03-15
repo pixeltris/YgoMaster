@@ -86,29 +86,7 @@ namespace YgoMaster
 
         void LoadSettings()
         {
-            try
-            {
-                string overrideDataDirFile = "DataDirServer.txt";
-                if (!File.Exists(overrideDataDirFile))
-                {
-                    overrideDataDirFile = "DataDir.txt";
-                }
-                if (File.Exists(overrideDataDirFile))
-                {
-                    string newDir = File.ReadAllLines(overrideDataDirFile)[0].Trim();
-                    if (Directory.Exists(newDir))
-                    {
-                        dataDirectory = newDir;
-                    }
-                }
-            }
-            catch
-            {
-            }
-            if (string.IsNullOrEmpty(dataDirectory))
-            {
-                dataDirectory = "Data";
-            }
+            dataDirectory = Utils.GetDataDirectory(true);
             if (!Directory.Exists(dataDirectory))
             {
                 Utils.LogWarning("Failed to find data directory '" + dataDirectory + "'");
@@ -283,11 +261,16 @@ namespace YgoMaster
                             YgoWikiDecks.Dump(dataDirectory, CardRare);
                             break;
 #endif
+                        case "--cpucontest":
+                            CpuContest cpuContest = new CpuContest(dataDirectory);
+                            cpuContest.Run();
+                            Environment.Exit(0);
+                            break;
                         default:
                             log = false;
                             break;
                     }
-                    if (!log)
+                    if (log)
                     {
                         Console.WriteLine("Done (" + arg + ")");
                     }
@@ -714,7 +697,7 @@ namespace YgoMaster
                 {
                     DeckInfo deck = new DeckInfo();
                     deck.File = file;
-                    LoadDeck(deck);
+                    deck.Load();
                     deck.Id = player.NextDeckUId++;
                     player.Decks[deck.Id] = deck;
                 }
@@ -722,18 +705,6 @@ namespace YgoMaster
                 {
                     Utils.LogWarning("Failed to load deck " + file);
                 }
-            }
-        }
-
-        void LoadDeck(DeckInfo deck)
-        {
-            if (deck.IsYdkDeck)
-            {
-                YdkHelper.LoadDeck(deck);
-            }
-            else
-            {
-                deck.FromDictionaryEx(MiniJSON.Json.DeserializeStripped(File.ReadAllText(deck.File)) as Dictionary<string, object>);
             }
         }
 

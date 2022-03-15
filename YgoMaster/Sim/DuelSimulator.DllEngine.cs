@@ -49,7 +49,7 @@ namespace YgoMaster
             public byte VoidMonst;
         }
 
-        const string dllName = "../duel/masterduel_Data/Plugins/x86_64/duel.dll";
+        const string dllName = "../masterduel_Data/Plugins/x86_64/duel.dll";
         [DllImport(dllName)]
         private static extern uint DLL_CardRareGetBufferSize();
         [DllImport(dllName)]

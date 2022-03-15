@@ -108,6 +108,18 @@ namespace YgoMaster
             }
         }
 
+        public void Load()
+        {
+            if (IsYdkDeck)
+            {
+                YdkHelper.LoadDeck(this);
+            }
+            else
+            {
+                FromDictionaryEx(MiniJSON.Json.DeserializeStripped(System.IO.File.ReadAllText(File)) as Dictionary<string, object>);
+            }
+        }
+
         public void CopyFrom(DeckInfo other)
         {
             Id = other.Id;

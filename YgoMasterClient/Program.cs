@@ -71,29 +71,7 @@ namespace YgoMasterClient
                 IsLive = arg == "live";
 
                 CurrentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                try
-                {
-                    string overrideDataDirFile = Path.Combine(CurrentDir, "DataDirClient.txt");
-                    if (!File.Exists(overrideDataDirFile))
-                    {
-                        overrideDataDirFile = Path.Combine(CurrentDir, "DataDir.txt");
-                    }
-                    if (File.Exists(overrideDataDirFile))
-                    {
-                        string newDir = Path.Combine(CurrentDir, File.ReadAllLines(overrideDataDirFile)[0].Trim());
-                        if (Directory.Exists(newDir))
-                        {
-                            DataDir = newDir;
-                        }
-                    }
-                }
-                catch
-                {
-                }
-                if (string.IsNullOrEmpty(DataDir))
-                {
-                    DataDir = Path.Combine(CurrentDir, "Data");
-                }
+                DataDir = YgoMaster.Utils.GetDataDirectory(false, CurrentDir);
                 ClientDataDir = Path.Combine(DataDir, "ClientData");
                 ClientDataDumpDir = Path.Combine(DataDir, "ClientDataDump");
                 YgoMaster.YdkHelper.LoadIdMap(DataDir);

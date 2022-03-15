@@ -9,7 +9,7 @@ namespace YgoMaster
 {
     partial class DuelSimulator
     {
-        void InitContent()
+        public void InitContent()
         {
             string cardDataDir = Path.Combine(DataDir, "CardData");
             if (!Directory.Exists(cardDataDir))

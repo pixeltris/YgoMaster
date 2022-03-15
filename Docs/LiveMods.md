@@ -13,7 +13,7 @@ The following mods can be applied to the live game:
 - Custom PvE duels (no rewards).
 - Card collection stats.
 - Load / save decks (YDK / JSON).
-- Copy / paste decks from the clipboard (YDKe / YDK / JSON).
+- Copy / paste decks from the clipboard (YDKe / YDK / JSON / TXT).
 - Break deck editor limits (add banned cards / add more than 3 of any card).
 
 ## Usage

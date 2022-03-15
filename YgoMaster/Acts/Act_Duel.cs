@@ -69,7 +69,7 @@ namespace YgoMaster
                                             {
                                                 DeckInfo deckInfo = new DeckInfo();
                                                 deckInfo.File = possibleFile;
-                                                LoadDeck(deckInfo);
+                                                deckInfo.Load();
                                                 decks.Add(deckInfo);
                                             }
                                         }

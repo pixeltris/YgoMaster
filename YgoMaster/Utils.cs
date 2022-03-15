@@ -11,6 +11,35 @@ namespace YgoMaster
     {
         static readonly bool disableInfoLogging = false;
 
+        public static string GetDataDirectory(bool isServer, string currentDir = "")
+        {
+            string dataDir = null;
+            try
+            {
+                string overrideDataDirFile = Path.Combine(currentDir, isServer ? "DataDirServer.txt" : "DataDirClient.txt");
+                if (!File.Exists(overrideDataDirFile))
+                {
+                    overrideDataDirFile = Path.Combine(currentDir, "DataDir.txt");
+                }
+                if (File.Exists(overrideDataDirFile))
+                {
+                    string newDir = Path.Combine(currentDir, File.ReadAllLines(overrideDataDirFile)[0].Trim());
+                    if (Directory.Exists(newDir))
+                    {
+                        dataDir = newDir;
+                    }
+                }
+            }
+            catch
+            {
+            }
+            if (string.IsNullOrEmpty(dataDir))
+            {
+                dataDir = Path.Combine(currentDir, "Data");
+            }
+            return dataDir;
+        }
+
         public static string FixIdString(string str)
         {
             if (string.IsNullOrEmpty(str))
