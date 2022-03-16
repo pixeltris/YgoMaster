@@ -463,8 +463,8 @@ namespace YgoMaster
                                     if (thread == Thread.CurrentThread)
                                     {
                                         stopwatch.Stop();
+                                        Contest.OnDuelResult(stats, opponentStats, goFirst, result, stopwatch.Elapsed);
                                     }
-                                    Contest.OnDuelResult(stats, opponentStats, goFirst, result, stopwatch.Elapsed);
                                 }
                             }
                             else

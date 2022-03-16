@@ -88,6 +88,10 @@ namespace YgoMaster
 
                 actsHeader = context.Request.Headers["x_acts"];
                 Utils.LogInfo("Req " + actsHeader);
+                if (context.Request.ContentLength64 > maxContentLength)
+                {
+                    Utils.LogWarning("Buffer too long. MaxLen:" + maxContentLength + " len:" + context.Request.ContentLength64);
+                }
                 if (!string.IsNullOrEmpty(actsHeader) && context.Request.ContentLength64 <= maxContentLength)
                 {
                     requestBuffer = new byte[context.Request.ContentLength64];
@@ -348,8 +352,8 @@ namespace YgoMaster
 
         static string GetRequestString(byte[] buffer, out string token)
         {
-            short tokenLength = BitConverter.ToInt16(buffer, 0);
-            short dataLength = BitConverter.ToInt16(buffer, 2);
+            ushort tokenLength = BitConverter.ToUInt16(buffer, 0);
+            ushort dataLength = BitConverter.ToUInt16(buffer, 2);
             if (tokenLength < 0 || dataLength < 0)
             {
                 token = null;
