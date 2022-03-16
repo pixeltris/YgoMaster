@@ -48,6 +48,12 @@ namespace YgoMaster
                 Console.WriteLine("Failed to find folder '" + decksDir + "'");
                 return;
             }
+            string cardDataDir = Path.Combine(DataDir, "CardData");
+            if (!Directory.Exists(cardDataDir))
+            {
+                Console.WriteLine("Failedt to find folder '" + cardDataDir + "'");
+                return;
+            }
             string contestSettingsFile = Path.Combine(ContestDir, "ContestSettings.json");
             if (!File.Exists(contestSettingsFile))
             {

@@ -4,14 +4,101 @@ using System.Linq;
 using System.Text;
 using YgoMasterClient;
 using IL2CPP;
+using System.Runtime.InteropServices;
+
+namespace UnityEngine
+{
+    unsafe static class QualitySettings
+    {
+        public static void CreateVSyncHook()
+        {
+            // Hook in C++ land as this is called every frame which kills the performance when entering C#
+            IL2Assembly assembly = Assembler.GetAssembly("UnityEngine.CoreModule");
+            IL2Class classInfo = assembly.GetClass("QualitySettings");
+            PInvoke.CreateVSyncHook(Marshal.ReadIntPtr(classInfo.GetProperty("vSyncCount").GetSetMethod().ptr));
+        }
+    }
+}
 
 namespace YgomGame.Duel
 {
+    unsafe static class ReplayControl
+    {
+        static IL2Field field_ffIconOn;
+
+        delegate void Del_OnTapFast(IntPtr thisPtr);
+        static Hook<Del_OnTapFast> hookOnTapFast;
+
+        static ReplayControl()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            IL2Class classInfo = assembly.GetClass("ReplayControl", "YgomGame.Duel");
+            field_ffIconOn = classInfo.GetField("ffIconOn");
+            hookOnTapFast = new Hook<Del_OnTapFast>(OnTapFast, classInfo.GetMethod("OnTapFast"));
+        }
+
+        static void OnTapFast(IntPtr thisPtr)
+        {
+            // The state of the button is determined based on the current duel speed setting, so set it to what it should be
+            bool enabled = false;
+            if (UnityEngine.GameObject.IsActive(field_ffIconOn.GetValue(thisPtr).ptr))
+            {
+                DuelClient.SetDuelSpeed(DuelClient.DuelSpeed.Fastest);
+                enabled = true;
+            }
+            else
+            {
+                DuelClient.SetDuelSpeed(DuelClient.DuelSpeed.Normal);
+                enabled = false;
+            }
+            hookOnTapFast.Original(thisPtr);
+            enabled = !enabled;
+            ClientSettings.LoadTimeMultipliers();
+            if (enabled && ClientSettings.ReplayControlsTimeMultiplier != 0)
+            {
+                // Use a normal duel speed and use our time multiplier instead
+                DuelClient.SetDuelSpeed(DuelClient.DuelSpeed.Normal);
+                PInvoke.SetTimeMultiplier(ClientSettings.ReplayControlsTimeMultiplier);
+            }
+            else
+            {
+                PInvoke.SetTimeMultiplier(ClientSettings.DuelClientTimeMultiplier != 0 ?
+                    ClientSettings.DuelClientTimeMultiplier : ClientSettings.TimeMultiplier);
+            }
+        }
+    }
+
+    unsafe static class DuelClient
+    {
+        static IL2Method methodSetDuelSpeed;
+
+        static DuelClient()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            IL2Class classInfo = assembly.GetClass("DuelClient", "YgomGame.Duel");
+            methodSetDuelSpeed = classInfo.GetMethod("SetDuelSpeed");
+        }
+
+        public static void SetDuelSpeed(DuelSpeed duelSpeed)
+        {
+            methodSetDuelSpeed.Invoke(new IntPtr[] { new IntPtr(&duelSpeed) });
+        }
+
+        public enum DuelSpeed
+        {
+            Normal,
+            Fastest
+        }
+    }
+
     unsafe static class Engine
     {
         static IL2Method methodGetCardNum;
         static IL2Method methodGetCardID;
         static IL2Method methodGetCardUniqueID;
+
+        delegate bool Del_IsReplayMode();
+        static Hook<Del_IsReplayMode> hookIsReplayMode;
 
         static Engine()
         {
@@ -20,6 +107,7 @@ namespace YgomGame.Duel
             methodGetCardNum = classInfo.GetMethod("GetCardNum");
             methodGetCardID = classInfo.GetMethod("GetCardID");
             methodGetCardUniqueID = classInfo.GetMethod("GetCardUniqueID");
+            hookIsReplayMode = new Hook<Del_IsReplayMode>(IsReplayMode, classInfo.GetMethod("IsReplayMode"));
         }
 
         public static int GetCardNum(int player, int locate)
@@ -36,12 +124,19 @@ namespace YgomGame.Duel
         {
             return methodGetCardUniqueID.Invoke(new IntPtr[] { new IntPtr(&player), new IntPtr(&position), new IntPtr(&index) }).GetValueRef<int>();
         }
+
+        static bool IsReplayMode()
+        {
+            if (ClientSettings.ReplayControlsAlwaysEnabled)
+            {
+                return true;
+            }
+            return hookIsReplayMode.Original();
+        }
     }
 
     unsafe static class EngineApiUtil
     {
-        public static bool DuelClientMillenniumEye;
-        
         delegate bool Del_IsCardKnown(IntPtr thisPtr, int player, int position, int index, bool face);
         static Hook<Del_IsCardKnown> hookIsCardKnown;
         delegate bool Del_IsInsight(IntPtr thisPtr, int player, int position, int index);
@@ -57,7 +152,7 @@ namespace YgomGame.Duel
 
         static bool IsCardKnown(IntPtr thisPtr, int player, int position, int index, bool face)
         {
-            if (GenericCardListController.IsUpdatingCustomCardList || EngineApiUtil.DuelClientMillenniumEye)
+            if (GenericCardListController.IsUpdatingCustomCardList || ClientSettings.DuelClientMillenniumEye)
             {
                 return true;
             }
@@ -66,7 +161,7 @@ namespace YgomGame.Duel
 
         static bool IsInsight(IntPtr thisPtr, int player, int position, int index)
         {
-            if (GenericCardListController.IsUpdatingCustomCardList || EngineApiUtil.DuelClientMillenniumEye)
+            if (GenericCardListController.IsUpdatingCustomCardList || ClientSettings.DuelClientMillenniumEye)
             {
                 return true;
             }
@@ -76,7 +171,6 @@ namespace YgomGame.Duel
 
     unsafe static class GenericCardListController
     {
-        public static bool DuelClientShowRemainingCardsInDeck;
         public static bool IsUpdatingCustomCardList;
 
         static bool isCustomCardList;
@@ -108,7 +202,7 @@ namespace YgomGame.Duel
 
         static void UpdateList(IntPtr thisPtr, int team, int position)
         {
-            if (DuelClientShowRemainingCardsInDeck)
+            if (ClientSettings.DuelClientShowRemainingCardsInDeck)
             {
                 if ((ListType)fieldType.GetValue(thisPtr).GetValueRef<int>() == ListType.EXCLUDED_TEAM0)
                 {

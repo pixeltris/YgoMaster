@@ -10,10 +10,6 @@ namespace YgoMasterClient
 {
     unsafe static partial class AssetHelper
     {
-        public static bool ShouldDumpData;
-        public static bool LogAssets;
-        public static bool DisableFileErrorPopup;
-
         // TODO: Put these definitions into nested classes (or just use more explicit names)
 
         // YgomSystem.Utility.DeviceInfo
@@ -522,11 +518,11 @@ namespace YgoMasterClient
 
         static uint Load(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify)
         {
-            if (LogAssets && path != IntPtr.Zero)
+            if (ClientSettings.AssetHelperLog && path != IntPtr.Zero)
             {
                 Console.WriteLine(new IL2String(path).ToString());
             }
-            if (DisableFileErrorPopup)
+            if (ClientSettings.AssetHelperDisableFileErrorPopup)
             {
                 disableErrorNotify = true;
             }
@@ -540,11 +536,11 @@ namespace YgoMasterClient
 
         static uint LoadImmediate(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify)
         {
-            if (LogAssets && path != IntPtr.Zero)
+            if (ClientSettings.AssetHelperLog && path != IntPtr.Zero)
             {
                 Console.WriteLine(new IL2String(path).ToString());
             }
-            if (DisableFileErrorPopup)
+            if (ClientSettings.AssetHelperDisableFileErrorPopup)
             {
                 disableErrorNotify = true;
             }
@@ -607,7 +603,7 @@ namespace YgoMasterClient
                 loadPath = loadPathObj.GetValueObj<string>();
             }
 
-            if (ShouldDumpData && !string.IsNullOrEmpty(loadPath))
+            if (ClientSettings.AssetHelperDump && !string.IsNullOrEmpty(loadPath))
             {
                 if (loadPath.StartsWith("External/CardCategory/") ||
                     loadPath.StartsWith("Card/Data/"))
@@ -665,7 +661,7 @@ namespace YgoMasterClient
                         InjectSoloThumbs(obj);
                     }
 
-                    if (ShouldDumpData)
+                    if (ClientSettings.AssetHelperDump)
                     {
                         if (!hasDumpedTexture)
                         {

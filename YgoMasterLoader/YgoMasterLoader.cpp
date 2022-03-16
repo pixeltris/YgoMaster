@@ -35,13 +35,20 @@
 #define LIBRARY_API __declspec (dllexport)
 #endif
 
-typedef HMODULE (WINAPI* Real_LoadLibraryW)(LPCWSTR fileName);
-Real_LoadLibraryW Original_LoadLibraryW;
-typedef void* (*Real_il2cpp_init)(const char* domain_name);
-Real_il2cpp_init Original_il2cpp_init;
+typedef int (__thiscall* Sig_SetVSyncCount)(void* thisPtr, int value);
+Sig_SetVSyncCount Original_SetVSyncCount;
+typedef BOOL (WINAPI* Sig_QueryPerformanceCounter)(LARGE_INTEGER* lpPerformanceCount);
+Sig_QueryPerformanceCounter Original_QueryPerformanceCounter;
+typedef HMODULE (WINAPI* Sig_LoadLibraryW)(LPCWSTR fileName);
+Sig_LoadLibraryW Original_LoadLibraryW;
+typedef void* (*Sig_il2cpp_init)(const char* domain_name);
+Sig_il2cpp_init Original_il2cpp_init;
 
 BOOL hooksInitialized = FALSE;
 BOOL runningLive = FALSE;
+LARGE_INTEGER lastTime = {0};
+LARGE_INTEGER fakeTime = {0};
+double timeMultiplier = 1.0;
 
 BOOL FileExists(LPCWSTR szPath)
 {
@@ -170,22 +177,49 @@ void LoadDotNet()
     }
 }
 
-void* Mine_il2cpp_init(const char* domain_name)
+void* Hook_il2cpp_init(const char* domain_name)
 {
     void* initRes = Original_il2cpp_init(domain_name);
     LoadDotNet();
     return initRes;
 }
 
-HMODULE WINAPI Mine_LoadLibraryW(LPCWSTR lpLibFileName)
+HMODULE WINAPI Hook_LoadLibraryW(LPCWSTR lpLibFileName)
 {
     HMODULE handle = Original_LoadLibraryW(lpLibFileName);
     if (wcsstr(lpLibFileName, L"GameAssembly.dll") != NULL)
     {
-        MH_DisableHook(&LoadLibraryW);
-        WL_HookFunction(GetProcAddress(handle, "il2cpp_init"), &Mine_il2cpp_init, (LPVOID*)&Original_il2cpp_init);
+        MH_RemoveHook(&LoadLibraryW);
+        WL_HookFunction(GetProcAddress(handle, "il2cpp_init"), &Hook_il2cpp_init, (LPVOID*)&Original_il2cpp_init);
     }
     return handle;
+}
+
+BOOL Hook_QueryPerformanceCounter(LARGE_INTEGER* lpPerformanceCount)
+{
+    BOOL result = Original_QueryPerformanceCounter(lpPerformanceCount);
+    LONGLONG diff = (LONGLONG)((lpPerformanceCount->QuadPart - lastTime.QuadPart) * timeMultiplier);
+    fakeTime.QuadPart += diff;
+    lastTime.QuadPart = lpPerformanceCount->QuadPart;
+    lpPerformanceCount->QuadPart = fakeTime.QuadPart;
+    return result;
+}
+
+LIBRARY_API void SetTimeMultiplier(double value)
+{
+    timeMultiplier = value != 0 ? value : 1;
+}
+
+int Hook_SetVSyncCount(void* thisPtr, int value)
+{
+    value = 0;
+    return Original_SetVSyncCount(thisPtr, value);
+}
+
+LIBRARY_API void CreateVSyncHook(void* funcPtr)
+{
+    MH_CreateHook(funcPtr, &Hook_SetVSyncCount, (LPVOID*)&Original_SetVSyncCount);
+    MH_EnableHook(funcPtr);
 }
 
 int CreateHooks()
@@ -202,12 +236,19 @@ int CreateHooks()
         return 0;
     }
     
-    if (MH_CreateHook(&LoadLibraryW, &Mine_LoadLibraryW, (LPVOID*)&Original_LoadLibraryW) != MH_OK)
+    if (MH_CreateHook(&LoadLibraryW, &Hook_LoadLibraryW, (LPVOID*)&Original_LoadLibraryW) != MH_OK)
     {
         return 1;
     }
     
-    if (MH_EnableHook(&LoadLibraryW) != MH_OK)
+    QueryPerformanceCounter(&lastTime);
+    fakeTime = lastTime;
+    if (MH_CreateHook(&QueryPerformanceCounter, &Hook_QueryPerformanceCounter, (LPVOID*)&Original_QueryPerformanceCounter) != MH_OK)
+    {
+        return 1;
+    }
+    
+    if (EnableAllHooksLL(true) != MH_OK)
     {
         return 1;
     }

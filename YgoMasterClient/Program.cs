@@ -19,7 +19,6 @@ namespace YgoMasterClient
     {
         public static Random Rand = new Random();
         public static bool IsLive;
-        public static bool RunConsole;
         public static string CurrentDir;// Path of where the current assembly is (YgoMasterClient.exe)
         public static string DataDir;// Path of misc data
         public static string ClientDataDir;// Path of the custom client content
@@ -83,6 +82,8 @@ namespace YgoMasterClient
                 // NOTE: As more things are added here the load time will increase (the reflection code does a lot of linear lookups)
                 List<Type> nativeTypes = new List<Type>();
                 // DuelClientUtils
+                nativeTypes.Add(typeof(UnityEngine.QualitySettings));
+                nativeTypes.Add(typeof(YgomGame.Duel.ReplayControl));
                 nativeTypes.Add(typeof(YgomGame.Duel.Engine));
                 nativeTypes.Add(typeof(YgomGame.Duel.EngineApiUtil));
                 nativeTypes.Add(typeof(YgomGame.Duel.GenericCardListController));
@@ -124,44 +125,20 @@ namespace YgoMasterClient
                 }
                 PInvoke.WL_EnableAllHooks(true);
 
-                bool changeWindowTitleOnLiveMod = false;
-                string clientSettingsFile = Path.Combine(ClientDataDir, "ClientSettings.json");
-                if (File.Exists(clientSettingsFile))
+                if (!ClientSettings.Load())
                 {
-                    Dictionary<string, object> clientSettings = MiniJSON.Json.DeserializeStripped(File.ReadAllText(clientSettingsFile)) as Dictionary<string, object>;
-                    if (clientSettings != null)
-                    {
-                        YgomSystem.Network.ProtocolHttp.ServerUrl = YgoMaster.Utils.GetValue<string>(clientSettings, "ServerUrl");
-                        YgomSystem.Network.ProtocolHttp.ServerPollUrl = YgoMaster.Utils.GetValue<string>(clientSettings, "ServerPollUrl");
-                        YgomSystem.Utility.ClientWorkUtil.MultiplayerToken = YgoMaster.Utils.GetValue<string>(clientSettings, "MultiplayerToken");
-                        RunConsole = YgoMaster.Utils.GetValue<bool>(clientSettings, "ShowConsole");
-                        YgomSystem.Utility.TextData.LogIDS = YgoMaster.Utils.GetValue<bool>(clientSettings, "LogIDs");
-                        AssetHelper.LogAssets = YgoMaster.Utils.GetValue<bool>(clientSettings, "AssetHelperLog");
-                        AssetHelper.ShouldDumpData = YgoMaster.Utils.GetValue<bool>(clientSettings, "AssetHelperDump");
-                        AssetHelper.DisableFileErrorPopup = YgoMaster.Utils.GetValue<bool>(clientSettings, "AssetHelperDisableFileErrorPopup");
-                        YgomGame.Solo.SoloStartProductionViewController.DuelStarterShowFirstPlayer = YgoMaster.Utils.GetValue<bool>(clientSettings, "DuelStarterShowFirstPlayer");
-                        YgomGame.Solo.SoloSelectChapterViewController.DuelStarterLiveChapterId = YgoMaster.Utils.GetValue<int>(clientSettings, "DuelStarterLiveChapterId");
-                        YgomGame.Deck.DeckView.DeckEditorDisableLimits = YgoMaster.Utils.GetValue<bool>(clientSettings, "DeckEditorDisableLimits");
-                        YgomGame.Deck.DeckView.DeckEditorConvertStyleRarity = YgoMaster.Utils.GetValue<bool>(clientSettings, "DeckEditorConvertStyleRarity");
-                        YgomGame.DeckEditViewController2.DeckEditorShowStats = YgoMaster.Utils.GetValue<bool>(clientSettings, "DeckEditorShowStats");
-                        YgomGame.Duel.GenericCardListController.DuelClientShowRemainingCardsInDeck = YgoMaster.Utils.GetValue<bool>(clientSettings, "DuelClientShowRemainingCardsInDeck");
-                        YgomGame.Duel.EngineApiUtil.DuelClientMillenniumEye = YgoMaster.Utils.GetValue<bool>(clientSettings, "DuelClientMillenniumEye");
-                        changeWindowTitleOnLiveMod = YgoMaster.Utils.GetValue<bool>(clientSettings, "ChangeWindowTitleOnLiveMod");
-                        if (string.IsNullOrEmpty(YgomSystem.Network.ProtocolHttp.ServerUrl) ||
-                            string.IsNullOrEmpty(YgomSystem.Network.ProtocolHttp.ServerPollUrl))
-                        {
-                            throw new Exception("Failed to get server url settings");
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception("Failed to load '" + clientSettingsFile + "'");
-                    }
+                    throw new Exception("Failed to load '" + ClientSettings.FilePath + "'");
                 }
-                else
+                if (string.IsNullOrEmpty(ClientSettings.ServerUrl) ||
+                    string.IsNullOrEmpty(ClientSettings.ServerPollUrl))
                 {
-                    throw new Exception("Failed to find '" + clientSettingsFile + "'");
+                    throw new Exception("Failed to get server url settings");
                 }
+                if (ClientSettings.DisableVSync)
+                {
+                    UnityEngine.QualitySettings.CreateVSyncHook();
+                }
+                PInvoke.SetTimeMultiplier(ClientSettings.TimeMultiplier);
 
                 Win32Hooks.Invoke(delegate
                 {
@@ -169,7 +146,7 @@ namespace YgoMasterClient
                     Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
                     // Modify the window title when running as "live" to indicate the game is modded
-                    if (changeWindowTitleOnLiveMod && IsLive)
+                    if (ClientSettings.ChangeWindowTitleOnLiveMod && IsLive)
                     {
                         Process process = Process.GetCurrentProcess();
                         IntPtr windowHandle = process.MainWindowHandle;
@@ -182,7 +159,7 @@ namespace YgoMasterClient
                     }
                 });
 
-                if (RunConsole)
+                if (ClientSettings.ShowConsole)
                 {
                     ConsoleHelper.ShowConsole();
                     new Thread(delegate()
@@ -617,7 +594,6 @@ namespace YgomSystem.Utility
     unsafe static class TextData
     {
         public const string HackID = "IDS_SYS.IDHACK:";
-        public static bool LogIDS;
 
         static IL2Class classInfo;
         static IL2Method methodLoad;
@@ -704,7 +680,7 @@ namespace YgomSystem.Utility
         static IntPtr GetTextString(IntPtr textString, bool richTextEx)
         {
             string inputString = new IL2Object(textString).GetValueObj<string>();
-            if (LogIDS)
+            if (ClientSettings.LogIDs)
             {
                 Console.WriteLine(inputString);
             }
@@ -738,7 +714,7 @@ namespace YgomSystem.Utility
                         {
                             string enumValueStr = strObj.GetValueObj<string>();
                             string fullString = enumTypeName + "." + enumValueStr;
-                            if (LogIDS)
+                            if (ClientSettings.LogIDs)
                             {
                                 Console.WriteLine(fullString);
                             }
@@ -826,8 +802,6 @@ namespace YgomSystem.Utility
 
     unsafe static class ClientWorkUtil
     {
-        public static string MultiplayerToken;
-
         delegate IntPtr Del_GetToken();
         static Hook<Del_GetToken> hookGetToken;
 
@@ -844,9 +818,9 @@ namespace YgomSystem.Utility
 
         static IntPtr GetToken()
         {
-            if (!string.IsNullOrEmpty(MultiplayerToken))
+            if (!string.IsNullOrEmpty(ClientSettings.MultiplayerToken))
             {
-                return new IL2String(Convert.ToBase64String(Encoding.UTF8.GetBytes(MultiplayerToken))).ptr;
+                return new IL2String(Convert.ToBase64String(Encoding.UTF8.GetBytes(ClientSettings.MultiplayerToken))).ptr;
             }
             return hookGetToken.Original();
         }
@@ -857,9 +831,6 @@ namespace YgomSystem.Network
 {
     unsafe static class ProtocolHttp
     {
-        public static string ServerUrl;
-        public static string ServerPollUrl;
-
         static IL2Class classInfo;
         static IL2Method methodGetServerDefaultUrl;
 
@@ -882,12 +853,12 @@ namespace YgomSystem.Network
         static void GetServerDefaultUrl(int type, out IntPtr url, out IntPtr pollingUrl)
         {
             // This doesn't work for some reason...
-            url = new IL2String(ServerUrl).ptr;
-            pollingUrl = new IL2String(ServerPollUrl).ptr;
+            url = new IL2String(ClientSettings.ServerUrl).ptr;
+            pollingUrl = new IL2String(ClientSettings.ServerPollUrl).ptr;
             // But this does...
-            YgomSystem.Utility.ClientWork.UpdateJson("$.Server.urls", "{\"System.info\":\"" + ServerUrl + "\"}");
-            YgomSystem.Utility.ClientWork.UpdateValue("$.Server.url", ServerUrl);
-            YgomSystem.Utility.ClientWork.UpdateValue("$.Server.url_polling", ServerUrl);
+            YgomSystem.Utility.ClientWork.UpdateJson("$.Server.urls", "{\"System.info\":\"" + ClientSettings.ServerUrl + "\"}");
+            YgomSystem.Utility.ClientWork.UpdateValue("$.Server.url", ClientSettings.ServerUrl);
+            YgomSystem.Utility.ClientWork.UpdateValue("$.Server.url_polling", ClientSettings.ServerUrl);
         }
     }
 }

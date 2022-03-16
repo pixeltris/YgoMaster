@@ -84,9 +84,6 @@ namespace YgomGame.Deck
 
     unsafe static class DeckView
     {
-        public static bool DeckEditorDisableLimits;
-        public static bool DeckEditorConvertStyleRarity;
-
         static IL2Class deckCardClassInfo;
         static IL2Class cardBaseDataClassInfo;
         static IL2Field fieldMainDeckCards;
@@ -125,7 +122,7 @@ namespace YgomGame.Deck
 
         static int GetAddableType(IntPtr thisPtr, int cardID, int regulation)
         {
-            if (DeckEditorDisableLimits)
+            if (ClientSettings.DeckEditorDisableLimits)
             {
                 return 0;// YgomGame.Deck.DeckView.AddableType.Addable
             }
@@ -187,7 +184,7 @@ namespace YgomGame.Deck
                         int prem = (int)card.Value;
                         bool owned = false;
 
-                        if (DeckEditorConvertStyleRarity)
+                        if (ClientSettings.DeckEditorConvertStyleRarity)
                         {
                             // Convert the style rarity (prem) based on owned cards
                             prem = (int)YgoMaster.CardStyleRarity.Normal;
@@ -256,7 +253,6 @@ namespace YgomGame
 {
     static unsafe class DeckEditViewController2
     {
-        public static bool DeckEditorShowStats;
         public static int NumCards;
         public static int NumOwnedCards;
         public static int NumOwnedCardsEstimate;
@@ -320,7 +316,7 @@ namespace YgomGame
 
         static void InitExtraTextComponent()
         {
-            if (!DeckEditorShowStats)
+            if (!ClientSettings.DeckEditorShowStats)
             {
                 return;
             }
@@ -377,7 +373,7 @@ namespace YgomGame
 
         public static void SetExtraText()
         {
-            if (!DeckEditorShowStats)
+            if (!ClientSettings.DeckEditorShowStats)
             {
                 return;
             }
@@ -428,7 +424,7 @@ namespace YgomGame
 
         public static void SetExtraText(string text)
         {
-            if (DeckEditorShowStats && currentInstance != IntPtr.Zero && extraTextComponent != IntPtr.Zero)
+            if (ClientSettings.DeckEditorShowStats && currentInstance != IntPtr.Zero && extraTextComponent != IntPtr.Zero)
             {
                 TMPro.TMP_Text.SetText(extraTextComponent, text);
             }

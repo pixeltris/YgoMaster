@@ -33,6 +33,13 @@ namespace UnityEngine.Events
             return UnityEngine.Events._UnityAction.CreateDelegate(function, IntPtr.Zero, UnityEngine.Events._UnityAction.ActionClass);
         }
 
+        // NOTE: Untested
+        public unsafe static IntPtr CreateAction<T>(Delegate function)
+        {
+            IL2Class actionClass = typeof(Action<>).GetClass().MakeGenericType(new Type[] { typeof(T) });
+            return UnityEngine.Events._UnityAction.CreateDelegate(function, IntPtr.Zero, actionClass);
+        }
+
         public unsafe static IntPtr CreateDelegate<T>(Delegate function, T instance, IL2Class klass = null)
         {
             if (function == null)

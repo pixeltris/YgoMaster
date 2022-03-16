@@ -354,11 +354,6 @@ namespace YgoMaster
         {
             ushort tokenLength = BitConverter.ToUInt16(buffer, 0);
             ushort dataLength = BitConverter.ToUInt16(buffer, 2);
-            if (tokenLength < 0 || dataLength < 0)
-            {
-                token = null;
-                return null;
-            }
             byte[] tokenBuffer = new byte[tokenLength];
             Buffer.BlockCopy(buffer, 4, tokenBuffer, 0, tokenBuffer.Length);
             token = Convert.ToBase64String(tokenBuffer);

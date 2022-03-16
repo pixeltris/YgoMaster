@@ -70,6 +70,12 @@ namespace YgoMasterClient
         [DllImport(dllName)]
         public static extern int WL_EnableAllHooks(bool enable);
 
+        [DllImport(dllName)]
+        public static extern void SetTimeMultiplier(double value);
+
+        [DllImport(dllName)]
+        public static extern void CreateVSyncHook(IntPtr funcPtr);
+
         [DllImport("kernel32")]
         public static extern IntPtr LoadLibrary(string lpFileName);
 

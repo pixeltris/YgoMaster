@@ -9,12 +9,12 @@ namespace YgoMaster
 {
     partial class DuelSimulator
     {
-        public void InitContent()
+        public bool InitContent()
         {
             string cardDataDir = Path.Combine(DataDir, "CardData");
             if (!Directory.Exists(cardDataDir))
             {
-                return;
+                return false;
             }
 
             byte[] bufferInternalID = File.ReadAllBytes(Path.Combine(cardDataDir, "CARD_IntID.bytes"));
@@ -34,6 +34,8 @@ namespace YgoMaster
             
             byte[] bufferLink = File.ReadAllBytes(Path.Combine(cardDataDir, "MD", "CARD_Link.bytes"));
             DLL_SetCardLink(bufferLink, bufferLink.Length);
+
+            return true;
         }
 
         [DllImport(dllName)]

@@ -187,7 +187,7 @@ namespace YgoMasterClient
                         {
                             InjectSoloThumb(setting, customSetting);
                         }
-                        if (ShouldDumpData)
+                        if (ClientSettings.AssetHelperDump)
                         {
                             if (dataDump == null)
                             {
@@ -206,7 +206,7 @@ namespace YgoMasterClient
                             dataDump.AppendLine(id + "," + mrk + "," + rectPos.y + "," + rectPosOther.y);// This is all that's really needed
                         }
                     }
-                    if (ShouldDumpData && dataDump != null)
+                    if (ClientSettings.AssetHelperDump && dataDump != null)
                     {
                         string dumpPath = Path.Combine(Program.ClientDataDumpDir, "SoloGateCards.txt");
                         try
@@ -241,7 +241,7 @@ namespace YgoMasterClient
 
         static void InjectSoloBackground(IntPtr gameObject, int gateId)
         {
-            if (ShouldDumpData)
+            if (ClientSettings.AssetHelperDump)
             {
                 DumpSoloBackground(gameObject, gateId);
             }

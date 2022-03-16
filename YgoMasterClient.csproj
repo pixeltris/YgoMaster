@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="YgoMasterClient\AssetHelper.cs" />
     <Compile Include="YgoMasterClient\AssetHelper.Solo.cs" />
+    <Compile Include="YgoMasterClient\ClientSettings.cs" />
     <Compile Include="YgoMasterClient\CommonDialogViewController.cs" />
     <Compile Include="YgoMasterClient\ConsoleHelper.cs" />
     <Compile Include="YgoMasterClient\CRC32.cs" />

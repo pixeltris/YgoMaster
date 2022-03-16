@@ -38,7 +38,10 @@ namespace YgoMaster
                         string dataDir = Utils.GetDataDirectory(true);
                         YdkHelper.LoadIdMap(dataDir);
                         DuelSimulator sim = new DuelSimulator(dataDir);
-                        sim.InitContent();
+                        if (!sim.InitContent())
+                        {
+                            return -1;
+                        }
                         return sim.RunCpuVsCpu(deckFile1, deckFile2, seed, goFirst, iterationsBeforeIdle, parentProcess);
                     }
                     catch

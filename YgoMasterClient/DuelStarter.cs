@@ -22,9 +22,6 @@ namespace YgomGame.Solo
 {
     static unsafe class SoloSelectChapterViewController
     {
-        public static int DuelStarterLiveChapterId;
-        public static bool DuelStarterLiveNotLiveTest = false;
-
         static IL2Field fieldChapterId;
 
         delegate void Del_CallApiSoloStart(IntPtr thisPtr, IntPtr chapterData);
@@ -44,12 +41,12 @@ namespace YgomGame.Solo
         {
             if (chapterData != IntPtr.Zero)
             {
-                if (fieldChapterId.GetValue(chapterData).GetValueRef<int>() == DuelStarterLiveChapterId &&
-                    (Program.IsLive || DuelStarterLiveNotLiveTest))
+                if (fieldChapterId.GetValue(chapterData).GetValueRef<int>() == ClientSettings.DuelStarterLiveChapterId &&
+                    (Program.IsLive || ClientSettings.DuelStarterLiveNotLiveTest))
                 {
                     int clearStatus;
                     string clearStatusStr = YgomSystem.Utility.ClientWork.SerializePath("$.Solo.cleared." +
-                        (DuelStarterLiveChapterId / 10000) + "." + DuelStarterLiveChapterId);
+                        (ClientSettings.DuelStarterLiveChapterId / 10000) + "." + ClientSettings.DuelStarterLiveChapterId);
                     if (!string.IsNullOrEmpty(clearStatusStr) && int.TryParse(clearStatusStr, out clearStatus) && clearStatus == 3)
                     {
                         IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
@@ -68,7 +65,6 @@ namespace YgomGame.Solo
 
     static unsafe class SoloStartProductionViewController
     {
-        public static bool DuelStarterShowFirstPlayer;
         public static int DuelStarterFirstPlayer;
 
         static IL2Field fieldStep;
@@ -98,7 +94,7 @@ namespace YgomGame.Solo
                     {
                         DuelStarterFirstPlayer = Program.Rand.Next(2);
                     }
-                    if (DuelStarterShowFirstPlayer)
+                    if (ClientSettings.DuelStarterShowFirstPlayer)
                     {
                         YgomGame.Colosseum.ColosseumUtil.Turn turn = DuelStarterFirstPlayer == 0 ?
                             Colosseum.ColosseumUtil.Turn.FIRST : Colosseum.ColosseumUtil.Turn.SECOND;
@@ -151,7 +147,7 @@ namespace YgomSystem.Network
                 {
                     rule = new Dictionary<string, object>();
                 }
-                if (Program.IsLive || YgomGame.Solo.SoloSelectChapterViewController.DuelStarterLiveNotLiveTest)
+                if (Program.IsLive || ClientSettings.DuelStarterLiveNotLiveTest)
                 {
                     // Remove entries not valid for practice duels
                     rule.Remove("FirstPlayer");
@@ -219,17 +215,31 @@ namespace YgomSystem.Network
 
         static void Complete(IntPtr thisPtr)
         {
-            if (YgomGame.Room.RoomCreateViewController.IsHacked)
+            IL2Object cmdObj = methodGetCommand.Invoke(thisPtr);
+            string cmd = null;
+            if (cmdObj != null)
             {
-                IL2Object cmdObj = methodGetCommand.Invoke(thisPtr);
-                if (cmdObj != null)
+                cmd = cmdObj.GetValueObj<string>();
+            }
+            if (!string.IsNullOrEmpty(cmd))
+            {
+                switch (cmd)
                 {
-                    string cmd = cmdObj.GetValueObj<string>();
+                    case "Duel.begin":
+                        PInvoke.SetTimeMultiplier(ClientSettings.DuelClientTimeMultiplier != 0 ?
+                            ClientSettings.DuelClientTimeMultiplier : ClientSettings.TimeMultiplier);
+                        break;
+                    case "Duel.end":
+                        PInvoke.SetTimeMultiplier(ClientSettings.TimeMultiplier);
+                        break;
+                }
+                if (YgomGame.Room.RoomCreateViewController.IsHacked)
+                {
                     switch (cmd)
                     {
                         case "Duel.begin":
                             {
-                                if (Program.IsLive || YgomGame.Solo.SoloSelectChapterViewController.DuelStarterLiveNotLiveTest)
+                                if (Program.IsLive || ClientSettings.DuelStarterLiveNotLiveTest)
                                 {
                                     DuelSettings settings = new DuelSettings();
                                     settings.CopyFrom(YgomGame.Room.RoomCreateViewController.Settings);
@@ -256,11 +266,11 @@ namespace YgomSystem.Network
 
                                 // Open the duel loading screen (the client will automatically send "Duel.begin")
                                 IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
-                                if (Program.IsLive || YgomGame.Solo.SoloSelectChapterViewController.DuelStarterLiveNotLiveTest)
+                                if (Program.IsLive || ClientSettings.DuelStarterLiveNotLiveTest)
                                 {
                                     Dictionary<string, object> args = new Dictionary<string, object>()
                                     {
-                                        { "chapter", YgomGame.Solo.SoloSelectChapterViewController.DuelStarterLiveChapterId }
+                                        { "chapter", ClientSettings.DuelStarterLiveChapterId }
                                     };
                                     YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "Solo/SoloStartProduction", args);
                                 }
@@ -461,8 +471,7 @@ namespace YgomGame.Room
                 // Update the duel settings
                 duelSettingsManager.DuelSettingsFromUI();
 
-                YgomSystem.Network.Request.Entry("Solo.start", "{\"chapter\":" +
-                    YgomGame.Solo.SoloSelectChapterViewController.DuelStarterLiveChapterId + "}");
+                YgomSystem.Network.Request.Entry("Solo.start", "{\"chapter\":" + ClientSettings.DuelStarterLiveChapterId + "}");
             }
             else
             {
@@ -1533,6 +1542,7 @@ namespace UnityEngine
         static IL2Method methodGetTransform;
         static IL2Method methodGetComponentsTObject;
         static IL2Method methodGetComponent;
+        static IL2Method methodGetActiveSelf;
 
         static GameObject()
         {
@@ -1542,6 +1552,7 @@ namespace UnityEngine
             methodGetComponentsTObject = classInfo.GetMethod("GetComponents", x => x.GetParameters().Length == 0).MakeGenericMethod(
                 new Type[] { typeof(object) });
             methodGetComponent = classInfo.GetMethod("GetComponent", x => x.GetParameters().Length == 1 && x.GetParameters()[0].Type.Name == typeof(Type).FullName);
+            methodGetActiveSelf = classInfo.GetProperty("activeSelf").GetGetMethod();
         }
 
         public static IntPtr GetTranform(IntPtr thisPtr)
@@ -1616,6 +1627,12 @@ namespace UnityEngine
             IntPtr transform = GameObject.GetTranform(thisPtr);
             Dictionary<string, object> result = Transform.ToDictionary(transform);
             return MiniJSON.Json.Format(MiniJSON.Json.Serialize(result));
+        }
+
+        public static bool IsActive(IntPtr thisPtr)
+        {
+            IL2Object result = methodGetActiveSelf.Invoke(thisPtr);
+            return result != null && result.GetValueRef<bool>();
         }
     }
 
