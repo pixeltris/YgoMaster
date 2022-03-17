@@ -46,6 +46,9 @@ You can copy/paste/move/rename (but not modify the contents of) files in this fo
 - `DeckEditorConvertStyleRarity` - adjusts shine/royal based on owned cards when using the deck editor sub menu import options (if disabled this will preserve shine/royal status on the imported data).
 - `DuelClientShowRemainingCardsInDeck` - shows the remaining cards in your deck when you click on your deck (ordered by card id).
 - `DuelClientMillenniumEye` - reveal any card you click. If "Display Face-Down Cards as Transparent" is enabled all face downs will be visible.
+- `DuelClientTimeMultiplier` - time multiplier applied during duels (speed up / slow down the game).
+- `ReplayControlsAlwaysEnabled` - always show the replay controls (pause / speed up the game).
+- `ReplayControlsTimeMultiplier` - time multiplier applied when fast forward is active (speed up / slow down the game).
 
 ## File list
 
