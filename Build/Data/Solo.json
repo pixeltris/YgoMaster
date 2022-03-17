@@ -112,6 +112,13 @@
                 "view_gate": 5,
                 "clear_chapter": 150085
               },
+              "16": {
+                "priority": 20,
+                "parent_gate": 0,
+                "unlock_id": 11,
+                "view_gate": 5,
+                "clear_chapter": 160091
+              },
               "17": {
                 "priority": 18,
                 "parent_gate": 0,
@@ -131,7 +138,7 @@
                 "parent_gate": 0,
                 "unlock_id": 8,
                 "view_gate": 5,
-                "clear_chapter": 30126
+                "clear_chapter": 230184
               },
               "22": {
                 "priority": 2,
@@ -1092,6 +1099,64 @@
                   "npc_id": 1047
                 }
               },
+              "16": {
+                "160089": {
+                  "parent_chapter": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1103,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00160089",
+                  "npc_id": 0
+                },
+                "160090": {
+                  "parent_chapter": 160170,
+                  "mydeck_set_id": 6705,
+                  "set_id": 803,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1014
+                },
+                "160091": {
+                  "parent_chapter": 160090,
+                  "mydeck_set_id": 0,
+                  "set_id": 903,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00160091",
+                  "npc_id": 0
+                },
+                "160092": {
+                  "parent_chapter": 160090,
+                  "mydeck_set_id": 0,
+                  "set_id": 0,
+                  "unlock_id": 12008,
+                  "begin_sn": "",
+                  "npc_id": 0
+                },
+                "160093": {
+                  "parent_chapter": 160092,
+                  "mydeck_set_id": 1140102,
+                  "set_id": 1005,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1015
+                },
+                "160094": {
+                  "parent_chapter": 160093,
+                  "mydeck_set_id": 104,
+                  "set_id": 1012016,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1016
+                },
+                "160170": {
+                  "parent_chapter": 160089,
+                  "mydeck_set_id": 0,
+                  "set_id": 1303,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1014
+                }
+              },
               "17": {
                 "170095": {
                   "parent_chapter": 0,
@@ -1646,6 +1711,11 @@
                 "3": [
                   2007
                 ]
+              },
+              "12008": {
+                "3": [
+                  2008
+                ]
               }
             },
             "unlock_item": {
@@ -1855,6 +1925,16 @@
                 "1": {
                   "12": 200,
                   "13": 200
+                }
+              },
+              "2008": {
+                "1": {
+                  "8": 200,
+                  "9": 200,
+                  "10": 150,
+                  "11": 150,
+                  "12": 150,
+                  "13": 150
                 }
               }
             },
