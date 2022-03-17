@@ -1081,12 +1081,12 @@ namespace YgomGame.SubMenu
             sb.AppendLine("[Rarity (1x)]");
             sb.AppendLine("Normal: " + numOwnedStyle[CardStyleRarity.Normal] + GetPercentStr(numCards[CardRarity.None], numOwnedStyle[CardStyleRarity.Normal]));
             sb.AppendLine("Shine: " + numOwnedStyle[CardStyleRarity.Shine] + GetPercentStr(numCards[CardRarity.None], numOwnedStyle[CardStyleRarity.Shine]));
-            sb.AppendLine("Royal: " + numOwnedStyle[CardStyleRarity.Royal] + GetPercentStr(numCards[CardRarity.None], numOwnedStyle[CardStyleRarity.Royal]));
+            sb.AppendLine("Royal: " + numOwnedStyle[CardStyleRarity.Royal] + GetPercentStr(numCards[CardRarity.SuperRare] + numCards[CardRarity.UltraRare], numOwnedStyle[CardStyleRarity.Royal]));
             sb.AppendLine();
             sb.AppendLine("[Rarity (up to 3x)]");
             sb.AppendLine("Normal: " + numOwnedDupStyle[CardStyleRarity.Normal] + GetPercentStr(numCards[CardRarity.None] * 3, numOwnedDupStyle[CardStyleRarity.Normal]));
             sb.AppendLine("Shine: " + numOwnedDupStyle[CardStyleRarity.Shine] + GetPercentStr(numCards[CardRarity.None] * 3, numOwnedDupStyle[CardStyleRarity.Shine]));
-            sb.AppendLine("Royal: " + numOwnedDupStyle[CardStyleRarity.Royal] + GetPercentStr(numCards[CardRarity.None] * 3, numOwnedDupStyle[CardStyleRarity.Royal]));
+            sb.AppendLine("Royal: " + numOwnedDupStyle[CardStyleRarity.Royal] + GetPercentStr((numCards[CardRarity.SuperRare] + numCards[CardRarity.UltraRare]) * 3, numOwnedDupStyle[CardStyleRarity.Royal]));
             sb.AppendLine();
             sb.AppendLine("[Rarity (over 3x)]");
             sb.AppendLine("Normal: " + numOwnedExtraStyle[CardStyleRarity.Normal]);
