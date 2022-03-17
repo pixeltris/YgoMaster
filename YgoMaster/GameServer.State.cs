@@ -438,6 +438,15 @@ namespace YgoMaster
                     }
                 }
             }
+            // Add any cards owned by the player but are missing from the result (otherwise the client will have issues with those cards)
+            foreach (int cardId in player.Cards.GetIDs())
+            {
+                CardRarity rarity;
+                if (!result.ContainsKey(cardId) && TryGetCardRarity(cardId, CardRare, out rarity))
+                {
+                    result[cardId] = (int)rarity;
+                }
+            }
             return result;
         }
 
