@@ -39,8 +39,8 @@ Additionally...
 
 ## Compiling from source
 
-- Install Visual Studio with C++ compilers
-- Run `Build.bat`
+- Install Visual Studio with C++ compilers.
+- Run `Build.bat`.
 - Copy the `Build` folder into the game folder as mentioned above.
 
 Running `Build.bat` is the equivilant of:

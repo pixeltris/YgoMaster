@@ -333,7 +333,7 @@ namespace YgoMaster
             ID1080004 = 1080004,//Link Blue
             ID1080005 = 1080005,//Re-Contract Universe
             ID1080006 = 1080006,//Magician of Pendulum
-            //ID1080007 = 1080007,//Rage of Cipher (BLANK)
+            ID1080007 = 1080007,//Rage of Cipher (BLANK)
             //ID1080008 = 1080008,//Cybernetic Successor (BLANK)
             ID1080009 = 1080009,//Heir to the Shiranui-Style
             ID1080010 = 1080010,//Growing Digital Bug
