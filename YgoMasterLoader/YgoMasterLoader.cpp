@@ -1,10 +1,13 @@
-// https://github.com/pixeltris/SonyAlphaUSB/blob/fd69cbb818f3ce0b0ccc01a734c822ecbe9d1147/WIA%20Logger/SonyAlphaUSBLoader.cpp
-// cl YgoMasterLoader.cpp /LD /DWITHDETOURS /Fe:../Build/YgoMasterLoader.dll (compile with x64 tools)
+// Compile using Visual Studio x64 Native Tools Command Prompt
+// cl YgoMasterLoader.cpp /LD /DWITHDETOURS /Fe:../Build/YgoMasterLoader.dll
 //
 // Notes about detours:
 // - This version was used https://github.com/microsoft/Detours/releases/tag/v4.0.1
 // - It was compiled by using the nmake command (no args or edits) via "Visual Studio x64 Native Tools Command Prompt"
 // - The resulting lib "/lib.X64/detours.lib" and "/include/detours.h" were manually copied into the current directory for usage
+//
+// This code was based on:
+// https://github.com/pixeltris/SonyAlphaUSB/blob/fd69cbb818f3ce0b0ccc01a734c822ecbe9d1147/WIA%20Logger/SonyAlphaUSBLoader.cpp
 
 // VS2015+ (see https://docs.microsoft.com/en-us/cpp/porting/visual-cpp-change-history-2003-2015?redirectedfrom=MSDN&view=msvc-170#stdio_and_conio)
 #if defined(_MSC_VER) && (_MSC_VER >= 1900)

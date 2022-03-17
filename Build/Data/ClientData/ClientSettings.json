@@ -13,5 +13,10 @@
     "DuelStarterLiveChapterId": 10002,
     "DuelClientShowRemainingCardsInDeck": false,
     "DuelClientMillenniumEye": false,
+    "DuelClientTimeMultiplier": 0,// Time multiplier applied during duels (a value of 0 means no change)
+    "ReplayControlsAlwaysEnabled": false,
+    "ReplayControlsTimeMultiplier": 0,// Time multiplier applied when pressing fast forward on the replay controls (a value of 0 means no change)
+    "TimeMultiplier": 0,// Time multiplier applied at all times (a value of 0 means no change)
+    "DisableVSync": false,// Disables vsync. Might be required to use the time multipliers on some systems
     "ChangeWindowTitleOnLiveMod": true,
 }

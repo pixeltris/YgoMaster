@@ -39,11 +39,14 @@ Additionally...
 
 ## Compiling from source
 
-- Compile `YgoMaster.sln` with Visual Studio.
-- Compile `YgoMasterLoader/YgoMasterLoader.cpp` with `cl` (read the top of the cpp file).
+- Install Visual Studio with C++ compilers
+- Run `Build.bat`
 - Copy the `Build` folder into the game folder as mentioned above.
 
-*Do not run `YgoMaster` from Visual Studio. Run it from the `Build` folder directly (or set the debugger working directory to point to it).*
+Running `Build.bat` is the equivilant of:
+
+- Compiling `YgoMaster.sln` with Visual Studio.
+- Compiling `YgoMasterLoader.cpp` with `cl`.
 
 ## Related
 
