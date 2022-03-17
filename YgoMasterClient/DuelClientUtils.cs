@@ -91,6 +91,40 @@ namespace YgomGame.Duel
         }
     }
 
+    unsafe static class CameraShaker
+    {
+        delegate void Del_Shake1(IntPtr thisPtr, int type);
+        static Hook<Del_Shake1> hookShake1;
+        delegate void Del_Shake2(IntPtr thisPtr, IntPtr label);
+        static Hook<Del_Shake2> hookShake2;
+
+        static CameraShaker()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            IL2Class classInfo = assembly.GetClass("CameraShaker", "YgomGame.Duel");
+            hookShake1 = new Hook<Del_Shake1>(Shake1, classInfo.GetMethod("Shake", x => x.GetParameters()[0].Name == "type"));
+            hookShake2 = new Hook<Del_Shake2>(Shake2, classInfo.GetMethod("Shake", x => x.GetParameters()[0].Name == "label"));
+        }
+
+        static void Shake1(IntPtr thisPtr, int type)
+        {
+            if (ClientSettings.DuelClientDisableCameraShake)
+            {
+                return;
+            }
+            hookShake1.Original(thisPtr, type);
+        }
+
+        static void Shake2(IntPtr thisPtr, IntPtr label)
+        {
+            if (ClientSettings.DuelClientDisableCameraShake)
+            {
+                return;
+            }
+            hookShake2.Original(thisPtr, label);
+        }
+    }
+
     unsafe static class Engine
     {
         static IL2Method methodGetCardNum;

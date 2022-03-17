@@ -24,6 +24,7 @@ namespace YgoMasterClient
         public static bool DeckEditorShowStats;
         public static bool DuelClientShowRemainingCardsInDeck;
         public static bool DuelClientMillenniumEye;
+        public static bool DuelClientDisableCameraShake;
         public static double DuelClientTimeMultiplier;
         public static bool ReplayControlsAlwaysEnabled;
         public static double ReplayControlsTimeMultiplier;
@@ -72,6 +73,7 @@ namespace YgoMasterClient
             DuelStarterLiveChapterId = YgoMaster.Utils.GetValue<int>(data, "DuelStarterLiveChapterId");
             DuelClientShowRemainingCardsInDeck = YgoMaster.Utils.GetValue<bool>(data, "DuelClientShowRemainingCardsInDeck");
             DuelClientMillenniumEye = YgoMaster.Utils.GetValue<bool>(data, "DuelClientMillenniumEye");
+            DuelClientDisableCameraShake = YgoMaster.Utils.GetValue<bool>(data, "DuelClientDisableCameraShake");
             DuelClientTimeMultiplier = Utils.GetValue<double>(data, "DuelClientTimeMultiplier");
             ReplayControlsAlwaysEnabled = YgoMaster.Utils.GetValue<bool>(data, "ReplayControlsAlwaysEnabled");
             ReplayControlsTimeMultiplier = Utils.GetValue<double>(data, "ReplayControlsTimeMultiplier");

@@ -7,8 +7,8 @@ The first two characters of the crc determines the folder name for the file.
 A few examples:
 
 - `Card/Images/Illust/tcg/10544` = `cd/cdcc181b`
-- `Images/WallPaper/WallPaper0001/WallPaperThumb1130001` = `c8\c89a3c42`
-- `Images/DeckCase/HighEnd_HD/DeckCase0001_L` = `73\732381bb`
+- `Images/WallPaper/WallPaper0001/WallPaperThumb1130001` = `c8/c89a3c42`
+- `Images/DeckCase/HighEnd_HD/DeckCase0001_L` = `73/732381bb`
 
 The casing of the file path is important. For the most part you can use AssetStudio to find the file paths on disk.
 

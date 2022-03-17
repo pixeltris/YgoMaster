@@ -13,6 +13,7 @@
     "DuelStarterLiveChapterId": 10002,
     "DuelClientShowRemainingCardsInDeck": false,
     "DuelClientMillenniumEye": false,
+    "DuelClientDisableCameraShake": false,
     "DuelClientTimeMultiplier": 0,// Time multiplier applied during duels (a value of 0 means no change)
     "ReplayControlsAlwaysEnabled": false,
     "ReplayControlsTimeMultiplier": 0,// Time multiplier applied when pressing fast forward on the replay controls (a value of 0 means no change)

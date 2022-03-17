@@ -84,6 +84,7 @@ namespace YgoMasterClient
                 // DuelClientUtils
                 nativeTypes.Add(typeof(UnityEngine.QualitySettings));
                 nativeTypes.Add(typeof(YgomGame.Duel.ReplayControl));
+                nativeTypes.Add(typeof(YgomGame.Duel.CameraShaker));
                 nativeTypes.Add(typeof(YgomGame.Duel.Engine));
                 nativeTypes.Add(typeof(YgomGame.Duel.EngineApiUtil));
                 nativeTypes.Add(typeof(YgomGame.Duel.GenericCardListController));
