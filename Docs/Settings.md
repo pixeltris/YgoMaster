@@ -28,7 +28,7 @@ You can copy/paste/move/rename (but not modify the contents of) files in this fo
 - `UnlockAllCards` - unlocks all cards in the game.
 - `UnlockAllItems` - unlocks all items in the game.
 - `UnlockAllSoloChapters` - unlocks all solo content.
-- `CardCratableAll` - sets all cards to craftable.
+- `CardCraftableAll` - sets all cards to craftable.
 - `DuelRewards` - custom reward list (needs balancing, you can also delete the entry to disable custom rewards).
 - `Craft` - card crafting cost / dismantling reward.
 

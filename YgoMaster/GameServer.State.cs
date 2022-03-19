@@ -44,6 +44,7 @@ namespace YgoMaster
         Dictionary<int, DeckInfo> StructureDecks;// <structureid, DeckInfo>
         Dictionary<int, int> CardRare;
         List<int> CardCraftable;
+        bool CardCraftableAll;
         Dictionary<string, object> Regulation;
         Dictionary<string, object> SoloData;
         Dictionary<int, DuelSettings> SoloDuels;// <chapterid, DuelSettings>
@@ -168,8 +169,9 @@ namespace YgoMaster
                     }
                 }
             }
-            if (Utils.GetValue<bool>(values, "CardCratableAll"))
+            if (Utils.GetValue<bool>(values, "CardCraftableAll"))
             {
+                CardCraftableAll = true;
                 CardCraftable.Clear();
                 foreach (int cardId in CardRare.Keys)
                 {
@@ -364,6 +366,27 @@ namespace YgoMaster
                     updateDecks(oldFullPath, newFullPath);
                 };
             localPlayerDecksFileWatcher.EnableRaisingEvents = true;
+        }
+
+        List<int> GetCraftableCards(Player player)
+        {
+            if (!ProgressiveCardList || CardCraftableAll)
+            {
+                return CardCraftable;
+            }
+            HashSet<int> result = new HashSet<int>();
+            foreach (ShopItemInfo shopItem in Shop.PackShop.Values)
+            {
+                if (player.ShopState.GetAvailability(Shop, shopItem) == PlayerShopItemAvailability.Hidden)
+                {
+                    continue;
+                }
+                foreach (KeyValuePair<int, CardRarity> card in shopItem.Cards)
+                {
+                    result.Add(card.Key);
+                }
+            }
+            return result.ToList();
         }
 
         /// <summary>

@@ -107,7 +107,7 @@ namespace YgoMaster
             request.Response["Master"] = new Dictionary<string, object>()
             {
                 { "CardRare", GetCardRarities(request.Player) },// Card rarities
-                { "CardCr", CardCraftable },// Craftable cards
+                { "CardCr", GetCraftableCards(request.Player) },// Craftable cards
                 { "Structure", structure },// All structure decks
                 { "Regulation", Regulation },// Forbidden / limited cards
             };

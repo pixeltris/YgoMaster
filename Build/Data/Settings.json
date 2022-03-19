@@ -12,7 +12,7 @@
     "SoloShowGateClearForAllSecretPacks": false,
     "SoloRewardsInDuelResult": false,
     "SoloRewardsInDuelResultAreRare": false,
-    "CardCratableAll": false,
+    "CardCraftableAll": false,
     "DisableBanList": false,
     "ProgressiveCardList": false,
     "ProgressiveCardRarities": false,
