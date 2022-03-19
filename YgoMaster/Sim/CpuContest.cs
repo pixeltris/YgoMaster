@@ -60,6 +60,12 @@ namespace YgoMaster
                 Console.Write("Failed to find '" + cardDataPropsFile + "'");
                 return;
             }
+            string dllFile = Path.Combine(DataDir, "..", "..", "masterduel_Data", "Plugins", "x86_64", "duel.dll");
+            if (!File.Exists(dllFile))
+            {
+                Console.Write("Failed to find '" + dllFile + "'");
+                return;
+            }
             string contestSettingsFile = Path.Combine(ContestDir, "ContestSettings.json");
             if (!File.Exists(contestSettingsFile))
             {
