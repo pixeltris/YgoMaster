@@ -15,8 +15,8 @@ Chapter icon:
 - begin_sn(!0) - scenario
 - unlock_id(!0) - lock
 - npc_id(0) - reward
-- npc_id(!0) + mydeck_set_id(!0) + set_id(!0) - duel
-- npc_id(!0) + mydeck_set_id(0) + set_id(0) - practice
+- npc_id(!0) + mydeck_set_id(!0) - duel
+- npc_id(!0) + mydeck_set_id(0) + set_id(!0) - practice
 
 ```
 {
