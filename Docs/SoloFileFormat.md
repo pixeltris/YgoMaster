@@ -1,4 +1,4 @@
-Solo.json file format
+## Solo.json file format
 
 Related enums:
 
@@ -9,6 +9,14 @@ Related code:
 
 - [Act_Solo.cs](https://github.com/pixeltris/YgoMaster/blob/05ee8db136b168ab7473b9d92c2714b57a09c708/YgoMaster/Acts/Act_Solo.cs#L125-L649)
 - [SoloInfo.cs](https://github.com/pixeltris/YgoMaster/blob/05ee8db136b168ab7473b9d92c2714b57a09c708/YgoMaster/Infos/SoloInfo.cs#L523-L786)
+
+Chapter icon:
+
+- begin_sn(!0) - scenario
+- unlock_id(!0) - lock
+- npc_id(0) - reward
+- npc_id(!0) + mydeck_set_id(!0) + set_id(!0) - duel
+- npc_id(!0) + mydeck_set_id(0) + set_id(0) - practice
 
 ```
 {
