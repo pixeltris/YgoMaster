@@ -1,6 +1,6 @@
 There is some basic functionality for giving CPU decks an Elo rating. Currently it's very CPU intensive and takes many hours. Idealy you want a threadripper (or similar high core CPU).
 
-Create `/Build/Data/CpuContest/ContestSettings.json` with the following settings:
+Create `/Data/CpuContest/ContestSettings.json` with the following settings:
 
 ```
 {
@@ -12,12 +12,14 @@ Create `/Build/Data/CpuContest/ContestSettings.json` with the following settings
 
 `instances` should match your CPU core count (or be slightly higher than it).
 
-- Create `/Build/Data/CpuContest/Decks` and copy all of the decks you want to rank into the folder.
+- Create `/Data/CpuContest/Decks` and copy all of the decks you want to rank into the folder.
 - In `ClientSettings.json` set `ShowConsole` to `true` and run the client.
-- In the client console run `carddata` which should create `/Data/ClientDataDump/CardData/`, copy the `CardData` folder to `/Data/CardData/`.
+- In the client console run `carddata` which should create `/Data/ClientDataDump/Card/Data/`, move and rename the `Data` folder to `/Data/CardData/`.
 - Run `YgoMaster --cpucontest`.
 
 This will take some hours to complete depending on how many decks you run. You should be able to close YgoMaster at any time and resume at a later date. At the end of it it'll produce `DecksByRating` which will copy the files from `Decks` and prefix the deck rating. Inside `DeckStats` it shows the individual wins / losses for each deck. And `Results.json` it'll list the decks and their ratings.
+
+When you want to run the next contest delete `Results.json` and the `DeckStats` / `DecksByRatings` folders before starting again. Currently there isn't a way to introduce new decks to a set of existing rated decks (you need to re-run them from scratch each time).
 
 For 284 decks at 90 duels per deck took me around 5 hours on a 12 core CPU. These were the resulting ratings for the decks (which were taken from the WC 2008 video game):
 

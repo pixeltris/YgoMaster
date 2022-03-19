@@ -51,7 +51,13 @@ namespace YgoMaster
             string cardDataDir = Path.Combine(DataDir, "CardData");
             if (!Directory.Exists(cardDataDir))
             {
-                Console.WriteLine("Failedt to find folder '" + cardDataDir + "'");
+                Console.WriteLine("Failed to find folder '" + cardDataDir + "'");
+                return;
+            }
+            string cardDataPropsFile = Path.Combine(cardDataDir, "CARD_Prop.bytes");
+            if (!File.Exists(cardDataPropsFile))
+            {
+                Console.Write("Failed to find '" + cardDataPropsFile + "'");
                 return;
             }
             string contestSettingsFile = Path.Combine(ContestDir, "ContestSettings.json");
@@ -126,7 +132,7 @@ namespace YgoMaster
                                 { "rating", (int)stats.Rating },
                                 { "deck", Path.GetFileName(stats.Deck.File) },
                             });
-                            File.Copy(stats.Deck.File, Path.Combine(decksByRatingDir, ((int)stats.Rating) + " - " + Path.GetFileName(stats.Deck.File)));
+                            File.Copy(stats.Deck.File, Path.Combine(decksByRatingDir, ((int)stats.Rating) + " - " + Path.GetFileName(stats.Deck.File)), true);
                         }
                         File.WriteAllText(Path.Combine(ContestDir, "Results.json"), MiniJSON.Json.Format(MiniJSON.Json.Serialize(statsData)));
                         break;

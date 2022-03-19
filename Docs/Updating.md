@@ -8,7 +8,7 @@
 ## YdkIds.txt
 
 - In `ClientSettings.json` set `ShowConsole` to `true` and run the client.
-- In the client console run `carddata` which should create `/Data/ClientDataDump/CardData/`, copy the `CardData` folder to `/Data/CardData/`.
+- In the client console run `carddata` which should create `/Data/ClientDataDump/Card/Data/`, move and rename the `Data` folder to `/Data/CardData/`. You must do this while using the `English` game settings.
 - Run `--updateydk` to update `YdkIds.txt`
 
 ## Solo
