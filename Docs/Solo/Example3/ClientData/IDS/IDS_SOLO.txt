@@ -1,0 +1,8 @@
+[IDS_SOLO.GATE067]
+Example gate name
+[IDS_SOLO.GATE067_EXPLANATION]]
+Example gate description
+[IDS_SOLO.CHAPTER670001_EXPLANATION]
+Example chapter description #1
+[IDS_SOLO.CHAPTER670002_EXPLANATION]
+Example chapter description #2

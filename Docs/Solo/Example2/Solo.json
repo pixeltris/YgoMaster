@@ -1,0 +1,158 @@
+{
+  "Master": {
+    "Solo": {
+      "gate": {
+        "10": {
+          "priority": 1,
+          "parent_gate": 0,
+          "unlock_id": 0,
+          "view_gate": 0,
+          "clear_chapter": 100058
+        },
+        "11": {
+          "priority": 2,
+          "parent_gate": 0,
+          "unlock_id": 96,
+          "view_gate": 0,
+          "clear_chapter": 110064
+        },
+        "12": {
+          "priority": 3,
+          "parent_gate": 0,
+          "unlock_id": 96,
+          "view_gate": 0,
+          "clear_chapter": 120166
+        }
+      },
+      "chapter": {
+        "10": {
+          "100054": {
+            "parent_chapter": 0,
+            "mydeck_set_id": 100,
+            "set_id": 101,
+            "unlock_id": 0,
+            "begin_sn": "",
+            "npc_id": 1017
+          },
+          "100057": {
+            "parent_chapter": 100054,
+            "mydeck_set_id": 100,
+            "set_id": 101,
+            "unlock_id": 0,
+            "begin_sn": "",
+            "npc_id": 1018
+          },
+          "100058": {
+            "parent_chapter": 100054,
+            "mydeck_set_id": 100,
+            "set_id": 101,
+            "unlock_id": 0,
+            "begin_sn": "",
+            "npc_id": 1019
+          }
+        },
+        "11": {
+          "110060": {
+            "parent_chapter": 0,
+            "mydeck_set_id": 100,
+            "set_id": 101,
+            "unlock_id": 0,
+            "begin_sn": "",
+            "npc_id": 1023
+          },
+          "110063": {
+            "parent_chapter": 110060,
+            "mydeck_set_id": 100,
+            "set_id": 101,
+            "unlock_id": 0,
+            "begin_sn": "",
+            "npc_id": 1024
+          },
+          "110064": {
+            "parent_chapter": 110063,
+            "mydeck_set_id": 100,
+            "set_id": 101,
+            "unlock_id": 0,
+            "begin_sn": "",
+            "npc_id": 1025
+          }
+        },
+        "12": {
+          "120066": {
+            "parent_chapter": 0,
+            "mydeck_set_id": 100,
+            "set_id": 103,// This gives a "ORB-DARK", required to unlock the linked chapter
+            "unlock_id": 0,
+            "begin_sn": "",
+            "npc_id": 1011
+          },
+          "120069": {
+            "parent_chapter": 120066,
+            "mydeck_set_id": 0,
+            "set_id": 0,
+            "unlock_id": 97,// This is a locked chapter, the id points into unlock_id which then points into unlock_item to state the item requirements
+            "begin_sn": "",
+            "npc_id": 0
+          },
+          "120070": {
+            "parent_chapter": 120069,
+            "mydeck_set_id": 100,
+            "set_id": 101,
+            "unlock_id": 0,
+            "begin_sn": "",
+            "npc_id": 1013
+          },
+          "120166": {
+            "parent_chapter": 120066,
+            "mydeck_set_id": 100,
+            "set_id": 102,
+            "unlock_id": 0,
+            "begin_sn": "",
+            "npc_id": 1011
+          }
+        }
+      },
+      "unlock": {
+        "96": {
+          "2": [// ChapterUnlockType.CHAPTER_OR
+            100058
+          ]
+        },
+        "97": {
+          "3": [// ChapterUnlockType.ITEM
+            301// "unlock_item" id
+          ]
+        }
+      },
+      "unlock_item": {
+        "301": {
+          "1": {// Category.CONSUME
+            "8": 50// ORB-DARK
+          }
+        }
+      },
+      "reward": {
+        "100": {
+          "1": {// Category.CONSUME
+            "1": 150// GEM * 150
+          }
+        },
+        "101": {
+          "1": {// Category.CONSUME
+            "1": 200// GEM * 150
+          }
+        },
+        "102": {
+          "11": {// Category.AVATAR_HOME
+            "1111001": 1// "Destiny Board" * 1
+          }
+        },
+        "103": {// Category.CONSUME
+          "1": {
+            "8": 50// ORB-DARK
+          }
+        }
+      }
+    }
+  }
+}

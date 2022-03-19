@@ -1,0 +1,56 @@
+{
+  "Master": {
+    "Solo": {
+      "gate": {
+        "10": {
+          "priority": 1,
+          "parent_gate": 0,
+          "unlock_id": 0,
+          "view_gate": 0,
+          "clear_chapter": 100057
+        }
+      },
+      "chapter": {
+        "10": {
+          "100054": {
+            "parent_chapter": 0,
+            "mydeck_set_id": 100,
+            "set_id": 101,
+            "unlock_id": 0,
+            "begin_sn": "",
+            "npc_id": 1017
+          },
+          "100057": {
+            "parent_chapter": 100054,
+            "mydeck_set_id": 100,
+            "set_id": 102,
+            "unlock_id": 0,
+            "begin_sn": "",
+            "npc_id": 1018
+          }
+        }
+      },
+      "unlock": {
+      },
+      "unlock_item": {
+      },
+      "reward": {
+        "100": {
+          "1": {// Category.CONSUME
+            "1": 150// GEM * 150
+          }
+        },
+        "101": {
+          "1": {// Category.CONSUME
+            "1": 200// GEM * 200
+          }
+        },
+        "102": {
+          "2": {// Category.CARD
+            "4007": 3// "Blue-Eyes White Dragon" * 3
+          }
+        }
+      }
+    }
+  }
+}
