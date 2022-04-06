@@ -51,6 +51,28 @@ namespace YgoMasterClient
             }
             else
             {
+                Process[] processes = Process.GetProcessesByName("YgoMaster");
+                try
+                {
+                    if (processes.Length == 0)
+                    {
+                        string serverExe = Path.Combine(Environment.CurrentDirectory, "YgoMaster.exe");
+                        if (File.Exists(serverExe))
+                        {
+                            Process.Start(serverExe);
+                        }
+                    }
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    foreach (Process process in processes)
+                    {
+                        process.Close();
+                    }
+                }
                 success = GameLauncher.Launch(GameLauncherMode.Detours);
             }
             if (!success)
@@ -929,14 +951,32 @@ namespace YgomSystem.LocalFileSystem
                     path = path.Substring(0, localDataPathIndex + localDataPath.Length);
                     if (folderName == "00000000")
                     {
+                        List<string> possibleFolders = new List<string>();
+                        List<string> possibleFoldersExactMatch = new List<string>();
                         foreach (string dir in Directory.GetDirectories(path))
                         {
                             DirectoryInfo dirInfo = new DirectoryInfo(dir);
                             if (dirInfo.Name != folderName)
                             {
-                                folderName = dirInfo.Name;
-                                break;
+                                // Exodia the Forbidden One (card image) - "Card/Images/Illust/tcg/4027"
+                                string findFile = Path.Combine(dirInfo.FullName, "0000", "f5", "f5e2cfa8");
+                                if (File.Exists(findFile))
+                                {
+                                    possibleFoldersExactMatch.Add(dirInfo.Name);
+                                }
+                                else
+                                {
+                                    possibleFolders.Add(dirInfo.Name);
+                                }
                             }
+                        }
+                        if (possibleFoldersExactMatch.Count > 0)
+                        {
+                            folderName = possibleFoldersExactMatch[0];
+                        }
+                        else if (possibleFolders.Count > 0)
+                        {
+                            folderName = possibleFolders[0];
                         }
                     }
                     path += folderName;

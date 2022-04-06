@@ -23,7 +23,7 @@ If `YgoMaster.exe` is not found then `YgoMasterClient.exe` will attempt to injec
 - Rename or delete `YgoMaster.exe`
 - Run `YgoMasterClient.exe`
 
-An alternative to the above is running `YgoMaster.exe live` using your favorite shell / command prompt.
+An alternative to the above is running `YgoMasterClient.exe live` using your favorite shell / command prompt.
 
 ### Additional info
 

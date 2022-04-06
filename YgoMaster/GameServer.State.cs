@@ -268,6 +268,9 @@ namespace YgoMaster
                             cpuContest.Run();
                             Environment.Exit(0);
                             break;
+                        case "--missing-cards":// Dumps cards which are in the data files but not in the card list
+                            DumpMissingCards();
+                            break;
                         default:
                             log = false;
                             break;
@@ -2153,6 +2156,23 @@ namespace YgoMaster
                     {
                         string path = Path.Combine(targetDir, id + ".json");
                         File.WriteAllText(path, MiniJSON.Json.Serialize(obj));
+                    }
+                }
+            }
+        }
+
+        void DumpMissingCards()
+        {
+            using (TextWriter tw = File.CreateText("missing-cards.txt"))
+            {
+                tw.WriteLine("The following is a list of cards which are in the data files but not the card list");
+                tw.WriteLine("---------------------------------------------------");
+                Dictionary<int, YdkHelper.GameCardInfo> cards = YdkHelper.LoadCardDataFromGame(dataDirectory);
+                foreach (YdkHelper.GameCardInfo card in cards.Values)
+                {
+                    if (!CardRare.ContainsKey(card.Id) && card.Kind != CardKind.Token)
+                    {
+                        tw.WriteLine(card.Id.ToString() + " - " + card.Name);
                     }
                 }
             }

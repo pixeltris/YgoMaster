@@ -28,7 +28,7 @@ Offline Yu-Gi-Oh! Master Duel (PC)
 
 - Download the latest release from https://github.com/pixeltris/YgoMaster/releases
 - Copy the `Build` folder (the folder, not the contents of the folder) into the game folder.
-- Run `YgoMaster.exe` / `YgoMasterClient.exe`.
+- Run `YgoMasterClient.exe` (this should also auto run `YgoMaster.exe`, if it doesn't manually run it).
 - In the game settings change the language to match the language set via Steam.
 
 Additionally...
