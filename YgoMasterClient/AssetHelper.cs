@@ -68,7 +68,7 @@ namespace YgoMasterClient
         // UnityEngine.ImageConversionModule.ImageConversion
         static IL2Class imageConversionClassInfo;
         static IL2Method methodLoadImage;
-        static IL2Method methodEncodeToPNG;
+        static IL2Method methodEncodeToJPG;
 
         // UnityEngine.CoreModule (Texture2D, Texture, RenderTexture, Sprite, Rect, Vector2)
         const int TextureFormat_ARGB32 = 5;
@@ -246,7 +246,7 @@ namespace YgoMasterClient
             IL2Assembly imageConversionAssembly = Assembler.GetAssembly("UnityEngine.ImageConversionModule");
             imageConversionClassInfo = imageConversionAssembly.GetClass("ImageConversion");
             methodLoadImage = imageConversionClassInfo.GetMethod("LoadImage", x => x.GetParameters().Length == 2);
-            methodEncodeToPNG = imageConversionClassInfo.GetMethod("EncodeToPNG");
+            methodEncodeToJPG = imageConversionClassInfo.GetMethod("EncodeToJPG", x => x.GetParameters().Length == 1);
 
             IL2Assembly coreModuleAssembly = Assembler.GetAssembly("UnityEngine.CoreModule");
             IL2Assembly uiAssembly = Assembler.GetAssembly("UnityEngine.UI");
@@ -345,13 +345,18 @@ namespace YgoMasterClient
                     methodReleaseTemporary.Invoke(new IntPtr[] { rt.ptr });
                 }
 
-                IL2Object textureData = methodEncodeToPNG.Invoke(new IntPtr[] { texture });
+                IL2Object textureData = methodEncodeToJPG.Invoke(new IntPtr[] { texture });
                 if (textureData != null)
                 {
                     byte[] buffer = new IL2Array<byte>(textureData.ptr).ToByteArray();
                     if (buffer.Length > 0)
                     {
-                        return buffer;
+                        using (MemoryStream inMs = new MemoryStream(buffer))
+                        using (MemoryStream outMs = new MemoryStream())
+                        {
+                            System.Drawing.Bitmap.FromStream(inMs).Save(outMs, System.Drawing.Imaging.ImageFormat.Png);
+                            return outMs.ToArray();
+                        }
                     }
                 }
             }

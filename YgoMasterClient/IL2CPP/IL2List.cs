@@ -134,6 +134,7 @@ namespace IL2CPP
         public class ListClassInfo
         {
             public IL2Class Class;
+            public IL2Method MethodCtor;
             public IL2Method MethodItemGet;
             public IL2Method MethodItemSet;
             public IL2Method MethodCountGet;
@@ -143,19 +144,25 @@ namespace IL2CPP
 
         public ListClassInfo ClassInfo;
 
-        public IL2ListExplicit(IntPtr ptrNew, IL2Class type)
+        public IL2ListExplicit(IntPtr ptrNew, IL2Class type, bool nullPtrMakeNew = false)
             : base(ptrNew)
         {
             if (!Classes.TryGetValue(type.ptr, out ClassInfo))
             {
                 ClassInfo = new ListClassInfo();
                 ClassInfo.Class = IL2List.Instance_Class.MakeGenericType(new IntPtr[] { type.IL2Typeof() });
+                ClassInfo.MethodCtor = ClassInfo.Class.GetMethod(".ctor", x => x.GetParameters().Length == 0);
                 ClassInfo.MethodItemGet = ClassInfo.Class.GetProperty("Item").GetGetMethod();
                 ClassInfo.MethodItemSet = ClassInfo.Class.GetProperty("Item").GetSetMethod();
                 ClassInfo.MethodCountGet = ClassInfo.Class.GetProperty("Count").GetGetMethod();
                 ClassInfo.MethodAdd = ClassInfo.Class.GetMethod("Add");
                 ClassInfo.MethodClear = ClassInfo.Class.GetMethod("Clear");
                 Classes[type.ptr] = ClassInfo;
+            }
+            if (nullPtrMakeNew && ptr == IntPtr.Zero)
+            {
+                ptr = Import.Object.il2cpp_object_new(ClassInfo.Class.ptr);
+                ClassInfo.MethodCtor.Invoke(ptr);
             }
         }
 

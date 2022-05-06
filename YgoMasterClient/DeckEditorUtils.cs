@@ -44,6 +44,7 @@ namespace YgomGame.Deck
 {
     static unsafe class CardCollectionView
     {
+        static IL2Class cardBaseDataClassInfo;
         static IL2Method GetDataList;
         delegate void Del_Start(IntPtr thisPtr);
         static Hook<Del_Start> hookStart;
@@ -53,6 +54,7 @@ namespace YgomGame.Deck
         static CardCollectionView()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            cardBaseDataClassInfo = assembly.GetClass("CardBaseData", "YgomGame.Deck");
             IL2Class classInfo = assembly.GetClass("CardCollectionView", "YgomGame.Deck");
             GetDataList = classInfo.GetProperty("m_DataList").GetGetMethod();
             hookStart = new Hook<Del_Start>(Start, classInfo.GetMethod("Start"));
@@ -67,7 +69,17 @@ namespace YgomGame.Deck
         public static void UpdateView(IntPtr thisPtr, bool updateDataCount, bool select = true)
         {
             hookUpdateView.Original(thisPtr, updateDataCount, select);
-            DeckEditViewController2.NumFilteredCards = new IL2List<object>(GetDataList.Invoke(thisPtr).ptr).Count;
+
+            IL2ListExplicit cardList = new IL2ListExplicit(GetDataList.Invoke(thisPtr).ptr, cardBaseDataClassInfo);
+            int count = cardList.Count;
+            HashSet<int> cids = new HashSet<int>();
+            for (int i = 0; i < count; i++)
+            {
+                CardBaseData cardData = cardList.GetRef<CardBaseData>(i);
+                cids.Add(cardData.CardID);
+            }
+
+            DeckEditViewController2.NumFilteredCards = cids.Count;
             DeckEditViewController2.SetExtraText();
         }
     }

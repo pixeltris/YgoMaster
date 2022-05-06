@@ -179,7 +179,7 @@ namespace YgoMaster
                     {
                         duelSettings.FirstPlayer = firstPlayer;
                     }
-                    if (duelSettings.FirstPlayer < -1)
+                    if (duelSettings.FirstPlayer <= -1)
                     {
                         duelSettings.FirstPlayer = rand.Next(2);
                     }

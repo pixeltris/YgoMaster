@@ -235,11 +235,8 @@ int CreateHooks()
     if (GetModuleHandleW(L"GameAssembly.dll"))
     {
         runningLive = true;
-        CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)LoadDotNet, NULL, NULL, NULL);
-        return 0;
     }
-    
-    if (MH_CreateHook(&LoadLibraryW, &Hook_LoadLibraryW, (LPVOID*)&Original_LoadLibraryW) != MH_OK)
+    else if (MH_CreateHook(&LoadLibraryW, &Hook_LoadLibraryW, (LPVOID*)&Original_LoadLibraryW) != MH_OK)
     {
         return 1;
     }
@@ -254,6 +251,11 @@ int CreateHooks()
     if (EnableAllHooksLL(true) != MH_OK)
     {
         return 1;
+    }
+    
+    if (runningLive)
+    {
+        CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)LoadDotNet, NULL, NULL, NULL);
     }
     
     return 0;

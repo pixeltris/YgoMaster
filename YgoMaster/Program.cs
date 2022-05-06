@@ -13,6 +13,8 @@ namespace YgoMaster
     {
         static int Main(string[] args)
         {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+
             for (int i = 0; i < args.Length; i++)
             {
                 if (args[i].ToLowerInvariant() == "--cpucontest-sim" && i < args.Length - 5)
@@ -52,7 +54,6 @@ namespace YgoMaster
                 }
             }
 
-            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             GameServer server = new GameServer();
             server.Start();
             System.Diagnostics.Process.GetCurrentProcess().WaitForExit();

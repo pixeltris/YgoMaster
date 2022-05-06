@@ -168,8 +168,14 @@ namespace YgoMaster
                 data["subCategory"] = shopItem.SubCategory;
                 data["iconMrk"] = shopItem.IconMrk;
                 data["iconType"] = (int)shopItem.IconType;
-                data["iconData"] = shopItem.IconData;
-                data["preview"] = shopItem.Preview;
+                if (!string.IsNullOrEmpty(shopItem.IconData))
+                {
+                    data["iconData"] = shopItem.IconData;
+                }
+                if (!string.IsNullOrEmpty(shopItem.Preview))
+                {
+                    data["preview"] = shopItem.Preview;
+                }
                 data["searchCategory"] = shopItem.SearchCategory.ToArray();
                 data["limitdate_ts"] = expireTime;
                 data["limit_buy_count"] = buyLimit;
@@ -216,7 +222,7 @@ namespace YgoMaster
                         }
                     }
                     // NOTE: If you send "IDS_SHOP_BUY_BUTTON_CARDPACK_MULTI" with no "textArgs" the shops will break
-                    prices[price.Id.ToString()] = new Dictionary<string, object>()
+                    Dictionary<string, object> priceData = new Dictionary<string, object>()
                     {
                         { "price_id", price.Id },
                         { "item_category", 1 },
@@ -224,12 +230,20 @@ namespace YgoMaster
                         { "button_type", (int)buttonType },
                         { "use_item_num", price.Price },
                         { "buy_count", 1 },
-                        { "textId", textId },
-                        { "textArgs", price.ItemAmount > 1 ? new int[] { price.ItemAmount } : null },
-                        { "POP", Utils.FixIdString(pop) },
-                        { "sort", price.Id }
+                        { "sort", price.Id },
+                        { "confirm_reg_id", 0 },// Added v1.1.1
                         //"free_num":1 <--- used for "1 Free Pull" (also need "use_item_num" set to 0)
                     };
+                    if (!string.IsNullOrEmpty(textId))
+                    {
+                        priceData["textId"] = textId;
+                        priceData["textArgs"] = price.ItemAmount > 1 ? new int[] { price.ItemAmount } : new int[0];
+                    }
+                    if (!string.IsNullOrEmpty(pop))
+                    {
+                        priceData["POP"] = Utils.FixIdString(pop);
+                    }
+                    prices[price.Id.ToString()] = priceData;
                 }
                 data["prices"] = prices;
 

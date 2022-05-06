@@ -462,6 +462,10 @@ namespace YgomGame.Room
             {
                 duelSettingsManager.InitButtons(thisPtr);
             }
+            else
+            {
+                hookSetData.Original(thisPtr);
+            }
         }
 
         static void CallAPIRoomCreate(IntPtr thisPtr)
@@ -948,7 +952,8 @@ namespace YgomGame.Room
                     settings = new DuelSettings();
                 }
                 buttons = new Buttons();
-                IL2ListExplicit infosList = new IL2ListExplicit(fieldInfos.GetValue(viewController).ptr, templateInfoClass);
+                IL2ListExplicit infosList = new IL2ListExplicit(IntPtr.Zero, templateInfoClass, true);
+                fieldInfos.SetValue(viewController, infosList.ptr);
                 IntPtr isv = fieldIsv.GetValue(viewController).ptr;
 
                 string[] lpStrings = new string[]

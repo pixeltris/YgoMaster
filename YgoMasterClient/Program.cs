@@ -106,6 +106,7 @@ namespace YgoMasterClient
                 // DuelClientUtils
                 nativeTypes.Add(typeof(UnityEngine.QualitySettings));
                 nativeTypes.Add(typeof(YgomGame.Duel.ReplayControl));
+                nativeTypes.Add(typeof(YgomGame.Duel.DuelClient));
                 nativeTypes.Add(typeof(YgomGame.Duel.CameraShaker));
                 nativeTypes.Add(typeof(YgomGame.Duel.Engine));
                 nativeTypes.Add(typeof(YgomGame.Duel.EngineApiUtil));
@@ -116,6 +117,7 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomSystem.UI.ViewControllerManager));
                 nativeTypes.Add(typeof(YgomGame.Room.RoomCreateViewController));
                 nativeTypes.Add(typeof(YgomGame.DeckBrowser.DeckBrowserViewController));
+                nativeTypes.Add(typeof(YgomSystem.UI.BindingTextMeshProUGUI));
                 nativeTypes.Add(typeof(YgomSystem.UI.InfinityScroll.InfinityScrollView));
                 nativeTypes.Add(typeof(YgomGame.Solo.SoloSelectChapterViewController));
                 nativeTypes.Add(typeof(YgomGame.Solo.SoloStartProductionViewController));
@@ -124,10 +126,12 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomSystem.Network.Request));
                 nativeTypes.Add(typeof(YgomSystem.Network.RequestStructure));
                 // DeckEditorUtils
+                nativeTypes.Add(typeof(TMPro.TMP_Text));
                 nativeTypes.Add(typeof(YgomGame.Deck.DeckView));
                 nativeTypes.Add(typeof(YgomGame.Deck.CardCollectionView));
                 nativeTypes.Add(typeof(YgomGame.DeckEditViewController2));
                 nativeTypes.Add(typeof(YgomGame.SubMenu.DeckEditSubMenuViewController));
+                nativeTypes.Add(typeof(YgomGame.SubMenu.SubMenuViewController));
                 nativeTypes.Add(typeof(YgomGame.Menu.CommonDialogViewController));
                 // Misc
                 nativeTypes.Add(typeof(Win32Hooks));
@@ -142,6 +146,11 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomMiniJSON.Json));
                 nativeTypes.Add(typeof(Steamworks.SteamAPI));
                 nativeTypes.Add(typeof(Steamworks.SteamUtils));
+                // Uncomment the following after an update (extra things which are normally loaded on demand)
+                /*nativeTypes.Add(typeof(UnityEngine.UnityObject));
+                nativeTypes.Add(typeof(UnityEngine.GameObject));
+                nativeTypes.Add(typeof(UnityEngine.Transform));
+                nativeTypes.Add(typeof(UnityEngine.Component));*/
                 foreach (Type type in nativeTypes)
                 {
                     System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
@@ -567,14 +576,15 @@ namespace YgomGame.Utility
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             classInfo = assembly.GetClass("ItemUtil", "YgomGame.Utility");
-            methodGetItemName = classInfo.GetMethod("GetItemName", x => x.GetParameters().Length == 1);
+            methodGetItemName = classInfo.GetMethod("GetItemName", x => x.GetParameters().Length == 2);
             methodGetItemDesc = classInfo.GetMethod("GetItemDesc", x => x.GetParameters().Length == 2);
             methodGetCategoryFromID = classInfo.GetMethod("GetCategoryFromID");
         }
 
         public static string GetItemName(int itemID)
         {
-            return methodGetItemName.Invoke(new IntPtr[] { new IntPtr(&itemID) }).GetValueObj<string>();
+            IntPtr textGroupLoadHolder = IntPtr.Zero;
+            return methodGetItemName.Invoke(new IntPtr[] { new IntPtr(&itemID), textGroupLoadHolder }).GetValueObj<string>();
         }
 
         public static string GetItemDesc(int itemID)
@@ -1042,9 +1052,7 @@ namespace Steamworks
         static Hook<Del_Init> hookInit;
         static Hook<Del_Shutdown> hookShutdown;
         static Hook<Del_RestartAppIfNecessary> hookRestartAppIfNecessary;
-        static Hook<Del_ReleaseCurrentThreadMemory> hookReleaseCurrentThreadMemory;
         static Hook<Del_RunCallbacks> hookRunCallbacks;
-        static Hook<Del_IsSteamRunning> hookIsSteamRunning;
 
         static SteamAPI()
         {
@@ -1052,21 +1060,17 @@ namespace Steamworks
             {
                 return;
             }
-            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp-firstpass");
+            IL2Assembly assembly = Assembler.GetAssembly("com.rlabrecque.steamworks.net");
             classInfo = assembly.GetClass("SteamAPI", "Steamworks");
             methodInit = classInfo.GetMethod("Init");
             methodShutdown = classInfo.GetMethod("Shutdown");
             methodRestartAppIfNecessary = classInfo.GetMethod("RestartAppIfNecessary");
-            methodReleaseCurrentThreadMemory = classInfo.GetMethod("ReleaseCurrentThreadMemory");
             methodRunCallbacks = classInfo.GetMethod("RunCallbacks");
-            methodIsSteamRunning = classInfo.GetMethod("IsSteamRunning");
 
             hookInit = new Hook<Del_Init>(InitH, methodInit);
             hookShutdown = new Hook<Del_Shutdown>(Shutdown, methodShutdown);
             hookRestartAppIfNecessary = new Hook<Del_RestartAppIfNecessary>(RestartAppIfNecessary, methodRestartAppIfNecessary);
-            hookReleaseCurrentThreadMemory = new Hook<Del_ReleaseCurrentThreadMemory>(ReleaseCurrentThreadMemory, methodReleaseCurrentThreadMemory);
             hookRunCallbacks = new Hook<Del_RunCallbacks>(RunCallbacks, methodRunCallbacks);
-            hookIsSteamRunning = new Hook<Del_IsSteamRunning>(IsSteamRunning, methodIsSteamRunning);
         }
 
         static bool InitH()
@@ -1083,17 +1087,8 @@ namespace Steamworks
             return false;
         }
 
-        static void ReleaseCurrentThreadMemory()
-        {
-        }
-
         static void RunCallbacks()
         {
-        }
-
-        static bool IsSteamRunning()
-        {
-            return true;
         }
     }
 
@@ -1111,7 +1106,7 @@ namespace Steamworks
             {
                 return;
             }
-            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp-firstpass");
+            IL2Assembly assembly = Assembler.GetAssembly("com.rlabrecque.steamworks.net");
             classInfo = assembly.GetClass("SteamUtils", "Steamworks");
             methodIsOverlayEnabled = classInfo.GetMethod("IsOverlayEnabled");
 
