@@ -636,7 +636,7 @@ namespace YgoMaster
                                 CardRarity cardRarity;
                                 if (TryGetCardRarity(cardId, match.Standard ? standardPackCardRare : packCardRare, out cardRarity) && cardRarity == rarity)
                                 {
-                                    if (Shop.NoDuplicatesPerPack && seenCardIdsThisPack.Contains(cardId))
+                                    if (Shop.NoDuplicatesPerPack && seenCardIdsThisPack.Contains(cardId) && cardRarity < CardRarity.SuperRare)
                                     {
                                         continue;
                                     }

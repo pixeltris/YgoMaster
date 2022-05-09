@@ -51,8 +51,10 @@ Running `Build.bat` is the equivilant of:
 
 ## Related
 
-- https://github.com/SethPDA/MasterDuel-Modding/wiki
-- https://www.nexusmods.com/yugiohmasterduel/mods
+- https://www.nexusmods.com/yugiohmasterduel/mods - community mods
+- https://www.nexusmods.com/yugiohmasterduel/articles/3 - modding guide
+- https://github.com/SethPDA/MasterDuel-Modding/wiki - modding guide
+- https://github.com/crazydoomy/MD-Replay-Editor - save / load replays
 
 ## Screenshots
 

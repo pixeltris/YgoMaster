@@ -97,6 +97,20 @@ namespace YgoMasterClient
                 ClientDataDumpDir = Path.Combine(DataDir, "ClientDataDump");
                 YgoMaster.YdkHelper.LoadIdMap(DataDir);
 
+                if (!ClientSettings.Load())
+                {
+                    throw new Exception("Failed to load '" + ClientSettings.FilePath + "'");
+                }
+                if (string.IsNullOrEmpty(ClientSettings.ServerUrl) ||
+                    string.IsNullOrEmpty(ClientSettings.ServerPollUrl))
+                {
+                    throw new Exception("Failed to get server url settings");
+                }
+                if (ClientSettings.ShowConsole)
+                {
+                    ConsoleHelper.ShowConsole();
+                }
+
                 PInvoke.WL_InitHooks();
                 PInvoke.InitGameModuleBaseAddress();
 
@@ -151,21 +165,14 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(UnityEngine.GameObject));
                 nativeTypes.Add(typeof(UnityEngine.Transform));
                 nativeTypes.Add(typeof(UnityEngine.Component));*/
+                // Uncomment the following for easier logging of solo content
+                //nativeTypes.Add(typeof(DuellDll));
                 foreach (Type type in nativeTypes)
                 {
                     System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
                 }
                 PInvoke.WL_EnableAllHooks(true);
 
-                if (!ClientSettings.Load())
-                {
-                    throw new Exception("Failed to load '" + ClientSettings.FilePath + "'");
-                }
-                if (string.IsNullOrEmpty(ClientSettings.ServerUrl) ||
-                    string.IsNullOrEmpty(ClientSettings.ServerPollUrl))
-                {
-                    throw new Exception("Failed to get server url settings");
-                }
                 if (ClientSettings.DisableVSync)
                 {
                     UnityEngine.QualitySettings.CreateVSyncHook();
@@ -193,7 +200,6 @@ namespace YgoMasterClient
 
                 if (ClientSettings.ShowConsole)
                 {
-                    ConsoleHelper.ShowConsole();
                     new Thread(delegate()
                         {
                             while (true)
@@ -499,11 +505,225 @@ namespace YgoMasterClient
                                                     Console.WriteLine("Done");
                                                 }
                                                 break;
-                                            case "updatejson":// Update the json data store (useful for testing)
+                                            case "updatediff":// Dumps referenced enums / functions (use this to diff and update enums / funcs)
+                                                {
+                                                    IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+                                                    IL2Class engineClass = assembly.GetClass("Engine", "YgomGame.Duel");
+                                                    IL2Class contentClass = assembly.GetClass("Content", "YgomGame.Card");
+                                                    Dictionary<string, IL2Class> allEnums = new Dictionary<string, IL2Class>();
+                                                    allEnums["Card.cs"] = null;
+                                                    allEnums["CardFrame"] = contentClass.GetNestedType("Frame");
+                                                    allEnums["CardKind"] = contentClass.GetNestedType("Kind");
+                                                    allEnums["CardIcon"] = contentClass.GetNestedType("Icon");
+                                                    allEnums["Misc.cs"] = null;
+                                                    allEnums["TopicsBannerPatern"] = assembly.GetClass("TopicsBannerResourceBinder", "YgomGame.Menu.Common").GetNestedType("BannerPatern");
+                                                    allEnums["CardRarity"] = contentClass.GetNestedType("Rarity");
+                                                    allEnums["CardStyleRarity"] = assembly.GetClass("SearchFilter", "YgomGame.Deck").GetNestedType("Setting").GetNestedType("STYLE");
+                                                    allEnums["StandardRank"] = assembly.GetClass("ColosseumUtil", "YgomGame.Colosseum").GetNestedType("StandardRank");
+                                                    allEnums["ServerStatus"] = assembly.GetClass("ServerStatus", "YgomSystem.Network");
+                                                    allEnums["GameMode"] = assembly.GetClass("Util", "YgomGame.Duel").GetNestedType("GameMode");
+                                                    allEnums["ChapterStatus"] = assembly.GetClass("SoloModeUtil", "YgomGame.Solo").GetNestedType("ChapterStatus");
+                                                    allEnums["ChapterUnlockType"] = assembly.GetClass("SoloModeUtil", "YgomGame.Solo").GetNestedType("UnlockType");
+                                                    allEnums["SoloDeckType"] = assembly.GetClass("SoloModeUtil", "YgomGame.Solo").GetNestedType("DeckType");
+                                                    allEnums["HowToObtainCard"] = null;
+                                                    allEnums["DuelResultScore"] = null;
+                                                    allEnums["Duel.cs"] = null;
+                                                    allEnums["DuelResultType"] = engineClass.GetNestedType("ResultType");
+                                                    allEnums["DuelCpuParam"] = engineClass.GetNestedType("CpuParam");
+                                                    allEnums["DuelType"] = engineClass.GetNestedType("DuelType");
+                                                    allEnums["DuelAffectType"] = engineClass.GetNestedType("AffectType");
+                                                    allEnums["DuelBtlPropFlag"] = engineClass.GetNestedType("BtlPropFlag");
+                                                    allEnums["DuelCardLink"] = engineClass.GetNestedType("CardLink");
+                                                    allEnums["DuelCardLinkBit"] = engineClass.GetNestedType("CardLinkBit");
+                                                    allEnums["DuelCardMoveType"] = engineClass.GetNestedType("CardMoveType");
+                                                    allEnums["DuelCommandBit"] = engineClass.GetNestedType("CommandBit");
+                                                    allEnums["DuelCommandType"] = engineClass.GetNestedType("CommandType");
+                                                    allEnums["DuelCounterType"] = engineClass.GetNestedType("CounterType");
+                                                    allEnums["DuelCutinActivateType"] = engineClass.GetNestedType("CutinActivateType");
+                                                    allEnums["DuelCutinSummonType"] = engineClass.GetNestedType("CutinSummonType");
+                                                    allEnums["DuelDamageType"] = engineClass.GetNestedType("DamageType");
+                                                    allEnums["DuelDialogEffectType"] = engineClass.GetNestedType("DialogEffectType");
+                                                    allEnums["DuelDialogInfo"] = engineClass.GetNestedType("DialogInfo");
+                                                    allEnums["DuelDialogMixTextType"] = engineClass.GetNestedType("DialogMixTextType");
+                                                    allEnums["DuelDialogOkType"] = engineClass.GetNestedType("DialogOkType");
+                                                    allEnums["DuelDialogRitualType"] = engineClass.GetNestedType("DialogRitualType");
+                                                    allEnums["DuelDialogType"] = engineClass.GetNestedType("DialogType");
+                                                    allEnums["DuelDmgStepType"] = engineClass.GetNestedType("DmgStepType");
+                                                    allEnums["DuelFieldAnimeType"] = engineClass.GetNestedType("FieldAnimeType");
+                                                    allEnums["DuelFinishType"] = engineClass.GetNestedType("FinishType");
+                                                    allEnums["DuelLimitedType"] = engineClass.GetNestedType("LimitedType");
+                                                    allEnums["DuelListAttribute"] = engineClass.GetNestedType("ListAttribute");
+                                                    allEnums["DuelListType"] = engineClass.GetNestedType("ListType");
+                                                    allEnums["DuelMenuActType"] = engineClass.GetNestedType("MenuActType");
+                                                    allEnums["DuelMenuParamType"] = engineClass.GetNestedType("MenuParamType");
+                                                    allEnums["DuelPhase"] = engineClass.GetNestedType("Phase");
+                                                    allEnums["DuelPlayerType"] = engineClass.GetNestedType("PlayerType");
+                                                    allEnums["DuelPvpCommandType"] = engineClass.GetNestedType("PvpCommandType");
+                                                    allEnums["DuelPvpFieldType"] = engineClass.GetNestedType("PvpFieldType");
+                                                    allEnums["DuelRunCommandType"] = engineClass.GetNestedType("RunCommandType");
+                                                    allEnums["DuelShowParam"] = engineClass.GetNestedType("ShowParam");
+                                                    allEnums["DuelSpSummonType"] = engineClass.GetNestedType("SpSummonType");
+                                                    allEnums["DuelStepType"] = engineClass.GetNestedType("StepType");
+                                                    allEnums["DuelTagType"] = engineClass.GetNestedType("TagType");
+                                                    allEnums["DuelToEngineActType"] = engineClass.GetNestedType("ToEngineActType");
+                                                    allEnums["DuelViewType"] = engineClass.GetNestedType("ViewType");
+
+                                                    using (TextWriter tw = File.CreateText("updatediff.cs"))
+                                                    {
+                                                        tw.WriteLine("// Client version " + assembly.GetClass("Version", "YgomSystem.Utility").GetField("APP_COMMON_VERSION").GetValue().GetValueObj<string>());
+                                                        tw.WriteLine("// This file is generated using the 'updatediff' command in YgoMasterClient. This information is used to determine changes between client versions which impact YgoMaster.");
+                                                        tw.WriteLine("// Run the command, diff against the old file, and use the changes to update code.");
+                                                        tw.WriteLine();
+
+                                                        foreach (KeyValuePair<string, IL2Class> enumClass in allEnums)
+                                                        {
+                                                            if (enumClass.Value == null)
+                                                            {
+                                                                if (enumClass.Key.EndsWith(".cs"))
+                                                                {
+                                                                    tw.WriteLine("//==================================");
+                                                                    tw.WriteLine("// " + enumClass.Key);
+                                                                    tw.WriteLine("//==================================");
+                                                                }
+                                                                else
+                                                                {
+                                                                    switch (enumClass.Key)
+                                                                    {
+                                                                        case "HowToObtainCard":
+                                                                            YgomSystem.Utility.TextData.LoadGroup("IDS_DECKEDIT");
+                                                                            IL2Class idsDeckEditClass = assembly.GetClass("IDS_DECKEDIT", "YgomGame.TextIDs");
+                                                                            tw.WriteLine("/// <summary>");
+                                                                            tw.WriteLine("/// IDS_DECKEDIT.HOWTOGET_CATEGORY (off by 1?)");
+                                                                            tw.WriteLine("/// </summary>");
+                                                                            tw.WriteLine("enum HowToObtainCard");
+                                                                            tw.WriteLine("{");
+                                                                            tw.WriteLine("    None,");
+                                                                            foreach (IL2Field field in idsDeckEditClass.GetFields())
+                                                                            {
+                                                                                if (field.Name.StartsWith("HOWTOGET_CATEGORY"))
+                                                                                {
+                                                                                    string str = YgomSystem.Utility.TextData.GetText(idsDeckEditClass.Name + "." + field.Name);
+                                                                                    str = str.Replace(" ", string.Empty);
+                                                                                    if (!string.IsNullOrEmpty(str))
+                                                                                    {
+                                                                                        tw.WriteLine("    " + str + ",// " + field.Name);
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                            tw.WriteLine("}");
+                                                                            break;
+                                                                        case "DuelResultScore":
+                                                                            YgomSystem.Utility.TextData.LoadGroup("IDS_SCORE");
+                                                                            IL2Class idsScoreClass = assembly.GetClass("IDS_SCORE", "YgomGame.TextIDs");
+                                                                            tw.WriteLine("/// <summary>");
+                                                                            tw.WriteLine("/// IDS_SCORE (IDS_SCORE.DETAIL_XXX)");
+                                                                            tw.WriteLine("/// </summary>");
+                                                                            tw.WriteLine("enum DuelResultScore");
+                                                                            tw.WriteLine("{");
+                                                                            tw.WriteLine("    None,");
+                                                                            foreach (IL2Field field in idsScoreClass.GetFields())
+                                                                            {
+                                                                                if (field.Name.StartsWith("DETAIL_"))
+                                                                                {
+                                                                                    string str = YgomSystem.Utility.TextData.GetText(idsScoreClass.Name + "." + field.Name);
+                                                                                    str = str.Replace(" ", string.Empty);
+                                                                                    str = str.Replace("!", string.Empty);
+                                                                                    tw.WriteLine("    " + str + ",");
+                                                                                }
+                                                                            }
+                                                                            tw.WriteLine("}");
+                                                                            break;
+                                                                        default:
+                                                                            Console.WriteLine(enumClass.Key + " is null");
+                                                                            break;
+                                                                    }
+                                                                }
+                                                                continue;
+                                                            }
+
+                                                            tw.WriteLine("/// <summary>");
+                                                            tw.WriteLine("/// " + enumClass.Value.FullNameEx);
+                                                            tw.WriteLine("/// </summary>");
+                                                            tw.WriteLine("enum " + enumClass.Key);
+                                                            tw.WriteLine("{");
+                                                            int nextValue = 0;
+                                                            foreach (IL2Field field in enumClass.Value.GetFields())
+                                                            {
+                                                                if (field.Name == "value__")
+                                                                {
+                                                                    continue;
+                                                                }
+                                                                int value = field.GetValue().GetValueRef<int>();
+                                                                tw.WriteLine("    " + field.Name + (nextValue == value ? "," : " = " + value + ","));
+                                                                nextValue = value + 1;
+                                                            }
+                                                            tw.WriteLine("}");
+                                                        }
+
+                                                        tw.WriteLine("//==================================");
+                                                        tw.WriteLine("// ResultCodes.cs");
+                                                        tw.WriteLine("//==================================");
+                                                        foreach (IL2Class enumClass in assembly.GetClasses().OrderBy(x => x.Name))
+                                                        {
+                                                            if (enumClass.Namespace == "YgomSystem.Network" && enumClass.IsEnum)
+                                                            {
+                                                                tw.WriteLine("enum " + enumClass.Name);
+                                                                tw.WriteLine("{");
+                                                                int nextValue = 0;
+                                                                foreach (IL2Field field in enumClass.GetFields())
+                                                                {
+                                                                    if (field.Name == "value__")
+                                                                    {
+                                                                        continue;
+                                                                    }
+                                                                    int value = field.GetValue().GetValueRef<int>();
+                                                                    tw.WriteLine("    " + field.Name + (nextValue == value ? "," : " = " + value + ","));
+                                                                    nextValue = value + 1;
+                                                                }
+                                                                tw.WriteLine("}");
+                                                            }
+                                                        }
+
+                                                        tw.WriteLine("//==================================");
+                                                        tw.WriteLine("// Network API");
+                                                        tw.WriteLine("//==================================");
+                                                        IL2Class apiClass = assembly.GetClass("API", "YgomSystem.Network");
+                                                        foreach (IL2Method method in apiClass.GetMethods())
+                                                        {
+                                                            tw.WriteLine("//" + method.GetSignature());
+                                                        }
+
+                                                        tw.WriteLine("//==================================");
+                                                        tw.WriteLine("// duel.dll functions (Engine)");
+                                                        tw.WriteLine("//==================================");
+                                                        foreach (IL2Method method in engineClass.GetMethods().OrderBy(x => x.Name))
+                                                        {
+                                                            if (method.Name.StartsWith("DLL_"))
+                                                            {
+                                                                tw.WriteLine("//" + method.GetSignature());
+                                                            }
+                                                        }
+
+                                                        tw.WriteLine("//==================================");
+                                                        tw.WriteLine("// duel.dll functions (Content)");
+                                                        tw.WriteLine("//==================================");
+                                                        foreach (IL2Method method in contentClass.GetMethods().OrderBy(x => x.Name))
+                                                        {
+                                                            if (method.Name.StartsWith("DLL_"))
+                                                            {
+                                                                tw.WriteLine("//" + method.GetSignature());
+                                                            }
+                                                        }
+                                                    }
+
+                                                    Console.WriteLine("Done");
+                                                }
+                                                break;
+                                            case "updatejson":// Update the json data store for data that is sent server->client (useful for testing)
                                                 YgomSystem.Utility.ClientWork.UpdateJson(splitted[1], splitted[2]);
                                                 Console.WriteLine("Done");
                                                 break;
-                                            case "updatejsonraw":// Update the json data store (useful for testing)
+                                            case "updatejsonraw":// Update the json data store for data that is sent server->client (useful for testing)
                                                 YgomSystem.Utility.ClientWork.UpdateJson(splitted[1]);
                                                 Console.WriteLine("Done");
                                                 break;
@@ -560,6 +780,31 @@ unsafe static class Win32Hooks
         {
             actions.Add(action);
         }
+    }
+}
+
+unsafe static class DuellDll
+{
+    delegate int Del_DLL_DuelSysInitCustom(int fDuelType, bool tag, int life0, int life1, int hand0, int hand1, bool shuf);
+    static Hook<Del_DLL_DuelSysInitCustom> hookDLL_DuelSysInitCustom;
+
+    static DuellDll()
+    {
+        IntPtr lib = PInvoke.LoadLibrary(Path.Combine("masterduel_Data", "Plugins", "x86_64", "duel.dll"));
+        if (lib == IntPtr.Zero)
+        {
+            throw new Exception("Failed to load duel.dll");
+        }
+        hookDLL_DuelSysInitCustom = new Hook<Del_DLL_DuelSysInitCustom>(DLL_DuelSysInitCustom, PInvoke.GetProcAddress(lib, "DLL_DuelSysInitCustom"));
+    }
+
+    static int DLL_DuelSysInitCustom(int fDuelType, bool tag, int life0, int life1, int hand0, int hand1, bool shuf)
+    {
+        //hand0 = 7;
+        //hand1 = 0;
+        life0 = 9000000;
+        life1 = 1;
+        return hookDLL_DuelSysInitCustom.Original(fDuelType, tag, life0, life1, hand0, hand1, shuf);
     }
 }
 

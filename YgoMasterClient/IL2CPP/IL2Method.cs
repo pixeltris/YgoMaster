@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Linq;
+using System.Text;
 
 namespace IL2CPP
 {
@@ -54,6 +55,20 @@ namespace IL2CPP
         }
         private List<IL2Param> Parameters = null;
 
+        public string GetSignature()
+        {
+            StringBuilder result = new StringBuilder();
+            if (IsPublic)
+            {
+                result.Append("public ");
+            }
+            if (IsStatic)
+            {
+                result.Append("static ");
+            }
+            result.Append(ReturnType.Name + " " + Name + "(" + string.Join(", ", GetParameters().Select(x => x.Type.Name + " " + x.Name)) + ")");
+            return result.ToString();
+        }
 
         public bool HasAttribute(IL2Class klass)
         {

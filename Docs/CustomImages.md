@@ -14,10 +14,12 @@ The casing of the file path is important. For the most part you can use AssetStu
 
 If you want to create new files which don't already exist in the game you can use the crc method as described above to determine where the given file should be placed. There are also a few commands `locate` / `locateraw` / `crc` in YgoMasterClient which can be used to crc file paths (enable `ShowConsole` in `ClientSettings.json`). [Read the code for more info on what these do](https://github.com/pixeltris/YgoMaster/blob/83f53fe6cc3f38cbdedda1f88a49d6bd0bfda423/YgoMasterClient/Program.cs#L368-L420).
 
-The following projects can possibly be used to create / modify unity assets:
+The following can be used to create / modify unity assets:
 
-- https://github.com/Igor55x/UAAE
 - https://github.com/nesrak1/UABEA
+- https://github.com/Igor55x/UAAE
+
+Check out this comprehensive asset modding guide https://www.nexusmods.com/yugiohmasterduel/articles/3
 
 ## ClientData
 

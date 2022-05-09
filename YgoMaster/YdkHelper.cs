@@ -475,18 +475,26 @@ namespace YgoMaster
                         case CardKind.SpDtuner:
                         case CardKind.FlipTuner:
                         case CardKind.UnionTuner:
+                        case CardKind.Maximum:
                             return CardFrame.Effect;
                         case CardKind.Fusion:
                         case CardKind.FusionFx:
                         case CardKind.FusionTuner:
+                        case CardKind.FusionTunerFX:
                             return CardFrame.Fusion;
                         case CardKind.FusionPend:
                             return CardFrame.FusionPend;
                         case CardKind.Ritual:
                         case CardKind.RitualFx:
                         case CardKind.RitualSpirit:
+                        case CardKind.RirualTunerFX:
+                        case CardKind.R_Fusion:// Ritual or fusion?
+                        case CardKind.R_FusionFX:// Ritual or fusion?
                             return CardFrame.Ritual;
+                        case CardKind.RitualPend:
+                            return CardFrame.RitualPend;
                         case CardKind.Token:
+                        case CardKind.TokenTuner:
                             return CardFrame.Token;
                         case CardKind.Magic:
                             return CardFrame.Magic;

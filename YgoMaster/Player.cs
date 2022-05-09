@@ -135,7 +135,7 @@ namespace YgoMaster
     {
         public PlayerCraftPoints()
         {
-            Limit = 99999;
+            Limit = 2000000000;
             AddId(ItemID.CONSUME.ID0003, CardRarity.Normal);
             AddId(ItemID.CONSUME.ID0004, CardRarity.Rare);
             AddId(ItemID.CONSUME.ID0005, CardRarity.SuperRare);
@@ -147,7 +147,7 @@ namespace YgoMaster
     {
         public PlayerOrbPoints()
         {
-            Limit = 99999;
+            Limit = 2000000000;
             AddId(ItemID.CONSUME.ID0008, OrbType.Dark);
             AddId(ItemID.CONSUME.ID0009, OrbType.Light);
             AddId(ItemID.CONSUME.ID0010, OrbType.Earth);

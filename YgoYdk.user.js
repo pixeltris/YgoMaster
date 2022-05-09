@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         Yu-Gi-Oh! Card Database to YDK(e)
 // @namespace    https://github.com/pixeltris/YgoMaster
-// @version      1.0
+// @version      1.1
 // @description  Adds YDK / YDKe buttons to the official "Yu-Gi-Oh! Card Database" website
 // @author       pixeltris
 // @match        *://*.db.yugioh-card.com/yugiohdb/member_deck.action*
 // @downloadURL  https://github.com/pixeltris/YgoMaster/raw/master/YgoYdk.user.js
+// @updateURL    https://github.com/pixeltris/YgoMaster/raw/master/YgoYdk.user.js
 // @run-at       document-idle
 // @grant        none
 // ==/UserScript==
@@ -29,8 +30,8 @@
         }
     }
     
-    var sortSetCollection = document.getElementsByClassName('sort_set');
-    if (sortSetCollection.length == 1) {
+    var targetElement = document.getElementsByClassName('sort_set');
+    if (targetElement.length == 1) {
         var newDiv = document.createElement('div');
         newDiv.style.textAlign = 'right';
         
@@ -85,7 +86,7 @@
         };
         newDiv.appendChild(ydkeBtn);
         
-        sortSetCollection[0].parentNode.insertBefore(newDiv, sortSetCollection[0].nextSibling);
+        targetElement[0].parentNode.parentNode.insertBefore(newDiv, targetElement[0].parentNode.nextSibling);
         
         function updateCards() {
             var numMissingCards = 0;
@@ -132,7 +133,7 @@
             all: []
         };
         var deckData = document.getElementById('deck_image');
-        var imageTables = deckData.getElementsByClassName('image_table');
+        var imageTables = deckData.getElementsByClassName('image_set');
         for (var i = 0; i < 3 && i < imageTables.length; i++) {
             var cardList = null;
             switch (i) {

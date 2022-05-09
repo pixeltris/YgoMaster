@@ -30,8 +30,9 @@ namespace YgoMaster
                         cards[cardId] = new Dictionary<CardStyleRarity, int>()
                         {
                             { CardStyleRarity.Normal, Utils.GetValue<int>(numObj, "num") },
-                            { CardStyleRarity.Shine, Utils.GetValue<int>(numObj, "p1_num") },
-                            { CardStyleRarity.Royal, Utils.GetValue<int>(numObj, "p2_num") }
+                            // Removed as there isn't a way for the client to select this and this could potentially backfire (taking away huge chunks of CP)
+                            //{ CardStyleRarity.Shine, Utils.GetValue<int>(numObj, "p1_num") },
+                            //{ CardStyleRarity.Royal, Utils.GetValue<int>(numObj, "p2_num") }
                         };
                         foreach (KeyValuePair<CardStyleRarity, int> styleRarityNum in cards[cardId])
                         {

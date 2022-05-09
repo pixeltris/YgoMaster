@@ -149,16 +149,38 @@
               },
               "22": {
                 "priority": 3,
-                "parent_gate": 0,
+                "parent_gate": 31,
                 "unlock_id": 1,
                 "view_gate": 1,
                 "clear_chapter": 220150
+              },
+              "27": {
+                "priority": 28,
+                "parent_gate": 0,
+                "unlock_id": 11,
+                "view_gate": 5,
+                "clear_chapter": 270219
+              },
+              "30": {
+                "priority": 4,
+                "parent_gate": 31,
+                "unlock_id": 15,
+                "view_gate": 1,
+                "clear_chapter": 300247
+              },
+              "31": {
+                "priority": 2,
+                "parent_gate": 0,
+                "unlock_id": 1,
+                "view_gate": 1,
+                "clear_chapter": 300247
               }
             },
             "chapter": {
               "1": {
                 "10001": {
                   "parent_chapter": 0,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 110,
                   "unlock_id": 0,
@@ -167,6 +189,7 @@
                 },
                 "10002": {
                   "parent_chapter": 10001,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 1120001,
                   "unlock_id": 0,
@@ -175,6 +198,7 @@
                 },
                 "10003": {
                   "parent_chapter": 10002,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 110,
                   "unlock_id": 0,
@@ -185,6 +209,7 @@
               "2": {
                 "20004": {
                   "parent_chapter": 0,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 13060,
                   "unlock_id": 0,
@@ -193,6 +218,7 @@
                 },
                 "20006": {
                   "parent_chapter": 20004,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 13061,
                   "unlock_id": 0,
@@ -201,6 +227,7 @@
                 },
                 "20007": {
                   "parent_chapter": 20151,
+                  "difficulty": 2,
                   "mydeck_set_id": 13086,
                   "set_id": 13087,
                   "unlock_id": 0,
@@ -209,6 +236,7 @@
                 },
                 "20008": {
                   "parent_chapter": 20007,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 13096,
                   "unlock_id": 0,
@@ -217,6 +245,7 @@
                 },
                 "20026": {
                   "parent_chapter": 20008,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 13097,
                   "unlock_id": 0,
@@ -225,6 +254,7 @@
                 },
                 "20119": {
                   "parent_chapter": 20026,
+                  "difficulty": 3,
                   "mydeck_set_id": 13089,
                   "set_id": 13088,
                   "unlock_id": 0,
@@ -233,6 +263,7 @@
                 },
                 "20120": {
                   "parent_chapter": 20119,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 13062,
                   "unlock_id": 0,
@@ -241,6 +272,7 @@
                 },
                 "20121": {
                   "parent_chapter": 20119,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 12002,
@@ -249,6 +281,7 @@
                 },
                 "20122": {
                   "parent_chapter": 20155,
+                  "difficulty": 5,
                   "mydeck_set_id": 1140104,
                   "set_id": 1012001,
                   "unlock_id": 0,
@@ -257,6 +290,7 @@
                 },
                 "20151": {
                   "parent_chapter": 20006,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 1003,
                   "unlock_id": 0,
@@ -265,6 +299,7 @@
                 },
                 "20152": {
                   "parent_chapter": 20007,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 12001,
@@ -273,6 +308,7 @@
                 },
                 "20153": {
                   "parent_chapter": 20152,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 1070002,
                   "unlock_id": 0,
@@ -281,6 +317,7 @@
                 },
                 "20154": {
                   "parent_chapter": 20153,
+                  "difficulty": 5,
                   "mydeck_set_id": 104,
                   "set_id": 1012021,
                   "unlock_id": 0,
@@ -289,6 +326,7 @@
                 },
                 "20155": {
                   "parent_chapter": 20121,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 1005,
                   "unlock_id": 0,
@@ -299,6 +337,7 @@
               "3": {
                 "30009": {
                   "parent_chapter": 0,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 13110,
                   "unlock_id": 0,
@@ -307,6 +346,7 @@
                 },
                 "30010": {
                   "parent_chapter": 30009,
+                  "difficulty": 4,
                   "mydeck_set_id": 13274,
                   "set_id": 13290,
                   "unlock_id": 0,
@@ -315,6 +355,7 @@
                 },
                 "30011": {
                   "parent_chapter": 30010,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 13238,
                   "unlock_id": 0,
@@ -323,6 +364,7 @@
                 },
                 "30012": {
                   "parent_chapter": 30010,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 12003,
@@ -331,6 +373,7 @@
                 },
                 "30013": {
                   "parent_chapter": 30156,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 1090006,
                   "unlock_id": 0,
@@ -339,6 +382,7 @@
                 },
                 "30014": {
                   "parent_chapter": 30013,
+                  "difficulty": 5,
                   "mydeck_set_id": 104,
                   "set_id": 1012002,
                   "unlock_id": 0,
@@ -347,6 +391,7 @@
                 },
                 "30123": {
                   "parent_chapter": 30011,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 13612,
                   "unlock_id": 0,
@@ -355,6 +400,7 @@
                 },
                 "30124": {
                   "parent_chapter": 30123,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 13570,
                   "unlock_id": 0,
@@ -363,6 +409,7 @@
                 },
                 "30125": {
                   "parent_chapter": 30124,
+                  "difficulty": 4,
                   "mydeck_set_id": 13391,
                   "set_id": 13611,
                   "unlock_id": 0,
@@ -371,6 +418,7 @@
                 },
                 "30126": {
                   "parent_chapter": 30125,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 13625,
                   "unlock_id": 0,
@@ -379,6 +427,7 @@
                 },
                 "30127": {
                   "parent_chapter": 30125,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 12004,
@@ -387,6 +436,7 @@
                 },
                 "30128": {
                   "parent_chapter": 30127,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 1000010,
                   "unlock_id": 0,
@@ -395,6 +445,7 @@
                 },
                 "30129": {
                   "parent_chapter": 30128,
+                  "difficulty": 5,
                   "mydeck_set_id": 1140104,
                   "set_id": 1012003,
                   "unlock_id": 0,
@@ -403,6 +454,7 @@
                 },
                 "30156": {
                   "parent_chapter": 30012,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 1005,
                   "unlock_id": 0,
@@ -413,6 +465,7 @@
               "4": {
                 "40015": {
                   "parent_chapter": 0,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 6117,
                   "unlock_id": 0,
@@ -421,6 +474,7 @@
                 },
                 "40017": {
                   "parent_chapter": 40158,
+                  "difficulty": 3,
                   "mydeck_set_id": 13251,
                   "set_id": 12336,
                   "unlock_id": 0,
@@ -429,6 +483,7 @@
                 },
                 "40018": {
                   "parent_chapter": 40017,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 1120010,
                   "unlock_id": 0,
@@ -437,6 +492,7 @@
                 },
                 "40027": {
                   "parent_chapter": 40017,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 10904,
@@ -445,6 +501,7 @@
                 },
                 "40028": {
                   "parent_chapter": 40027,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 1111002,
                   "unlock_id": 0,
@@ -453,6 +510,7 @@
                 },
                 "40029": {
                   "parent_chapter": 40028,
+                  "difficulty": 5,
                   "mydeck_set_id": 104,
                   "set_id": 1012004,
                   "unlock_id": 0,
@@ -461,6 +519,7 @@
                 },
                 "40158": {
                   "parent_chapter": 40015,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 903,
                   "unlock_id": 0,
@@ -471,6 +530,7 @@
               "5": {
                 "50019": {
                   "parent_chapter": 0,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 11204,
                   "unlock_id": 0,
@@ -479,6 +539,7 @@
                 },
                 "50020": {
                   "parent_chapter": 50159,
+                  "difficulty": 2,
                   "mydeck_set_id": 9114,
                   "set_id": 803,
                   "unlock_id": 0,
@@ -487,6 +548,7 @@
                 },
                 "50021": {
                   "parent_chapter": 50020,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 1120012,
                   "unlock_id": 0,
@@ -495,6 +557,7 @@
                 },
                 "50022": {
                   "parent_chapter": 50020,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 10804,
@@ -503,6 +566,7 @@
                 },
                 "50030": {
                   "parent_chapter": 50022,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 805,
                   "unlock_id": 0,
@@ -511,6 +575,7 @@
                 },
                 "50031": {
                   "parent_chapter": 50030,
+                  "difficulty": 5,
                   "mydeck_set_id": 104,
                   "set_id": 1012005,
                   "unlock_id": 0,
@@ -519,6 +584,7 @@
                 },
                 "50159": {
                   "parent_chapter": 50019,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 1003,
                   "unlock_id": 0,
@@ -529,6 +595,7 @@
               "6": {
                 "60023": {
                   "parent_chapter": 0,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 13578,
                   "unlock_id": 0,
@@ -537,6 +604,7 @@
                 },
                 "60024": {
                   "parent_chapter": 60160,
+                  "difficulty": 2,
                   "mydeck_set_id": 13577,
                   "set_id": 1203,
                   "unlock_id": 0,
@@ -545,6 +613,7 @@
                 },
                 "60025": {
                   "parent_chapter": 60024,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 13735,
                   "unlock_id": 0,
@@ -553,6 +622,7 @@
                 },
                 "60032": {
                   "parent_chapter": 60024,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 10904,
@@ -561,6 +631,7 @@
                 },
                 "60033": {
                   "parent_chapter": 60032,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 13580,
                   "unlock_id": 0,
@@ -569,6 +640,7 @@
                 },
                 "60034": {
                   "parent_chapter": 60033,
+                  "difficulty": 5,
                   "mydeck_set_id": 104,
                   "set_id": 1012006,
                   "unlock_id": 0,
@@ -577,6 +649,7 @@
                 },
                 "60160": {
                   "parent_chapter": 60023,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 803,
                   "unlock_id": 0,
@@ -587,6 +660,7 @@
               "7": {
                 "70035": {
                   "parent_chapter": 0,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 6900,
                   "unlock_id": 0,
@@ -595,6 +669,7 @@
                 },
                 "70036": {
                   "parent_chapter": 70161,
+                  "difficulty": 3,
                   "mydeck_set_id": 12021,
                   "set_id": 903,
                   "unlock_id": 0,
@@ -603,6 +678,7 @@
                 },
                 "70037": {
                   "parent_chapter": 70036,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 1120013,
                   "unlock_id": 0,
@@ -611,6 +687,7 @@
                 },
                 "70038": {
                   "parent_chapter": 70036,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 10804,
@@ -619,6 +696,7 @@
                 },
                 "70039": {
                   "parent_chapter": 70038,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 1000002,
                   "unlock_id": 0,
@@ -627,6 +705,7 @@
                 },
                 "70040": {
                   "parent_chapter": 70039,
+                  "difficulty": 5,
                   "mydeck_set_id": 104,
                   "set_id": 1012007,
                   "unlock_id": 0,
@@ -635,6 +714,7 @@
                 },
                 "70161": {
                   "parent_chapter": 70035,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 803,
                   "unlock_id": 0,
@@ -645,6 +725,7 @@
               "8": {
                 "80041": {
                   "parent_chapter": 0,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 14845,
                   "unlock_id": 0,
@@ -653,6 +734,7 @@
                 },
                 "80042": {
                   "parent_chapter": 80162,
+                  "difficulty": 3,
                   "mydeck_set_id": 5910,
                   "set_id": 1103,
                   "unlock_id": 0,
@@ -661,6 +743,7 @@
                 },
                 "80043": {
                   "parent_chapter": 80042,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 14847,
                   "unlock_id": 0,
@@ -669,6 +752,7 @@
                 },
                 "80044": {
                   "parent_chapter": 80042,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 11004,
@@ -677,6 +761,7 @@
                 },
                 "80045": {
                   "parent_chapter": 80044,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 14846,
                   "unlock_id": 0,
@@ -685,6 +770,7 @@
                 },
                 "80046": {
                   "parent_chapter": 80045,
+                  "difficulty": 5,
                   "mydeck_set_id": 104,
                   "set_id": 1012008,
                   "unlock_id": 0,
@@ -693,6 +779,7 @@
                 },
                 "80162": {
                   "parent_chapter": 80041,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 1303,
                   "unlock_id": 0,
@@ -703,6 +790,7 @@
               "9": {
                 "90047": {
                   "parent_chapter": 0,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 11532,
                   "unlock_id": 0,
@@ -711,6 +799,7 @@
                 },
                 "90048": {
                   "parent_chapter": 90163,
+                  "difficulty": 3,
                   "mydeck_set_id": 8898,
                   "set_id": 1003,
                   "unlock_id": 0,
@@ -719,6 +808,7 @@
                 },
                 "90049": {
                   "parent_chapter": 90048,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 1120014,
                   "unlock_id": 0,
@@ -727,6 +817,7 @@
                 },
                 "90050": {
                   "parent_chapter": 90048,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 11004,
@@ -735,6 +826,7 @@
                 },
                 "90051": {
                   "parent_chapter": 90050,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 11728,
                   "unlock_id": 0,
@@ -743,6 +835,7 @@
                 },
                 "90052": {
                   "parent_chapter": 90051,
+                  "difficulty": 5,
                   "mydeck_set_id": 104,
                   "set_id": 1012009,
                   "unlock_id": 0,
@@ -751,6 +844,7 @@
                 },
                 "90163": {
                   "parent_chapter": 90047,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 1203,
                   "unlock_id": 0,
@@ -761,6 +855,7 @@
               "10": {
                 "100053": {
                   "parent_chapter": 0,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 1003,
                   "unlock_id": 0,
@@ -769,6 +864,7 @@
                 },
                 "100054": {
                   "parent_chapter": 100164,
+                  "difficulty": 3,
                   "mydeck_set_id": 803,
                   "set_id": 1303,
                   "unlock_id": 0,
@@ -777,6 +873,7 @@
                 },
                 "100055": {
                   "parent_chapter": 100054,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 1120011,
                   "unlock_id": 0,
@@ -785,6 +882,7 @@
                 },
                 "100056": {
                   "parent_chapter": 100054,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 11304,
@@ -793,6 +891,7 @@
                 },
                 "100057": {
                   "parent_chapter": 100056,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 1205,
                   "unlock_id": 0,
@@ -801,6 +900,7 @@
                 },
                 "100058": {
                   "parent_chapter": 100057,
+                  "difficulty": 5,
                   "mydeck_set_id": 104,
                   "set_id": 1012010,
                   "unlock_id": 0,
@@ -809,6 +909,7 @@
                 },
                 "100164": {
                   "parent_chapter": 100053,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 1103,
                   "unlock_id": 0,
@@ -819,6 +920,7 @@
               "11": {
                 "110059": {
                   "parent_chapter": 0,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 4416,
                   "unlock_id": 0,
@@ -827,6 +929,7 @@
                 },
                 "110060": {
                   "parent_chapter": 110165,
+                  "difficulty": 3,
                   "mydeck_set_id": 7008,
                   "set_id": 9285,
                   "unlock_id": 0,
@@ -835,6 +938,7 @@
                 },
                 "110061": {
                   "parent_chapter": 110060,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 1003,
                   "unlock_id": 0,
@@ -843,6 +947,7 @@
                 },
                 "110062": {
                   "parent_chapter": 110060,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 11004,
@@ -851,6 +956,7 @@
                 },
                 "110063": {
                   "parent_chapter": 110062,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 1000015,
                   "unlock_id": 0,
@@ -859,6 +965,7 @@
                 },
                 "110064": {
                   "parent_chapter": 110063,
+                  "difficulty": 5,
                   "mydeck_set_id": 104,
                   "set_id": 1012011,
                   "unlock_id": 0,
@@ -867,6 +974,7 @@
                 },
                 "110165": {
                   "parent_chapter": 110059,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 1203,
                   "unlock_id": 0,
@@ -877,6 +985,7 @@
               "12": {
                 "120065": {
                   "parent_chapter": 0,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 803,
                   "unlock_id": 0,
@@ -885,6 +994,7 @@
                 },
                 "120066": {
                   "parent_chapter": 120166,
+                  "difficulty": 3,
                   "mydeck_set_id": 15556,
                   "set_id": 1203,
                   "unlock_id": 0,
@@ -893,6 +1003,7 @@
                 },
                 "120067": {
                   "parent_chapter": 120066,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 1120009,
                   "unlock_id": 0,
@@ -901,6 +1012,7 @@
                 },
                 "120068": {
                   "parent_chapter": 120066,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 11204,
@@ -909,6 +1021,7 @@
                 },
                 "120069": {
                   "parent_chapter": 120068,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 805,
                   "unlock_id": 0,
@@ -917,6 +1030,7 @@
                 },
                 "120070": {
                   "parent_chapter": 120069,
+                  "difficulty": 5,
                   "mydeck_set_id": 104,
                   "set_id": 1012012,
                   "unlock_id": 0,
@@ -925,6 +1039,7 @@
                 },
                 "120166": {
                   "parent_chapter": 120065,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 903,
                   "unlock_id": 0,
@@ -935,6 +1050,7 @@
               "13": {
                 "130071": {
                   "parent_chapter": 0,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 9647,
                   "unlock_id": 0,
@@ -943,6 +1059,7 @@
                 },
                 "130072": {
                   "parent_chapter": 130167,
+                  "difficulty": 3,
                   "mydeck_set_id": 10883,
                   "set_id": 10157,
                   "unlock_id": 0,
@@ -951,6 +1068,7 @@
                 },
                 "130073": {
                   "parent_chapter": 130072,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 1003,
                   "unlock_id": 0,
@@ -959,6 +1077,7 @@
                 },
                 "130074": {
                   "parent_chapter": 130072,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 11004,
@@ -967,6 +1086,7 @@
                 },
                 "130075": {
                   "parent_chapter": 130074,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 1000014,
                   "unlock_id": 0,
@@ -975,6 +1095,7 @@
                 },
                 "130076": {
                   "parent_chapter": 130075,
+                  "difficulty": 5,
                   "mydeck_set_id": 104,
                   "set_id": 1012013,
                   "unlock_id": 0,
@@ -983,6 +1104,7 @@
                 },
                 "130167": {
                   "parent_chapter": 130071,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 903,
                   "unlock_id": 0,
@@ -993,6 +1115,7 @@
               "14": {
                 "140077": {
                   "parent_chapter": 0,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 12132,
                   "unlock_id": 0,
@@ -1001,6 +1124,7 @@
                 },
                 "140078": {
                   "parent_chapter": 140168,
+                  "difficulty": 3,
                   "mydeck_set_id": 12135,
                   "set_id": 12133,
                   "unlock_id": 0,
@@ -1009,6 +1133,7 @@
                 },
                 "140079": {
                   "parent_chapter": 140078,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 1103,
                   "unlock_id": 0,
@@ -1017,6 +1142,7 @@
                 },
                 "140080": {
                   "parent_chapter": 140078,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 11104,
@@ -1025,6 +1151,7 @@
                 },
                 "140081": {
                   "parent_chapter": 140080,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 12345,
                   "unlock_id": 0,
@@ -1033,6 +1160,7 @@
                 },
                 "140082": {
                   "parent_chapter": 140081,
+                  "difficulty": 5,
                   "mydeck_set_id": 104,
                   "set_id": 1012014,
                   "unlock_id": 0,
@@ -1041,6 +1169,7 @@
                 },
                 "140168": {
                   "parent_chapter": 140077,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 1003,
                   "unlock_id": 0,
@@ -1051,6 +1180,7 @@
               "15": {
                 "150083": {
                   "parent_chapter": 0,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 11357,
                   "unlock_id": 0,
@@ -1059,6 +1189,7 @@
                 },
                 "150084": {
                   "parent_chapter": 150169,
+                  "difficulty": 3,
                   "mydeck_set_id": 11559,
                   "set_id": 11541,
                   "unlock_id": 0,
@@ -1067,6 +1198,7 @@
                 },
                 "150085": {
                   "parent_chapter": 150084,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 803,
                   "unlock_id": 0,
@@ -1075,6 +1207,7 @@
                 },
                 "150086": {
                   "parent_chapter": 150084,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 10804,
@@ -1083,6 +1216,7 @@
                 },
                 "150087": {
                   "parent_chapter": 150086,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 1001004,
                   "unlock_id": 0,
@@ -1091,6 +1225,7 @@
                 },
                 "150088": {
                   "parent_chapter": 150087,
+                  "difficulty": 5,
                   "mydeck_set_id": 104,
                   "set_id": 1012015,
                   "unlock_id": 0,
@@ -1099,6 +1234,7 @@
                 },
                 "150169": {
                   "parent_chapter": 150083,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 903,
                   "unlock_id": 0,
@@ -1109,6 +1245,7 @@
               "16": {
                 "160089": {
                   "parent_chapter": 0,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 1103,
                   "unlock_id": 0,
@@ -1117,6 +1254,7 @@
                 },
                 "160090": {
                   "parent_chapter": 160170,
+                  "difficulty": 3,
                   "mydeck_set_id": 6705,
                   "set_id": 803,
                   "unlock_id": 0,
@@ -1125,6 +1263,7 @@
                 },
                 "160091": {
                   "parent_chapter": 160090,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 903,
                   "unlock_id": 0,
@@ -1133,6 +1272,7 @@
                 },
                 "160092": {
                   "parent_chapter": 160090,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 12008,
@@ -1141,6 +1281,7 @@
                 },
                 "160093": {
                   "parent_chapter": 160092,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 1005,
                   "unlock_id": 0,
@@ -1149,6 +1290,7 @@
                 },
                 "160094": {
                   "parent_chapter": 160093,
+                  "difficulty": 5,
                   "mydeck_set_id": 104,
                   "set_id": 1012016,
                   "unlock_id": 0,
@@ -1157,6 +1299,7 @@
                 },
                 "160170": {
                   "parent_chapter": 160089,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 1303,
                   "unlock_id": 0,
@@ -1167,6 +1310,7 @@
               "17": {
                 "170095": {
                   "parent_chapter": 0,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 7591,
                   "unlock_id": 0,
@@ -1175,6 +1319,7 @@
                 },
                 "170096": {
                   "parent_chapter": 170171,
+                  "difficulty": 3,
                   "mydeck_set_id": 9769,
                   "set_id": 7593,
                   "unlock_id": 0,
@@ -1183,6 +1328,7 @@
                 },
                 "170097": {
                   "parent_chapter": 170096,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 7723,
                   "unlock_id": 0,
@@ -1191,6 +1337,7 @@
                 },
                 "170098": {
                   "parent_chapter": 170172,
+                  "difficulty": 3,
                   "mydeck_set_id": 9793,
                   "set_id": 13063,
                   "unlock_id": 0,
@@ -1199,6 +1346,7 @@
                 },
                 "170099": {
                   "parent_chapter": 170098,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 7643,
                   "unlock_id": 0,
@@ -1207,6 +1355,7 @@
                 },
                 "170100": {
                   "parent_chapter": 170096,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 12006,
@@ -1215,6 +1364,7 @@
                 },
                 "170130": {
                   "parent_chapter": 170100,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 905,
                   "unlock_id": 0,
@@ -1223,6 +1373,7 @@
                 },
                 "170131": {
                   "parent_chapter": 170130,
+                  "difficulty": 5,
                   "mydeck_set_id": 104,
                   "set_id": 1012017,
                   "unlock_id": 0,
@@ -1231,6 +1382,7 @@
                 },
                 "170132": {
                   "parent_chapter": 170098,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 12006,
@@ -1239,6 +1391,7 @@
                 },
                 "170133": {
                   "parent_chapter": 170132,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 805,
                   "unlock_id": 0,
@@ -1247,6 +1400,7 @@
                 },
                 "170134": {
                   "parent_chapter": 170133,
+                  "difficulty": 5,
                   "mydeck_set_id": 1140104,
                   "set_id": 1012018,
                   "unlock_id": 0,
@@ -1255,6 +1409,7 @@
                 },
                 "170171": {
                   "parent_chapter": 170095,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 903,
                   "unlock_id": 0,
@@ -1263,6 +1418,7 @@
                 },
                 "170172": {
                   "parent_chapter": 170097,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 803,
                   "unlock_id": 0,
@@ -1273,6 +1429,7 @@
               "19": {
                 "190107": {
                   "parent_chapter": 0,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 6692,
                   "unlock_id": 0,
@@ -1281,6 +1438,7 @@
                 },
                 "190108": {
                   "parent_chapter": 190174,
+                  "difficulty": 3,
                   "mydeck_set_id": 10661,
                   "set_id": 6693,
                   "unlock_id": 0,
@@ -1289,6 +1447,7 @@
                 },
                 "190109": {
                   "parent_chapter": 190108,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 1003,
                   "unlock_id": 0,
@@ -1297,6 +1456,7 @@
                 },
                 "190110": {
                   "parent_chapter": 190108,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 0,
                   "unlock_id": 10904,
@@ -1305,6 +1465,7 @@
                 },
                 "190111": {
                   "parent_chapter": 190110,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 13963,
                   "unlock_id": 0,
@@ -1313,6 +1474,7 @@
                 },
                 "190112": {
                   "parent_chapter": 190111,
+                  "difficulty": 5,
                   "mydeck_set_id": 104,
                   "set_id": 1012020,
                   "unlock_id": 0,
@@ -1321,6 +1483,7 @@
                 },
                 "190174": {
                   "parent_chapter": 190107,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 903,
                   "unlock_id": 0,
@@ -1331,6 +1494,7 @@
               "20": {
                 "200113": {
                   "parent_chapter": 0,
+                  "difficulty": 5,
                   "mydeck_set_id": 1140102,
                   "set_id": 1140104,
                   "unlock_id": 0,
@@ -1339,6 +1503,7 @@
                 },
                 "200114": {
                   "parent_chapter": 200113,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 1140104,
                   "unlock_id": 0,
@@ -1347,6 +1512,7 @@
                 },
                 "200115": {
                   "parent_chapter": 200114,
+                  "difficulty": 5,
                   "mydeck_set_id": 1140102,
                   "set_id": 1140104,
                   "unlock_id": 0,
@@ -1355,6 +1521,7 @@
                 },
                 "200116": {
                   "parent_chapter": 200115,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 1140104,
                   "unlock_id": 0,
@@ -1363,6 +1530,7 @@
                 },
                 "200117": {
                   "parent_chapter": 200116,
+                  "difficulty": 5,
                   "mydeck_set_id": 1140102,
                   "set_id": 1140104,
                   "unlock_id": 0,
@@ -1371,6 +1539,7 @@
                 },
                 "200118": {
                   "parent_chapter": 200117,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 1111001,
                   "unlock_id": 0,
@@ -1379,6 +1548,7 @@
                 },
                 "200135": {
                   "parent_chapter": 200118,
+                  "difficulty": 4,
                   "mydeck_set_id": 1140102,
                   "set_id": 1140104,
                   "unlock_id": 0,
@@ -1387,6 +1557,7 @@
                 },
                 "200136": {
                   "parent_chapter": 200135,
+                  "difficulty": 5,
                   "mydeck_set_id": 1140102,
                   "set_id": 1140104,
                   "unlock_id": 0,
@@ -1395,6 +1566,7 @@
                 },
                 "200137": {
                   "parent_chapter": 200136,
+                  "difficulty": 5,
                   "mydeck_set_id": 1140102,
                   "set_id": 1140104,
                   "unlock_id": 0,
@@ -1403,6 +1575,7 @@
                 },
                 "200138": {
                   "parent_chapter": 200137,
+                  "difficulty": 5,
                   "mydeck_set_id": 1140102,
                   "set_id": 104,
                   "unlock_id": 0,
@@ -1411,6 +1584,7 @@
                 },
                 "200139": {
                   "parent_chapter": 200138,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 1101002,
                   "unlock_id": 0,
@@ -1421,6 +1595,7 @@
               "22": {
                 "220140": {
                   "parent_chapter": 220146,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 112,
                   "unlock_id": 0,
@@ -1429,6 +1604,7 @@
                 },
                 "220141": {
                   "parent_chapter": 220140,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 112,
                   "unlock_id": 0,
@@ -1437,6 +1613,7 @@
                 },
                 "220142": {
                   "parent_chapter": 220141,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 112,
                   "unlock_id": 0,
@@ -1445,6 +1622,7 @@
                 },
                 "220143": {
                   "parent_chapter": 220142,
+                  "difficulty": 1,
                   "mydeck_set_id": 0,
                   "set_id": 112,
                   "unlock_id": 0,
@@ -1453,6 +1631,7 @@
                 },
                 "220144": {
                   "parent_chapter": 0,
+                  "difficulty": 1,
                   "mydeck_set_id": 4343,
                   "set_id": 0,
                   "unlock_id": 0,
@@ -1461,6 +1640,7 @@
                 },
                 "220145": {
                   "parent_chapter": 220144,
+                  "difficulty": 1,
                   "mydeck_set_id": 4842,
                   "set_id": 0,
                   "unlock_id": 0,
@@ -1469,6 +1649,7 @@
                 },
                 "220146": {
                   "parent_chapter": 220145,
+                  "difficulty": 2,
                   "mydeck_set_id": 11563,
                   "set_id": 0,
                   "unlock_id": 0,
@@ -1477,6 +1658,7 @@
                 },
                 "220147": {
                   "parent_chapter": 220146,
+                  "difficulty": 2,
                   "mydeck_set_id": 5328,
                   "set_id": 0,
                   "unlock_id": 0,
@@ -1485,6 +1667,7 @@
                 },
                 "220148": {
                   "parent_chapter": 220147,
+                  "difficulty": 2,
                   "mydeck_set_id": 7645,
                   "set_id": 0,
                   "unlock_id": 0,
@@ -1493,6 +1676,7 @@
                 },
                 "220149": {
                   "parent_chapter": 220148,
+                  "difficulty": 2,
                   "mydeck_set_id": 1101001,
                   "set_id": 0,
                   "unlock_id": 0,
@@ -1501,11 +1685,196 @@
                 },
                 "220150": {
                   "parent_chapter": 220149,
+                  "difficulty": 0,
                   "mydeck_set_id": 0,
                   "set_id": 1000009,
                   "unlock_id": 0,
                   "begin_sn": "",
                   "npc_id": 0
+                }
+              },
+              "27": {
+                "270215": {
+                  "parent_chapter": 0,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1003,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00270215",
+                  "npc_id": 0
+                },
+                "270216": {
+                  "parent_chapter": 270215,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 5287,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00270216",
+                  "npc_id": 0
+                },
+                "270217": {
+                  "parent_chapter": 270216,
+                  "difficulty": 1,
+                  "mydeck_set_id": 0,
+                  "set_id": 803,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1090
+                },
+                "270218": {
+                  "parent_chapter": 270217,
+                  "difficulty": 3,
+                  "mydeck_set_id": 7470,
+                  "set_id": 7471,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1090
+                },
+                "270219": {
+                  "parent_chapter": 270218,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 14377,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00270219",
+                  "npc_id": 0
+                },
+                "270220": {
+                  "parent_chapter": 270218,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 0,
+                  "unlock_id": 10806,
+                  "begin_sn": "",
+                  "npc_id": 0
+                },
+                "270221": {
+                  "parent_chapter": 270220,
+                  "difficulty": 4,
+                  "mydeck_set_id": 1140102,
+                  "set_id": 1001013,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1091
+                },
+                "270222": {
+                  "parent_chapter": 270221,
+                  "difficulty": 5,
+                  "mydeck_set_id": 104,
+                  "set_id": 1012029,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1092
+                }
+              },
+              "30": {
+                "300241": {
+                  "parent_chapter": 0,
+                  "difficulty": 2,
+                  "mydeck_set_id": 0,
+                  "set_id": 6759,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 3011
+                },
+                "300242": {
+                  "parent_chapter": 300241,
+                  "difficulty": 2,
+                  "mydeck_set_id": 0,
+                  "set_id": 4353,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 3013
+                },
+                "300243": {
+                  "parent_chapter": 300242,
+                  "difficulty": 2,
+                  "mydeck_set_id": 0,
+                  "set_id": 5560,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 3014
+                },
+                "300244": {
+                  "parent_chapter": 300243,
+                  "difficulty": 2,
+                  "mydeck_set_id": 0,
+                  "set_id": 11428,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 3016
+                },
+                "300245": {
+                  "parent_chapter": 300244,
+                  "difficulty": 2,
+                  "mydeck_set_id": 0,
+                  "set_id": 5254,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 3017
+                },
+                "300246": {
+                  "parent_chapter": 300241,
+                  "difficulty": 2,
+                  "mydeck_set_id": 0,
+                  "set_id": 12505,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 3012
+                },
+                "300247": {
+                  "parent_chapter": 300249,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1001003,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 0
+                },
+                "300248": {
+                  "parent_chapter": 300243,
+                  "difficulty": 2,
+                  "mydeck_set_id": 0,
+                  "set_id": 103,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 3015
+                },
+                "300249": {
+                  "parent_chapter": 300245,
+                  "difficulty": 2,
+                  "mydeck_set_id": 0,
+                  "set_id": 12405,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 3018
+                },
+                "300250": {
+                  "parent_chapter": 300249,
+                  "difficulty": 2,
+                  "mydeck_set_id": 0,
+                  "set_id": 13457,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 3019
+                },
+                "300251": {
+                  "parent_chapter": 300250,
+                  "difficulty": 2,
+                  "mydeck_set_id": 0,
+                  "set_id": 14299,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 3020
+                },
+                "300254": {
+                  "parent_chapter": 300251,
+                  "difficulty": 2,
+                  "mydeck_set_id": 0,
+                  "set_id": 103,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 3021
                 }
               }
             },
@@ -1585,6 +1954,11 @@
               "14": {
                 "2": [
                   30126
+                ]
+              },
+              "15": {
+                "2": [
+                  220150
                 ]
               },
               "10101": {
@@ -1690,6 +2064,16 @@
               "11004": {
                 "3": [
                   1004
+                ]
+              },
+              "11005": {
+                "3": [
+                  1005
+                ]
+              },
+              "11006": {
+                "3": [
+                  1006
                 ]
               },
               "11101": {
@@ -1806,6 +2190,16 @@
                 "3": [
                   2011
                 ]
+              },
+              "12012": {
+                "3": [
+                  2012
+                ]
+              },
+              "20001": {
+                "5": [
+                  3001
+                ]
               }
             },
             "unlock_item": {
@@ -1912,6 +2306,16 @@
               "1004": {
                 "1": {
                   "10": 200
+                }
+              },
+              "1005": {
+                "1": {
+                  "10": 250
+                }
+              },
+              "1006": {
+                "1": {
+                  "10": 300
                 }
               },
               "1101": {
@@ -2050,6 +2454,20 @@
                   "11": 100,
                   "12": 100,
                   "13": 100
+                }
+              },
+              "2012": {
+                "1": {
+                  "9": 150,
+                  "10": 150,
+                  "11": 150,
+                  "12": 150,
+                  "13": 150
+                }
+              },
+              "3001": {
+                "7": {
+                  "1071002": 1
                 }
               }
             },

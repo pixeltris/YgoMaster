@@ -20,6 +20,18 @@ namespace IL2CPP
                 return Namespace + "." + Name;
             }
         }
+        public string FullNameEx
+        {
+            get
+            {
+                IL2Class declaringType = DeclaringType;
+                if (declaringType != null)
+                {
+                    return declaringType.FullNameEx + "." + Name;
+                }
+                return FullName;
+            }
+        }
         private List<IL2Method> MethodList = new List<IL2Method>();
         private List<IL2Field> FieldList = new List<IL2Field>();
         //private List<IL2CPP_Event> EventList = new List<IL2CPP_Event>();
@@ -183,6 +195,10 @@ namespace IL2CPP
                     break;
                 }
             }
+            if (returnval == null)
+            {
+                Console.WriteLine("[WARNING] Failed to find " + FullName + "." + name);
+            }
             return returnval;
         }
         public IL2Method GetMethod(string name, IL2BindingFlags flags, Func<IL2Method, bool> func)
@@ -196,6 +212,7 @@ namespace IL2CPP
                     break;
                 }
             }
+            Console.WriteLine("[WARNING] Failed to find " + FullName + "." + name);
             return returnval;
         }
         public IL2Method GetMethod(IL2Class type)

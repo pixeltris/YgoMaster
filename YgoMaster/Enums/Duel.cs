@@ -24,12 +24,14 @@ namespace YgoMaster
     enum DuelCpuParam : uint
     {
         None = 0,
-        Simple = 0x02000000,
-        AttackOnly = 0x04000000,
-        MyTurnOnly = 0x10000000,
-        Light = 0x20000000,
-        Fool = 0x40000000,
         Def = 0x80000000,
+        Fool = 0x40000000,
+        Light = 0x20000000,
+        MyTurnOnly = 0x10000000,
+        AttackOnly = 0x04000000,
+        Simple = 0x02000000,
+        Simple2 = 0x01000000,
+        Simples = 0x03000000
     }
 
     /// <summary>
@@ -235,6 +237,8 @@ namespace YgoMaster
         Signal,
         Venemy,
         Burn,
+        Illusion,//v1.1.1
+        GG,//v1.1.1
         Max
     }
 
@@ -798,6 +802,7 @@ namespace YgoMaster
         LinkRun,
         RunJanken,
         CutinCoinDice,
-        ChainStep
+        ChainStep,
+        RunSpecialefx,//v1.1.1
     }
 }

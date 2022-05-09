@@ -116,7 +116,7 @@ namespace YgoMaster
     }
 
     /// <summary>
-    /// YgomGame.Solo.SoloModeViewController.UnlockType (defines the type of unlock requirements for a given unlock)
+    /// YgomGame.Solo.SoloModeUtil.UnlockType (defines the type of unlock requirements for a given unlock)
     /// </summary>
     enum ChapterUnlockType
     {

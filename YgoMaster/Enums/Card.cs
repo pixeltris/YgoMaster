@@ -28,7 +28,8 @@ namespace YgoMaster
         XyzPend,
         SyncPend,
         FusionPend,
-        Link
+        Link,
+        RitualPend,//v1.1.1
     }
 
     /// <summary>
@@ -81,7 +82,15 @@ namespace YgoMaster
         Link,
         LinkFx,
         PendNTuner,
-        PendSpirit
+        PendSpirit,
+        //v1.1.1
+        Maximum,// Rush duel "Maximum Monster"
+        RirualTunerFX,
+        FusionTunerFX,
+        TokenTuner,
+        R_Fusion,
+        R_FusionFX,
+        RitualPend
     }
 
     /// <summary>

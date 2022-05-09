@@ -271,6 +271,9 @@ namespace YgoMaster
                         case "--missing-cards":// Dumps cards which are in the data files but not in the card list
                             DumpMissingCards();
                             break;
+                        case "--duel-field-bgms":// Dumps which duel fields give which BGM based on /Data/SoloDuels/ and /Data/BgmDuelLogs/
+                            DumpDuelFieldBgms();
+                            break;
                         default:
                             log = false;
                             break;
@@ -585,7 +588,7 @@ namespace YgoMaster
             player.Token = Utils.GetValue<string>(data, "Token");
             player.Name = Utils.GetValue<string>(data, "Name", "Duelist");
             player.Rank = Utils.GetValue<int>(data, "Rank", (int)StandardRank.ROOKIE);
-            player.Rate = Utils.GetValue<int>(data, "Rate");
+            player.Rate = Utils.GetValue<int>(data, "Rate", (StandardRank)player.Rank == StandardRank.ROOKIE ? 2 : 5);
             player.Level = Utils.GetValue<int>(data, "Level", 1);
             player.Exp = Utils.GetValue<long>(data, "Exp");
             player.Gems = Utils.GetValue<int>(data, "Gems", DefaultGems);
@@ -642,24 +645,24 @@ namespace YgoMaster
             else
             {
                 Utils.GetIntHashSet(data, "Items", player.Items, ignoreZero: true);
-                foreach (int item in DefaultItems)
+            }
+            foreach (int item in DefaultItems)
+            {
+                if (item != 0)
                 {
-                    if (item != 0)
+                    player.Items.Add(item);
+                    switch (ItemID.GetCategoryFromID(item))
                     {
-                        player.Items.Add(item);
-                        switch (ItemID.GetCategoryFromID(item))
-                        {
-                            case ItemID.Category.ICON: if (!player.Items.Contains(player.IconId)) player.IconId = item; break;
-                            case ItemID.Category.ICON_FRAME: if (!player.Items.Contains(player.IconFrameId)) player.IconFrameId = item; break;
-                            case ItemID.Category.AVATAR: if (!player.Items.Contains(player.AvatarId)) player.AvatarId = item; break;
-                            case ItemID.Category.WALLPAPER: if (!player.Items.Contains(player.Wallpaper)) player.Wallpaper = item; break;
-                            case ItemID.Category.FIELD:
-                                foreach (int fieldPartItemId in ItemID.GetDuelFieldParts(item))
-                                {
-                                    player.Items.Add(fieldPartItemId);
-                                }
-                                break;
-                        }
+                        case ItemID.Category.ICON: if (!player.Items.Contains(player.IconId)) player.IconId = item; break;
+                        case ItemID.Category.ICON_FRAME: if (!player.Items.Contains(player.IconFrameId)) player.IconFrameId = item; break;
+                        case ItemID.Category.AVATAR: if (!player.Items.Contains(player.AvatarId)) player.AvatarId = item; break;
+                        case ItemID.Category.WALLPAPER: if (!player.Items.Contains(player.Wallpaper)) player.Wallpaper = item; break;
+                        case ItemID.Category.FIELD:
+                            foreach (int fieldPartItemId in ItemID.GetDuelFieldParts(item))
+                            {
+                                player.Items.Add(fieldPartItemId);
+                            }
+                            break;
                     }
                 }
             }
@@ -2137,15 +2140,21 @@ namespace YgoMaster
             string extractFile = Path.Combine(dataDirectory, "StructureDecks.json");
             if (!File.Exists(extractFile))
             {
+                Console.WriteLine("Couldn't find '" + extractFile + "'");
                 return;
             }
             string targetDir = Path.Combine(dataDirectory, "StructureDecks");
             if (!Utils.TryCreateDirectory(targetDir))
             {
+                Console.WriteLine("Couldn't find '" + targetDir + "'");
                 return;
             }
             Dictionary<string, object> data = MiniJSON.Json.DeserializeStripped(File.ReadAllText(extractFile)) as Dictionary<string, object>;
             Dictionary<string, object> structureDecksData = Utils.GetDictionary(data, "Structure");
+            if (structureDecksData == null && data.ContainsKey(((int)ItemID.STRUCTURE.ID1120001).ToString()))
+            {
+                structureDecksData = data;
+            }
             if (structureDecksData != null)
             {
                 foreach (object obj in structureDecksData.Values)
@@ -2174,6 +2183,50 @@ namespace YgoMaster
                     {
                         tw.WriteLine(card.Id.ToString() + " - " + card.Name);
                     }
+                }
+            }
+        }
+
+        void DumpDuelFieldBgms()
+        {
+            using (TextWriter tw = File.CreateText("field-bgms.txt"))
+            {
+                string[] dirs =
+                {
+                    Path.Combine(dataDirectory, "SoloDuels"),
+                    Path.Combine(dataDirectory, "BgmDuelLogs"),
+                };
+                Dictionary<string, HashSet<int>> bgms = new Dictionary<string, HashSet<int>>();
+                foreach (string dir in dirs)
+                {
+                    if (Directory.Exists(dir))
+                    {
+                        foreach (string file in Directory.GetFiles(dir, "*.json"))
+                        {
+                            Dictionary<string, object> data = MiniJSON.Json.DeserializeStripped(File.ReadAllText(file)) as Dictionary<string, object>;
+                            data = Utils.GetResData(data);
+                            Dictionary<string, object> duelData;
+                            if (!Utils.TryGetValue(data, "Duel", out duelData))
+                            {
+                                continue;
+                            }
+                            DuelSettings duel = new DuelSettings();
+                            duel.FromDictionary(duelData);
+                            if (duel.bgms.Count > 0)
+                            {
+                                string bgm = duel.bgms[0];
+                                if (!bgms.ContainsKey(bgm))
+                                {
+                                    bgms[bgm] = new HashSet<int>();
+                                }
+                                bgms[bgm].Add(duel.mat[0]);
+                            }
+                        }
+                    }
+                }
+                foreach (KeyValuePair<string, HashSet<int>> bgm in bgms.OrderBy(x => int.Parse(x.Key.Split('_').Last())))
+                {
+                    tw.WriteLine(bgm.Key + " - " + string.Join(",", bgm.Value.OrderBy(x => x)));
                 }
             }
         }
