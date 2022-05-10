@@ -202,19 +202,14 @@ namespace YgomGame.Deck
                             // Convert the style rarity (prem) based on owned cards
                             prem = (int)CardStyleRarity.Normal;
                             owned = false;
-                            while (prem <= (int)CardStyleRarity.Royal && DeckEditViewController2.GetRemainPremiumCard(id, prem) > 0)
+                            for (int j = (int)CardStyleRarity.Royal; j >= (int)CardStyleRarity.Normal; j--)
                             {
-                                owned = true;
-                                prem++;
-                            }
-                            if (owned)
-                            {
-                                prem--;
-                            }
-                            else
-                            {
-                                // No more cards in trunk with this card id, default to normal
-                                prem = (int)CardStyleRarity.Normal;
+                                if (DeckEditViewController2.GetRemainPremiumCard(id, j) > 0)
+                                {
+                                    prem = j;
+                                    owned = true;
+                                    break;
+                                }
                             }
                         }
                         else
