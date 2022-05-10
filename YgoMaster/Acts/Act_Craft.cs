@@ -30,10 +30,17 @@ namespace YgoMaster
                         cards[cardId] = new Dictionary<CardStyleRarity, int>()
                         {
                             { CardStyleRarity.Normal, Utils.GetValue<int>(numObj, "num") },
-                            // Removed as there isn't a way for the client to select this and this could potentially backfire (taking away huge chunks of CP)
-                            //{ CardStyleRarity.Shine, Utils.GetValue<int>(numObj, "p1_num") },
-                            //{ CardStyleRarity.Royal, Utils.GetValue<int>(numObj, "p2_num") }
+                            { CardStyleRarity.Shine, Utils.GetValue<int>(numObj, "p1_num") },
+                            { CardStyleRarity.Royal, Utils.GetValue<int>(numObj, "p2_num") }
                         };
+                        if (isCraft && (cards[cardId][CardStyleRarity.Shine] > 0 || cards[cardId][CardStyleRarity.Royal] > 0))
+                        {
+                            Utils.LogWarning("Craft request with specific style (shine:" +
+                                cards[cardId][CardStyleRarity.Shine] + ", royal:" + cards[cardId][CardStyleRarity.Royal] + ")");
+                            cards[cardId][CardStyleRarity.Shine] = 0;
+                            cards[cardId][CardStyleRarity.Royal] = 0;
+                        }
+                        
                         foreach (KeyValuePair<CardStyleRarity, int> styleRarityNum in cards[cardId])
                         {
                             if (!isCraft && styleRarityNum.Value > request.Player.Cards.GetCount(cardId, PlayerCardKind.Dismantle, styleRarityNum.Key))
