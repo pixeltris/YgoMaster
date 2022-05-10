@@ -7,7 +7,7 @@
     "UnlockAllCards": false,// [WARNING] Enabling this permanently wipes your saved cards (all cards are set to 3x without any shine/royal and any newly obtained cards don't save)
     "UnlockAllItems": false,// [WARNING] Enabling this permanently wipes your saved items
     "UnlockAllSoloChapters": false,// [WARNING] Enabling this permanently wipes your saved solo progress
-    "SoloRemoveDuelTutorials": true,
+    "SoloRemoveDuelTutorials": false,
     "SoloDisableNoShuffle": false,
     "SoloShowGateClearForAllSecretPacks": false,
     "SoloRewardsInDuelResult": false,
