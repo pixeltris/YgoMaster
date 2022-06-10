@@ -573,7 +573,7 @@ namespace YgomGame.SubMenu
             SubMenuViewController.AddMenuItem(thisPtr, "To clipboard (YDKe)", OnSaveToClipboardYDKe);
             SubMenuViewController.AddMenuItem(thisPtr, "Load file", OnLoad);
             SubMenuViewController.AddMenuItem(thisPtr, "Save file", OnSave);
-            SubMenuViewController.AddMenuItem(thisPtr, "Open decks folder", OnOpenDecksFolder);
+            //SubMenuViewController.AddMenuItem(thisPtr, "Open decks folder", OnOpenDecksFolder);
             SubMenuViewController.AddMenuItem(thisPtr, "Clear deck", OnClear);
             SubMenuViewController.AddMenuItem(thisPtr, "Card collection stats", OnCardCollectionStats);
         }

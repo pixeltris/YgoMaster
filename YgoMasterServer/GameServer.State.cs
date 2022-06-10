@@ -237,6 +237,7 @@ namespace YgoMaster
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length > 0)
             {
+                bool ranCommand = false;
                 for (int i = 1; i < args.Length; i++)
                 {
                     bool log = true;
@@ -274,14 +275,31 @@ namespace YgoMaster
                         case "--duel-field-bgms":// Dumps which duel fields give which BGM based on /Data/SoloDuels/ and /Data/BgmDuelLogs/
                             DumpDuelFieldBgms();
                             break;
+                        case "--update":// Updates json files by auto fetching various packets
+                            if (args.Length <= i + 2)
+                            {
+                                Console.WriteLine("Expected token args");
+                            }
+                            else
+                            {
+                                // base64 token / atoken
+                                Updater updater = new Updater(CardRare);
+                                updater.Run(args[2], args[3]);
+                            }
+                            break;
                         default:
                             log = false;
                             break;
                     }
                     if (log)
                     {
+                        ranCommand = true;
                         Console.WriteLine("Done (" + arg + ")");
                     }
+                }
+                if (ranCommand)
+                {
+                    Environment.Exit(0);
                 }
             }
         }

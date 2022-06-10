@@ -1,3 +1,7 @@
+## Enabling the client console
+
+- In `ClientSettings.json` set `ShowConsole` to `true` and run the client.
+
 ## Card list / card craft list / ban list
 
 - Log `User.home`.
@@ -12,18 +16,13 @@
 
 ## YdkIds.txt
 
-- In `ClientSettings.json` set `ShowConsole` to `true` and run the client.
-- In the client console run `carddata` which should create `/Data/ClientDataDump/Card/Data/`, move and rename the `Data` folder to `/Data/CardData/`. You must do this while using the `English` game settings.
-- Run `--updateydk` to update `YdkIds.txt`
+- In the client console run `carddata` which will create `/Data/ClientDataDump/Card/Data/`, move and rename the `Data` folder to `/Data/CardData/`. You must do this while using the `English` language setting.
+- Run `--updateydk` to update `YdkIds.txt`.
 
 ## Solo
 
-- Log `Solo.info`, format the json and remove the user data `Solo.cleared` which should just leave `Master.solo`.
+- Log `Solo.info`, format the json and remove the user data `Solo.cleared` which should just leave `Master.Solo`.
 - Log starting the the loaner deck of deck duel. Select the `Duel.begin` packet and copy the json into a file called CHAPTER_ID.json (where CHAPTER_ID is the duel chapter id) and place it into `/Data/SoloDuels/`.
-
-## BGMs (not important)
-
-- Run `--duel-field-bgms` which will create `field-bgms.txt` from `/Data/SoloDuels/` and `/Data/BgmDuelLogs/` (duel logs). Use this info to update [this](https://github.com/pixeltris/YgoMaster/blob/01e6a8052670fac5a0b4a02c2ff3c75fa153df6c/YgoMaster/DuelSettings.cs#L185) and [this](https://github.com/pixeltris/YgoMaster/blob/01e6a8052670fac5a0b4a02c2ff3c75fa153df6c/YgoMasterClient/DuelStarter.cs#L998).
 
 ## Shop
 
@@ -32,8 +31,7 @@
 
 For any new packs with new pack images...
 
-- In `ClientSettings.json` set `ShowConsole` to `true` and run the client.
-- In the client console `packimages` which should create `dump-packimages.txt` in the game folder. Copy the contents into `Shop.json` `PackShopImages`.
+- In the client console run `packimages` which will create `dump-packimages.txt` in the game folder. Copy the contents into `Shop.json` `PackShopImages`.
 
 For shop pack odds...
 
@@ -41,12 +39,10 @@ For shop pack odds...
 
 ## ItemID.cs
 
-- In `ClientSettings.json` set `ShowConsole` to `true` and run the client.
 - In the client console run `itemid` which will create `dump-itemid.txt` in the game folder.
 - Manually copy the contents into `ItemID.cs`, and remove any invalid entries (some make the client crash / are blank).
 
-## Enums
+## Misc
 
-- In `ClientSettings.json` set `ShowConsole` to `true` and run the client.
 - In the client console run `updatediff` which will create `updatediff.cs` in the game folder.
 - Run a diff against that file and `/Docs/updatediff.cs`. Update relevant code throughout YgoMaster based on the changes and then insert the new `updatediff.cs`.

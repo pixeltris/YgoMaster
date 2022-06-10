@@ -609,6 +609,8 @@ namespace YgomGame.Room
             DuelSettings settings;
             Buttons buttons;
 
+            static int bgmMax = 0;
+
             public string Title
             {
                 get { return "Duel Starter"; }
@@ -993,9 +995,21 @@ namespace YgomGame.Room
                 duelType.Add(DuelType.Speed.ToString());
                 duelType.Add(DuelType.Rush.ToString());
                 //duelType.Add(DuelType.Tag.ToString());
+
+                if (bgmMax == 0)
+                {
+                    for (int i = 1; i < 99; i++)
+                    {
+                        if (!AssetHelper.FileExists("Sound/AudioClip/BGM/BGM_DUEL_NORMAL_" + i.ToString().PadLeft(2, '0')))
+                        {
+                            break;
+                        }
+                        bgmMax = i;
+                    }
+                }
                 List<string> bgmStrings = new List<string>();
                 bgmStrings.Add("Random");
-                for (int i = 1; i <= 8; i++)
+                for (int i = 1; i <= bgmMax; i++)
                 {
                     bgmStrings.Add(i.ToString());
                 }

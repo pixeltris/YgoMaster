@@ -24,7 +24,7 @@ if defined VS100COMNTOOLS ( call "%VS100COMNTOOLS%\..\..\VC\vcvarsall.bat" amd64
 goto cppCompilerNotFound
 
 cd YgoMasterLoader
-cl YgoMasterLoader.cpp /LD /DWITHDETOURS /Fe:../Build/YgoMasterLoader.dll
+cl YgoMasterLoader.cpp /LD /DWITHDETOURS /Fe:../YgoMaster/YgoMasterLoader.dll
 cd ../
 goto done
 

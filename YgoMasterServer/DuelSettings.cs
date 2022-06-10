@@ -160,12 +160,12 @@ namespace YgoMaster
                 if (avatar_home[i] == -1) avatar_home[i] = Deck[i].Accessory.AvBase;
                 if (duel_object[i] == -1) duel_object[i] = Deck[i].Accessory.FieldObj;
 
-                if (avatar[i] < 0) avatar[i] = 0;//if (avatar[i] == 0) avatar[i] = 1000001;
+                if (avatar[i] < 0) avatar[i] = 0;//avatar[i] = 1000001;
                 if (mat[i] <= 0) mat[i] = 1090001;
                 if (sleeve[i] <= 0) sleeve[i] = 1070001;
                 if (icon[i] <= 0) icon[i] = 1010001;
                 if (icon_frame[i] <= 0) icon_frame[i] = 1030001;
-                if (duel_object[i] <= 0) duel_object[i] = ItemID.GetFieldObjFromField(mat[i]); //duel_object[i] = 1100001;
+                if (duel_object[i] <= 0) duel_object[i] = ItemID.GetFieldObjFromField(mat[i]);//duel_object[i] = 1100001;
                 if (wallpaper[i] <= 0) wallpaper[i] = 1130001;
 
                 if (string.IsNullOrEmpty(name[i]))
@@ -181,16 +181,6 @@ namespace YgoMaster
                     name[i] = isCPU ? "CPU" : "Duelist";
                 }
             }
-
-            // BGMs Based on field IDs (from logs of solo):
-            // BGM_DUEL_NORMAL_01 - 1090001,1090002,1090003,1090004,1090008
-            // BGM_DUEL_NORMAL_02 - 1090003,1090005
-            // BGM_DUEL_NORMAL_03 - 1090001,1090002,1090003,1090004,1090005
-            // BGM_DUEL_NORMAL_04 - 1090005,1090006
-            // BGM_DUEL_NORMAL_05 - 1090007
-            // BGM_DUEL_NORMAL_06 - 1090001,1090003,1090004
-            // BGM_DUEL_NORMAL_07 - none
-            // BGM_DUEL_NORMAL_08 - none
 
             /*if (Bgms.Count == 0)
             {

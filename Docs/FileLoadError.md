@@ -2,7 +2,7 @@
 
 ![Alt text](Pics/LoadError.png)
 
-You may see some variation of the above error. There are a few reasons this might happen.
+You may see some variation of the above error or infinite loading screens, corrupt screens, etc. There are a few reasons this might happen.
 
 ## 1) Game not updated / multiple folders inside of LocalData
 
@@ -18,6 +18,6 @@ Change the language to match the language set via Steam. If the issue persists f
 - There should be two folders in `/LocalSave/`; one with a bunch of random letters, and one called `00000000`.
 - Delete the contents of the `00000000` folder, and copy the contents of the random letters folder into the `00000000` folder.
 
-## Still doesn't work?
+## Note
 
-Feel free to [create a new issue](https://github.com/pixeltris/YgoMaster/issues/new). However, please state you followed all of these instructions or the issue will be closed with a link to these instructions.
+Support is not provided beyond these instructions as these are the only known ways of fixing these issues.

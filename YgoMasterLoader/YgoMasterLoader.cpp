@@ -1,5 +1,5 @@
 // Compile using Visual Studio x64 Native Tools Command Prompt
-// cl YgoMasterLoader.cpp /LD /DWITHDETOURS /Fe:../Build/YgoMasterLoader.dll
+// cl YgoMasterLoader.cpp /LD /DWITHDETOURS /Fe:../YgoMaster/YgoMasterLoader.dll
 //
 // Notes about detours:
 // - This version was used https://github.com/microsoft/Detours/releases/tag/v4.0.1
