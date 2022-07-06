@@ -168,7 +168,7 @@ namespace YgoMaster
                 if (duel_object[i] <= 0) duel_object[i] = ItemID.GetFieldObjFromField(mat[i]);//duel_object[i] = 1100001;
                 if (wallpaper[i] <= 0) wallpaper[i] = 1130001;
 
-                if (string.IsNullOrEmpty(name[i]))
+                if (i > 0 && string.IsNullOrEmpty(name[i]))
                 {
                     bool isCPU = false;
                     switch (i)
