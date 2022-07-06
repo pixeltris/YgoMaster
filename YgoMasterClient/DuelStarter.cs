@@ -1000,11 +1000,10 @@ namespace YgomGame.Room
                 {
                     for (int i = 1; i < 99; i++)
                     {
-                        if (!AssetHelper.FileExists("Sound/AudioClip/BGM/BGM_DUEL_NORMAL_" + i.ToString().PadLeft(2, '0')))
+                        if (AssetHelper.FileExists("Sound/AudioClip/BGM/BGM_DUEL_NORMAL_" + i.ToString().PadLeft(2, '0')))
                         {
-                            break;
+                            bgmMax = i;
                         }
-                        bgmMax = i;
                     }
                 }
                 List<string> bgmStrings = new List<string>();
