@@ -285,6 +285,29 @@ namespace YgoMaster
                                 // base64 token / atoken
                                 Updater updater = new Updater(CardRare);
                                 updater.Run(args[2], args[3]);
+                                i += 2;
+                            }
+                            break;
+                        case "--namedesc":// Dumps card name / desc of a given card id from data in /CardData/
+                            if (args.Length <= i + 1)
+                            {
+                                Console.WriteLine("Expected card id");
+                            }
+                            else
+                            {
+                                int cid = int.Parse(args[i + 1]);
+                                Dictionary<int, YdkHelper.GameCardInfo> cards = YdkHelper.LoadCardDataFromGame(dataDirectory);
+                                YdkHelper.GameCardInfo cardInfo;
+                                if (cards.TryGetValue(cid, out cardInfo))
+                                {
+                                    Console.WriteLine("Name: " + cardInfo.Name);
+                                    Console.WriteLine("Desc: " + cardInfo.Desc);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Failed to find card");
+                                }
+                                i++;
                             }
                             break;
                         default:

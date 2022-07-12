@@ -469,7 +469,7 @@ namespace YgoMaster
             ID1120012 = 1120012,//Emergence of the Monarchs
             ID1120013 = 1120013,//Being Who Sees the End of the World
             ID1120014 = 1120014,//Gem-Knights' Resolution
-            //ID1120015 = 1120015,//coming soon
+            ID1120015 = 1120015,//Dragonmaid-To-Order
             //ID1120016 = 1120016,//coming soon
             //ID1120017 = 1120017,//coming soon
         }
