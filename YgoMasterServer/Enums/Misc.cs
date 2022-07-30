@@ -123,7 +123,8 @@ namespace YgoMaster
         USER_LEVEL = 1,
         CHAPTER_OR,
         ITEM,
-        CHAPTER_AND
+        CHAPTER_AND,
+        HAS_ITEM
     }
 
     /// <summary>

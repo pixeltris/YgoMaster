@@ -130,12 +130,18 @@ namespace YgomSystem.Network
     {
         delegate IntPtr Del_Duel_begin(IntPtr rulePtr);
         static Hook<Del_Duel_begin> hookDuel_begin;
+        delegate IntPtr Del_Duel_end(IntPtr paramPtr);
+        static Hook<Del_Duel_end> hookDuel_end;
 
         static API()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("API", "YgomSystem.Network");
             hookDuel_begin = new Hook<Del_Duel_begin>(Duel_begin, classInfo.GetMethod("Duel_begin"));
+            if (ClientSettings.AlwaysWin)
+            {
+                hookDuel_end = new Hook<Del_Duel_end>(Duel_end, classInfo.GetMethod("Duel_end"));
+            }
         }
 
         static IntPtr Duel_begin(IntPtr rulePtr)
@@ -162,6 +168,19 @@ namespace YgomSystem.Network
                 rulePtr = YgomMiniJSON.Json.Deserialize(MiniJSON.Json.Serialize(rule));
             }
             return hookDuel_begin.Original(rulePtr);
+        }
+
+        static IntPtr Duel_end(IntPtr paramPtr)
+        {
+            Dictionary<string, object> param = MiniJSON.Json.Deserialize(YgomMiniJSON.Json.Serialize(paramPtr)) as Dictionary<string, object>;
+            if (param == null)
+            {
+                param = new Dictionary<string, object>();
+            }
+            param["res"] = 1;
+            param["finish"] = 1;
+            paramPtr = YgomMiniJSON.Json.Deserialize(MiniJSON.Json.Serialize(param));
+            return hookDuel_end.Original(paramPtr);
         }
     }
 

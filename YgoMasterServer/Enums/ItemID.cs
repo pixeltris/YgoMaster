@@ -197,7 +197,7 @@ namespace YgoMaster
             ID1000004 = 1000004,//Dark Magician (Mini)
             ID1000005 = 1000005,//Borreload Dragon (Mini)
             ID1000006 = 1000006,//Cyber Dragon Infinity (Mini)
-            ID1000007 = 1000007,//coming soon
+            ID1000007 = 1000007,//Elemental HERO Stratos
             ID1000008 = 1000008,//Ancient Gear Wyvern
             ID1000009 = 1000009,//Sangan
             ID1000010 = 1000010,//World Chalice Guardragon
@@ -210,8 +210,8 @@ namespace YgoMaster
             ID1000017 = 1000017,//Ninja Grandmaster Hanzo
             ID1000018 = 1000018,//Ghostrick Lantern
             ID1000019 = 1000019,//coming soon
-            ID1000020 = 1000020,//coming soon
-            ID1000021 = 1000021,//coming soon
+            ID1000020 = 1000020,//Laundry Dragonmaid
+            //ID1000021 = 1000021,//coming soon (Laundry Dragonmaid other form)
             ID1001001 = 1001001,//Instant Fusion
             ID1001002 = 1001002,//Noble Arms - Caliburn
             ID1001003 = 1001003,//Book of Moon
@@ -340,8 +340,8 @@ namespace YgoMaster
             ID1020020 = 1020020,//Synchro Festival 2022
             //ID1020021 = 1020021,//
             ID1020022 = 1020022,//<color=#9933CC>Fusion Festival 2022</color>
-            //ID1020023 = 1020023,//
-            //ID1020024 = 1020024,//
+            ID1020023 = 1020023,//Limit One Festival 2022
+            ID1020024 = 1020024,//EX-ZERO Festival 2022
             //ID1020025 = 1020025,//
             //ID1020026 = 1020026,//
             //ID1020027 = 1020027,//
@@ -389,7 +389,7 @@ namespace YgoMaster
             ID1080012 = 1080012,//Emergence of the Monarchs
             ID1080013 = 1080013,//Being Who Sees the End of the World
             ID1080014 = 1080014,//Gem-Knights' Resolution
-            //ID1080015 = 1080015,//coming soon
+            ID1080015 = 1080015,//Dragonmaid-To-Order
             //ID1080016 = 1080016,//coming soon
             //ID1080017 = 1080017,//coming soon
             ID1082001 = 1082001,//Xyz Black

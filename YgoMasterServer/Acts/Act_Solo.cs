@@ -294,13 +294,125 @@ namespace YgoMaster
                 /////////////////////////////////////////////////////////////////////////
                 // !!! No return statments below this as we're modifying player state !!!
                 /////////////////////////////////////////////////////////////////////////
+                // TODO: Move this into a function and split into 2 calls, the first pass validating the request and the second pass taking the items
                 foreach (KeyValuePair<string, object> unlockRequirement in unlockData)
                 {
                     ChapterUnlockType unlockType;
                     if (Enum.TryParse(unlockRequirement.Key, out unlockType))
                     {
+                        // NOTE: There's a bit of code duplicate between HAS_ITEM / ITEM
                         switch (unlockType)
                         {
+                            case ChapterUnlockType.HAS_ITEM:
+                                {
+                                    List<object> itemSetList = unlockRequirement.Value as List<object>;
+                                    if (itemSetList == null)
+                                    {
+                                        continue;
+                                    }
+                                    foreach (object itemSet in itemSetList)
+                                    {
+                                        int itemSetId = (int)Convert.ChangeType(itemSet, typeof(int));
+                                        Dictionary<string, object> itemsByCategory = Utils.GetDictionary(allUnlockItemData, itemSetId.ToString());
+                                        if (itemsByCategory == null)
+                                        {
+                                            Utils.LogWarning("Failed to find unlock_item " + itemSetId + " for unlock_id" + unlockId + " on chapter " + chapterId);
+                                            continue;
+                                        }
+                                        foreach (KeyValuePair<string, object> itemCategory in itemsByCategory)
+                                        {
+                                            Dictionary<string, object> items = itemCategory.Value as Dictionary<string, object>;
+                                            ItemID.Category category;
+                                            if (!Enum.TryParse(itemCategory.Key, out category))
+                                            {
+                                                continue;
+                                            }
+                                            foreach (KeyValuePair<string, object> item in items)
+                                            {
+                                                int itemId;
+                                                int count = (int)Convert.ChangeType(item.Value, typeof(int));
+                                                if (!int.TryParse(item.Key, out itemId))
+                                                {
+                                                    continue;
+                                                }
+                                                bool hasItem = true;
+                                                switch (category)
+                                                {
+                                                    case ItemID.Category.CONSUME:
+                                                        switch ((ItemID.CONSUME)itemId)
+                                                        {
+                                                            case ItemID.CONSUME.ID0001:
+                                                            case ItemID.CONSUME.ID0002:
+                                                                hasItem = request.Player.Gems >= count;
+                                                                break;
+                                                            case ItemID.CONSUME.ID0003:
+                                                            case ItemID.CONSUME.ID0004:
+                                                            case ItemID.CONSUME.ID0005:
+                                                            case ItemID.CONSUME.ID0006:
+                                                                {
+                                                                    CardRarity rarity = CardRarity.None;
+                                                                    switch ((ItemID.CONSUME)itemId)
+                                                                    {
+                                                                        case ItemID.CONSUME.ID0003: rarity = CardRarity.Normal; break;
+                                                                        case ItemID.CONSUME.ID0004: rarity = CardRarity.Rare; break;
+                                                                        case ItemID.CONSUME.ID0005: rarity = CardRarity.SuperRare; break;
+                                                                        case ItemID.CONSUME.ID0006: rarity = CardRarity.UltraRare; break;
+                                                                    }
+                                                                    hasItem = request.Player.CraftPoints.CanSubtract(rarity, count);
+                                                                }
+                                                                break;
+                                                            case ItemID.CONSUME.ID0008:
+                                                            case ItemID.CONSUME.ID0009:
+                                                            case ItemID.CONSUME.ID0010:
+                                                            case ItemID.CONSUME.ID0011:
+                                                            case ItemID.CONSUME.ID0012:
+                                                            case ItemID.CONSUME.ID0013:
+                                                                {
+                                                                    OrbType orbType = OrbType.None;
+                                                                    switch ((ItemID.CONSUME)itemId)
+                                                                    {
+                                                                        case ItemID.CONSUME.ID0008: orbType = OrbType.Dark; break;
+                                                                        case ItemID.CONSUME.ID0009: orbType = OrbType.Light; break;
+                                                                        case ItemID.CONSUME.ID0010: orbType = OrbType.Earth; break;
+                                                                        case ItemID.CONSUME.ID0011: orbType = OrbType.Water; break;
+                                                                        case ItemID.CONSUME.ID0012: orbType = OrbType.Fire; break;
+                                                                        case ItemID.CONSUME.ID0013: orbType = OrbType.Wind; break;
+                                                                    }
+                                                                    hasItem = request.Player.OrbPoints.CanSubtract(orbType, count);
+                                                                }
+                                                                break;
+                                                            default:
+                                                                Utils.LogWarning("Unhandled CONSUME requirement item " + itemId);
+                                                                break;
+                                                        }
+                                                        break;
+                                                    case ItemID.Category.CARD:
+                                                        int cardCountRemaining = count;
+                                                        for (CardStyleRarity i = CardStyleRarity.Normal; i <= CardStyleRarity.Shine; i++)
+                                                        {
+                                                            int currentCardCount = request.Player.Cards.GetCount(itemId, PlayerCardKind.Dismantle, i);
+                                                            if (currentCardCount > 0)
+                                                            {
+                                                                cardCountRemaining -= Math.Min(cardCountRemaining, currentCardCount);
+                                                            }
+                                                        }
+                                                        hasItem = cardCountRemaining == 0;
+                                                        break;
+                                                    default:
+                                                        hasItem = request.Player.Items.Contains(itemId);
+                                                        break;
+
+                                                }
+                                                if (!hasItem)
+                                                {
+                                                    Utils.LogWarning("Unlock request made without required item " + itemId + "(x" + count + ")");
+                                                    // TODO: Cancel the request
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                break;
                             case ChapterUnlockType.ITEM:
                                 {
                                     List<object> itemSetList = unlockRequirement.Value as List<object>;

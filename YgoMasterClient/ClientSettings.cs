@@ -31,6 +31,7 @@ namespace YgoMasterClient
         public static double TimeMultiplier;
         public static bool DisableVSync;
         public static bool ChangeWindowTitleOnLiveMod;
+        public static bool AlwaysWin;
 
         public static bool DuelStarterLiveNotLiveTest = false;
 
@@ -80,6 +81,7 @@ namespace YgoMasterClient
             TimeMultiplier = Utils.GetValue<double>(data, "TimeMultiplier");
             DisableVSync = YgoMaster.Utils.GetValue<bool>(data, "DisableVSync");
             ChangeWindowTitleOnLiveMod = YgoMaster.Utils.GetValue<bool>(data, "ChangeWindowTitleOnLiveMod");
+            AlwaysWin = YgoMaster.Utils.GetValue<bool>(data, "AlwaysWin");
             return true;
         }
 
