@@ -419,12 +419,7 @@ namespace YgoMasterClient
                                                     bool exists = AssetHelper.FileExists(path);
                                                     string convertedPathOnDisk = AssetHelper.GetAssetBundleOnDiskConverted(convertedPath);
                                                     string autoConvertPathOnDisk = AssetHelper.GetAssetBundleOnDisk(path);
-                                                    string dir = "LocalData";
-                                                    foreach (string subDir in Directory.GetDirectories(dir))
-                                                    {
-                                                        dir = subDir;// The steam id folder name
-                                                        break;
-                                                    }
+                                                    string dir = YgomSystem.LocalFileSystem.StandardStorageIO.LocalDataDir;
                                                     bool existsOnDisk = File.Exists(Path.Combine(dir, "0000", convertedPathOnDisk));
                                                     bool existsOnDiskNoConvert = File.Exists(Path.Combine(dir, "0000", autoConvertPathOnDisk));
                                                     Console.WriteLine("Converted: " + convertedPath);
@@ -436,12 +431,7 @@ namespace YgoMasterClient
                                                 {
                                                     string path = consoleInput.Trim().Substring(consoleInput.Trim().IndexOf(' ') + 1);
                                                     string pathOnDisk = AssetHelper.GetAssetBundleOnDisk(path);
-                                                    string dir = "LocalData";
-                                                    foreach (string subDir in Directory.GetDirectories(dir))
-                                                    {
-                                                        dir = subDir;// The steam id folder name
-                                                        break;
-                                                    }
+                                                    string dir = YgomSystem.LocalFileSystem.StandardStorageIO.LocalDataDir;
                                                     string fullPath = Path.Combine(dir, "0000", pathOnDisk);
                                                     Console.WriteLine(pathOnDisk);
                                                     if (File.Exists(fullPath))
@@ -1186,6 +1176,8 @@ namespace YgomSystem.LocalFileSystem
         delegate void Del_SetupStorageDirectory(IntPtr thisPtr, IntPtr storage, IntPtr mountPath);
         static Hook<Del_SetupStorageDirectory> hookSetupStorageDirectory;
 
+        public static string LocalDataDir;
+
         static StandardStorageIO()
         {
             if (Program.IsLive)
@@ -1213,8 +1205,8 @@ namespace YgomSystem.LocalFileSystem
                     path = path.Substring(0, localDataPathIndex + localDataPath.Length);
                     if (folderName == "00000000")
                     {
-                        List<string> possibleFolders = new List<string>();
-                        List<string> possibleFoldersExactMatch = new List<string>();
+                        Dictionary<string, DateTime> possibleFolders = new Dictionary<string, DateTime>();
+                        Dictionary<string, DateTime> possibleFoldersExactMatch = new Dictionary<string, DateTime>();
                         foreach (string dir in Directory.GetDirectories(path))
                         {
                             DirectoryInfo dirInfo = new DirectoryInfo(dir);
@@ -1224,24 +1216,25 @@ namespace YgomSystem.LocalFileSystem
                                 string findFile = Path.Combine(dirInfo.FullName, "0000", "f5", "f5e2cfa8");
                                 if (File.Exists(findFile))
                                 {
-                                    possibleFoldersExactMatch.Add(dirInfo.Name);
+                                    possibleFoldersExactMatch[dirInfo.Name] = dirInfo.LastWriteTime;
                                 }
                                 else
                                 {
-                                    possibleFolders.Add(dirInfo.Name);
+                                    possibleFolders[dirInfo.Name] = dirInfo.LastWriteTime;
                                 }
                             }
                         }
                         if (possibleFoldersExactMatch.Count > 0)
                         {
-                            folderName = possibleFoldersExactMatch[0];
+                            folderName = possibleFoldersExactMatch.OrderByDescending(x => x.Value).First().Key;
                         }
                         else if (possibleFolders.Count > 0)
                         {
-                            folderName = possibleFolders[0];
+                            folderName = possibleFolders.OrderByDescending(x => x.Value).First().Key;
                         }
                     }
                     path += folderName;
+                    LocalDataDir = path;
                 }
                 hookSetupStorageDirectory.Original(thisPtr, storage, new IL2String(path).ptr);
             }
