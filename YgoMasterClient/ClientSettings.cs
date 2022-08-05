@@ -19,6 +19,7 @@ namespace YgoMasterClient
         public static bool AssetHelperDisableFileErrorPopup;
         public static bool DuelStarterShowFirstPlayer;
         public static int DuelStarterLiveChapterId;
+        public static bool DuelStarterLiveNotLiveTest;
         public static bool DeckEditorDisableLimits;
         public static bool DeckEditorConvertStyleRarity;
         public static bool DeckEditorShowStats;
@@ -32,8 +33,6 @@ namespace YgoMasterClient
         public static bool DisableVSync;
         public static bool ChangeWindowTitleOnLiveMod;
         public static bool AlwaysWin;
-
-        public static bool DuelStarterLiveNotLiveTest = false;
 
         public static string FilePath
         {
@@ -72,6 +71,7 @@ namespace YgoMasterClient
             DeckEditorShowStats = YgoMaster.Utils.GetValue<bool>(data, "DeckEditorShowStats");
             DuelStarterShowFirstPlayer = YgoMaster.Utils.GetValue<bool>(data, "DuelStarterShowFirstPlayer");
             DuelStarterLiveChapterId = YgoMaster.Utils.GetValue<int>(data, "DuelStarterLiveChapterId");
+            DuelStarterLiveNotLiveTest = YgoMaster.Utils.GetValue<bool>(data, "DuelStarterLiveNotLiveTest");
             DuelClientShowRemainingCardsInDeck = YgoMaster.Utils.GetValue<bool>(data, "DuelClientShowRemainingCardsInDeck");
             DuelClientMillenniumEye = YgoMaster.Utils.GetValue<bool>(data, "DuelClientMillenniumEye");
             DuelClientDisableCameraShake = YgoMaster.Utils.GetValue<bool>(data, "DuelClientDisableCameraShake");

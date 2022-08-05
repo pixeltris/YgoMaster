@@ -24,8 +24,9 @@ namespace YgomGame.Solo
     {
         static IL2Field fieldChapterId;
 
-        delegate void Del_CallApiSoloStart(IntPtr thisPtr, IntPtr chapterData);
-        static Hook<Del_CallApiSoloStart> hookCallApiSoloStart;
+        delegate void Del_Play(IntPtr thisPtr, IntPtr chapterData);
+        static Hook<Del_Play> hookDuelDialogPlay;
+        static Hook<Del_Play> hookTutorialDialogPlay;
 
         static SoloSelectChapterViewController()
         {
@@ -33,11 +34,32 @@ namespace YgomGame.Solo
             IL2Class classInfo = assembly.GetClass("SoloSelectChapterViewController", "YgomGame.Solo");
             IL2Class chapterClassInfo = classInfo.GetNestedType("Chapter");
             fieldChapterId = chapterClassInfo.GetField("id");
-            IL2Class accessDialogClassInfo = classInfo.GetNestedType("AccessDialogManager").GetNestedType("AccessDialog");
-            hookCallApiSoloStart = new Hook<Del_CallApiSoloStart>(CallApiSoloStart, accessDialogClassInfo.GetMethod("CallApiSoloStart"));
+            IL2Class accessDialogManagerClassInfo = classInfo.GetNestedType("AccessDialogManager");
+            IL2Class duelDialogClassInfo = accessDialogManagerClassInfo.GetNestedType("DuelDialog");
+            IL2Class tutorialDialogClassInfo = accessDialogManagerClassInfo.GetNestedType("TutorialDialog");
+            hookDuelDialogPlay = new Hook<Del_Play>(DuelDialogPlay, duelDialogClassInfo.GetMethod("Play"));
+            hookTutorialDialogPlay = new Hook<Del_Play>(TutorialDialogPlay, tutorialDialogClassInfo.GetMethod("Play"));
         }
 
-        static void CallApiSoloStart(IntPtr thisPtr, IntPtr chapterData)
+        static void DuelDialogPlay(IntPtr thisPtr, IntPtr chapterData)
+        {
+            if (HandlePlay(thisPtr, chapterData))
+            {
+                return;
+            }
+            hookDuelDialogPlay.Original(thisPtr, chapterData);
+        }
+
+        static void TutorialDialogPlay(IntPtr thisPtr, IntPtr chapterData)
+        {
+            if (HandlePlay(thisPtr, chapterData))
+            {
+                return;
+            }
+            hookTutorialDialogPlay.Original(thisPtr, chapterData);
+        }
+
+        static bool HandlePlay(IntPtr thisPtr, IntPtr chapterData)
         {
             if (chapterData != IntPtr.Zero)
             {
@@ -54,12 +76,12 @@ namespace YgomGame.Solo
                         {
                             YgomGame.Room.RoomCreateViewController.IsNextInstanceHacked = true;
                             YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "Room/RoomCreate");
-                            return;
+                            return true;
                         }
                     }
                 }
             }
-            hookCallApiSoloStart.Original(thisPtr, chapterData);
+            return false;
         }
     }
 
@@ -432,7 +454,7 @@ namespace YgomGame.Room
             labelInfoCtor = labelInfoClass.GetMethod(".ctor");
             buttonInfoClass = ClassInfo.GetNestedType("ButtonInfo");
             buttonInfoCtor = buttonInfoClass.GetMethod(".ctor");
-            hookOnClick = new Hook<Del_OnClick>(OnClick, buttonInfoClass.GetMethod("OnClick"));
+            hookOnClick = new Hook<Del_OnClick>(OnClick, buttonInfoClass.GetMethod("ProcessOnClicked"));//"OnClick"));//v1.2.0 needed to change to ProcessOnClicked (OnClick RVA was used multiple times)
             buttonTitle = buttonInfoClass.GetField("title");
             buttonCurrentSetting = buttonInfoClass.GetField("currentSetting");
             buttonSettingStrings = buttonInfoClass.GetField("settingStrings");
@@ -459,8 +481,8 @@ namespace YgomGame.Room
             IntPtr titleComponent = UnityEngine.GameObject.GetComponent(titleObj, bindingTextType);
             YgomSystem.UI.BindingTextMeshProUGUI.SetTextId(titleComponent, duelSettingsManager.Title);
 
-            // Modify the text of the button on the bottom right
-            IntPtr duelStartButtonObj = UnityEngine.GameObject.FindGameObjectByName(UnityEngine.Component.GetGameObject(thisPtr), "OKButton");
+            // Modify the text of the button on the bottom right (v1.2.0 changed from "OKButton" to "ButtonOK")
+            IntPtr duelStartButtonObj = UnityEngine.GameObject.FindGameObjectByName(UnityEngine.Component.GetGameObject(thisPtr), "ButtonOK");
             IntPtr duelStartButtonTextObj = UnityEngine.GameObject.FindGameObjectByName(duelStartButtonObj, "TextTMP");
             IntPtr duelStartButtonTextComponent = UnityEngine.GameObject.GetComponent(duelStartButtonTextObj, bindingTextType);
             YgomSystem.UI.BindingTextMeshProUGUI.SetTextId(duelStartButtonTextComponent, duelSettingsManager.ButtonText);

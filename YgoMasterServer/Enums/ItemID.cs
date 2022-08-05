@@ -209,9 +209,18 @@ namespace YgoMaster
             ID1000016 = 1000016,//Wightbaking
             ID1000017 = 1000017,//Ninja Grandmaster Hanzo
             ID1000018 = 1000018,//Ghostrick Lantern
-            ID1000019 = 1000019,//coming soon
+            ID1000019 = 1000019,//Trishula, Dragon of the Ice Barrier
             ID1000020 = 1000020,//Laundry Dragonmaid
-            //ID1000021 = 1000021,//coming soon (Laundry Dragonmaid other form)
+            //ID1000021 = 1000021,//coming soon
+            ID1000022 = 1000022,//coming soon
+            //ID1000023 = 1000023,//coming soon
+            //ID1000024 = 1000024,//coming soon (NOTE: Icon but no 3d model)
+            //ID1000025 = 1000025,//coming soon
+            //ID1000026 = 1000026,//coming soon
+            //ID1000027 = 1000027,//
+            //ID1000028 = 1000028,//
+            //ID1000029 = 1000029,//
+            //ID1000030 = 1000030,//
             ID1001001 = 1001001,//Instant Fusion
             ID1001002 = 1001002,//Noble Arms - Caliburn
             ID1001003 = 1001003,//Book of Moon
@@ -225,6 +234,13 @@ namespace YgoMaster
             ID1001011 = 1001011,//Marshmallon
             ID1001012 = 1001012,//Kuriboh
             ID1001013 = 1001013,//Danger!? Jackalope?
+            ID1001014 = 1001014,//Quillbolt Hedgehog
+            ID1001015 = 1001015,//PSY-Framegear Gamma
+            ID1001016 = 1001016,//Kagetokage
+            //ID1001017 = 1001017,//coming soon
+            //ID1001018 = 1001018,//
+            //ID1001019 = 1001019,//
+            //ID1001020 = 1001020,//
             ID1002001 = 1002001,//Soccer Ball
             ID1002002 = 1002002,//Basketball
             ID1002003 = 1002003,//Record Player
@@ -258,9 +274,27 @@ namespace YgoMaster
             ID1010017 = 1010017,//True King of All Calamities
             ID1010018 = 1010018,//House Dragonmaid
             ID1010019 = 1010019,//Fallen of Albaz
+            ID1010020 = 1010020,//Swordsoul Supreme Sovereign - Chengying
+            ID1010021 = 1010021,//Aluber the Dogmatic
+            ID1010022 = 1010022,//Destiny HERO - Destroyer Phoenix Enforcer
+            ID1010023 = 1010023,//Water Enchantress of the Temple
+            //ID1010024 = 1010024,//
+            //ID1010025 = 1010025,//
+            //ID1010026 = 1010026,//
+            //ID1010027 = 1010027,//
+            //ID1010028 = 1010028,//
+            //ID1010029 = 1010029,//
+            //ID1010030 = 1010030,//
             ID1011001 = 1011001,//Soccer Ball
             ID1011002 = 1011002,//Trophy
             ID1011003 = 1011003,//Diamond
+            ID1011004 = 1011004,//DC 2022 AUG Gold Finalist
+            ID1011005 = 1011005,//DC 2022 AUG Silver Finalist
+            ID1011006 = 1011006,//DC 2022 AUG Bronze Finalist
+            //ID1011007 = 1011007,//
+            //ID1011008 = 1011008,//
+            //ID1011009 = 1011009,//
+            //ID1011010 = 1011010,//
             ID1012001 = 1012001,//X-Krawler Synaphysis
             ID1012002 = 1012002,//Mekk-Knight Spectrum Supreme
             ID1012003 = 1012003,//Knightmare Gryphon
@@ -291,6 +325,17 @@ namespace YgoMaster
             ID1012028 = 1012028,//Great Shogun Shien
             ID1012029 = 1012029,//Danger! Nessie!
             ID1012030 = 1012030,//Nephthys, the Sacred Flame
+            ID1012031 = 1012031,//Blackbeard, the Plunder Patroll Captain
+            ID1012032 = 1012032,//Bujintei Susanowo
+            ID1012033 = 1012033,//Bujinki Amaterasu
+            ID1012034 = 1012034,//Ally of Justice Catastor
+            ID1012035 = 1012035,//Worm Dimikles
+            ID1012036 = 1012036,//Mermail Abysstrite
+            ID1012037 = 1012037,//Beetrooper Sting Lancer
+            ID1012038 = 1012038,//Vendread Battlelord
+            ID1012039 = 1012039,//Vendread Chimera
+            //ID1012040 = 1012040,//Legendary Six Samurai - Shi En
+            //ID1012041 = 1012041,//Yoko, the Graceful Mayakashi
         }
         public enum ICON_FRAME
         {
@@ -314,7 +359,23 @@ namespace YgoMaster
             //ID1030018 = 1030018,//ICON_FRAME18
             //ID1030019 = 1030019,//ICON_FRAME19
             //ID1030020 = 1030020,//ICON_FRAME20
-            //ID1030021 = 1030021,//ICON_FRAME21
+            //ID1030021 = 1030021,//
+            //ID1030022 = 1030022,//
+            //ID1030023 = 1030023,//
+            ID1030024 = 1030024,//
+            ID1030025 = 1030025,//
+            ID1030026 = 1030026,//
+            //ID1031001 = 1031001,//coming soon
+            //ID1031002 = 1031002,//coming soon
+            //ID1031003 = 1031003,//coming soon
+            //ID1031004 = 1031004,//
+            //ID1031005 = 1031005,//
+            //ID1031006 = 1031006,//
+            //ID1031007 = 1031007,//
+            //ID1031008 = 1031008,//
+            //ID1031009 = 1031009,//
+            //ID1031010 = 1031010,//
+            //ID1031011 = 1031011,//
         }
         public enum PROFILE_TAG
         {
@@ -322,7 +383,7 @@ namespace YgoMaster
             ID1020002 = 1020002,//Fan of the Anime
             ID1020003 = 1020003,//Returnee
             ID1020004 = 1020004,//TCG Player
-            ID1020005 = 1020005,//Links Player
+            ID1020005 = 1020005,//Duel Links Player
             ID1020006 = 1020006,//Quick Play
             ID1020007 = 1020007,//Relaxed Play
             ID1020008 = 1020008,//Casual
@@ -333,7 +394,7 @@ namespace YgoMaster
             ID1020013 = 1020013,//Showoff
             ID1020014 = 1020014,//Tactician
             ID1020015 = 1020015,//Demon
-            ID1020016 = 1020016,//Sealed One
+            ID1020016 = 1020016,//Forbidden One
             ID1020017 = 1020017,//Destroyer
             ID1020018 = 1020018,//Strategy Expert
             ID1020019 = 1020019,//Unfathomable
@@ -342,12 +403,32 @@ namespace YgoMaster
             ID1020022 = 1020022,//<color=#9933CC>Fusion Festival 2022</color>
             ID1020023 = 1020023,//Limit One Festival 2022
             ID1020024 = 1020024,//EX-ZERO Festival 2022
-            //ID1020025 = 1020025,//
-            //ID1020026 = 1020026,//
-            //ID1020027 = 1020027,//
-            //ID1020028 = 1020028,//
-            //ID1020029 = 1020029,//
-            //ID1020030 = 1020030,//
+            ID1020025 = 1020025,//DC 2022 AUG Top 10
+            ID1020026 = 1020026,//DC 2022 AUG Top 100
+            ID1020027 = 1020027,//DC 2022 AUG Top 500
+            ID1020028 = 1020028,//DC 2022 AUG Top 1000
+            ID1020029 = 1020029,//DC 2022 AUG Top 10000
+            ID1020030 = 1020030,//DC 2022 AUG 2nd Stage Duelist
+            //ID1020031 = 1020031,//
+            //ID1020032 = 1020032,//
+            //ID1020033 = 1020033,//
+            //ID1020034 = 1020034,//
+            //ID1020035 = 1020035,//
+            //ID1020036 = 1020036,//
+            //ID1020037 = 1020037,//
+            //ID1020038 = 1020038,//
+            //ID1020039 = 1020039,//
+            //ID1020040 = 1020040,//
+            //ID1020041 = 1020041,//
+            //ID1020042 = 1020042,//
+            //ID1020043 = 1020043,//
+            //ID1020044 = 1020044,//
+            //ID1020045 = 1020045,//
+            //ID1020046 = 1020046,//
+            //ID1020047 = 1020047,//
+            //ID1020048 = 1020048,//
+            //ID1020049 = 1020049,//
+            //ID1020050 = 1020050,//
         }
         public enum PROTECTOR
         {
@@ -365,6 +446,22 @@ namespace YgoMaster
             ID1070012 = 1070012,//Dragonmaid Send-Off
             ID1070013 = 1070013,//Protector - FIRE
             ID1070014 = 1070014,//Protector - WIND
+            ID1070015 = 1070015,//Protector: WATER
+            ID1070016 = 1070016,//Protector: EARTH
+            ID1070017 = 1070017,//Protector: LIGHT
+            ID1070018 = 1070018,//Protector: DARK
+            ID1070019 = 1070019,//Token Collector
+            //ID1070020 = 1070020,//
+            ID1070021 = 1070021,//DC 2022 AUG Celebration
+            //ID1070022 = 1070022,//
+            //ID1070023 = 1070023,//
+            //ID1070024 = 1070024,//
+            //ID1070025 = 1070025,//
+            //ID1070026 = 1070026,//
+            //ID1070027 = 1070027,//
+            //ID1070028 = 1070028,//
+            //ID1070029 = 1070029,//
+            //ID1070030 = 1070030,//
             ID1071001 = 1071001,//Crusadia Maximus
             ID1071002 = 1071002,//Longirsu, the Orcust Orchestrator
             ID1071003 = 1071003,//Dream Mirror Phantasms
@@ -372,6 +469,19 @@ namespace YgoMaster
             ID1071005 = 1071005,//Danger! Bigfoot!
             ID1071006 = 1071006,//Nephthys, the Sacred Flame
             ID1071007 = 1071007,//U.A. Playmaker
+            ID1071008 = 1071008,//Blackbeard, the Plunder Patroll Captain
+            ID1071009 = 1071009,//Bujintei Susanowo
+            ID1071010 = 1071010,//Ally of Justice Catastor
+            ID1071011 = 1071011,//Mermail Abyssmegalo
+            ID1071012 = 1071012,//Giant Beetrooper Invincible Atlas
+            ID1071013 = 1071013,//Revendread Slayer
+            //ID1071014 = 1071014,//
+            //ID1071015 = 1071015,//
+            //ID1072001 = 1072001,//coming soon
+            //ID1072002 = 1072002,//
+            //ID1072003 = 1072003,//
+            //ID1072004 = 1072004,//
+            //ID1072005 = 1072005,//
         }
         public enum DECK_CASE
         {
@@ -392,7 +502,14 @@ namespace YgoMaster
             ID1080015 = 1080015,//Dragonmaid-To-Order
             //ID1080016 = 1080016,//coming soon
             //ID1080017 = 1080017,//coming soon
+            //ID1080018 = 1080018,//coming soon
+            //ID1080019 = 1080019,//
+            //ID1080020 = 1080020,//
             ID1082001 = 1082001,//Xyz Black
+            //ID1082002 = 1082002,//
+            //ID1082003 = 1082003,//
+            //ID1082004 = 1082004,//
+            //ID1082005 = 1082005,//
         }
         public enum FIELD
         {
@@ -407,6 +524,12 @@ namespace YgoMaster
             ID1090009 = 1090009,//Night Skyscrapers
             ID1090010 = 1090010,//Glacial World
             ID1090011 = 1090011,//The Desolate Temple
+            ID1090012 = 1090012,//Mount Swordsoul
+            ID1090013 = 1090013,//Vivid Abyssal Waters
+            ID1090014 = 1090014,//Madolche Chateau
+            //ID1090015 = 1090015,//
+            //ID1090016 = 1090016,//
+            //ID1090017 = 1090017,//
             ID1092001 = 1092001,//Colosseum
         }
         public enum FIELD_OBJ
@@ -422,6 +545,12 @@ namespace YgoMaster
             ID1100009 = 1100009,//Night Skyscrapers
             ID1100010 = 1100010,//Glacial World
             ID1100011 = 1100011,//The Desolate Temple
+            ID1100012 = 1100012,//Mount Swordsoul
+            ID1100013 = 1100013,//Vivid Abyssal Waters
+            ID1100014 = 1100014,//Madolche Chateau
+            //ID1100015 = 1100015,//
+            //ID1100016 = 1100016,//
+            //ID1100017 = 1100017,//
             ID1101001 = 1101001,//Trap Hole
             ID1101002 = 1101002,//Magical Hats
             ID1101003 = 1101003,//Summon Limit
@@ -429,6 +558,11 @@ namespace YgoMaster
             ID1101005 = 1101005,//TG1-EM1
             ID1101006 = 1101006,//Predaplant Chimerafflesia
             ID1101007 = 1101007,//Contract with the Abyss
+            ID1101008 = 1101008,//Loop of Destruction
+            ID1101009 = 1101009,//Genex Furnace
+            //ID1101010 = 1101010,//
+            //ID1101011 = 1101011,//
+            //ID1101012 = 1101012,//
             ID1102001 = 1102001,//Colosseum
         }
         public enum AVATAR_HOME
@@ -444,6 +578,12 @@ namespace YgoMaster
             ID1110009 = 1110009,//Night Skyscrapers
             ID1110010 = 1110010,//Glacial World
             ID1110011 = 1110011,//The Desolate Temple
+            ID1110012 = 1110012,//Mount Swordsoul
+            ID1110013 = 1110013,//Vivid Abyssal Waters
+            ID1110014 = 1110014,//Madolche Chateau
+            //ID1110015 = 1110015,//
+            //ID1110016 = 1110016,//
+            //ID1110017 = 1110017,//
             ID1111001 = 1111001,//Destiny Board
             ID1111002 = 1111002,//Bug Matrix
             ID1111003 = 1111003,//Shien's Dojo
@@ -451,6 +591,14 @@ namespace YgoMaster
             ID1111005 = 1111005,//Dragonic Tactics
             ID1111006 = 1111006,//Catapult Turtle
             ID1111007 = 1111007,//World Legacy - "World Key"
+            ID1111008 = 1111008,//Rank-Up-Magic Barian's Force
+            ID1111009 = 1111009,//Rank-Up-Magic Astral Force
+            //ID1111010 = 1111010,//
+            //ID1111011 = 1111011,//
+            //ID1111012 = 1111012,//
+            //ID1111013 = 1111013,//
+            //ID1111014 = 1111014,//
+            //ID1111015 = 1111015,//
             ID1112001 = 1112001,//Colosseum
         }
         public enum STRUCTURE
@@ -470,8 +618,11 @@ namespace YgoMaster
             ID1120013 = 1120013,//Being Who Sees the End of the World
             ID1120014 = 1120014,//Gem-Knights' Resolution
             ID1120015 = 1120015,//Dragonmaid-To-Order
-            //ID1120016 = 1120016,//coming soon
-            //ID1120017 = 1120017,//coming soon
+            ID1120016 = 1120016,//coming soon
+            ID1120017 = 1120017,//coming soon
+            ID1120018 = 1120018,//coming soon
+            ID1120019 = 1120019,//
+            ID1120020 = 1120020,//
         }
         public enum WALLPAPER
         {
@@ -489,6 +640,12 @@ namespace YgoMaster
             ID1130012 = 1130012,//Number F0: Utopic Draco Future
             ID1130013 = 1130013,//Odd-Eyes Arc Pendulum Dragon
             ID1130014 = 1130014,//Accesscode Talker
+            //ID1130015 = 1130015,//
+            //ID1130016 = 1130016,//
+            //ID1130017 = 1130017,//
+            //ID1130018 = 1130018,//
+            //ID1130019 = 1130019,//
+            //ID1130020 = 1130020,//
         }
         public enum PACK_TICKET
         {
@@ -497,7 +654,7 @@ namespace YgoMaster
             ID1141001 = 1141001,//Xyz Reward Ticket
             ID1141002 = 1141002,//Fusion Reward Ticket
             ID1141003 = 1141003,//Synchro Reward Ticket
-            ID1141004 = 1141004,//
+            ID1141004 = 1141004,//Duelist Cup Reward Tickets
             ID1141005 = 1141005,//
             ID1141006 = 1141006,//
             ID1141007 = 1141007,//

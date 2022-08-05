@@ -1,4 +1,4 @@
-// Client version 1.1.1
+// Client version 1.2.0
 // This file is generated using the 'updatediff' command in YgoMasterClient. This information is used to determine changes between client versions which impact YgoMaster.
 // Run the command, diff against the old file, and use the changes to update code.
 
@@ -124,6 +124,7 @@ enum TopicsBannerPatern
     DUELLIVE,
     STRUCTURE,
     CARDS,
+    CUSTOM = 100,
 }
 /// <summary>
 /// YgomGame.Card.Content.Rarity
@@ -186,6 +187,8 @@ enum GameMode
     SoloSingle,
     Room,
     Exhibition,
+    DuelistCup,
+    RankEvent,
     Null,
 }
 /// <summary>
@@ -1077,6 +1080,9 @@ enum AccountCode
     ERR_PLATFORM_SERVICE_AUTH_EXPIRED,
     ERR_EXCESSIVE_REPORT = 1180,
     ERR_SAME_TARGET_REPORT,
+    PASSWD_LOCK = 1190,
+    PASSWD_LOCK_INCORRECT,
+    PASSWD_LOCK_EXPIRED,
 }
 enum BillingCode
 {
@@ -1103,9 +1109,20 @@ enum BillingCode
     DATE_LIMIT_OVER,
     LIMIT_EXCEEDED,
     PURCHASE_PENDING,
+    VOIDED_PURCHASE,
+    ADMIN_FINISH_TRANSACTION,
     STEAM_OVER_LAY_OFF = 2930,
     NX_BAASERROR_SERVICE_MAINTENANCE = 2950,
     NX_SUGARERROR_SERVICE_MAINTENANCE,
+}
+enum CasualCode
+{
+    NONE,
+    ERROR,
+    FATAL,
+    CRITICAL,
+    INVALID_PARAM = 3500,
+    ERR_OUT_OF_TERM,
 }
 enum CgdbDeckSearchCode
 {
@@ -1122,6 +1139,7 @@ enum ChallengeCode
     FATAL,
     CRITICAL,
     INVALID_PARAM = 2300,
+    ERR_OUT_OF_TERM,
 }
 enum CraftCode
 {
@@ -1133,6 +1151,15 @@ enum CraftCode
     ERROR_CRAFT_LIMIT,
     ERROR_UPDATE_FAILED,
     ERROR_COMPENSATION_TIMELIMIT,
+}
+enum CupCode
+{
+    NONE,
+    ERROR,
+    FATAL,
+    CRITICAL,
+    INVALID_PARAM = 3700,
+    ERR_OUT_OF_TERM,
 }
 enum DeckCode
 {
@@ -1324,6 +1351,16 @@ enum PvPCode
     NOT_EXIST_ROOM_OPP,
     AUDIENCE_LIMIT_MAX,
 }
+enum RankEventCode
+{
+    NONE,
+    ERROR,
+    FATAL,
+    CRITICAL,
+    INVALID_PARAM = 3600,
+    ERR_OUT_OF_TERM,
+    ERROR_FIXED_ACCESSORY,
+}
 enum RoomCode
 {
     NONE,
@@ -1354,6 +1391,8 @@ enum RoomCode
     ERR_ENTRY_ROOM_VALID_CROSS_PF_APP_INVALID,
     ERR_DECK_EMPTY,
     ERR_DECK_REG,
+    ERR_LIMIT_REGULATION_PERIOD,
+    ERR_HOST_CLIENT_VERSION,
 }
 enum ServerStatus
 {
@@ -1455,6 +1494,7 @@ enum UserCode
 //public static YgomSystem.Network.Handle Account_kid_check_inherited(System.String _kid_inherit_nonce_, System.String _auth_session_)
 //public static YgomSystem.Network.Handle Account_set_opt_out()
 //public static YgomSystem.Network.Handle Account_report_user(System.Int32 _reported_pcode_, System.Int32[] _report_ids_)
+//public static YgomSystem.Network.Handle Account_unlock(System.String _pass_)
 //public static YgomSystem.Network.Handle Account_Steam_get_user_id(System.String _session_ticket_)
 //public static YgomSystem.Network.Handle Account_Steam_re_auth(System.String _session_ticket_)
 //public static YgomSystem.Network.Handle Account_PS_get_user_id(System.String _auth_session_)
@@ -1495,6 +1535,7 @@ enum UserCode
 //public static YgomSystem.Network.Handle Deck_get_deck()
 //public static YgomSystem.Network.Handle Deck_get_deck_list(System.Int32 _deck_id_)
 //public static YgomSystem.Network.Handle Deck_update_deck(System.Int32 _deck_id_, System.String _name_, System.Collections.Generic.Dictionary<System.String,System.Object> _deck_list_, System.Collections.Generic.Dictionary<System.String,System.Object> _pick_cards_, System.Collections.Generic.Dictionary<System.String,System.Object> _accessory_)
+//public static YgomSystem.Network.Handle Deck_update_deck_reg(System.Int32 _deck_id_, System.String _name_, System.Collections.Generic.Dictionary<System.String,System.Object> _deck_list_, System.Collections.Generic.Dictionary<System.String,System.Object> _pick_cards_, System.Collections.Generic.Dictionary<System.String,System.Object> _accessory_, System.Int32 _regulation_id_)
 //public static YgomSystem.Network.Handle Deck_delete_deck(System.Int32 _deck_id_)
 //public static YgomSystem.Network.Handle Deck_check_deck_regulation(System.Int32 _deck_id_, System.Int32 _regulation_id_)
 //public static YgomSystem.Network.Handle Deck_set_deck_accessory(System.Int32 _deck_id_, System.Collections.Generic.Dictionary<System.String,System.Object> _param_)
@@ -1525,6 +1566,7 @@ enum UserCode
 //public static YgomSystem.Network.Handle PvP_save_replay(System.Int32 _mode_, System.Int64 _did_, System.Int32 _eid_)
 //public static YgomSystem.Network.Handle PvP_remove_replay(System.Int64 _did_)
 //public static YgomSystem.Network.Handle PvP_replay_duel_history(System.Int32 _idx_, System.Int32 _mode_, System.Int64 _did_, System.Int32 _eid_)
+//public static YgomSystem.Network.Handle PvP_replay_duel_history_with_room(System.Int64 _did_, System.Int64 _pcode_)
 //public static YgomSystem.Network.Handle PvP_duel_history(System.Int32 _mode_)
 //public static YgomSystem.Network.Handle PvP_set_replay_open(System.Int64 _did_, System.Boolean _open_)
 //public static YgomSystem.Network.Handle PvP_get_history_deck(System.Int64 _did_, System.Int32 _mode_, System.Int32 _idx_)
@@ -1541,6 +1583,8 @@ enum UserCode
 //public static YgomSystem.Network.Handle Challenge_set_deck(System.Int32 _mode_, System.Int32 _deck_id_)
 //public static YgomSystem.Network.Handle Challenge_duel_history(System.Int32 _mode_, System.Int32 _season_id_)
 //public static YgomSystem.Network.Handle Challenge_reward_list(System.Int32 _mode_, System.Int32 _season_id_)
+//public static YgomSystem.Network.Handle Casual_detail()
+//public static YgomSystem.Network.Handle Casual_duel_history()
 //public static YgomSystem.Network.Handle Solo_info(System.Boolean _back_)
 //public static YgomSystem.Network.Handle Solo_detail(System.Int32 _chapter_)
 //public static YgomSystem.Network.Handle Solo_start(System.Int32 _chapter_)
@@ -1613,6 +1657,20 @@ enum UserCode
 //public static YgomSystem.Network.Handle DuelLive_replay_duel()
 //public static YgomSystem.Network.Handle Enquete_get_questions(System.Int32 _enquete_id_)
 //public static YgomSystem.Network.Handle Enquete_send_answers(System.Int32 _enquete_id_, System.Collections.Generic.Dictionary<System.String,System.Object> _results_)
+//public static YgomSystem.Network.Handle RankEvent_detail(System.Int32 _rank_event_id_)
+//public static YgomSystem.Network.Handle RankEvent_duel_history(System.Int32 _rank_event_id_)
+//public static YgomSystem.Network.Handle RankEvent_reward_list(System.Int32 _rank_event_id_)
+//public static YgomSystem.Network.Handle RankEvent_get_deck_list(System.Int32 _rank_event_id_)
+//public static YgomSystem.Network.Handle RankEvent_set_deck(System.Int32 _rank_event_id_, System.Collections.Generic.Dictionary<System.String,System.Object> _deck_list_, System.Collections.Generic.Dictionary<System.String,System.Object> _accessory_, System.Collections.Generic.Dictionary<System.String,System.Object> _pick_cards_)
+//public static YgomSystem.Network.Handle RankEvent_set_deck_accessory(System.Int32 _rank_event_id_, System.Collections.Generic.Dictionary<System.String,System.Object> _param_)
+//public static YgomSystem.Network.Handle RankEvent_delete_deck(System.Int32 _rank_event_id_)
+//public static YgomSystem.Network.Handle Cup_detail(System.Int32 _cid_)
+//public static YgomSystem.Network.Handle Cup_get_deck_list(System.Int32 _cid_)
+//public static YgomSystem.Network.Handle Cup_set_deck(System.Int32 _cid_, System.Collections.Generic.Dictionary<System.String,System.Object> _deck_list_, System.Collections.Generic.Dictionary<System.String,System.Object> _accessory_, System.Collections.Generic.Dictionary<System.String,System.Object> _pick_cards_)
+//public static YgomSystem.Network.Handle Cup_delete_deck(System.Int32 _cid_)
+//public static YgomSystem.Network.Handle Cup_duel_history(System.Int32 _cid_)
+//public static YgomSystem.Network.Handle Cup_set_deck_accessory(System.Int32 _cid_, System.Collections.Generic.Dictionary<System.String,System.Object> _param_)
+//public static YgomSystem.Network.Handle Cup_get_ranking(System.Int32 _cid_)
 //public System.Void .ctor()
 //==================================
 // duel.dll functions (Engine)

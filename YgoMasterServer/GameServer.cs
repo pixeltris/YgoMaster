@@ -179,7 +179,10 @@ namespace YgoMaster
                                     case "Deck.SetFavoriteCards":
                                         Act_DeckSetFavoriteCards(gameServerWebRequest);
                                         break;
-                                    case "Deck.update_deck":
+                                    case "Deck.update_deck":// Unused sinc v1.2.0?
+                                        Act_DeckUpdate(gameServerWebRequest);
+                                        break;
+                                    case "Deck.update_deck_reg":// Added v1.2.0
                                         Act_DeckUpdate(gameServerWebRequest);
                                         break;
                                     case "Deck.get_deck_list":
