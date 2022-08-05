@@ -88,6 +88,7 @@ namespace YgomGame.Solo
     static unsafe class SoloStartProductionViewController
     {
         public static int DuelStarterFirstPlayer;
+        static readonly int finalStepValue;// NOTE: This value changed in v1.2.0 so we now fetch it at runtime
 
         static IL2Field fieldStep;
         static IL2Method methodDispFirstorSecond;
@@ -100,6 +101,7 @@ namespace YgomGame.Solo
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("SoloStartProductionViewController", "YgomGame.Solo");
             fieldStep = classInfo.GetField("step");
+            finalStepValue = classInfo.GetNestedType("Step").GetField("Final").GetValue().GetValueRef<int>();
             methodDispFirstorSecond = classInfo.GetMethod("DispFirstorSecond");
             hookSelectTurn = new Hook<Del_SelectTurn>(SelectTurn, classInfo.GetMethod("SelectTurn"));
         }
@@ -122,7 +124,7 @@ namespace YgomGame.Solo
                             Colosseum.ColosseumUtil.Turn.FIRST : Colosseum.ColosseumUtil.Turn.SECOND;
                         methodDispFirstorSecond.Invoke(thisPtr, new IntPtr[] { new IntPtr(&turn) });
                     }
-                    int nextStep = 6;// YgomGame.Solo.SoloStartProductionViewController.Step.Final
+                    int nextStep = finalStepValue;// YgomGame.Solo.SoloStartProductionViewController.Step.Final
                     fieldStep.SetValue(thisPtr, new IntPtr(&nextStep));
                     return;
                 }
