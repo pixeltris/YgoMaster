@@ -358,4 +358,59 @@ namespace YgomGame.Duel
             return hookGet.Original(thisPtr, mrk, player);
         }
     }
+
+    unsafe static class RunEffectWorker
+    {
+        delegate void Del_Run(IntPtr thisPtr, int param1, int param2, int param3);
+        static Hook<Del_Run> hookChainRun;
+        static Hook<Del_Run> hookChainStep;
+        static Hook<Del_Run> hookChainSet;
+        static Hook<Del_Run> hookChainEnd;
+
+        static RunEffectWorker()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            IL2Class classInfo = assembly.GetClass("RunEffectWorker", "YgomGame.Duel");
+            hookChainRun = new Hook<Del_Run>(ChainRun, classInfo.GetMethod("ChainRun"));
+            hookChainStep = new Hook<Del_Run>(ChainStep, classInfo.GetMethod("ChainStep"));
+            hookChainSet = new Hook<Del_Run>(ChainSet, classInfo.GetMethod("ChainSet"));
+            hookChainEnd = new Hook<Del_Run>(ChainEnd, classInfo.GetMethod("ChainEnd"));
+        }
+
+        static void ChainRun(IntPtr thisPtr, int param1, int param2, int param3)
+        {
+            if (ClientSettings.DuelClientDisableChains)
+            {
+                return;
+            }
+            hookChainRun.Original(thisPtr, param1, param2, param3);
+        }
+
+        static void ChainStep(IntPtr thisPtr, int param1, int param2, int param3)
+        {
+            if (ClientSettings.DuelClientDisableChains)
+            {
+                return;
+            }
+            hookChainRun.Original(thisPtr, param1, param2, param3);
+        }
+
+        static void ChainSet(IntPtr thisPtr, int param1, int param2, int param3)
+        {
+            if (ClientSettings.DuelClientDisableChains)
+            {
+                return;
+            }
+            hookChainRun.Original(thisPtr, param1, param2, param3);
+        }
+
+        static void ChainEnd(IntPtr thisPtr, int param1, int param2, int param3)
+        {
+            if (ClientSettings.DuelClientDisableChains)
+            {
+                return;
+            }
+            hookChainRun.Original(thisPtr, param1, param2, param3);
+        }
+    }
 }
