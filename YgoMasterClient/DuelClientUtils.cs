@@ -314,4 +314,48 @@ namespace YgomGame.Duel
             INHERITEFFECTLIST
         }
     }
+
+    unsafe static class CardIndividualSetting
+    {
+        delegate bool Del_IsMonsterCutin(int cardID);
+        static Hook<Del_IsMonsterCutin> hookIsMonsterCutin;
+
+        static CardIndividualSetting()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            IL2Class classInfo = assembly.GetClass("CardIndividualSetting", "YgomGame.Duel");
+            hookIsMonsterCutin = new Hook<Del_IsMonsterCutin>(IsMonsterCutin, classInfo.GetMethod("IsMonsterCutin"));
+        }
+
+        static bool IsMonsterCutin(int cardID)
+        {
+            if (ClientSettings.DuelClientDisableCutinAnimations)
+            {
+                return false;
+            }
+            return hookIsMonsterCutin.Original(cardID);
+        }
+    }
+
+    unsafe static class CardRunEffectSetting
+    {
+        delegate IntPtr Del_Get(IntPtr thisPtr, int mrk, int player);
+        static Hook<Del_Get> hookGet;
+
+        static CardRunEffectSetting()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            IL2Class classInfo = assembly.GetClass("CardRunEffectSetting", "YgomGame.Duel");
+            hookGet = new Hook<Del_Get>(Get, classInfo.GetMethod("Get"));
+        }
+
+        static IntPtr Get(IntPtr thisPtr, int mrk, int player)
+        {
+            if (ClientSettings.DuelClientDisableCutinAnimations)
+            {
+                return IntPtr.Zero;
+            }
+            return hookGet.Original(thisPtr, mrk, player);
+        }
+    }
 }

@@ -130,6 +130,8 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomGame.Duel.Engine));
                 nativeTypes.Add(typeof(YgomGame.Duel.EngineApiUtil));
                 nativeTypes.Add(typeof(YgomGame.Duel.GenericCardListController));
+                nativeTypes.Add(typeof(YgomGame.Duel.CardIndividualSetting));
+                nativeTypes.Add(typeof(YgomGame.Duel.CardRunEffectSetting));
                 // DuelStarter
                 nativeTypes.Add(typeof(YgomGame.Menu.ContentViewControllerManager));
                 nativeTypes.Add(typeof(YgomGame.Menu.BaseMenuViewController));
