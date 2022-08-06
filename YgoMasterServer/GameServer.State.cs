@@ -106,6 +106,7 @@ namespace YgoMaster
                 return;
             }
 
+            ItemID.Load(dataDirectory);
             YdkHelper.LoadIdMap(dataDirectory);
 
             //DuelSimulator sim = new DuelSimulator(dataDirectory);
@@ -663,21 +664,21 @@ namespace YgoMaster
             }
             if (UnlockAllItems)
             {
-                Type[] enumTypes =
+                ItemID.Category[] categories =
                 {
-                    typeof(ItemID.AVATAR),
-                    typeof(ItemID.ICON),
-                    typeof(ItemID.ICON_FRAME),
-                    typeof(ItemID.PROTECTOR),
-                    typeof(ItemID.DECK_CASE),
-                    typeof(ItemID.FIELD),
-                    typeof(ItemID.FIELD_OBJ),
-                    typeof(ItemID.AVATAR_HOME),
-                    typeof(ItemID.WALLPAPER),
+                    ItemID.Category.AVATAR,
+                    ItemID.Category.ICON,
+                    ItemID.Category.ICON_FRAME,
+                    ItemID.Category.PROTECTOR,
+                    ItemID.Category.DECK_CASE,
+                    ItemID.Category.FIELD,
+                    ItemID.Category.FIELD_OBJ,
+                    ItemID.Category.AVATAR_HOME,
+                    ItemID.Category.WALLPAPER,
                 };
-                foreach (Type enumType in enumTypes)
+                foreach (ItemID.Category category in categories)
                 {
-                    foreach (int value in Enum.GetValues(enumType))
+                    foreach (int value in ItemID.Values[category])
                     {
                         player.Items.Add(value);
                     }
@@ -1753,8 +1754,8 @@ namespace YgoMaster
                     
                     DeckInfo deck = new DeckInfo();
                     deck.Id = structureId;
-                    deck.Accessory.Box = box > 0 ? box : (int)ItemID.DECK_CASE.ID1080001;
-                    deck.Accessory.Sleeve = sleeve > 0 ? sleeve : (int)ItemID.PROTECTOR.ID1070001;
+                    deck.Accessory.Box = box > 0 ? box : (int)ItemID.Value.DefaultDeckCase;
+                    deck.Accessory.Sleeve = sleeve > 0 ? sleeve : (int)ItemID.Value.DefaultProtector;
 
                     foreach (int cardId in set.Cards.Keys)
                     {
@@ -2094,7 +2095,7 @@ namespace YgoMaster
                             allRewardData[rewardId.ToString()] = new Dictionary<string, object>()
                             {
                                 { ((int)ItemID.Category.CONSUME).ToString(), new Dictionary<string, object>() {
-                                    { ((int)ItemID.CONSUME.ID0001).ToString(), rand.Next(5, 50) }
+                                    { ((int)ItemID.Value.Gem).ToString(), rand.Next(5, 50) }
                                 }}
                             };
                             // NOTE: This should probably be pulling the reward from the opponent deck only (currently it pulls from both)
@@ -2192,7 +2193,7 @@ namespace YgoMaster
             }
             Dictionary<string, object> data = MiniJSON.Json.DeserializeStripped(File.ReadAllText(extractFile)) as Dictionary<string, object>;
             Dictionary<string, object> structureDecksData = Utils.GetDictionary(data, "Structure");
-            if (structureDecksData == null && data.ContainsKey(((int)ItemID.STRUCTURE.ID1120001).ToString()))
+            if (structureDecksData == null && data.ContainsKey(((int)ItemID.Value.StartingStructureDeck).ToString()))
             {
                 structureDecksData = data;
             }

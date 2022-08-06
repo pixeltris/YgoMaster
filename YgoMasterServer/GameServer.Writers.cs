@@ -37,11 +37,11 @@ namespace YgoMaster
             {
                 have[item.ToString()] = 1;
             }
-            foreach (int value in Enum.GetValues(typeof(ItemID.PROFILE_TAG)))
+            foreach (int value in ItemID.Values[ItemID.Category.PROFILE_TAG])
             {
                 have[value.ToString()] = 1;
             }
-            have[((int)ItemID.CONSUME.ID0001).ToString()] = request.Player.Gems;
+            have[((int)ItemID.Value.Gem).ToString()] = request.Player.Gems;
             request.Player.CraftPoints.ToDictionary(have);
             request.Player.OrbPoints.ToDictionary(have);
             request.Response["Item"] = new Dictionary<string, object>()
@@ -59,19 +59,19 @@ namespace YgoMaster
             }
             Dictionary<string, object> item = request.GetOrCreateDictionary("Item");
             Dictionary<string, object> have = Utils.GetOrCreateDictionary(item, "have");
-            switch ((ItemID.CONSUME)itemId)
+            switch ((ItemID.Value)itemId)
             {
-                case ItemID.CONSUME.ID0001: have[itemId.ToString()] = request.Player.Gems; break;
-                case ItemID.CONSUME.ID0003: have[itemId.ToString()] = request.Player.CraftPoints.Get(CardRarity.Normal); break;
-                case ItemID.CONSUME.ID0004: have[itemId.ToString()] = request.Player.CraftPoints.Get(CardRarity.Rare); break;
-                case ItemID.CONSUME.ID0005: have[itemId.ToString()] = request.Player.CraftPoints.Get(CardRarity.SuperRare); break;
-                case ItemID.CONSUME.ID0006: have[itemId.ToString()] = request.Player.CraftPoints.Get(CardRarity.UltraRare); break;
-                case ItemID.CONSUME.ID0008: have[itemId.ToString()] = request.Player.OrbPoints.Get(OrbType.Dark); break;
-                case ItemID.CONSUME.ID0009: have[itemId.ToString()] = request.Player.OrbPoints.Get(OrbType.Light); break;
-                case ItemID.CONSUME.ID0010: have[itemId.ToString()] = request.Player.OrbPoints.Get(OrbType.Earth); break;
-                case ItemID.CONSUME.ID0011: have[itemId.ToString()] = request.Player.OrbPoints.Get(OrbType.Water); break;
-                case ItemID.CONSUME.ID0012: have[itemId.ToString()] = request.Player.OrbPoints.Get(OrbType.Fire); break;
-                case ItemID.CONSUME.ID0013: have[itemId.ToString()] = request.Player.OrbPoints.Get(OrbType.Wind); break;
+                case ItemID.Value.Gem: have[itemId.ToString()] = request.Player.Gems; break;
+                case ItemID.Value.CpN: have[itemId.ToString()] = request.Player.CraftPoints.Get(CardRarity.Normal); break;
+                case ItemID.Value.CpR: have[itemId.ToString()] = request.Player.CraftPoints.Get(CardRarity.Rare); break;
+                case ItemID.Value.CpSR: have[itemId.ToString()] = request.Player.CraftPoints.Get(CardRarity.SuperRare); break;
+                case ItemID.Value.CpUR: have[itemId.ToString()] = request.Player.CraftPoints.Get(CardRarity.UltraRare); break;
+                case ItemID.Value.OrbDark: have[itemId.ToString()] = request.Player.OrbPoints.Get(OrbType.Dark); break;
+                case ItemID.Value.OrbLight: have[itemId.ToString()] = request.Player.OrbPoints.Get(OrbType.Light); break;
+                case ItemID.Value.OrbEarth: have[itemId.ToString()] = request.Player.OrbPoints.Get(OrbType.Earth); break;
+                case ItemID.Value.OrbWater: have[itemId.ToString()] = request.Player.OrbPoints.Get(OrbType.Water); break;
+                case ItemID.Value.OrbFire: have[itemId.ToString()] = request.Player.OrbPoints.Get(OrbType.Fire); break;
+                case ItemID.Value.OrbWind: have[itemId.ToString()] = request.Player.OrbPoints.Get(OrbType.Wind); break;
                 default:
                     have[itemId.ToString()] = request.Player.Items.Contains(itemId) ? 1 : 0;
                     break;

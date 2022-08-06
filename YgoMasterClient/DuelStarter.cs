@@ -723,9 +723,9 @@ namespace YgomGame.Room
                 }
             }
 
-            int LookupItemName<T>(string name, int defaultValue = -1)
+            int LookupItemName(ItemID.Category category, string name, int defaultValue = -1)
             {
-                foreach (int value in Enum.GetValues(typeof(T)))
+                foreach (int value in ItemID.Values[category])
                 {
                     string itemName = YgomGame.Utility.ItemUtil.GetItemName(value);
                     if (!string.IsNullOrEmpty(itemName) && itemName == name)
@@ -736,14 +736,14 @@ namespace YgomGame.Room
                 return defaultValue;
             }
 
-            Dictionary<int, string> GetItemNames<T>(string defaultName = "Default")
+            Dictionary<int, string> GetItemNames(ItemID.Category category, string defaultName = "Default")
             {
                 Dictionary<int, string> result = new Dictionary<int, string>();
                 if (!string.IsNullOrEmpty(defaultName))
                 {
                     result[-1] = defaultName;
                 }
-                foreach (int value in Enum.GetValues(typeof(T)))
+                foreach (int value in ItemID.Values[category])
                 {
                     string name = YgomGame.Utility.ItemUtil.GetItemName(value);
                     if (!string.IsNullOrEmpty(name))
@@ -900,7 +900,7 @@ namespace YgomGame.Room
                 {
                     settings.hnum[i] = hand;
                 }
-                int field = LookupItemName<ItemID.FIELD>(GetButtonValueString(buttons.Field));
+                int field = LookupItemName(ItemID.Category.FIELD, GetButtonValueString(buttons.Field));
                 for (int i = 0; i < DuelSettings.MaxPlayers; i++)
                 {
                     settings.mat[i] = field;
@@ -932,20 +932,20 @@ namespace YgomGame.Room
                 SetTeamValue(GetButtonValueI32(buttons.LP2), settings.life, 1, 3, false);
                 SetTeamValue(GetButtonValueI32(buttons.Hand1), settings.hnum, 0, 2, false);
                 SetTeamValue(GetButtonValueI32(buttons.Hand2), settings.hnum, 1, 3, false);
-                SetTeamValue(LookupItemName<ItemID.PROTECTOR>(GetButtonValueString(buttons.Sleeve1)), settings.sleeve, 0, 2, true);
-                SetTeamValue(LookupItemName<ItemID.PROTECTOR>(GetButtonValueString(buttons.Sleeve2)), settings.sleeve, 1, 3, true);
-                SetTeamValue(LookupItemName<ItemID.FIELD>(GetButtonValueString(buttons.Field1)), settings.mat, 0, 2, false);
-                SetTeamValue(LookupItemName<ItemID.FIELD>(GetButtonValueString(buttons.Field2)), settings.mat, 1, 3, false);
-                SetTeamValue(LookupItemName<ItemID.FIELD_OBJ>(GetButtonValueString(buttons.FieldPart1)), settings.duel_object, 0, 2, true);
-                SetTeamValue(LookupItemName<ItemID.FIELD_OBJ>(GetButtonValueString(buttons.FieldPart2)), settings.duel_object, 1, 3, true);
-                SetTeamValue(LookupItemName<ItemID.AVATAR>(GetButtonValueString(buttons.Mate1)), settings.avatar, 0, 2, true);
-                SetTeamValue(LookupItemName<ItemID.AVATAR>(GetButtonValueString(buttons.Mate2)), settings.avatar, 1, 3, true);
-                SetTeamValue(LookupItemName<ItemID.AVATAR_HOME>(GetButtonValueString(buttons.MateBase1)), settings.avatar_home, 0, 2, true);
-                SetTeamValue(LookupItemName<ItemID.AVATAR_HOME>(GetButtonValueString(buttons.MateBase2)), settings.avatar_home, 1, 3, true);
-                SetTeamValue(LookupItemName<ItemID.ICON>(GetButtonValueString(buttons.Icon1)), settings.icon, 0, 2, true);
-                SetTeamValue(LookupItemName<ItemID.ICON>(GetButtonValueString(buttons.Icon2)), settings.icon, 1, 3, true);
-                SetTeamValue(LookupItemName<ItemID.ICON_FRAME>(GetButtonValueString(buttons.IconFrame1)), settings.icon_frame, 0, 2, true);
-                SetTeamValue(LookupItemName<ItemID.ICON_FRAME>(GetButtonValueString(buttons.IconFrame2)), settings.icon_frame, 1, 3, true);
+                SetTeamValue(LookupItemName(ItemID.Category.PROTECTOR, GetButtonValueString(buttons.Sleeve1)), settings.sleeve, 0, 2, true);
+                SetTeamValue(LookupItemName(ItemID.Category.PROTECTOR, GetButtonValueString(buttons.Sleeve2)), settings.sleeve, 1, 3, true);
+                SetTeamValue(LookupItemName(ItemID.Category.FIELD, GetButtonValueString(buttons.Field1)), settings.mat, 0, 2, false);
+                SetTeamValue(LookupItemName(ItemID.Category.FIELD, GetButtonValueString(buttons.Field2)), settings.mat, 1, 3, false);
+                SetTeamValue(LookupItemName(ItemID.Category.FIELD_OBJ, GetButtonValueString(buttons.FieldPart1)), settings.duel_object, 0, 2, true);
+                SetTeamValue(LookupItemName(ItemID.Category.FIELD_OBJ, GetButtonValueString(buttons.FieldPart2)), settings.duel_object, 1, 3, true);
+                SetTeamValue(LookupItemName(ItemID.Category.AVATAR, GetButtonValueString(buttons.Mate1)), settings.avatar, 0, 2, true);
+                SetTeamValue(LookupItemName(ItemID.Category.AVATAR, GetButtonValueString(buttons.Mate2)), settings.avatar, 1, 3, true);
+                SetTeamValue(LookupItemName(ItemID.Category.AVATAR_HOME, GetButtonValueString(buttons.MateBase1)), settings.avatar_home, 0, 2, true);
+                SetTeamValue(LookupItemName(ItemID.Category.AVATAR_HOME, GetButtonValueString(buttons.MateBase2)), settings.avatar_home, 1, 3, true);
+                SetTeamValue(LookupItemName(ItemID.Category.ICON, GetButtonValueString(buttons.Icon1)), settings.icon, 0, 2, true);
+                SetTeamValue(LookupItemName(ItemID.Category.ICON, GetButtonValueString(buttons.Icon2)), settings.icon, 1, 3, true);
+                SetTeamValue(LookupItemName(ItemID.Category.ICON_FRAME, GetButtonValueString(buttons.IconFrame1)), settings.icon_frame, 0, 2, true);
+                SetTeamValue(LookupItemName(ItemID.Category.ICON_FRAME, GetButtonValueString(buttons.IconFrame2)), settings.icon_frame, 1, 3, true);
             }
 
             void DuelSettingsToUI()
@@ -1066,7 +1066,7 @@ namespace YgomGame.Room
                 buttons.StartingPlayer = AddButton(infosList, isv, "Starting player", new string[] { "Random", "1", "2"/*, "3", "4"*/ });
                 buttons.LifePoints = AddButton(infosList, isv, "Life points", lpStrings);
                 buttons.Hand = AddButton(infosList, isv, "Hand", handStrings);
-                buttons.Field = AddButton(infosList, isv, "Field", GetItemNames<ItemID.FIELD>().Values.ToArray());
+                buttons.Field = AddButton(infosList, isv, "Field", GetItemNames(ItemID.Category.FIELD).Values.ToArray());
                 buttons.DuelType = AddButton(infosList, isv, "Duel type", duelType.ToArray());
                 AddLabel(infosList, "Advanced settings");
                 buttons.Seed = AddButton(infosList, isv, "Seed", seedStrings.ToArray());
@@ -1083,20 +1083,20 @@ namespace YgomGame.Room
                 buttons.LP2 = AddButton(infosList, isv, "LP2", lpStrings);
                 buttons.Hand1 = AddButton(infosList, isv, "Hand1", handStrings);
                 buttons.Hand2 = AddButton(infosList, isv, "Hand2", handStrings);
-                buttons.Sleeve1 = AddButton(infosList, isv, "Sleeve1", GetItemNames<ItemID.PROTECTOR>().Values.ToArray());
-                buttons.Sleeve2 = AddButton(infosList, isv, "Sleeve2", GetItemNames<ItemID.PROTECTOR>().Values.ToArray());
-                buttons.Field1 = AddButton(infosList, isv, "Field1", GetItemNames<ItemID.FIELD>().Values.ToArray());
-                buttons.Field2 = AddButton(infosList, isv, "Field2", GetItemNames<ItemID.FIELD>().Values.ToArray());
-                buttons.FieldPart1 = AddButton(infosList, isv, "FieldPart1", GetItemNames<ItemID.FIELD_OBJ>().Values.ToArray());
-                buttons.FieldPart2 = AddButton(infosList, isv, "FieldPart2", GetItemNames<ItemID.FIELD_OBJ>().Values.ToArray());
-                buttons.Mate1 = AddButton(infosList, isv, "Mate1", GetItemNames<ItemID.AVATAR>().Values.ToArray());
-                buttons.Mate2 = AddButton(infosList, isv, "Mate2", GetItemNames<ItemID.AVATAR>().Values.ToArray());
-                buttons.MateBase1 = AddButton(infosList, isv, "MateBase1", GetItemNames<ItemID.AVATAR_HOME>().Values.ToArray());
-                buttons.MateBase2 = AddButton(infosList, isv, "MateBase2", GetItemNames<ItemID.AVATAR_HOME>().Values.ToArray());
-                buttons.Icon1 = AddButton(infosList, isv, "Icon1", GetItemNames<ItemID.ICON>().Values.ToArray());
-                buttons.Icon2 = AddButton(infosList, isv, "Icon2", GetItemNames<ItemID.ICON>().Values.ToArray());
-                buttons.IconFrame1 = AddButton(infosList, isv, "IconFrame1", GetItemNames<ItemID.ICON_FRAME>().Values.ToArray());
-                buttons.IconFrame2 = AddButton(infosList, isv, "IconFrame2", GetItemNames<ItemID.ICON_FRAME>().Values.ToArray());
+                buttons.Sleeve1 = AddButton(infosList, isv, "Sleeve1", GetItemNames(ItemID.Category.PROTECTOR).Values.ToArray());
+                buttons.Sleeve2 = AddButton(infosList, isv, "Sleeve2", GetItemNames(ItemID.Category.PROTECTOR).Values.ToArray());
+                buttons.Field1 = AddButton(infosList, isv, "Field1", GetItemNames(ItemID.Category.FIELD).Values.ToArray());
+                buttons.Field2 = AddButton(infosList, isv, "Field2", GetItemNames(ItemID.Category.FIELD).Values.ToArray());
+                buttons.FieldPart1 = AddButton(infosList, isv, "FieldPart1", GetItemNames(ItemID.Category.FIELD_OBJ).Values.ToArray());
+                buttons.FieldPart2 = AddButton(infosList, isv, "FieldPart2", GetItemNames(ItemID.Category.FIELD_OBJ).Values.ToArray());
+                buttons.Mate1 = AddButton(infosList, isv, "Mate1", GetItemNames(ItemID.Category.AVATAR).Values.ToArray());
+                buttons.Mate2 = AddButton(infosList, isv, "Mate2", GetItemNames(ItemID.Category.AVATAR).Values.ToArray());
+                buttons.MateBase1 = AddButton(infosList, isv, "MateBase1", GetItemNames(ItemID.Category.AVATAR_HOME).Values.ToArray());
+                buttons.MateBase2 = AddButton(infosList, isv, "MateBase2", GetItemNames(ItemID.Category.AVATAR_HOME).Values.ToArray());
+                buttons.Icon1 = AddButton(infosList, isv, "Icon1", GetItemNames(ItemID.Category.ICON).Values.ToArray());
+                buttons.Icon2 = AddButton(infosList, isv, "Icon2", GetItemNames(ItemID.Category.ICON).Values.ToArray());
+                buttons.IconFrame1 = AddButton(infosList, isv, "IconFrame1", GetItemNames(ItemID.Category.ICON_FRAME).Values.ToArray());
+                buttons.IconFrame2 = AddButton(infosList, isv, "IconFrame2", GetItemNames(ItemID.Category.ICON_FRAME).Values.ToArray());
                 AddLabel(infosList, "Load / Save");
                 buttons.LoadIncludingDecks = AddButton(infosList, isv, "Load (including decks)");
                 buttons.Load = AddButton(infosList, isv, "Load");

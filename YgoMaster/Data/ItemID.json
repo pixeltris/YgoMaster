@@ -1,0 +1,481 @@
+{
+  "NONE": [
+    0,//Not Set
+  ],
+  "CONSUME": [
+    1,//GEM
+    2,//GEM
+    3,//CP-N
+    4,//CP-R
+    5,//CP-SR
+    6,//CP-UR
+    7,//ORB
+    8,//ORB-DARK
+    9,//ORB-LIGHT
+    10,//ORB-EARTH
+    11,//ORB-WATER
+    12,//ORB-FIRE
+    13,//ORB-WIND
+  ],
+  "AVATAR": [
+    1000001,//Rescue Rabbit
+    1000002,//Ritual Raven
+    1000003,//Dark Magician
+    1000004,//Dark Magician (Mini)
+    1000005,//Borreload Dragon (Mini)
+    1000006,//Cyber Dragon Infinity (Mini)
+    1000007,//Elemental HERO Stratos
+    1000008,//Ancient Gear Wyvern
+    1000009,//Sangan
+    1000010,//World Chalice Guardragon
+    1000011,//Salamangreat Gazelle
+    1000012,//Pot of Greed
+    1000013,//Ash Blossom & Joyous Spring
+    1000014,//Geargiano
+    1000015,//Karakuri Barrel mdl 96 "Shinkuro"
+    1000016,//Wightbaking
+    1000017,//Ninja Grandmaster Hanzo
+    1000018,//Ghostrick Lantern
+    1000019,//Trishula, Dragon of the Ice Barrier
+    1000020,//Laundry Dragonmaid
+    //1000021,//coming soon
+    1000022,//coming soon
+    //1000023,//coming soon
+    //1000024,//coming soon (NOTE: Icon but no 3d model)
+    //1000025,//coming soon
+    //1000026,//coming soon
+    //1000027,//
+    //1000028,//
+    //1000029,//
+    //1000030,//
+    1001001,//Instant Fusion
+    1001002,//Noble Arms - Caliburn
+    1001003,//Book of Moon
+    1001004,//Qliphort Monolith
+    1001005,//Scapegoat
+    1001006,//Bitron
+    1001007,//Moai Interceptor Cannons
+    1001008,//Mokey Mokey
+    1001009,//Shard of Greed
+    1001010,//D/D Ghost
+    1001011,//Marshmallon
+    1001012,//Kuriboh
+    1001013,//Danger!? Jackalope?
+    1001014,//Quillbolt Hedgehog
+    1001015,//PSY-Framegear Gamma
+    1001016,//Kagetokage
+    //1001017,//coming soon
+    //1001018,//
+    //1001019,//
+    //1001020,//
+    1002001,//Soccer Ball
+    1002002,//Basketball
+    1002003,//Record Player
+    1002004,//American Football
+    1002005,//Rugby
+    1002006,//Car
+    1002007,//Treasure Box
+    1002008,//Boxing
+    1002009,//Crown
+    1002010,//Inline Skates
+    1002011,//Darts
+  ],
+  "ICON": [
+    1010001,//Duelist
+    1010002,//SPYRAL Quik-Fix
+    1010003,//Dante, Pilgrim of the Burning Abyss
+    1010004,//Condemned Darklord
+    1010005,//Berserker of the Tenyi
+    1010006,//Warrior Dai Grepher
+    1010007,//Danger! Bigfoot!
+    1010008,//Yuki-Onna, the Absolute Zero Mayakashi
+    1010009,//Revendread Slayer
+    1010010,//Kuriboh
+    1010011,//Black Luster Soldier - Super Soldier
+    1010012,//Time Thief Redoer
+    1010013,//Dogmatika Ecclesia, the Virtuous
+    1010014,//Hela, Generaider Boss of Doom
+    1010015,//Upstart Goblin
+    1010016,//Thunder Dragon Colossus
+    1010017,//True King of All Calamities
+    1010018,//House Dragonmaid
+    1010019,//Fallen of Albaz
+    1010020,//Swordsoul Supreme Sovereign - Chengying
+    1010021,//Aluber the Dogmatic
+    1010022,//Destiny HERO - Destroyer Phoenix Enforcer
+    1010023,//Water Enchantress of the Temple
+    //1010024,//
+    //1010025,//
+    //1010026,//
+    //1010027,//
+    //1010028,//
+    //1010029,//
+    //1010030,//
+    1011001,//Soccer Ball
+    1011002,//Trophy
+    1011003,//Diamond
+    1011004,//DC 2022 AUG Gold Finalist
+    1011005,//DC 2022 AUG Silver Finalist
+    1011006,//DC 2022 AUG Bronze Finalist
+    //1011007,//
+    //1011008,//
+    //1011009,//
+    //1011010,//
+    1012001,//X-Krawler Synaphysis
+    1012002,//Mekk-Knight Spectrum Supreme
+    1012003,//Knightmare Gryphon
+    1012004,//Digital Bug Rhinosebus
+    1012005,//Erebus the Underworld Monarch
+    1012006,//Elementsaber Lapauila Mana
+    1012007,//Demise, Supreme King of Armageddon
+    1012008,//Megalith Aratron
+    1012009,//Gem-Knight Master Diamond
+    1012010,//Gladiator Beast Domitianus
+    1012011,//Karakuri Super Shogun mdl 00N "Bureibu"
+    1012012,//Shiranui Sunsaga
+    1012013,//Geargiagear Gigant XG
+    1012014,//Dinomist Rex
+    1012015,//Apoqliphort Towers
+    1012016,//The Weather Painter Rainbow
+    1012017,//Judgment Dragon
+    1012018,//Punishment Dragon
+    1012019,//Mecha Phantom Beast Dracossack
+    1012020,//Herald of Ultimateness
+    1012021,//Auram the World Chalice Blademaster
+    1012022,//Oneiros, the Dream Mirror Erlking
+    1012023,//Oneiros, the Dream Mirror Tormentor
+    1012024,//Crusadia Equimax
+    1012025,//Longirsu, the Orcust Orchestrator
+    1012026,//Orcustrion
+    1012027,//U.A. Playmaker
+    1012028,//Great Shogun Shien
+    1012029,//Danger! Nessie!
+    1012030,//Nephthys, the Sacred Flame
+    1012031,//Blackbeard, the Plunder Patroll Captain
+    1012032,//Bujintei Susanowo
+    1012033,//Bujinki Amaterasu
+    1012034,//Ally of Justice Catastor
+    1012035,//Worm Dimikles
+    1012036,//Mermail Abysstrite
+    1012037,//Beetrooper Sting Lancer
+    1012038,//Vendread Battlelord
+    1012039,//Vendread Chimera
+    //1012040,//Legendary Six Samurai - Shi En
+    //1012041,//Yoko, the Graceful Mayakashi
+  ],
+  "ICON_FRAME": [
+    1030001,//Beginner's Frame
+    1030002,//SILVER Frame
+    1030003,//BRONZE Frame
+    1030004,//GOLD Frame
+    1030005,//Green Frame
+    1030006,//Purple Frame
+    1030007,//PLATINUM Frame
+    1030008,//DIAMOND Frame
+    1030009,//Blue Frame
+    1030010,//Bronze Award Frame
+    1030011,//Silver Award Frame
+    1030012,//Gold Award Frame
+    //1030013,//ICON_FRAME13
+    //1030014,//ICON_FRAME14
+    //1030015,//ICON_FRAME15
+    //1030016,//ICON_FRAME16
+    //1030017,//ICON_FRAME17
+    //1030018,//ICON_FRAME18
+    //1030019,//ICON_FRAME19
+    //1030020,//ICON_FRAME20
+    1030021,//
+    1030022,//
+    1030023,//
+    1030024,//
+    1030025,//
+    1030026,//
+    //1031001,//coming soon
+    //1031002,//coming soon
+    //1031003,//coming soon
+    //1031004,//
+    //1031005,//
+    //1031006,//
+    //1031007,//
+    //1031008,//
+    //1031009,//
+    //1031010,//
+    //1031011,//
+  ],
+  "PROFILE_TAG": [
+    1020001,//Beginner Duelist
+    1020002,//Fan of the Anime
+    1020003,//Returnee
+    1020004,//TCG Player
+    1020005,//Duel Links Player
+    1020006,//Quick Play
+    1020007,//Relaxed Play
+    1020008,//Casual
+    1020009,//Stoic
+    1020010,//Follow Me
+    1020011,//True Duelist
+    1020012,//Strong Arm
+    1020013,//Showoff
+    1020014,//Tactician
+    1020015,//Demon
+    1020016,//Forbidden One
+    1020017,//Destroyer
+    1020018,//Strategy Expert
+    1020019,//Unfathomable
+    1020020,//Synchro Festival 2022
+    //1020021,//
+    1020022,//<color=#9933CC>Fusion Festival 2022</color>
+    1020023,//Limit One Festival 2022
+    1020024,//EX-ZERO Festival 2022
+    1020025,//DC 2022 AUG Top 10
+    1020026,//DC 2022 AUG Top 100
+    1020027,//DC 2022 AUG Top 500
+    1020028,//DC 2022 AUG Top 1000
+    1020029,//DC 2022 AUG Top 10000
+    1020030,//DC 2022 AUG 2nd Stage Duelist
+    //1020031,//
+    //1020032,//
+    //1020033,//
+    //1020034,//
+    //1020035,//
+    //1020036,//
+    //1020037,//
+    //1020038,//
+    //1020039,//
+    //1020040,//
+    //1020041,//
+    //1020042,//
+    //1020043,//
+    //1020044,//
+    //1020045,//
+    //1020046,//
+    //1020047,//
+    //1020048,//
+    //1020049,//
+    //1020050,//
+  ],
+  "PROTECTOR": [
+    1070001,//Yu-Gi-Oh! Trading Card Game
+    1070002,//Auram the World Chalice Blademaster
+    1070003,//Link Black
+    1070004,//Fusion Purple
+    1070005,//Synchro Silver
+    1070006,//Xyz Black
+    1070007,//Geartown
+    1070008,//Ash Blossom & Joyous Spring
+    1070009,//Blue-Eyes Chaos MAX Dragon
+    1070010,//Trishula, Dragon of the Ice Barrier
+    1070011,//Protector Silver
+    1070012,//Dragonmaid Send-Off
+    1070013,//Protector - FIRE
+    1070014,//Protector - WIND
+    1070015,//Protector: WATER
+    1070016,//Protector: EARTH
+    1070017,//Protector: LIGHT
+    1070018,//Protector: DARK
+    1070019,//Token Collector
+    //1070020,//
+    1070021,//DC 2022 AUG Celebration
+    //1070022,//
+    //1070023,//
+    //1070024,//
+    //1070025,//
+    //1070026,//
+    //1070027,//
+    //1070028,//
+    //1070029,//
+    //1070030,//
+    1071001,//Crusadia Maximus
+    1071002,//Longirsu, the Orcust Orchestrator
+    1071003,//Dream Mirror Phantasms
+    1071004,//Six Samurai United
+    1071005,//Danger! Bigfoot!
+    1071006,//Nephthys, the Sacred Flame
+    1071007,//U.A. Playmaker
+    1071008,//Blackbeard, the Plunder Patroll Captain
+    1071009,//Bujintei Susanowo
+    1071010,//Ally of Justice Catastor
+    1071011,//Mermail Abyssmegalo
+    1071012,//Giant Beetrooper Invincible Atlas
+    1071013,//Revendread Slayer
+    //1071014,//
+    //1071015,//
+    //1072001,//coming soon
+    //1072002,//
+    //1072003,//
+    //1072004,//
+    //1072005,//
+  ],
+  "DECK_CASE": [
+    1080001,//Duelist Card Case Red
+    1080002,//Fusion Purple
+    1080003,//Synchro Silver
+    1080004,//Link Blue
+    1080005,//Re-Contract Universe
+    1080006,//Magician of Pendulum
+    1080007,//Rage of Cipher
+    1080008,//Cybernetic Successor
+    1080009,//Heir to the Shiranui-Style
+    1080010,//Growing Digital Bug
+    1080011,//Roar of the Gladiator Beasts
+    1080012,//Emergence of the Monarchs
+    1080013,//Being Who Sees the End of the World
+    1080014,//Gem-Knights' Resolution
+    1080015,//Dragonmaid-To-Order
+    //1080016,//coming soon
+    //1080017,//coming soon
+    //1080018,//coming soon
+    //1080019,//
+    //1080020,//
+    1082001,//Xyz Black
+    //1082002,//
+    //1082003,//
+    //1082004,//
+    //1082005,//
+  ],
+  "FIELD": [
+    1090001,//Forest
+    1090002,//Spellbook Star Hall
+    1090003,//Ritual Cage
+    1090004,//Geartown
+    1090005,//Volcano
+    1090006,//World Legacy Ruins
+    1090007,//Foreign Capital
+    1090008,//Realm of Danger!
+    1090009,//Night Skyscrapers
+    1090010,//Glacial World
+    1090011,//The Desolate Temple
+    1090012,//Mount Swordsoul
+    1090013,//Vivid Abyssal Waters
+    1090014,//Madolche Chateau
+    //1090015,//
+    //1090016,//
+    //1090017,//
+    1092001,//Colosseum
+  ],
+  "FIELD_OBJ": [
+    1100001,//Forest
+    1100002,//Spellbook Star Hall
+    1100003,//Ritual Cage
+    1100004,//Geartown
+    1100005,//Volcano
+    1100006,//World Legacy Ruins
+    1100007,//Foreign Capital
+    1100008,//Realm of Danger!
+    1100009,//Night Skyscrapers
+    1100010,//Glacial World
+    1100011,//The Desolate Temple
+    1100012,//Mount Swordsoul
+    1100013,//Vivid Abyssal Waters
+    1100014,//Madolche Chateau
+    //1100015,//
+    //1100016,//
+    //1100017,//
+    1101001,//Trap Hole
+    1101002,//Magical Hats
+    1101003,//Summon Limit
+    1101004,//Giant Trap Hole
+    1101005,//TG1-EM1
+    1101006,//Predaplant Chimerafflesia
+    1101007,//Contract with the Abyss
+    1101008,//Loop of Destruction
+    1101009,//Genex Furnace
+    //1101010,//
+    //1101011,//
+    //1101012,//
+    1102001,//Colosseum
+  ],
+  "AVATAR_HOME": [
+    1110001,//Forest
+    1110002,//Spellbook Star Hall
+    1110003,//Ritual Cage
+    1110004,//Geartown
+    1110005,//Volcano
+    1110006,//World Legacy Ruins
+    1110007,//Foreign Capital
+    1110008,//Realm of Danger!
+    1110009,//Night Skyscrapers
+    1110010,//Glacial World
+    1110011,//The Desolate Temple
+    1110012,//Mount Swordsoul
+    1110013,//Vivid Abyssal Waters
+    1110014,//Madolche Chateau
+    //1110015,//
+    //1110016,//
+    //1110017,//
+    1111001,//Destiny Board
+    1111002,//Bug Matrix
+    1111003,//Shien's Dojo
+    1111004,//Flower Gathering
+    1111005,//Dragonic Tactics
+    1111006,//Catapult Turtle
+    1111007,//World Legacy - "World Key"
+    1111008,//Rank-Up-Magic Barian's Force
+    1111009,//Rank-Up-Magic Astral Force
+    //1111010,//
+    //1111011,//
+    //1111012,//
+    //1111013,//
+    //1111014,//
+    //1111015,//
+    1112001,//Colosseum
+  ],
+  "STRUCTURE": [
+    1120001,//Starting Deck
+    1120002,//Power of the Dragon
+    1120003,//Synchro of Unity
+    1120004,//Link Generation
+    1120005,//Re-Contract Universe
+    1120006,//Magician of Pendulum
+    1120007,//Rage of Cipher
+    1120008,//Cybernetic Successor
+    1120009,//Heir to the Shiranui-Style
+    1120010,//Growing Digital Bug
+    1120011,//Roar of the Gladiator Beasts
+    1120012,//Emergence of the Monarchs
+    1120013,//Being Who Sees the End of the World
+    1120014,//Gem-Knights' Resolution
+    1120015,//Dragonmaid-To-Order
+    1120016,//coming soon
+    1120017,//coming soon
+    1120018,//coming soon
+    1120019,//
+    1120020,//
+  ],
+  "WALLPAPER": [
+    1130001,//Blue-Eyes Alternative White Dragon
+    1130002,//El Shaddoll Construct
+    1130003,//Tri-Brigade Shuraig the Ominous Omen
+    1130004,//Dingirsu, the Orcust of the Evening Star
+    1130005,//Sky Striker Ace - Kagari
+    1130006,//Eldlich the Golden Lord
+    1130007,//Mekk-Knight Crusadia Avramax
+    1130008,//Meteonis Drytron
+    1130009,//Palladium Oracle Mahad
+    1130010,//Elemental HERO Honest Neos
+    1130011,//Shooting Quasar Dragon
+    1130012,//Number F0: Utopic Draco Future
+    1130013,//Odd-Eyes Arc Pendulum Dragon
+    1130014,//Accesscode Talker
+    //1130015,//
+    //1130016,//
+    //1130017,//
+    //1130018,//
+    //1130019,//
+    //1130020,//
+  ],
+  "PACK_TICKET": [
+    1140001,//Legacy Pack ticket
+    1140002,//Tournament Pack ticket 1
+    1141001,//Xyz Reward Ticket
+    1141002,//Fusion Reward Ticket
+    1141003,//Synchro Reward Ticket
+    1141004,//Duelist Cup Reward Tickets
+    1141005,//
+    1141006,//
+    1141007,//
+  ],
+  "DECK_LIMIT": [
+    1150001,//Deck Slot
+  ],
+}

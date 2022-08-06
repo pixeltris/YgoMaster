@@ -276,14 +276,14 @@ namespace YgoMaster
 #if !YGO_MASTER_CLIENT
         public void Sanitize(Player player)
         {
-            Box = Sanitize<ItemID.DECK_CASE>(player, Box);
-            Sleeve = Sanitize<ItemID.PROTECTOR>(player, Sleeve);
-            Field = Sanitize<ItemID.FIELD>(player, Field);
-            FieldObj = Sanitize<ItemID.FIELD_OBJ>(player, FieldObj);
-            AvBase = Sanitize<ItemID.AVATAR_HOME>(player, AvBase, true);
+            Box = Sanitize(player, ItemID.Category.DECK_CASE, Box);
+            Sleeve = Sanitize(player, ItemID.Category.PROTECTOR, Sleeve);
+            Field = Sanitize(player, ItemID.Category.FIELD, Field);
+            FieldObj = Sanitize(player, ItemID.Category.FIELD_OBJ, FieldObj);
+            AvBase = Sanitize(player, ItemID.Category.AVATAR_HOME, AvBase, true);
         }
 
-        int Sanitize<T>(Player player, int value, bool allowZeroValue = false)
+        int Sanitize(Player player, ItemID.Category category, int value, bool allowZeroValue = false)
         {
             if (value == 0 && allowZeroValue)
             {
@@ -293,7 +293,7 @@ namespace YgoMaster
             {
                 return value;
             }
-            foreach (int id in Enum.GetValues(typeof(T)))
+            foreach (int id in ItemID.Values[category])
             {
                 if (player.Items.Contains(id))
                 {
@@ -309,10 +309,10 @@ namespace YgoMaster
         /// </summary>
         public void SetDefault()
         {
-            Box = (int)ItemID.DECK_CASE.ID1080001;
-            Sleeve = (int)ItemID.PROTECTOR.ID1070001;
-            Field = (int)ItemID.FIELD.ID1090001;
-            FieldObj = (int)ItemID.FIELD_OBJ.ID1100001;
+            Box = (int)ItemID.Value.DefaultDeckCase;
+            Sleeve = (int)ItemID.Value.DefaultProtector;
+            Field = (int)ItemID.Value.DefaultField;
+            FieldObj = (int)ItemID.Value.DefaultFieldObj;
             AvBase = 0;
         }
     }

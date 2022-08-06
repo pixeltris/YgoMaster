@@ -107,7 +107,7 @@ namespace YgoMaster
                 {
                     if (!request.Player.Items.Contains(value) && !UnlockAllItems)
                     {
-                        foreach (int id in Enum.GetValues(typeof(ItemID.DECK_CASE)))
+                        foreach (int id in ItemID.Values[ItemID.Category.DECK_CASE])
                         {
                             if (request.Player.Items.Contains(id))
                             {

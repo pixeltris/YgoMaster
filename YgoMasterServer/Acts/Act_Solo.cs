@@ -339,44 +339,44 @@ namespace YgoMaster
                                                 switch (category)
                                                 {
                                                     case ItemID.Category.CONSUME:
-                                                        switch ((ItemID.CONSUME)itemId)
+                                                        switch ((ItemID.Value)itemId)
                                                         {
-                                                            case ItemID.CONSUME.ID0001:
-                                                            case ItemID.CONSUME.ID0002:
+                                                            case ItemID.Value.Gem:
+                                                            case ItemID.Value.GemAlt:
                                                                 hasItem = request.Player.Gems >= count;
                                                                 break;
-                                                            case ItemID.CONSUME.ID0003:
-                                                            case ItemID.CONSUME.ID0004:
-                                                            case ItemID.CONSUME.ID0005:
-                                                            case ItemID.CONSUME.ID0006:
+                                                            case ItemID.Value.CpN:
+                                                            case ItemID.Value.CpR:
+                                                            case ItemID.Value.CpSR:
+                                                            case ItemID.Value.CpUR:
                                                                 {
                                                                     CardRarity rarity = CardRarity.None;
-                                                                    switch ((ItemID.CONSUME)itemId)
+                                                                    switch ((ItemID.Value)itemId)
                                                                     {
-                                                                        case ItemID.CONSUME.ID0003: rarity = CardRarity.Normal; break;
-                                                                        case ItemID.CONSUME.ID0004: rarity = CardRarity.Rare; break;
-                                                                        case ItemID.CONSUME.ID0005: rarity = CardRarity.SuperRare; break;
-                                                                        case ItemID.CONSUME.ID0006: rarity = CardRarity.UltraRare; break;
+                                                                        case ItemID.Value.CpN: rarity = CardRarity.Normal; break;
+                                                                        case ItemID.Value.CpR: rarity = CardRarity.Rare; break;
+                                                                        case ItemID.Value.CpSR: rarity = CardRarity.SuperRare; break;
+                                                                        case ItemID.Value.CpUR: rarity = CardRarity.UltraRare; break;
                                                                     }
                                                                     hasItem = request.Player.CraftPoints.CanSubtract(rarity, count);
                                                                 }
                                                                 break;
-                                                            case ItemID.CONSUME.ID0008:
-                                                            case ItemID.CONSUME.ID0009:
-                                                            case ItemID.CONSUME.ID0010:
-                                                            case ItemID.CONSUME.ID0011:
-                                                            case ItemID.CONSUME.ID0012:
-                                                            case ItemID.CONSUME.ID0013:
+                                                            case ItemID.Value.OrbDark:
+                                                            case ItemID.Value.OrbLight:
+                                                            case ItemID.Value.OrbEarth:
+                                                            case ItemID.Value.OrbWater:
+                                                            case ItemID.Value.OrbFire:
+                                                            case ItemID.Value.OrbWind:
                                                                 {
                                                                     OrbType orbType = OrbType.None;
-                                                                    switch ((ItemID.CONSUME)itemId)
+                                                                    switch ((ItemID.Value)itemId)
                                                                     {
-                                                                        case ItemID.CONSUME.ID0008: orbType = OrbType.Dark; break;
-                                                                        case ItemID.CONSUME.ID0009: orbType = OrbType.Light; break;
-                                                                        case ItemID.CONSUME.ID0010: orbType = OrbType.Earth; break;
-                                                                        case ItemID.CONSUME.ID0011: orbType = OrbType.Water; break;
-                                                                        case ItemID.CONSUME.ID0012: orbType = OrbType.Fire; break;
-                                                                        case ItemID.CONSUME.ID0013: orbType = OrbType.Wind; break;
+                                                                        case ItemID.Value.OrbDark: orbType = OrbType.Dark; break;
+                                                                        case ItemID.Value.OrbLight: orbType = OrbType.Light; break;
+                                                                        case ItemID.Value.OrbEarth: orbType = OrbType.Earth; break;
+                                                                        case ItemID.Value.OrbWater: orbType = OrbType.Water; break;
+                                                                        case ItemID.Value.OrbFire: orbType = OrbType.Fire; break;
+                                                                        case ItemID.Value.OrbWind: orbType = OrbType.Wind; break;
                                                                     }
                                                                     hasItem = request.Player.OrbPoints.CanSubtract(orbType, count);
                                                                 }
@@ -450,24 +450,24 @@ namespace YgoMaster
                                                 switch (category)
                                                 {
                                                     case ItemID.Category.CONSUME:
-                                                        switch ((ItemID.CONSUME)itemId)
+                                                        switch ((ItemID.Value)itemId)
                                                         {
-                                                            case ItemID.CONSUME.ID0001:
-                                                            case ItemID.CONSUME.ID0002:
+                                                            case ItemID.Value.Gem:
+                                                            case ItemID.Value.GemAlt:
                                                                 request.Player.Gems = Math.Max(0, request.Player.Gems - count);
                                                                 break;
-                                                            case ItemID.CONSUME.ID0003:
-                                                            case ItemID.CONSUME.ID0004:
-                                                            case ItemID.CONSUME.ID0005:
-                                                            case ItemID.CONSUME.ID0006:
+                                                            case ItemID.Value.CpN:
+                                                            case ItemID.Value.CpR:
+                                                            case ItemID.Value.CpSR:
+                                                            case ItemID.Value.CpUR:
                                                                 {
                                                                     CardRarity rarity = CardRarity.None;
-                                                                    switch ((ItemID.CONSUME)itemId)
+                                                                    switch ((ItemID.Value)itemId)
                                                                     {
-                                                                        case ItemID.CONSUME.ID0003: rarity = CardRarity.Normal; break;
-                                                                        case ItemID.CONSUME.ID0004: rarity = CardRarity.Rare; break;
-                                                                        case ItemID.CONSUME.ID0005: rarity = CardRarity.SuperRare; break;
-                                                                        case ItemID.CONSUME.ID0006: rarity = CardRarity.UltraRare; break;
+                                                                        case ItemID.Value.CpN: rarity = CardRarity.Normal; break;
+                                                                        case ItemID.Value.CpR: rarity = CardRarity.Rare; break;
+                                                                        case ItemID.Value.CpSR: rarity = CardRarity.SuperRare; break;
+                                                                        case ItemID.Value.CpUR: rarity = CardRarity.UltraRare; break;
                                                                     }
                                                                     if (request.Player.CraftPoints.CanSubtract(rarity, count))
                                                                     {
@@ -479,22 +479,22 @@ namespace YgoMaster
                                                                     }
                                                                 }
                                                                 break;
-                                                            case ItemID.CONSUME.ID0008:
-                                                            case ItemID.CONSUME.ID0009:
-                                                            case ItemID.CONSUME.ID0010:
-                                                            case ItemID.CONSUME.ID0011:
-                                                            case ItemID.CONSUME.ID0012:
-                                                            case ItemID.CONSUME.ID0013:
+                                                            case ItemID.Value.OrbDark:
+                                                            case ItemID.Value.OrbLight:
+                                                            case ItemID.Value.OrbEarth:
+                                                            case ItemID.Value.OrbWater:
+                                                            case ItemID.Value.OrbFire:
+                                                            case ItemID.Value.OrbWind:
                                                                 {
                                                                     OrbType orbType = OrbType.None;
-                                                                    switch ((ItemID.CONSUME)itemId)
+                                                                    switch ((ItemID.Value)itemId)
                                                                     {
-                                                                        case ItemID.CONSUME.ID0008: orbType = OrbType.Dark; break;
-                                                                        case ItemID.CONSUME.ID0009: orbType = OrbType.Light; break;
-                                                                        case ItemID.CONSUME.ID0010: orbType = OrbType.Earth; break;
-                                                                        case ItemID.CONSUME.ID0011: orbType = OrbType.Water; break;
-                                                                        case ItemID.CONSUME.ID0012: orbType = OrbType.Fire; break;
-                                                                        case ItemID.CONSUME.ID0013: orbType = OrbType.Wind; break;
+                                                                        case ItemID.Value.OrbDark: orbType = OrbType.Dark; break;
+                                                                        case ItemID.Value.OrbLight: orbType = OrbType.Light; break;
+                                                                        case ItemID.Value.OrbEarth: orbType = OrbType.Earth; break;
+                                                                        case ItemID.Value.OrbWater: orbType = OrbType.Water; break;
+                                                                        case ItemID.Value.OrbFire: orbType = OrbType.Fire; break;
+                                                                        case ItemID.Value.OrbWind: orbType = OrbType.Wind; break;
                                                                     }
                                                                     if (request.Player.OrbPoints.CanSubtract(orbType, count))
                                                                     {

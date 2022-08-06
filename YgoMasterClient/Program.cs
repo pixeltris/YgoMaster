@@ -99,6 +99,7 @@ namespace YgoMasterClient
                 DataDir = YgoMaster.Utils.GetDataDirectory(false, CurrentDir);
                 ClientDataDir = Path.Combine(DataDir, "ClientData");
                 ClientDataDumpDir = Path.Combine(DataDir, "ClientDataDump");
+                YgoMaster.ItemID.Load(DataDir);
                 YgoMaster.YdkHelper.LoadIdMap(DataDir);
 
                 if (!ClientSettings.Load())
@@ -216,7 +217,41 @@ namespace YgoMasterClient
                                         string[] splitted = consoleInput.Split();
                                         switch (splitted[0].ToLower())
                                         {
-                                            case "itemid":// Creates enums for values in IDS_ITEM (all item ids)
+                                            case "itemid":// Creates json for values in IDS_ITEM (all item ids)
+                                                {
+                                                    Dictionary<YgomGame.Utility.ItemUtil.Category, List<string>> categories = new Dictionary<YgomGame.Utility.ItemUtil.Category, List<string>>();
+                                                    IL2Class classInfo = classInfo = Assembler.GetAssembly("Assembly-CSharp").GetClass("IDS_ITEM", "YgomGame.TextIDs");
+                                                    IL2Field[] fields = classInfo.GetFields();
+                                                    foreach (IL2Field field in fields)
+                                                    {
+                                                        string fieldName = field.Name;
+                                                        int id;
+                                                        if (fieldName.StartsWith("ID") && int.TryParse(fieldName.Substring(2), out id))
+                                                        {
+                                                            string name = YgomGame.Utility.ItemUtil.GetItemName(id);
+                                                            YgomGame.Utility.ItemUtil.Category cat = YgomGame.Utility.ItemUtil.GetCategoryFromID(id);
+                                                            if (!categories.ContainsKey(cat))
+                                                            {
+                                                                categories[cat] = new List<string>();
+                                                            }
+                                                            string prefix = "    " + (name == "deleted" ? "//" : "");
+                                                            categories[cat].Add(prefix + id + ",//" + name);
+                                                        }
+                                                    }
+                                                    StringBuilder res = new StringBuilder();
+                                                    res.AppendLine("{");
+                                                    foreach (KeyValuePair<YgomGame.Utility.ItemUtil.Category, List<string>> cat in categories)
+                                                    {
+                                                        res.AppendLine("  \"" + cat.Key + "\": [");
+                                                        res.AppendLine(string.Join(Environment.NewLine, cat.Value));
+                                                        res.AppendLine("  ],");
+                                                    }
+                                                    res.AppendLine("}");
+                                                    File.WriteAllText("ItemID.json", res.ToString());
+                                                    Console.WriteLine("Done");
+                                                }
+                                                break;
+                                            case "itemid-enum":// Creates enums for values in IDS_ITEM (all item ids)
                                                 {
                                                     Dictionary<YgomGame.Utility.ItemUtil.Category, List<string>> categories = new Dictionary<YgomGame.Utility.ItemUtil.Category, List<string>>();
                                                     IL2Class classInfo = classInfo = Assembler.GetAssembly("Assembly-CSharp").GetClass("IDS_ITEM", "YgomGame.TextIDs");
@@ -246,7 +281,7 @@ namespace YgoMasterClient
                                                         res.AppendLine(string.Join(Environment.NewLine, cat.Value));
                                                         res.AppendLine("}");
                                                     }
-                                                    File.WriteAllText("dump-itemid.txt", res.ToString());
+                                                    File.WriteAllText("dump-itemid-enum.txt", res.ToString());
                                                     Console.WriteLine("Done");
                                                 }
                                                 break;
@@ -524,6 +559,7 @@ namespace YgoMasterClient
                                                     allEnums["SoloDeckType"] = assembly.GetClass("SoloModeUtil", "YgomGame.Solo").GetNestedType("DeckType");
                                                     allEnums["HowToObtainCard"] = null;
                                                     allEnums["DuelResultScore"] = null;
+                                                    allEnums["Category"] = assembly.GetClass("ItemUtil", "YgomGame.Utility").GetNestedType("Category");
                                                     allEnums["Duel.cs"] = null;
                                                     allEnums["DuelResultType"] = engineClass.GetNestedType("ResultType");
                                                     allEnums["DuelCpuParam"] = engineClass.GetNestedType("CpuParam");
@@ -1283,16 +1319,12 @@ namespace Steamworks
         static IL2Method methodInit;
         static IL2Method methodShutdown;
         static IL2Method methodRestartAppIfNecessary;
-        static IL2Method methodReleaseCurrentThreadMemory;
         static IL2Method methodRunCallbacks;
-        static IL2Method methodIsSteamRunning;
 
         delegate bool Del_Init();
         delegate void Del_Shutdown();
         delegate bool Del_RestartAppIfNecessary(IntPtr unOwnAppID);
-        delegate void Del_ReleaseCurrentThreadMemory();
         delegate void Del_RunCallbacks();
-        delegate bool Del_IsSteamRunning();
 
         static Hook<Del_Init> hookInit;
         static Hook<Del_Shutdown> hookShutdown;

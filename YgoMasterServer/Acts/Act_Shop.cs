@@ -358,7 +358,7 @@ namespace YgoMaster
                                 {
                                     success = true;
                                     request.Player.Gems -= price.Price;
-                                    WriteItem(request, (int)ItemID.CONSUME.ID0001);
+                                    WriteItem(request, (int)ItemID.Value.Gem);
                                     GiveStructureDeck(request, shopItem.Id);
                                     request.Response["Shop"] = new Dictionary<string, object>()
                                     {
@@ -383,7 +383,7 @@ namespace YgoMaster
                                 request.Player.Items.Add(shopItem.Id);
                                 Dictionary<string, object> have = new Dictionary<string, object>();
                                 have[shopItem.Id.ToString()] = 1;
-                                have[((int)ItemID.CONSUME.ID0001).ToString()] = request.Player.Gems;
+                                have[((int)ItemID.Value.Gem).ToString()] = request.Player.Gems;
                                 foreach (int fieldPartItemId in ItemID.GetDuelFieldParts(shopItem.Id))
                                 {
                                     request.Player.Items.Add(fieldPartItemId);
@@ -850,7 +850,7 @@ namespace YgoMaster
                 request.Response["Item"] = new Dictionary<string, object>()
                 {
                     { "have", new Dictionary<string, object>() {
-                        { ((int)ItemID.CONSUME.ID0001).ToString(), request.Player.Gems },
+                        { ((int)ItemID.Value.Gem).ToString(), request.Player.Gems },
                     }}
                 };
                 HashSet<int> shopIdsToUpdate = new HashSet<int>();

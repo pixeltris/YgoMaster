@@ -101,22 +101,22 @@ namespace YgoMaster
             switch (category)
             {
                 case ItemID.Category.CONSUME:
-                    switch ((ItemID.CONSUME)itemId)
+                    switch ((ItemID.Value)itemId)
                     {
-                        case ItemID.CONSUME.ID0001:
-                        case ItemID.CONSUME.ID0002:
+                        case ItemID.Value.Gem:
+                        case ItemID.Value.GemAlt:
                             Gems += amount;
                             break;
-                        case ItemID.CONSUME.ID0003: CraftPoints.Add(CardRarity.Normal, amount); break;
-                        case ItemID.CONSUME.ID0004: CraftPoints.Add(CardRarity.Rare, amount); break;
-                        case ItemID.CONSUME.ID0005: CraftPoints.Add(CardRarity.SuperRare, amount); break;
-                        case ItemID.CONSUME.ID0006: CraftPoints.Add(CardRarity.UltraRare, amount); break;
-                        case ItemID.CONSUME.ID0008: OrbPoints.Add(OrbType.Dark, amount); break;
-                        case ItemID.CONSUME.ID0009: OrbPoints.Add(OrbType.Light, amount); break;
-                        case ItemID.CONSUME.ID0010: OrbPoints.Add(OrbType.Earth, amount); break;
-                        case ItemID.CONSUME.ID0011: OrbPoints.Add(OrbType.Water, amount); break;
-                        case ItemID.CONSUME.ID0012: OrbPoints.Add(OrbType.Fire, amount); break;
-                        case ItemID.CONSUME.ID0013: OrbPoints.Add(OrbType.Wind, amount); break;
+                        case ItemID.Value.CpN: CraftPoints.Add(CardRarity.Normal, amount); break;
+                        case ItemID.Value.CpR: CraftPoints.Add(CardRarity.Rare, amount); break;
+                        case ItemID.Value.CpSR: CraftPoints.Add(CardRarity.SuperRare, amount); break;
+                        case ItemID.Value.CpUR: CraftPoints.Add(CardRarity.UltraRare, amount); break;
+                        case ItemID.Value.OrbDark: OrbPoints.Add(OrbType.Dark, amount); break;
+                        case ItemID.Value.OrbLight: OrbPoints.Add(OrbType.Light, amount); break;
+                        case ItemID.Value.OrbEarth: OrbPoints.Add(OrbType.Earth, amount); break;
+                        case ItemID.Value.OrbWater: OrbPoints.Add(OrbType.Water, amount); break;
+                        case ItemID.Value.OrbFire: OrbPoints.Add(OrbType.Fire, amount); break;
+                        case ItemID.Value.OrbWind: OrbPoints.Add(OrbType.Wind, amount); break;
                     }
                     break;
                 case ItemID.Category.STRUCTURE:
@@ -136,10 +136,10 @@ namespace YgoMaster
         public PlayerCraftPoints()
         {
             Limit = 2000000000;
-            AddId(ItemID.CONSUME.ID0003, CardRarity.Normal);
-            AddId(ItemID.CONSUME.ID0004, CardRarity.Rare);
-            AddId(ItemID.CONSUME.ID0005, CardRarity.SuperRare);
-            AddId(ItemID.CONSUME.ID0006, CardRarity.UltraRare);
+            AddId(ItemID.Value.CpN, CardRarity.Normal);
+            AddId(ItemID.Value.CpR, CardRarity.Rare);
+            AddId(ItemID.Value.CpSR, CardRarity.SuperRare);
+            AddId(ItemID.Value.CpUR, CardRarity.UltraRare);
         }
     }
 
@@ -148,22 +148,22 @@ namespace YgoMaster
         public PlayerOrbPoints()
         {
             Limit = 2000000000;
-            AddId(ItemID.CONSUME.ID0008, OrbType.Dark);
-            AddId(ItemID.CONSUME.ID0009, OrbType.Light);
-            AddId(ItemID.CONSUME.ID0010, OrbType.Earth);
-            AddId(ItemID.CONSUME.ID0011, OrbType.Water);
-            AddId(ItemID.CONSUME.ID0012, OrbType.Fire);
-            AddId(ItemID.CONSUME.ID0013, OrbType.Wind);
+            AddId(ItemID.Value.OrbDark, OrbType.Dark);
+            AddId(ItemID.Value.OrbLight, OrbType.Light);
+            AddId(ItemID.Value.OrbEarth, OrbType.Earth);
+            AddId(ItemID.Value.OrbWater, OrbType.Water);
+            AddId(ItemID.Value.OrbFire, OrbType.Fire);
+            AddId(ItemID.Value.OrbWind, OrbType.Wind);
         }
     }
 
     class PlayerPoints<T>
     {
         Dictionary<T, int> points = new Dictionary<T, int>();
-        Dictionary<ItemID.CONSUME, T> idmap = new Dictionary<ItemID.CONSUME, T>();
+        Dictionary<ItemID.Value, T> idmap = new Dictionary<ItemID.Value, T>();
         public int Limit { get; protected set; }
 
-        protected void AddId(ItemID.CONSUME id, T tid)
+        protected void AddId(ItemID.Value id, T tid)
         {
             points[tid] = 0;
             idmap[id] = tid;
@@ -229,7 +229,7 @@ namespace YgoMaster
 
         public void ToDictionary(Dictionary<string, object> data)
         {
-            foreach (KeyValuePair<ItemID.CONSUME, T> id in idmap)
+            foreach (KeyValuePair<ItemID.Value, T> id in idmap)
             {
                 data[((int)id.Key).ToString()] = points[id.Value];
             }
@@ -252,7 +252,7 @@ namespace YgoMaster
             {
                 int id;
                 T tid;
-                if (int.TryParse(item.Key, out id) && idmap.TryGetValue((ItemID.CONSUME)id, out tid))
+                if (int.TryParse(item.Key, out id) && idmap.TryGetValue((ItemID.Value)id, out tid))
                 {
                     points[tid] = (int)Convert.ChangeType(item.Value, typeof(int));
                 }

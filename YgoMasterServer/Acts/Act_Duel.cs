@@ -271,13 +271,13 @@ namespace YgoMaster
                                     continue;
                                 }
                                 request.Player.Gems += amount;
-                                WriteItem(request, (int)ItemID.CONSUME.ID0001);
+                                WriteItem(request, (int)ItemID.Value.Gem);
                                 duelScoreTotal += duelScoreRewardValue;
                                 duelRewards.Add(new Dictionary<string, object>()
                                 {
                                     { "type", reward.Rare ? goldBox : blueBox },
                                     { "category", (int)ItemID.Category.CONSUME },
-                                    { "item_id", (int)ItemID.CONSUME.ID0001 },
+                                    { "item_id", (int)ItemID.Value.Gem },
                                     { "num", amount },
                                     { "is_prize", true },
                                 });
@@ -303,21 +303,21 @@ namespace YgoMaster
                                 else
                                 {
                                     // Also see LoadPlayer which does the same thing (loads all items)
-                                    Type[] enumTypes =
+                                    ItemID.Category[] categories =
                                     {
-                                        typeof(ItemID.AVATAR),
-                                        typeof(ItemID.ICON),
-                                        typeof(ItemID.ICON_FRAME),
-                                        typeof(ItemID.PROTECTOR),
-                                        typeof(ItemID.DECK_CASE),
-                                        typeof(ItemID.FIELD),
-                                        typeof(ItemID.FIELD_OBJ),
-                                        typeof(ItemID.AVATAR_HOME),
-                                        typeof(ItemID.WALLPAPER),
+                                        ItemID.Category.AVATAR,
+                                        ItemID.Category.ICON,
+                                        ItemID.Category.ICON_FRAME,
+                                        ItemID.Category.PROTECTOR,
+                                        ItemID.Category.DECK_CASE,
+                                        ItemID.Category.FIELD,
+                                        ItemID.Category.FIELD_OBJ,
+                                        ItemID.Category.AVATAR_HOME,
+                                        ItemID.Category.WALLPAPER,
                                     };
-                                    foreach (Type enumType in enumTypes)
+                                    foreach (ItemID.Category category in categories)
                                     {
-                                        foreach (int id in Enum.GetValues(enumType))
+                                        foreach (int id in ItemID.Values[category])
                                         {
                                             if (!request.Player.Items.Contains(id))
                                             {

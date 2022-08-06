@@ -28,7 +28,7 @@ An alternative to the above is running `YgoMasterClient.exe live` using your fav
 ### Additional info
 
 - When successfully injected `(modded)` is appended to the window title of the game.
-- Data files are required so do not delete `/Build/Data/`.
+- Data files are required so do not delete `/Data/`.
 - The mentioned features operate in the same way as the offline version (unless otherwise specified).
 
 ## Breaking deck editor limits
