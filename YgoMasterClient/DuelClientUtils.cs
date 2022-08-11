@@ -359,7 +359,8 @@ namespace YgomGame.Duel
         }
     }
 
-    unsafe static class RunEffectWorker
+    // NOTE: This will completely break anything involving chains. TODO: Find the actual animation runner
+    /*unsafe static class RunEffectWorker
     {
         delegate void Del_Run(IntPtr thisPtr, int param1, int param2, int param3);
         static Hook<Del_Run> hookChainRun;
@@ -392,7 +393,7 @@ namespace YgomGame.Duel
             {
                 return;
             }
-            hookChainRun.Original(thisPtr, param1, param2, param3);
+            hookChainStep.Original(thisPtr, param1, param2, param3);
         }
 
         static void ChainSet(IntPtr thisPtr, int param1, int param2, int param3)
@@ -401,7 +402,7 @@ namespace YgomGame.Duel
             {
                 return;
             }
-            hookChainRun.Original(thisPtr, param1, param2, param3);
+            hookChainSet.Original(thisPtr, param1, param2, param3);
         }
 
         static void ChainEnd(IntPtr thisPtr, int param1, int param2, int param3)
@@ -410,7 +411,7 @@ namespace YgomGame.Duel
             {
                 return;
             }
-            hookChainRun.Original(thisPtr, param1, param2, param3);
+            hookChainEnd.Original(thisPtr, param1, param2, param3);
         }
-    }
+    }*/
 }
