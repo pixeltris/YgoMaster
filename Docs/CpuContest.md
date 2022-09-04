@@ -14,7 +14,7 @@ Create `/Data/CpuContest/ContestSettings.json` with the following settings:
 
 - Create `/Data/CpuContest/Decks` and copy all of the decks you want to rank into the folder.
 - In `ClientSettings.json` set `ShowConsole` to `true` and run the client.
-- In the client console run `carddata` which should create `/Data/ClientDataDump/Card/Data/`, move and rename the `Data` folder to `/Data/CardData/`.
+- In the client console run `carddata` which should create `/Data/ClientDataDump/Card/Data/{CLIENT_VERSION}/`, move and rename the `{CLIENT_VERSION}` folder to `/Data/CardData/`.
 - Run `YgoMaster --cpucontest`.
 
 This will take some hours to complete depending on how many decks you run. You should be able to close YgoMaster at any time and resume at a later date. At the end of it it'll produce `DecksByRating` which will copy the files from `Decks` and prefix the deck rating. Inside `DeckStats` it shows the individual wins / losses for each deck. And `Results.json` it'll list the decks and their ratings.

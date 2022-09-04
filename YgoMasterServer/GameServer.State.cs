@@ -1549,8 +1549,8 @@ namespace YgoMaster
             Dictionary<int, Dictionary<string, object>> structureShop = new Dictionary<int, Dictionary<string, object>>();
             Dictionary<int, Dictionary<string, object>> accessoryShop = new Dictionary<int, Dictionary<string, object>>();
             Dictionary<int, Dictionary<string, object>> specialShop = new Dictionary<int, Dictionary<string, object>>();
-            List<Dictionary<string, object>> gachaDatas = new List<Dictionary<string, object>>();
-            foreach (string file in Directory.GetFiles(dir))
+            Dictionary<int, List<int>> extraCardLists = new Dictionary<int, List<int>>();
+            foreach (string file in Directory.GetFiles(dir).OrderBy(x => new FileInfo(x).LastWriteTime))
             {
                 Dictionary<string, object> data = MiniJSON.Json.DeserializeStripped(File.ReadAllText(file)) as Dictionary<string, object>;
                 data = Utils.GetResData(data);
@@ -1572,6 +1572,29 @@ namespace YgoMaster
                                         {
                                             shop[shopId] = itemData;
                                         }
+                                        Dictionary<string, object> gachaData = Utils.GetValue(data, "Gacha", default(Dictionary<string, object>));
+                                        if (gachaData != null)
+                                        {
+                                            Dictionary<string, object> cardListData = Utils.GetValue(gachaData, "cardList", default(Dictionary<string, object>));
+                                            if (cardListData != null)
+                                            {
+                                                int normalCardListId = Utils.GetValue<int>(itemData, "normalCardListId");
+                                                int pickupCardListId = Utils.GetValue<int>(itemData, "pickupCardListId");
+                                                object cardIdsObj = null;
+                                                if (pickupCardListId != 0)
+                                                {
+                                                    Utils.TryGetValue(cardListData, pickupCardListId.ToString(), out cardIdsObj);
+                                                }
+                                                else if (normalCardListId != 0)
+                                                {
+                                                    Utils.TryGetValue(cardListData, normalCardListId.ToString(), out cardIdsObj);
+                                                }
+                                                if (cardIdsObj != null)
+                                                {
+                                                    itemData["cardList"] = cardIdsObj;
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             };
@@ -1580,36 +1603,66 @@ namespace YgoMaster
                         fetchShop("AccessoryShop", accessoryShop);
                         fetchShop("SpecialShop", specialShop);
                     }
-                    Dictionary<string, object> gachaData = Utils.GetValue(data, "Gacha", default(Dictionary<string, object>));
-                    if (gachaData != null)
+                    else if (file.Contains("Gacha-"))
                     {
-                        gachaDatas.Add(gachaData);
+                        string[] splitted = file.Split('-', '.');
+                        int shopId;
+                        if (int.TryParse(splitted[splitted.Length - 2], out shopId))
+                        {
+                            Dictionary<string, object> gachaData = Utils.GetValue(data, "Gacha", default(Dictionary<string, object>));
+                            if (gachaData != null)
+                            {
+                                Dictionary<string, object> cardListData = Utils.GetValue(gachaData, "cardList", default(Dictionary<string, object>));
+                                if (cardListData != null)
+                                {
+                                    if (cardListData.Count > 1)
+                                    {
+                                        Console.WriteLine("Unexpected gacha count of " + cardListData.Count + " for shop " + shopId);
+                                    }
+                                    else
+                                    {
+                                        extraCardLists[shopId] = Utils.GetIntList(cardListData, cardListData.First().Key);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
-            foreach (Dictionary<string, object> gachaData in gachaDatas)
+            foreach (KeyValuePair<int, List<int>> cardList in extraCardLists)
             {
-                Dictionary<string, object> cardListData = Utils.GetValue(gachaData, "cardList", default(Dictionary<string, object>));
-                if (cardListData != null)
+                packShop[cardList.Key]["cardList"] = cardList.Value;
+            }
+            // NOTE:
+            // We re-assign the card list ids to their shop ids.
+            // On the real server each card list has its own id which is seperate from the shop id.
+            // It makes sense for card lists to be seperate in cases like bonus packs where each bonus pack
+            // is the same. Though the legacy pack is essentially the "main" / "master" bonus pack
+            foreach (KeyValuePair<int, Dictionary<string, object>> packShopItem in new Dictionary<int, Dictionary<string, object>>(packShop))
+            {
+                int normalCardListId = Utils.GetValue<int>(packShopItem.Value, "normalCardListId");
+                int pickupCardListId = Utils.GetValue<int>(packShopItem.Value, "pickupCardListId");
+                if (normalCardListId > 0 && normalCardListId < 20000)
                 {
-                    foreach (KeyValuePair<int, Dictionary<string, object>> packShopItem in packShop)
-                    {
-                        int normalCardListId = Utils.GetValue<int>(packShopItem.Value, "normalCardListId");
-                        int pickupCardListId = Utils.GetValue<int>(packShopItem.Value, "pickupCardListId");
-                        object cardIdsObj = null;
-                        if (pickupCardListId != 0)
-                        {
-                            Utils.TryGetValue(cardListData, pickupCardListId.ToString(), out cardIdsObj);
-                        }
-                        else if (normalCardListId != 0)
-                        {
-                            Utils.TryGetValue(cardListData, normalCardListId.ToString(), out cardIdsObj);
-                        }
-                        if (cardIdsObj != null)
-                        {
-                            packShopItem.Value["cardList"] = cardIdsObj;
-                        }
-                    }
+                    // This should always be trying to point to the master pack
+                    packShopItem.Value["normalCardListId"] = 10000001;
+                }
+                else if (normalCardListId > 0)
+                {
+                    packShopItem.Value["normalCardListId"] = packShopItem.Key;
+                }
+                if (pickupCardListId > 0 && pickupCardListId < 20000)
+                {
+                    Console.WriteLine("Unexpected pickup id " + pickupCardListId);
+                }
+                else if (pickupCardListId > 0)
+                {
+                    packShopItem.Value["pickupCardListId"] = packShopItem.Key;
+                }
+                if (!packShopItem.Value.ContainsKey("cardList"))
+                {
+                    Utils.LogWarning("No card list for shop " + packShopItem.Key);
+                    packShop.Remove(packShopItem.Key);
                 }
             }
             MergeShops(Path.Combine(dataDirectory, "AllShopsMerged.json"), packShop, structureShop, accessoryShop, specialShop);

@@ -134,7 +134,7 @@
                 "clear_chapter": 190109
               },
               "20": {
-                "priority": 36,
+                "priority": 42,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
@@ -183,7 +183,7 @@
                 "clear_chapter": 280226
               },
               "29": {
-                "priority": 37,
+                "priority": 43,
                 "parent_gate": 0,
                 "unlock_id": 13,
                 "view_gate": 5,
@@ -202,6 +202,13 @@
                 "unlock_id": 1,
                 "view_gate": 1,
                 "clear_chapter": 300247
+              },
+              "32": {
+                "priority": 29,
+                "parent_gate": 0,
+                "unlock_id": 11,
+                "view_gate": 5,
+                "clear_chapter": 320259
               },
               "36": {
                 "priority": 28,
@@ -2334,6 +2341,80 @@
                   "npc_id": 3021
                 }
               },
+              "32": {
+                "320255": {
+                  "parent_chapter": 0,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1103,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00320255",
+                  "npc_id": 0
+                },
+                "320256": {
+                  "parent_chapter": 320255,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1203,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00320256",
+                  "npc_id": 0
+                },
+                "320257": {
+                  "parent_chapter": 320256,
+                  "difficulty": 1,
+                  "mydeck_set_id": 0,
+                  "set_id": 1103,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1109
+                },
+                "320258": {
+                  "parent_chapter": 320257,
+                  "difficulty": 3,
+                  "mydeck_set_id": 8493,
+                  "set_id": 9798,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1109
+                },
+                "320259": {
+                  "parent_chapter": 320258,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1103,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00320259",
+                  "npc_id": 0
+                },
+                "320260": {
+                  "parent_chapter": 320258,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 0,
+                  "unlock_id": 12014,
+                  "begin_sn": "",
+                  "npc_id": 0
+                },
+                "320261": {
+                  "parent_chapter": 320260,
+                  "difficulty": 4,
+                  "mydeck_set_id": 1140102,
+                  "set_id": 1071008,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1110
+                },
+                "320262": {
+                  "parent_chapter": 320261,
+                  "difficulty": 5,
+                  "mydeck_set_id": 104,
+                  "set_id": 1012031,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1111
+                }
+              },
               "36": {
                 "360287": {
                   "parent_chapter": 0,
@@ -3316,6 +3397,11 @@
                   "8": 250
                 }
               },
+              "899": {
+                "1": {
+                  "8": 1
+                }
+              },
               "901": {
                 "1": {
                   "9": 50
@@ -3994,6 +4080,11 @@
               "10584": {
                 "2": {
                   "10584": 3
+                }
+              },
+              "11053": {
+                "2": {
+                  "11053": 3
                 }
               },
               "7540": {

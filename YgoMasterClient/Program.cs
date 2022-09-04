@@ -898,7 +898,8 @@ namespace YgomGame.Utility
             AVATAR_HOME,
             STRUCTURE,
             WALLPAPER,
-            PACK_TICKET
+            PACK_TICKET,
+            DECK_LIMIT
         }
     }
 }

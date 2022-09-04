@@ -16,7 +16,7 @@
 
 ## YdkIds.txt
 
-- In the client console run `carddata` which will create `/Data/ClientDataDump/Card/Data/`, move and rename the `Data` folder to `/Data/CardData/`. You must do this while using the `English` language setting.
+- In the client console run `carddata` which should create `/Data/ClientDataDump/Card/Data/{CLIENT_VERSION}/`, move and rename the `{CLIENT_VERSION}` folder to `/Data/CardData/`. You must do this while using the `English` language setting.
 - Run `--updateydk` to update `YdkIds.txt`.
 
 ## Solo
