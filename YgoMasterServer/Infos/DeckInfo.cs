@@ -70,6 +70,12 @@ namespace YgoMaster
             }
             return true;
         }
+
+        public bool IsEmpty()
+        {
+            return this.GetAllCards().Count == 0;
+        }
+
 #endif
 
         public List<int> GetAllCards(bool main = true, bool extra = true, bool side = false, bool tray = false)

@@ -24,6 +24,7 @@ namespace YgoMaster
         public int OpponentPartnerType;
 
         // Use the same names as in the packet (using reflection here to reduce the amount of manual work)
+        public bool MustBeValidRandom;
         public uint RandSeed;
         public int FirstPlayer;
         public bool noshuffle;

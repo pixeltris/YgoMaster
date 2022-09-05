@@ -646,7 +646,7 @@ namespace YgomGame.Room
                 public IntPtr FieldPart2; public IntPtr Mate1; public IntPtr Mate2; public IntPtr MateBase1; public IntPtr MateBase2;
                 public IntPtr Icon1; public IntPtr Icon2; public IntPtr IconFrame1; public IntPtr IconFrame2;
                 public IntPtr Player1; /*public IntPtr Player2; public IntPtr Player3; public IntPtr Player4;*/
-                public IntPtr BGM;
+                public IntPtr BGM; public IntPtr MustBeValidRandom;
             }
 
             DuelSettings settings;
@@ -910,6 +910,7 @@ namespace YgomGame.Room
                 settings.Type = (int)duelType;
                 settings.RandSeed = (uint)GetButtonValueI32(buttons.Seed, 0);
                 settings.noshuffle = !GetButtonValueBool(buttons.Shuffle);
+                settings.MustBeValidRandom = GetButtonValueBool(buttons.MustBeValidRandom);
                 settings.cpu = GetButtonValueI32(buttons.Cpu, int.MaxValue);
                 DuelCpuParam cpuParam;
                 if (Enum.TryParse<DuelCpuParam>(GetButtonValueString(buttons.CpuFlag), out cpuParam) && cpuParam != DuelCpuParam.None)
@@ -957,6 +958,7 @@ namespace YgomGame.Room
                 SetButtonIndexFromString(buttons.DuelType, ((DuelType)settings.Type).ToString());
                 SetButtonIndexFromString(buttons.Seed, settings.RandSeed == 0 ? null : settings.RandSeed.ToString());
                 SetButtonIndexFromBool(buttons.Shuffle, !settings.noshuffle);
+                SetButtonIndexFromBool(buttons.MustBeValidRandom, settings.MustBeValidRandom);
                 SetButtonIndexFromString(buttons.Cpu, settings.cpu == int.MaxValue ? null : settings.cpu.ToString());
                 SetButtonIndexFromString(buttons.CpuFlag, settings.cpuflag);
                 SetButtonIndexFromString(buttons.Limit, ((DuelLimitedType)settings.Limit).ToString());
@@ -1062,6 +1064,9 @@ namespace YgomGame.Room
                 //AddDeckDetailsButton(infosList, isv, 2);
                 //AddDeckDetailsButton(infosList, isv, 3);
                 buttons.LoadFromFile = AddButtonYesNo(infosList, isv, "Load deck from file", false);
+                buttons.MustBeValidRandom = AddButtonYesNo(infosList, isv, "Random decks must be valid", true);
+                buttons.ClearAllDecks = AddButton(infosList, isv, "Clear selected decks");
+                buttons.OpenDeckEditor = AddButton(infosList, isv, "Open deck editor");
                 AddLabel(infosList, "Settings");
                 buttons.StartingPlayer = AddButton(infosList, isv, "Starting player", new string[] { "Random", "1", "2"/*, "3", "4"*/ });
                 buttons.LifePoints = AddButton(infosList, isv, "Life points", lpStrings);
@@ -1101,9 +1106,6 @@ namespace YgomGame.Room
                 buttons.LoadIncludingDecks = AddButton(infosList, isv, "Load (including decks)");
                 buttons.Load = AddButton(infosList, isv, "Load");
                 buttons.Save = AddButton(infosList, isv, "Save");
-                AddLabel(infosList, "Extra");
-                buttons.OpenDeckEditor = AddButton(infosList, isv, "Open deck editor");
-                buttons.ClearAllDecks = AddButton(infosList, isv, "Clear selected decks");
 
                 if (hasExistingSetting)
                 {
@@ -1113,9 +1115,8 @@ namespace YgomGame.Room
 
             void AddDeckDetailsButton(IL2ListExplicit infosList, IntPtr isv, int deckIndex)
             {
-                // NOTE: Changed from string.Empty to "   " as I think there's a bug with empty strings in IL2String
                 DeckInfo deckInfo = settings.Deck[deckIndex];
-                IntPtr button = AddButton(infosList, isv, "Deck" + (deckIndex + 1), new string[] { "   " });//string.Empty });
+                IntPtr button = AddButton(infosList, isv, "Deck" + (deckIndex + 1), new string[] { "Random Deck" });
                 buttons.Decks[button] = deckInfo;
             }
 
@@ -1281,7 +1282,7 @@ namespace YgomGame.Room
                 {
                     return Path.GetFileName(deck.File);
                 }
-                return "   ";//string.Empty;
+                return "Random Deck";
             }
         }
     }
