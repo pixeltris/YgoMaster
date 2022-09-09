@@ -19,6 +19,8 @@
 - In the client console run `carddata` which should create `/Data/ClientDataDump/Card/Data/{CLIENT_VERSION}/`, move and rename the `{CLIENT_VERSION}` folder to `/Data/CardData/`. You must do this while using the `English` language setting.
 - Run `--updateydk` to update `YdkIds.txt`.
 
+*To be run on client updates only.*
+
 ## Solo
 
 - Log `Solo.info`, format the json and remove the user data `Solo.cleared` which should just leave `Master.Solo`.
@@ -39,8 +41,8 @@ For shop pack odds...
 
 ## ItemID.cs
 
-- In the client console run `itemid` which will create `dump-itemid.txt` in the game folder.
-- Manually copy the contents into `ItemID.cs`, and remove any invalid entries (some make the client crash / are blank).
+- In the client console run `itemid` which will create `ItemID.json` in the game folder.
+- Copy it over to `/Data/` and remove any invalid entries (some make the client crash / are blank).
 
 ## Misc
 

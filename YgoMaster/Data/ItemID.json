@@ -39,7 +39,7 @@
     1000019,//Trishula, Dragon of the Ice Barrier
     1000020,//Laundry Dragonmaid
     //1000021,//coming soon
-    1000022,//coming soon
+    1000022,//Revendread Slayer
     //1000023,//coming soon
     //1000024,//coming soon (NOTE: Icon but no 3d model)
     //1000025,//coming soon
@@ -239,7 +239,7 @@
     //1020034,//
     //1020035,//
     //1020036,//
-    //1020037,//
+    1020037,//Synchro x Xyz Festival2022
     //1020038,//
     //1020039,//
     //1020040,//
@@ -324,7 +324,7 @@
     1080015,//Dragonmaid-To-Order
     //1080016,//coming soon
     //1080017,//coming soon
-    //1080018,//coming soon
+    1080018,//Spellbook of Prophecy
     //1080019,//
     //1080020,//
     1082001,//Xyz Black
@@ -438,7 +438,7 @@
     1120015,//Dragonmaid-To-Order
     1120016,//coming soon
     1120017,//coming soon
-    1120018,//coming soon
+    1120018,//Spellbook of Prophecy
     1120019,//
     1120020,//
   ],

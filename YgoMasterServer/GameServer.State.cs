@@ -1634,7 +1634,7 @@ namespace YgoMaster
                 packShop[cardList.Key]["cardList"] = cardList.Value;
             }
             // NOTE:
-            // We re-assign the card list ids to their shop ids.
+            // We reassign the card list ids to their shop ids.
             // On the real server each card list has its own id which is seperate from the shop id.
             // It makes sense for card lists to be seperate in cases like bonus packs where each bonus pack
             // is the same. Though the legacy pack is essentially the "main" / "master" bonus pack
