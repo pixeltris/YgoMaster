@@ -120,6 +120,23 @@ namespace YgoMaster
             }
         }
 
+        public void Save()
+        {
+            if (string.IsNullOrEmpty(File))
+            {
+                return;
+            }
+            Utils.TryCreateDirectory(System.IO.Path.GetDirectoryName(File));
+            if (IsYdkDeck)
+            {
+                YdkHelper.SaveDeck(this);
+            }
+            else
+            {
+                System.IO.File.WriteAllText(File, MiniJSON.Json.Serialize(ToDictionaryEx()));
+            }
+        }
+
         public void CopyFrom(DeckInfo other)
         {
             Id = other.Id;

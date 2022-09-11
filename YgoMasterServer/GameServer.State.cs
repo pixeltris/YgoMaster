@@ -285,7 +285,7 @@ namespace YgoMaster
                             {
                                 // base64 token / atoken
                                 Updater updater = new Updater(CardRare);
-                                updater.Run(args[2], args[3]);
+                                updater.Run(args[i + 1], args[i + 2]);
                                 i += 2;
                             }
                             break;
@@ -309,6 +309,82 @@ namespace YgoMaster
                                     Console.WriteLine("Failed to find card");
                                 }
                                 i++;
+                            }
+                            break;
+                        case "--convert-deck":// Converts a file (or folder recursively) between ydk / json
+                            {
+                                if (args.Length <= i + 1)
+                                {
+                                    Console.WriteLine("Expected src path arg");
+                                }
+                                else
+                                {
+                                    string srcPath = args[i + 1];
+                                    i++;
+
+                                    Action<FileInfo, DirectoryInfo> copyFile = (FileInfo srcFile, DirectoryInfo dstDir) =>
+                                    {
+                                        switch (srcFile.Extension.ToLowerInvariant())
+                                        {
+                                            case ".json":
+                                            case ".ydk":
+                                                try
+                                                {
+                                                    DeckInfo deck = new DeckInfo();
+                                                    deck.File = srcFile.FullName;
+                                                    deck.Load();
+                                                    deck.File = Path.Combine(dstDir.FullName, Path.ChangeExtension(srcFile.Name,
+                                                        deck.IsYdkDeck ? ".json" : ".ydk"));
+                                                    deck.Save();
+                                                }
+                                                catch (Exception e)
+                                                {
+                                                    Console.WriteLine("Error on '" + srcFile.FullName + "' " + e);
+                                                }
+                                                break;
+                                            default:
+                                                Console.WriteLine("Skip '" + srcFile.FullName + "'");
+                                                break;
+                                        }
+                                    };
+                                    if (Directory.Exists(srcPath))
+                                    {
+                                        if (args.Length <= i + 1)
+                                        {
+                                            Console.WriteLine("Expected dst path arg");
+                                        }
+                                        else
+                                        {
+                                            string dstPath = args[i + 1];
+                                            i++;
+                                            Action<DirectoryInfo, DirectoryInfo> copyDir = null;
+                                            copyDir = (DirectoryInfo src, DirectoryInfo dst) =>
+                                            {
+                                                if (!dst.Exists)
+                                                {
+                                                    dst.Create();
+                                                }
+                                                foreach (DirectoryInfo subDir in src.GetDirectories())
+                                                {
+                                                    copyDir(subDir, new DirectoryInfo(Path.Combine(dst.FullName, subDir.Name)));
+                                                }
+                                                foreach (FileInfo file in src.GetFiles())
+                                                {
+                                                    copyFile(file, dst);
+                                                }
+                                            };
+                                            copyDir(new DirectoryInfo(srcPath), new DirectoryInfo(dstPath));
+                                        }
+                                    }
+                                    else if (File.Exists(srcPath))
+                                    {
+                                        copyFile(new FileInfo(srcPath), new DirectoryInfo(Path.GetDirectoryName(srcPath)));
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Src path not found");
+                                    }
+                                }
                             }
                             break;
                         default:
@@ -754,19 +830,7 @@ namespace YgoMaster
 
         void SaveDeck(DeckInfo deck)
         {
-            if (string.IsNullOrEmpty(deck.File))
-            {
-                return;
-            }
-            Utils.TryCreateDirectory(Path.GetDirectoryName(deck.File));
-            if (deck.IsYdkDeck)
-            {
-                YdkHelper.SaveDeck(deck);
-            }
-            else
-            {
-                File.WriteAllText(deck.File, MiniJSON.Json.Serialize(deck.ToDictionaryEx()));
-            }
+            deck.Save();
         }
 
         void LoadDeck(Player player, string file)
