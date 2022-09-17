@@ -1,0 +1,3 @@
+- Copy CardBanList.json, CardCraftableList.json, CardList.json, ItemID.json, YdkIds.txt
+- Open Shop.json and copy AccessoryShop
+- Open Settings.json and copy any new settings (don't replace any existing differing settings)
