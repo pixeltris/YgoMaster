@@ -288,7 +288,11 @@ namespace YgoMaster
                         Dictionary<string, object> data = dataObj as Dictionary<string, object>;
                         long ydkId = (long)Convert.ChangeType(data["id"], typeof(long));
                         string ydkName = data["name"] as string;
-                        GameCardInfo cardInfo = gameCards.Values.FirstOrDefault(x => x.Name.Equals(ydkName, StringComparison.InvariantCultureIgnoreCase));
+                        GameCardInfo cardInfo = gameCards.Values.FirstOrDefault(x => x.Id >= 4000 && x.Name.Equals(ydkName, StringComparison.InvariantCultureIgnoreCase));
+                        if (cardInfo == null)
+                        {
+                            cardInfo = gameCards.Values.FirstOrDefault(x => x.Name.Equals(ydkName, StringComparison.InvariantCultureIgnoreCase));
+                        }
                         if (cardInfo == null)
                         {
                             altNames.TryGetValue(ydkName, out cardInfo);
