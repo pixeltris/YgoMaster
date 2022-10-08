@@ -402,42 +402,83 @@ namespace YgomGame.Duel
             List<object> cmds;
             if (duelData != null && Utils.TryGetValue(duelData, "cmds", out cmds))
             {
+                if (ClientSettings.CustomDuelCmdLog)
+                {
+                    Console.WriteLine(MiniJSON.Json.Serialize(cmds));
+                }
                 foreach (object cmdObj in cmds)
                 {
                     List<object> cmdItemsObj = cmdObj as List<object>;
                     if (cmdItemsObj == null)
                     {
+                        if (ClientSettings.CustomDuelCmdLog)
+                        {
+                            Console.WriteLine("cmdItemsObj null");
+                        }
                         continue;
                     }
                     int[] cmdItems = cmdItemsObj.Select(x => (int)Convert.ChangeType(x, typeof(int))).ToArray();
                     if (cmdItems.Length < 1)
                     {
+                        if (ClientSettings.CustomDuelCmdLog)
+                        {
+                            Console.WriteLine("cmdItems empty");
+                        }
                         continue;
                     }
                     switch (cmdItems[0])
                     {
-                        case 0: if (cmdItems.Length >= 7) DuellDll.DLL_DuelComCheatCard(cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4], cmdItems[5], cmdItems[6]); break;
-                        case 1: if (cmdItems.Length >= 5) DuellDll.DLL_DuelComDoDebugCommand(cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4]); break;
-                        case 2: if (cmdItems.Length >= 1) DuellDll.DLL_DuelComDebugCommand(); break;
-                        case 3: if (cmdItems.Length >= 5) DuellDll.DLL_DuelComDoCommand(cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4]); break;
+                        case 0:
+                            if (cmdItems.Length >= 7)
+                            {
+                                DuellDll.DLL_DuelComCheatCard(cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4], cmdItems[5], cmdItems[6]);
+                                if (ClientSettings.CustomDuelCmdLog)
+                                {
+                                    Console.WriteLine("DLL_DuelComCheatCard {0} {1} {2} {3} {4} {5}", cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4], cmdItems[5], cmdItems[6]);
+                                }
+                            }
+                            break;
+                        case 1:
+                            if (cmdItems.Length >= 5)
+                            {
+                                DuellDll.DLL_DuelComDoDebugCommand(cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4]);
+                                if (ClientSettings.CustomDuelCmdLog)
+                                {
+                                    Console.WriteLine("DLL_DuelComDoDebugCommand {0} {1} {2} {3}", cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4]);
+                                }
+                            }
+                            break;
+                        case 2:
+                            if (cmdItems.Length >= 1)
+                            {
+                                DuellDll.DLL_DuelComDebugCommand(); Console.WriteLine("DLL_DuelComDebugCommand");
+                                if (ClientSettings.CustomDuelCmdLog)
+                                {
+                                    Console.WriteLine("DLL_DuelComDebugCommand");
+                                }
+                            }
+                            break;
+                        case 3:
+                            if (cmdItems.Length >= 5)
+                            {
+                                DuellDll.DLL_DuelComDoCommand(cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4]);
+                                if (ClientSettings.CustomDuelCmdLog)
+                                {
+                                    Console.WriteLine("DLL_DuelComDoCommand {0} {1} {2} {3}", cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4]);
+                                }
+                            }
+                            break;
+                        case 4:
+                            if (cmdItems.Length >= 1)
+                            {
+                                DuellDll.DLL_DuelSysAct();
+                                if (ClientSettings.CustomDuelCmdLog)
+                                {
+                                    Console.WriteLine("DLL_DuelSysAct");
+                                }
+                            }
+                            break;
                     }
-                }
-            }
-            if (duelData != null && Utils.TryGetValue(duelData, "cmdsStr", out cmds))
-            {
-                foreach (object cmdObj in cmds)
-                {
-                    List<object> cmdItemsObj = cmdObj as List<object>;
-                    if (cmdItemsObj == null)
-                    {
-                        continue;
-                    }
-                    string[] cmdItems = cmdItemsObj.Select(x => (string)x).ToArray();
-                    if (cmdItems.Length < 1)
-                    {
-                        continue;
-                    }
-                    // TODO...
                 }
             }
         }

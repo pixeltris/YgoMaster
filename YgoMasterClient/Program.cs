@@ -837,6 +837,9 @@ unsafe static class DuellDll
     public delegate void Del_DLL_DuelComDoCommand(int player, int position, int index, int commandId);
     public static Del_DLL_DuelComDoCommand DLL_DuelComDoCommand;
 
+    public delegate int Del_DLL_DuelSysAct();
+    public static Del_DLL_DuelSysAct DLL_DuelSysAct;
+
     static DuellDll()
     {
         IntPtr lib = PInvoke.LoadLibrary(Path.Combine("masterduel_Data", "Plugins", "x86_64", "duel.dll"));
@@ -849,6 +852,7 @@ unsafe static class DuellDll
         DLL_DuelComDoDebugCommand = GetFunc<Del_DLL_DuelComDoDebugCommand>(PInvoke.GetProcAddress(lib, "DLL_DuelComDoDebugCommand"));
         DLL_DuelComDebugCommand = GetFunc<Del_DLL_DuelComDebugCommand>(PInvoke.GetProcAddress(lib, "DLL_DuelComDebugCommand"));
         DLL_DuelComDoCommand = GetFunc<Del_DLL_DuelComDoCommand>(PInvoke.GetProcAddress(lib, "DLL_DuelComDoCommand"));
+        DLL_DuelSysAct = GetFunc<Del_DLL_DuelSysAct>(PInvoke.GetProcAddress(lib, "DLL_DuelSysAct"));
     }
 
     static int DLL_DuelSysInitCustom(int fDuelType, bool tag, int life0, int life1, int hand0, int hand1, bool shuf)

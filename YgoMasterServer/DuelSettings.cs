@@ -6,6 +6,10 @@ using System.Reflection;
 
 namespace YgoMaster
 {
+    class DuelSettingsCustomArrayAttribute : Attribute
+    {
+    }
+
     // TODO: Maybe just change this code to be Dictionary<string, object> rather than listing all entries (but keep Deck)
     class DuelSettings
     {
@@ -24,8 +28,8 @@ namespace YgoMaster
         public int OpponentPartnerType;
 
         // Used for injecting duel commands
+        [DuelSettingsCustomArray]
         public List<int>[] cmds { get; private set; }
-        public List<string>[] cmdsStr { get; private set; }
 
         // Use the same names as in the packet (using reflection here to reduce the amount of manual work)
         public uint RandSeed;
@@ -91,13 +95,16 @@ namespace YgoMaster
             {
                 if (property.PropertyType.IsArray)
                 {
-                    property.SetValue(this, Array.CreateInstance(property.PropertyType.GetElementType(), MaxPlayers), null);
-                    if (typeof(System.Collections.IList).IsAssignableFrom(property.PropertyType.GetElementType()))
+                    if (!IsCustomArray(property))
                     {
-                        Array array = property.GetValue(this, null) as Array;
-                        for (int i = 0; i < MaxPlayers; i++)
+                        property.SetValue(this, Array.CreateInstance(property.PropertyType.GetElementType(), MaxPlayers), null);
+                        if (typeof(System.Collections.IList).IsAssignableFrom(property.PropertyType.GetElementType()))
                         {
-                            array.SetValue(Activator.CreateInstance(property.PropertyType.GetElementType()), i);
+                            Array array = property.GetValue(this, null) as Array;
+                            for (int i = 0; i < MaxPlayers; i++)
+                            {
+                                array.SetValue(Activator.CreateInstance(property.PropertyType.GetElementType()), i);
+                            }
                         }
                     }
                 }
@@ -220,6 +227,22 @@ namespace YgoMaster
                     {
                         Array srcArray = property.GetValue(other, null) as Array;
                         Array dstArray = property.GetValue(this, null) as Array;
+                        if (IsCustomArray(property))
+                        {
+                            if (srcArray == null)
+                            {
+                                property.SetValue(this, null, null);
+                                continue;
+                            }
+                            else if (dstArray == null || dstArray.Length != srcArray.Length)
+                            {
+                                property.SetValue(this, dstArray = Array.CreateInstance(property.PropertyType.GetElementType(), srcArray.Length), null);
+                                for (int i = 0; i < srcArray.Length; i++)
+                                {
+                                    dstArray.SetValue(Activator.CreateInstance(property.PropertyType.GetElementType()), i);
+                                }
+                            }
+                        }
                         for (int i = 0; i < srcArray.Length && i < dstArray.Length; i++)
                         {
                             System.Collections.IList srcList = srcArray.GetValue(i) as System.Collections.IList;
@@ -283,11 +306,19 @@ namespace YgoMaster
                 object obj;
                 if (!data.TryGetValue(property.Name, out obj))
                 {
+                    if (property.PropertyType.IsArray && IsCustomArray(property))
+                    {
+                        property.SetValue(this, null, null);
+                    }
                     continue;
                 }
                 List<object> objList = obj as List<object>;
                 if (objList == null)
                 {
+                    if (property.PropertyType.IsArray && IsCustomArray(property))
+                    {
+                        property.SetValue(this, null, null);
+                    }
                     continue;
                 }
                 if (property.PropertyType.IsArray)
@@ -296,9 +327,17 @@ namespace YgoMaster
                     {
                         Type elementType = property.PropertyType.GetElementType().GetGenericArguments()[0];
                         Array dstArray = property.GetValue(this, null) as Array;
+                        if (IsCustomArray(property))
+                        {
+                            property.SetValue(this, dstArray = Array.CreateInstance(property.PropertyType.GetElementType(), objList.Count), null);
+                        }
                         for (int i = 0; i < objList.Count && i < dstArray.Length; i++)
                         {
                             System.Collections.IList dstList = dstArray.GetValue(i) as System.Collections.IList;
+                            if (dstList == null)
+                            {
+                                dstArray.SetValue(dstList = Activator.CreateInstance(property.PropertyType.GetElementType()) as System.Collections.IList, i);
+                            }
                             dstList.Clear();
                             List<object> innerList = objList[i] as List<object>;
                             if (innerList != null)
@@ -386,17 +425,24 @@ namespace YgoMaster
                         List<object> objListList = new List<object>();
                         Type elementType = property.PropertyType.GetElementType().GetGenericArguments()[0];
                         Array array = property.GetValue(this, null) as Array;
-                        for (int i = 0; i < array.Length && i < MaxPlayers; i++)
+                        if (array != null)
                         {
-                            List<object> objList = new List<object>();
-                            System.Collections.IList list = array.GetValue(i) as System.Collections.IList;
-                            for (int j = 0; j < list.Count; j++)
+                            int len = IsCustomArray(property) ? array.Length : Math.Min(array.Length, MaxPlayers);
+                            for (int i = 0; i < len; i++)
                             {
-                                objList.Add(list[j]);
+                                List<object> objList = new List<object>();
+                                System.Collections.IList list = array.GetValue(i) as System.Collections.IList;
+                                if (list != null)
+                                {
+                                    for (int j = 0; j < list.Count; j++)
+                                    {
+                                        objList.Add(list[j]);
+                                    }
+                                }
+                                objListList.Add(objList);
                             }
-                            objListList.Add(objList);
+                            result[property.Name] = objListList;
                         }
-                        result[property.Name] = objListList;
                     }
                     else if (property.PropertyType.GetElementType() == typeof(DeckInfo))
                     {
@@ -414,7 +460,8 @@ namespace YgoMaster
                         List<object> objList = new List<object>();
                         Type elementType = property.PropertyType.GetElementType();
                         Array array = property.GetValue(this, null) as Array;
-                        for (int i = 0; i < array.Length && i < MaxPlayers; i++)
+                        int len = IsCustomArray(property) ? array.Length : Math.Min(array.Length, MaxPlayers);
+                        for (int i = 0; i < len; i++)
                         {
                             objList.Add(array.GetValue(i));
                         }
@@ -434,6 +481,11 @@ namespace YgoMaster
                 }
             }
             return result;
+        }
+
+        private bool IsCustomArray(PropertyInfo property)
+        {
+            return property.GetCustomAttributes(typeof(DuelSettingsCustomArrayAttribute), false).Length > 0;
         }
 
         public Dictionary<string, object> ToDictionaryForSoloStart()

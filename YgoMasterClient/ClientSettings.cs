@@ -35,6 +35,7 @@ namespace YgoMasterClient
         public static bool DisableVSync;
         public static bool ChangeWindowTitleOnLiveMod;
         public static bool AlwaysWin;
+        public static bool CustomDuelCmdLog;
 
         public static string FilePath
         {
@@ -86,6 +87,7 @@ namespace YgoMasterClient
             DisableVSync = YgoMaster.Utils.GetValue<bool>(data, "DisableVSync");
             ChangeWindowTitleOnLiveMod = YgoMaster.Utils.GetValue<bool>(data, "ChangeWindowTitleOnLiveMod");
             AlwaysWin = YgoMaster.Utils.GetValue<bool>(data, "AlwaysWin");
+            CustomDuelCmdLog = YgoMaster.Utils.GetValue<bool>(data, "CustomDuelCmdLog");
             return true;
         }
 
