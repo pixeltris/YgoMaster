@@ -23,6 +23,10 @@ namespace YgoMaster
         public int OpponentType;
         public int OpponentPartnerType;
 
+        // Used for injecting duel commands
+        public List<int>[] cmds { get; private set; }
+        public List<string>[] cmdsStr { get; private set; }
+
         // Use the same names as in the packet (using reflection here to reduce the amount of manual work)
         public uint RandSeed;
         public int FirstPlayer;

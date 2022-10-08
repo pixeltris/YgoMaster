@@ -144,9 +144,11 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomGame.Solo.SoloSelectChapterViewController));
                 nativeTypes.Add(typeof(YgomGame.Solo.SoloStartProductionViewController));
                 nativeTypes.Add(typeof(YgomGame.Duel.EngineInitializerByServer));
+                nativeTypes.Add(typeof(YgomGame.Duel.EngineInitializer));
                 nativeTypes.Add(typeof(YgomSystem.Network.API));
                 nativeTypes.Add(typeof(YgomSystem.Network.Request));
                 nativeTypes.Add(typeof(YgomSystem.Network.RequestStructure));
+                nativeTypes.Add(typeof(DuellDll));
                 // DeckEditorUtils
                 nativeTypes.Add(typeof(TMPro.TMP_Text));
                 nativeTypes.Add(typeof(YgomGame.Deck.DeckView));
@@ -174,7 +176,6 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(UnityEngine.Transform));
                 nativeTypes.Add(typeof(UnityEngine.Component));*/
                 // Uncomment the following for easier logging of solo content
-                //nativeTypes.Add(typeof(DuellDll));
                 foreach (Type type in nativeTypes)
                 {
                     System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
@@ -824,6 +825,18 @@ unsafe static class DuellDll
     delegate int Del_DLL_DuelSysInitCustom(int fDuelType, bool tag, int life0, int life1, int hand0, int hand1, bool shuf);
     static Hook<Del_DLL_DuelSysInitCustom> hookDLL_DuelSysInitCustom;
 
+    public delegate void Del_DLL_DuelComCheatCard(int player, int position, int index, int cardId, int face, int turn);
+    public static Del_DLL_DuelComCheatCard DLL_DuelComCheatCard;
+
+    public delegate void Del_DLL_DuelComDoDebugCommand(int player, int position, int index, int commandId);
+    public static Del_DLL_DuelComDoDebugCommand DLL_DuelComDoDebugCommand;
+
+    public delegate void Del_DLL_DuelComDebugCommand();
+    public static Del_DLL_DuelComDebugCommand DLL_DuelComDebugCommand;
+
+    public delegate void Del_DLL_DuelComDoCommand(int player, int position, int index, int commandId);
+    public static Del_DLL_DuelComDoCommand DLL_DuelComDoCommand;
+
     static DuellDll()
     {
         IntPtr lib = PInvoke.LoadLibrary(Path.Combine("masterduel_Data", "Plugins", "x86_64", "duel.dll"));
@@ -832,15 +845,24 @@ unsafe static class DuellDll
             throw new Exception("Failed to load duel.dll");
         }
         hookDLL_DuelSysInitCustom = new Hook<Del_DLL_DuelSysInitCustom>(DLL_DuelSysInitCustom, PInvoke.GetProcAddress(lib, "DLL_DuelSysInitCustom"));
+        DLL_DuelComCheatCard = GetFunc<Del_DLL_DuelComCheatCard>(PInvoke.GetProcAddress(lib, "DLL_DuelComCheatCard"));
+        DLL_DuelComDoDebugCommand = GetFunc<Del_DLL_DuelComDoDebugCommand>(PInvoke.GetProcAddress(lib, "DLL_DuelComDoDebugCommand"));
+        DLL_DuelComDebugCommand = GetFunc<Del_DLL_DuelComDebugCommand>(PInvoke.GetProcAddress(lib, "DLL_DuelComDebugCommand"));
+        DLL_DuelComDoCommand = GetFunc<Del_DLL_DuelComDoCommand>(PInvoke.GetProcAddress(lib, "DLL_DuelComDoCommand"));
     }
 
     static int DLL_DuelSysInitCustom(int fDuelType, bool tag, int life0, int life1, int hand0, int hand1, bool shuf)
     {
         //hand0 = 7;
         //hand1 = 0;
-        life0 = 9000000;
-        life1 = 1;
+        //life0 = 9000000;
+        //life1 = 1;
         return hookDLL_DuelSysInitCustom.Original(fDuelType, tag, life0, life1, hand0, hand1, shuf);
+    }
+
+    static T GetFunc<T>(IntPtr ptr)
+    {
+        return (T)(object)Marshal.GetDelegateForFunctionPointer(ptr, typeof(T));
     }
 }
 

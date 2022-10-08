@@ -382,6 +382,66 @@ namespace YgomGame.Duel
             return hookget_rivalType.Original(thisPtr);
         }
     }
+
+    static unsafe class EngineInitializer
+    {
+        delegate void Del_InitEngine(IntPtr thisPtr, IntPtr runEffect, IntPtr isBusyEffect, IntPtr recmanref);
+        static Hook<Del_InitEngine> hookInitEngine;
+
+        static EngineInitializer()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            IL2Class classInfo = assembly.GetClass("EngineInitializer", "YgomGame.Duel");
+            hookInitEngine = new Hook<Del_InitEngine>(InitEngine, classInfo.GetMethod("InitEngine"));
+        }
+
+        static void InitEngine(IntPtr thisPtr, IntPtr runEffect, IntPtr isBusyEffect, IntPtr recmanref)
+        {
+            hookInitEngine.Original(thisPtr, runEffect, isBusyEffect, recmanref);
+            Dictionary<string, object> duelData = YgomSystem.Utility.ClientWork.GetDict("Duel");
+            List<object> cmds;
+            if (duelData != null && Utils.TryGetValue(duelData, "cmds", out cmds))
+            {
+                foreach (object cmdObj in cmds)
+                {
+                    List<object> cmdItemsObj = cmdObj as List<object>;
+                    if (cmdItemsObj == null)
+                    {
+                        continue;
+                    }
+                    int[] cmdItems = cmdItemsObj.Select(x => (int)Convert.ChangeType(x, typeof(int))).ToArray();
+                    if (cmdItems.Length < 1)
+                    {
+                        continue;
+                    }
+                    switch (cmdItems[0])
+                    {
+                        case 0: if (cmdItems.Length >= 7) DuellDll.DLL_DuelComCheatCard(cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4], cmdItems[5], cmdItems[6]); break;
+                        case 1: if (cmdItems.Length >= 5) DuellDll.DLL_DuelComDoDebugCommand(cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4]); break;
+                        case 2: if (cmdItems.Length >= 1) DuellDll.DLL_DuelComDebugCommand(); break;
+                        case 3: if (cmdItems.Length >= 5) DuellDll.DLL_DuelComDoCommand(cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4]); break;
+                    }
+                }
+            }
+            if (duelData != null && Utils.TryGetValue(duelData, "cmdsStr", out cmds))
+            {
+                foreach (object cmdObj in cmds)
+                {
+                    List<object> cmdItemsObj = cmdObj as List<object>;
+                    if (cmdItemsObj == null)
+                    {
+                        continue;
+                    }
+                    string[] cmdItems = cmdItemsObj.Select(x => (string)x).ToArray();
+                    if (cmdItems.Length < 1)
+                    {
+                        continue;
+                    }
+                    // TODO...
+                }
+            }
+        }
+    }
 }
 
 namespace YgomGame.Room

@@ -387,6 +387,49 @@ namespace YgoMaster
                                 }
                             }
                             break;
+                        case "--ydlz":
+                            {
+                                string dir = args[++i];
+                                if (Directory.Exists(dir))
+                                {
+                                    Func<byte[], byte[]> decompress = (byte[] buffer) =>
+                                        {
+                                            Console.WriteLine(BitConverter.ToString(buffer));
+                                            using (BinaryWriter writer = new BinaryWriter(new MemoryStream()))
+                                            using (MemoryStream ms = new MemoryStream(buffer))
+                                            {
+                                                System.IO.Compression.DeflateStream zip = new System.IO.Compression.DeflateStream(ms, System.IO.Compression.CompressionMode.Decompress);
+                                                int totalRead = 0;
+                                                int read = 0;
+                                                byte[] temp = new byte[65535];
+                                                while ((read = zip.Read(temp, 0, 1000)) > 0)
+                                                {
+                                                    totalRead += read;
+                                                    writer.Write(temp, 0, read);
+                                                }
+                                                return ms.ToArray();
+                                            }
+                                        };
+
+                                    string outDir = "ydlz-out";
+                                    Directory.CreateDirectory(outDir);
+
+                                    foreach (string path in Directory.GetFiles(dir))
+                                    {
+                                        using (BinaryReader br = new BinaryReader(File.OpenRead(path)))
+                                        {
+                                            if (new string(br.ReadChars(4)) == "YDLZ")
+                                            {
+                                                br.BaseStream.Position += 4;
+                                                br.BaseStream.Position += 2;// Also skip zlib header
+                                                byte[] data = decompress(br.ReadBytes((int)(br.BaseStream.Length - br.BaseStream.Position)));
+                                                File.WriteAllBytes(Path.Combine(outDir, Path.GetFileName(path)), data);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            break;
                         default:
                             log = false;
                             break;
