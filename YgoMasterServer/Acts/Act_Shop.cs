@@ -97,15 +97,30 @@ namespace YgoMaster
                                 pickupCardListId = shopItem.ShopId;
                             }
                         }
-                        const string packBuyLimitStr = "{BUYS_REMAIN}";
+                        
+                        int numCardsObtained;
+                        double percentComplete = shopItem.GetPercentComplete(request.Player, out numCardsObtained);
+                        Func<string, string> updateShopText = (string str) =>
+                        {
+                            if (string.IsNullOrEmpty(str))
+                            {
+                                return str;
+                            }
+                            str = str.Replace("{BUYS_REMAIN}", packBuyLimit.ToString());
+                            str = str.Replace("{CARDS_OBTAINED}", numCardsObtained.ToString());
+                            str = str.Replace("{CARDS}", shopItem.Cards.Keys.Count.ToString());
+                            str = str.Replace("{PERCENT_COMPLETE_N0}", percentComplete.ToString("N0"));
+                            str = str.Replace("{PERCENT_COMPLETE_N1}", percentComplete.ToString("N1"));
+                            str = str.Replace("{PERCENT_COMPLETE_N2}", percentComplete.ToString("N2"));
+                            return Utils.FixIdString(str);
+                        };
+                        
                         packShop[shopItem.ShopId.ToString()] = data;
                         data["packId"] = shopItem.Id;
                         data["packType"] = (int)shopItem.PackType;
-                        data["nameTextId"] = Utils.FixIdString(shopItem.NameText.Replace(packBuyLimitStr, packBuyLimit.ToString()));
+                        data["nameTextId"] = updateShopText(shopItem.NameText);
                         if (shopItem.DescTextGenerated)
                         {
-                            int numCardsObtained;
-                            double percentComplete = shopItem.GetPercentComplete(request.Player, out numCardsObtained);
                             List<string> desc = new List<string>();
                             if (shopItem.ReleaseDate != default(DateTime))
                             {
@@ -125,8 +140,8 @@ namespace YgoMaster
                         }
                         else
                         {
-                            data["descShortTextId"] = Utils.FixIdString(shopItem.DescShortText.Replace(packBuyLimitStr, packBuyLimit.ToString()));
-                            data["descFullTextId"] = Utils.FixIdString(shopItem.DescFullText.Replace(packBuyLimitStr, packBuyLimit.ToString()));
+                            data["descShortTextId"] = updateShopText(shopItem.DescShortText);
+                            data["descFullTextId"] = updateShopText(shopItem.DescFullText);
                         }
                         data["power"] = shopItem.Power;
                         data["flexibility"] = shopItem.Flexibility;
