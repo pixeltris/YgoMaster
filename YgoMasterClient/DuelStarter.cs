@@ -22,11 +22,17 @@ namespace YgomGame.Solo
 {
     static unsafe class SoloSelectChapterViewController
     {
+        static IL2Class classDuelResultViewController;
+        static IL2Class classDuelClient;
+
         static IL2Field fieldChapterId;
 
         delegate void Del_Play(IntPtr thisPtr, IntPtr chapterData);
         static Hook<Del_Play> hookDuelDialogPlay;
         static Hook<Del_Play> hookTutorialDialogPlay;
+
+        delegate void Del_NotificationStack(IntPtr thisPtr, IntPtr vcm, IntPtr vc, bool isEntry);
+        static Hook<Del_NotificationStack> hookNotificationStack;
 
         static SoloSelectChapterViewController()
         {
@@ -39,6 +45,22 @@ namespace YgomGame.Solo
             IL2Class tutorialDialogClassInfo = accessDialogManagerClassInfo.GetNestedType("TutorialDialog");
             hookDuelDialogPlay = new Hook<Del_Play>(DuelDialogPlay, duelDialogClassInfo.GetMethod("Play"));
             hookTutorialDialogPlay = new Hook<Del_Play>(TutorialDialogPlay, tutorialDialogClassInfo.GetMethod("Play"));
+            hookNotificationStack = new Hook<Del_NotificationStack>(NotificationStack, classInfo.GetMethod("NotificationStack"));
+
+            classDuelResultViewController = assembly.GetClass("DuelResultViewController", "YgomGame.Menu");
+            classDuelClient = assembly.GetClass("DuelClient", "YgomGame.Duel");
+        }
+
+        static void NotificationStack(IntPtr thisPtr, IntPtr vcm, IntPtr vc, bool isEntry)
+        {
+            if (!Program.IsLive && vcm != IntPtr.Zero && YgomSystem.UI.ViewControllerManager.GetStackTopViewController(vcm) == thisPtr &&
+                vc != IntPtr.Zero && Import.Object.il2cpp_object_get_class(vc) == classDuelResultViewController.ptr)
+            {
+                // Fix for duel result screen -> solo chapter complete animation
+                YgomSystem.Utility.ClientWork.DeleteByJsonPath("Duel.result");
+                vc = Import.Object.il2cpp_object_new(classDuelClient.ptr);
+            }
+            hookNotificationStack.Original(thisPtr, vcm, vc, isEntry);
         }
 
         static void DuelDialogPlay(IntPtr thisPtr, IntPtr chapterData)
@@ -1480,6 +1502,7 @@ namespace YgomSystem.UI
         static IL2Method methodPushChildViewControllerObj;
         static IL2Method methodSwapBottomChildViewController;
         static IL2Method methodSwapTopChildViewController;
+        static IL2Method methodGetStackTopViewController;
         static IL2Method methodLoadViewControllerPrefab;
         static IL2Method methodGetViewControllerT;
         static Dictionary<IntPtr, IL2Method> methodGetViewControllerTInstances = new Dictionary<IntPtr, IL2Method>();
@@ -1504,6 +1527,7 @@ namespace YgomSystem.UI
             methodPushChildViewControllerObj = classInfo.GetMethod("PushChildViewController", x => x.GetParameters()[0].Name == "prefab");
             methodSwapBottomChildViewController = classInfo.GetMethod("SwapBottomChildViewController", x => x.GetParameters()[0].Name == "prefabpath");
             methodSwapTopChildViewController = classInfo.GetMethod("SwapTopChildViewController", x => x.GetParameters()[0].Name == "prefabpath");
+            methodGetStackTopViewController = classInfo.GetMethod("GetStackTopViewController");
             hookLoadViewControllerPrefab = new Hook<Del_LoadViewControllerPrefab>(LoadViewControllerPrefab, classInfo.GetMethod("LoadViewControllerPrefab"));
             methodGetViewControllerT = classInfo.GetMethod("GetViewController");
         }
@@ -1593,6 +1617,12 @@ namespace YgomSystem.UI
                 methodGetViewControllerTInstances[type] = method;
             }
             IL2Object result = method.Invoke(thisPtr);
+            return result != null ? result.ptr : IntPtr.Zero;
+        }
+
+        public static IntPtr GetStackTopViewController(IntPtr thisPtr)
+        {
+            IL2Object result = methodGetStackTopViewController.Invoke(thisPtr);
             return result != null ? result.ptr : IntPtr.Zero;
         }
     }
