@@ -189,7 +189,7 @@
     1030023,//
     1030024,//
     1030025,//
-    1030026,//
+    1030026,//Link Master Frame
     //1031001,//coming soon
     //1031002,//coming soon
     //1031003,//coming soon
@@ -233,12 +233,12 @@
     1020028,//DC 2022 AUG Top 1000
     1020029,//DC 2022 AUG Top 10000
     1020030,//DC 2022 AUG 2nd Stage Duelist
-    //1020031,//
-    //1020032,//
-    //1020033,//
-    //1020034,//
-    //1020035,//
-    //1020036,//
+    1020031,//Link Beginner
+    1020032,//Link Challenger
+    1020033,//Link Practitioner
+    1020034,//Link Expert
+    1020035,//Link Elite
+    1020036,//Link Master
     1020037,//Synchro x Xyz Festival2022
     //1020038,//
     //1020039,//
@@ -274,7 +274,7 @@
     1070017,//Protector: LIGHT
     1070018,//Protector: DARK
     1070019,//Token Collector
-    //1070020,//
+    1070020,//Link Blue
     1070021,//DC 2022 AUG Celebration
     //1070022,//
     //1070023,//
@@ -300,7 +300,7 @@
     1071013,//Revendread Slayer
     //1071014,//
     //1071015,//
-    //1072001,//coming soon
+    1072001,//Sky Striker Conversion: Flaming Wings of Destruction
     //1072002,//
     //1072003,//
     //1072004,//
@@ -322,7 +322,7 @@
     1080013,//Being Who Sees the End of the World
     1080014,//Gem-Knights' Resolution
     1080015,//Dragonmaid-To-Order
-    //1080016,//coming soon
+    1080016,//Burning Spirits
     //1080017,//coming soon
     1080018,//Spellbook of Prophecy
     //1080019,//
@@ -436,7 +436,7 @@
     1120013,//Being Who Sees the End of the World
     1120014,//Gem-Knights' Resolution
     1120015,//Dragonmaid-To-Order
-    1120016,//coming soon
+    1120016,//Burning Spirits
     1120017,//coming soon
     1120018,//Spellbook of Prophecy
     1120019,//
