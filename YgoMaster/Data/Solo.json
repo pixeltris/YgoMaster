@@ -161,6 +161,13 @@
                 "view_gate": 5,
                 "clear_chapter": 230184
               },
+              "24": {
+                "priority": 32,
+                "parent_gate": 0,
+                "unlock_id": 11,
+                "view_gate": 5,
+                "clear_chapter": 240195
+              },
               "26": {
                 "priority": 25,
                 "parent_gate": 0,
@@ -1920,6 +1927,71 @@
                   "unlock_id": 0,
                   "begin_sn": "",
                   "npc_id": 1083
+                }
+              },
+              "24": {
+                "240192": {
+                  "parent_chapter": 0,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 903,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00240192",
+                  "npc_id": 0
+                },
+                "240193": {
+                  "parent_chapter": 240192,
+                  "difficulty": 1,
+                  "mydeck_set_id": 0,
+                  "set_id": 8232,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1093
+                },
+                "240194": {
+                  "parent_chapter": 240193,
+                  "difficulty": 3,
+                  "mydeck_set_id": 16823,
+                  "set_id": 1071003,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1093
+                },
+                "240195": {
+                  "parent_chapter": 240194,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 803,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00240195",
+                  "npc_id": 0
+                },
+                "240196": {
+                  "parent_chapter": 240194,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 0,
+                  "unlock_id": 12010,
+                  "begin_sn": "",
+                  "npc_id": 0
+                },
+                "240197": {
+                  "parent_chapter": 240196,
+                  "difficulty": 4,
+                  "mydeck_set_id": 103,
+                  "set_id": 103,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1094
+                },
+                "240198": {
+                  "parent_chapter": 240197,
+                  "difficulty": 5,
+                  "mydeck_set_id": 1012022,
+                  "set_id": 1012023,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1095
                 }
               },
               "26": {

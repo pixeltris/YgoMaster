@@ -279,12 +279,12 @@ namespace YgoMaster
             if (result != null)
             {
                 // Handle shop unlock chains. NOTE: This will result in a stackoverflow if you have a circular reference
-                foreach (ShopItemInfo item in result)
+                foreach (ShopItemInfo item in new List<ShopItemInfo>(result))
                 {
                     List<ShopItemInfo> additionalItems = item.DoUnlockSecrets(player, shop);
                     if (additionalItems != null)
                     {
-                        result.AddRange(item.DoUnlockSecrets(player, shop));
+                        result.AddRange(additionalItems);
                     }
                 }
             }

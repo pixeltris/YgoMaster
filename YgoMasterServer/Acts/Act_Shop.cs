@@ -100,6 +100,7 @@ namespace YgoMaster
                         
                         int numCardsObtained;
                         double percentComplete = shopItem.GetPercentComplete(request.Player, out numCardsObtained);
+                        double percentToNextPack = shopItem.UnlockSecretsAtPercent - percentComplete;
                         Func<string, string> updateShopText = (string str) =>
                         {
                             if (string.IsNullOrEmpty(str))
@@ -109,9 +110,12 @@ namespace YgoMaster
                             str = str.Replace("{BUYS_REMAIN}", packBuyLimit.ToString());
                             str = str.Replace("{CARDS_OBTAINED}", numCardsObtained.ToString());
                             str = str.Replace("{CARDS}", shopItem.Cards.Keys.Count.ToString());
-                            str = str.Replace("{PERCENT_COMPLETE_N0}", percentComplete.ToString("N0"));
+                            str = str.Replace("{PERCENT_COMPLETE}", percentComplete.ToString("N0"));
                             str = str.Replace("{PERCENT_COMPLETE_N1}", percentComplete.ToString("N1"));
                             str = str.Replace("{PERCENT_COMPLETE_N2}", percentComplete.ToString("N2"));
+                            str = str.Replace("{PERCENT_TO_PACK}", percentToNextPack.ToString("N0"));
+                            str = str.Replace("{PERCENT_TO_PACK_N1}", percentToNextPack.ToString("N1"));
+                            str = str.Replace("{PERCENT_TO_PACK_N2}", percentToNextPack.ToString("N2"));
                             return Utils.FixIdString(str);
                         };
                         
