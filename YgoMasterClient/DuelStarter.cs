@@ -40,9 +40,8 @@ namespace YgomGame.Solo
             IL2Class classInfo = assembly.GetClass("SoloSelectChapterViewController", "YgomGame.Solo");
             IL2Class chapterClassInfo = classInfo.GetNestedType("Chapter");
             fieldChapterId = chapterClassInfo.GetField("id");
-            IL2Class accessDialogManagerClassInfo = classInfo.GetNestedType("AccessDialogManager");
-            IL2Class duelDialogClassInfo = accessDialogManagerClassInfo.GetNestedType("DuelDialog");
-            IL2Class tutorialDialogClassInfo = accessDialogManagerClassInfo.GetNestedType("TutorialDialog");
+            IL2Class duelDialogClassInfo = classInfo.GetNestedType("DuelDialog");
+            IL2Class tutorialDialogClassInfo = classInfo.GetNestedType("TutorialDialog");
             hookDuelDialogPlay = new Hook<Del_Play>(DuelDialogPlay, duelDialogClassInfo.GetMethod("Play"));
             hookTutorialDialogPlay = new Hook<Del_Play>(TutorialDialogPlay, tutorialDialogClassInfo.GetMethod("Play"));
             hookNotificationStack = new Hook<Del_NotificationStack>(NotificationStack, classInfo.GetMethod("NotificationStack"));

@@ -194,6 +194,9 @@ namespace YgoMaster
                                     case "Deck.delete_deck":
                                         Act_DeckDeleteDeck(gameServerWebRequest);
                                         break;
+                                    case "Deck.delete_deck_multi":
+                                        Act_DeckDeleteDeckMulti(gameServerWebRequest);
+                                        break;
                                     case "Deck.set_select_deck":
                                         Act_SetSelectDeck(gameServerWebRequest);
                                         break;

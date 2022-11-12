@@ -11,6 +11,8 @@ echo Compiling YgoMasterLoader (C++)
 echo.
 
 REM Compile YgoMasterLoader using cl (requires Visual Studio with C++ compilers) (TODO: Improve this... maybe also check vswhere.exe)
+set BATPATH=%ProgramW6432%\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat
+if exist "%BATPATH%" ( call "%BATPATH%" amd64 ) else ^
 if defined VS190COMNTOOLS ( call "%VS190COMNTOOLS%\..\..\VC\vcvarsall.bat" amd64 ) else ^
 if defined VS180COMNTOOLS ( call "%VS180COMNTOOLS%\..\..\VC\vcvarsall.bat" amd64 ) else ^
 if defined VS170COMNTOOLS ( call "%VS170COMNTOOLS%\..\..\VC\vcvarsall.bat" amd64 ) else ^

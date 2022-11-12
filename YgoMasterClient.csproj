@@ -60,6 +60,7 @@
     <Compile Include="YgoMasterClient\DuelClientUtils.cs" />
     <Compile Include="YgoMasterClient\GameLauncher.cs" />
     <Compile Include="YgoMasterClient\Hook.cs" />
+    <Compile Include="YgoMasterClient\csbool.cs" />
     <Compile Include="YgoMasterClient\IL2CPP\Assembler.cs" />
     <Compile Include="YgoMasterClient\IL2CPP\CastUtils.cs" />
     <Compile Include="YgoMasterClient\IL2CPP\IL2Array.cs" />

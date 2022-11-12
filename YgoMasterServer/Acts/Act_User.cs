@@ -110,14 +110,21 @@ namespace YgoMaster
                 { "CardCr", GetCraftableCards(request.Player) },// Craftable cards
                 { "Structure", structure },// All structure decks
                 { "Regulation", Regulation },// Forbidden / limited cards
+                { "RegulationIcon", RegulationIcon },
+            };
+            request.Response["Regulation"] = RegulationInfo;
+            request.Response["DuelMenu"] = new Dictionary<string, object>()
+            {
+                { "Standard", new Dictionary<string, object>() {
+                    { "regulation_id", DeckInfo.DefaultRegulationId }
+                }}
             };
             request.Response["Room"] = new Dictionary<string, object>()
             {
-                // Not sure what 10 means
                 { "rule_list", new Dictionary<string, object>() {
-                    { "10", "IDS_CARDMENU_REGULATION_NORMAL" },
+                    { DeckInfo.DefaultRegulationId.ToString(), DeckInfo.DefaultRegulationName },
                 }},
-                { "common", 10 }
+                { "common", DeckInfo.DefaultRegulationId }
             };
             WriteDeck(request);
             request.Response["DeckList"] = null;
@@ -173,15 +180,12 @@ namespace YgoMaster
                         { "sort", 1591200 },// 0 / 1591200 / omitted
                         { "body", MiniJSON.Json.Serialize(body) },
                         { "banner", new Dictionary<string, object>() {
-                            { "image", "Images/Notification/System/Notice001" },//{ "image", "Card/Images/Illust/<_CARD_ILLUST_>/4007" },
+                            { "prefPath", "Prefabs/Notification/Topics/BannerNotify" },
                             { "pattern", TopicsBannerPatern.NOTIFY },
-                            { "image_text", new string[] {// Either null or 4 entries
-                                "YgoMaster",//"<color=#EEE>YgoMaster</color>",
-                                "",
-                                "",
-                                ""
-                            }},
-                            { "is_coming_soon", false }
+                            { "prefArgsJson", new Dictionary<string, object>() {
+                                { "BackImage", "Images/Notification/System/Notice001" },
+                                { "Title", "YgoMaster" },//"<color=#EEE>YgoMaster</color>",
+                            }}
                         }},
                     }
                     /*new Dictionary<string, object>() {
@@ -222,8 +226,10 @@ namespace YgoMaster
                 "Master.Tournament",
                 "Master.Exhibition",
                 "Master.Regulation",
+                "Master.RegulationIcon",
                 "Master.PeriodItem",
                 "Master.Duelpass",
+                "Regulation",
                 "Deck",
                 "DeckList",
                 "TDeck",

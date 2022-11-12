@@ -131,7 +131,7 @@ namespace YgomGame.Duel
         static IL2Method methodGetCardID;
         static IL2Method methodGetCardUniqueID;
 
-        delegate bool Del_IsReplayMode();
+        delegate csbool Del_IsReplayMode();
         static Hook<Del_IsReplayMode> hookIsReplayMode;
 
         static Engine()
@@ -159,7 +159,7 @@ namespace YgomGame.Duel
             return methodGetCardUniqueID.Invoke(new IntPtr[] { new IntPtr(&player), new IntPtr(&position), new IntPtr(&index) }).GetValueRef<int>();
         }
 
-        static bool IsReplayMode()
+        static csbool IsReplayMode()
         {
             if (ClientSettings.ReplayControlsAlwaysEnabled)
             {
@@ -171,9 +171,9 @@ namespace YgomGame.Duel
 
     unsafe static class EngineApiUtil
     {
-        delegate bool Del_IsCardKnown(IntPtr thisPtr, int player, int position, int index, bool face);
+        delegate csbool Del_IsCardKnown(IntPtr thisPtr, int player, int position, int index, bool face);
         static Hook<Del_IsCardKnown> hookIsCardKnown;
-        delegate bool Del_IsInsight(IntPtr thisPtr, int player, int position, int index);
+        delegate csbool Del_IsInsight(IntPtr thisPtr, int player, int position, int index);
         static Hook<Del_IsInsight> hookIsInsight;
 
         static EngineApiUtil()
@@ -184,7 +184,7 @@ namespace YgomGame.Duel
             hookIsInsight = new Hook<Del_IsInsight>(IsInsight, classInfo.GetMethod("IsInsight"));
         }
 
-        static bool IsCardKnown(IntPtr thisPtr, int player, int position, int index, bool face)
+        static csbool IsCardKnown(IntPtr thisPtr, int player, int position, int index, bool face)
         {
             if (GenericCardListController.IsUpdatingCustomCardList || ClientSettings.DuelClientMillenniumEye)
             {
@@ -193,7 +193,7 @@ namespace YgomGame.Duel
             return hookIsCardKnown.Original(thisPtr, player, position, index, face);
         }
 
-        static bool IsInsight(IntPtr thisPtr, int player, int position, int index)
+        static csbool IsInsight(IntPtr thisPtr, int player, int position, int index)
         {
             if (GenericCardListController.IsUpdatingCustomCardList || ClientSettings.DuelClientMillenniumEye)
             {
@@ -317,7 +317,7 @@ namespace YgomGame.Duel
 
     unsafe static class CardIndividualSetting
     {
-        delegate bool Del_IsMonsterCutin(int cardID);
+        delegate csbool Del_IsMonsterCutin(int cardID);
         static Hook<Del_IsMonsterCutin> hookIsMonsterCutin;
 
         static CardIndividualSetting()
@@ -327,7 +327,7 @@ namespace YgomGame.Duel
             hookIsMonsterCutin = new Hook<Del_IsMonsterCutin>(IsMonsterCutin, classInfo.GetMethod("IsMonsterCutin"));
         }
 
-        static bool IsMonsterCutin(int cardID)
+        static csbool IsMonsterCutin(int cardID)
         {
             if (ClientSettings.DuelClientDisableCutinAnimations)
             {

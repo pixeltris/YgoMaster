@@ -8,10 +8,15 @@ namespace YgoMaster
 {
     class DeckInfo
     {
+        // TODO: Replace hard coded regulation value with lookup from file
+        public const int DefaultRegulationId = 10;
+        public const string DefaultRegulationName = "IDS_CARDMENU_REGULATION_NORMAL";
+
         public int Id;
         public string Name;
         public long TimeCreated;
         public long TimeEdited;
+        public int RegulationId;
         public DeckAccessoryInfo Accessory;
         public CardCollection DisplayCards { get; private set; }
         public CardCollection MainDeckCards { get; private set; }
@@ -118,6 +123,10 @@ namespace YgoMaster
             {
                 FromDictionaryEx(MiniJSON.Json.DeserializeStripped(System.IO.File.ReadAllText(File)) as Dictionary<string, object>);
             }
+            if (RegulationId == 0)
+            {
+                RegulationId = DefaultRegulationId;
+            }
         }
 
         public void Save()
@@ -198,6 +207,7 @@ namespace YgoMaster
             Name = Utils.GetValue<string>(data, "name");
             TimeCreated = Utils.GetValue<uint>(data, "ct");
             TimeEdited = Utils.GetValue<uint>(data, "et");
+            RegulationId = Utils.GetValue<int>(data, "regulation_id");
             Accessory.FromDictionary(Utils.GetDictionary(data, "accessory"));
             DisplayCards.FromIndexedDictionary(Utils.GetDictionary(data, "pick_cards"));
             if (data.ContainsKey("focus"))
@@ -216,6 +226,7 @@ namespace YgoMaster
             data["name"] = Name;
             data["ct"] = TimeCreated;
             data["et"] = TimeEdited;
+            data["regulation_id"] = RegulationId;
             data["accessory"] = Accessory.ToDictionary();
             data["pick_cards"] = DisplayCards.ToIndexDictionary();
             data[longKeys ? "Main" : "m"] = MainDeckCards.ToDictionary(longKeys);

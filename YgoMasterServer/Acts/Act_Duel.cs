@@ -203,7 +203,8 @@ namespace YgoMaster
 
         void Act_DuelEnd(GameServerWebRequest request)
         {
-            int res, finish;
+            DuelResultType res;
+            DuelFinishType finish;
             Dictionary<string, object> endParams;
             if (Utils.TryGetValue(request.ActParams, "params", out endParams) &&
                 Utils.TryGetValue(endParams, "res", out res) &&
@@ -212,28 +213,30 @@ namespace YgoMaster
                 switch (request.Player.Duel.Mode)
                 {
                     case GameMode.SoloSingle:
+
                         bool chapterStatusChanged = false;
-                        if (request.Player.Duel.ChapterId != 0 && res != (int)DuelResultType.None)
+                        if (request.Player.Duel.ChapterId != 0 && res != DuelResultType.None)
                         {
                             ChapterStatus oldChapterStatus;
                             request.Player.SoloChapters.TryGetValue(request.Player.Duel.ChapterId, out oldChapterStatus);
-                            SoloUpdateChapterStatus(request, request.Player.Duel.ChapterId, (DuelResultType)res);
+                            SoloUpdateChapterStatus(request, request.Player.Duel.ChapterId, res, finish);
                             ChapterStatus newChapterStatus;
                             request.Player.SoloChapters.TryGetValue(request.Player.Duel.ChapterId, out newChapterStatus);
                             chapterStatusChanged = oldChapterStatus != newChapterStatus;
                         }
-                        GiveDuelReward(request, DuelRewards, (DuelResultType)res, chapterStatusChanged);
+                        GiveDuelReward(request, DuelRewards, res, finish, chapterStatusChanged);
                         SavePlayer(request.Player);
                         break;
                 }
             }
         }
 
-        void GiveDuelReward(GameServerWebRequest request, DuelRewardInfos rewards, DuelResultType result, bool chapterStatusChanged)
+        void GiveDuelReward(GameServerWebRequest request, DuelRewardInfos rewards, DuelResultType result, DuelFinishType finishType, bool chapterStatusChanged)
         {
             if ((rewards.Win.Count == 0 && rewards.Lose.Count == 0) ||
                 (rewards.ChapterStatusChangedNoRewards && chapterStatusChanged) ||
-                (rewards.ChapterStatusChangedOnly && !chapterStatusChanged))
+                (rewards.ChapterStatusChangedOnly && !chapterStatusChanged) ||
+                (result == DuelResultType.Lose && finishType == DuelFinishType.Surrender))
             {
                 return;
             }

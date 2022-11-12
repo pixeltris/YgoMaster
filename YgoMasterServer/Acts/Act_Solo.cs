@@ -122,7 +122,7 @@ namespace YgoMaster
             return true;
         }
 
-        void SoloUpdateChapterStatus(GameServerWebRequest request, int chapterId, DuelResultType duelResult)
+        void SoloUpdateChapterStatus(GameServerWebRequest request, int chapterId, DuelResultType duelResult, DuelFinishType finishType)
         {
             int gateId = GetChapterGateId(chapterId);
 
@@ -192,7 +192,7 @@ namespace YgoMaster
                 {
                     DuelRewardInfos rewards = new DuelRewardInfos();
                     rewards.FromDictionary(extraRewards);
-                    GiveDuelReward(request, rewards, duelResult, statusChange);
+                    GiveDuelReward(request, rewards, duelResult, finishType, statusChange);
                 }
             }
 
@@ -731,7 +731,7 @@ namespace YgoMaster
             Dictionary<string, object> resultData = Utils.GetOrCreateDictionary(soloData, "Result");
             if (SoloRewardsInDuelResult)
             {
-                GiveDuelReward(request, duelRewards, DuelResultType.Win, true);
+                GiveDuelReward(request, duelRewards, DuelResultType.Win, DuelFinishType.None, true);
             }
             // NOTE: You need the "rewards" entry (even if empty) to get the "COMPLETE" popup banner
             if (!resultData.ContainsKey("rewards"))
@@ -848,7 +848,7 @@ namespace YgoMaster
                 }
                 else if (IsValidNonDuelChapter(chapterId))
                 {
-                    SoloUpdateChapterStatus(request, chapterId, DuelResultType.None);
+                    SoloUpdateChapterStatus(request, chapterId, DuelResultType.None, DuelFinishType.None);
                 }
                 else
                 {
@@ -865,7 +865,7 @@ namespace YgoMaster
             if (Utils.TryGetValue<int>(request.ActParams, "chapter", out chapterId))
             {
                 // Assumes the client knows what it should / shouldn't skip
-                SoloUpdateChapterStatus(request, chapterId, DuelResultType.None);
+                SoloUpdateChapterStatus(request, chapterId, DuelResultType.None, DuelFinishType.None);
             }
             request.Remove("Duel", "DuelResult", "Solo.DuelResult");
         }

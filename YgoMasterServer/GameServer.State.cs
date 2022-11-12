@@ -46,6 +46,8 @@ namespace YgoMaster
         List<int> CardCraftable;
         bool CardCraftableAll;
         Dictionary<string, object> Regulation;
+        Dictionary<string, object> RegulationIcon;
+        Dictionary<string, object> RegulationInfo;
         Dictionary<string, object> SoloData;
         Dictionary<int, DuelSettings> SoloDuels;// <chapterid, DuelSettings>
         Dictionary<int, CardCategory> CardCategories;// <categoryId, CardCategory>
@@ -180,14 +182,26 @@ namespace YgoMaster
                 }
             }
 
-            string cardBanListFile = Path.Combine(dataDirectory, "CardBanList.json");
-            if (File.Exists(cardBanListFile))
+            string regulationFile = Path.Combine(dataDirectory, "Regulation.json");
+            if (File.Exists(regulationFile))
             {
-                Regulation = MiniJSON.Json.DeserializeStripped(File.ReadAllText(cardBanListFile)) as Dictionary<string, object>;
+                Regulation = MiniJSON.Json.DeserializeStripped(File.ReadAllText(regulationFile)) as Dictionary<string, object>;
             }
             if (Utils.GetValue<bool>(values, "DisableBanList"))
             {
                 Regulation.Clear();
+            }
+
+            string regulationIconFile = Path.Combine(dataDirectory, "RegulationIcon.json");
+            if (File.Exists(regulationIconFile))
+            {
+                RegulationIcon = MiniJSON.Json.DeserializeStripped(File.ReadAllText(regulationIconFile)) as Dictionary<string, object>;
+            }
+
+            string regulationInfoFile = Path.Combine(dataDirectory, "RegulationInfo.json");
+            if (File.Exists(regulationInfoFile))
+            {
+                RegulationInfo = MiniJSON.Json.DeserializeStripped(File.ReadAllText(regulationInfoFile)) as Dictionary<string, object>;
             }
 
             Craft = new CraftInfo();

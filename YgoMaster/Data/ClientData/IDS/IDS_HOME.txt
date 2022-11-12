@@ -1,2 +1,0 @@
-[IDS_HOME.DUEL]
-Custom duel starter.

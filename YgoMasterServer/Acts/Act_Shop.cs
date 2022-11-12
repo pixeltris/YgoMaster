@@ -741,8 +741,7 @@ namespace YgoMaster
                                 {
                                     case ShopItemSecretType.FindOrCraft:
                                     case ShopItemSecretType.Find:
-                                        if (!foundSecrets.Contains(secretPack.ShopId) &&
-                                            request.Player.ShopState.GetAvailability(Shop, secretPack) == PlayerShopItemAvailability.Available)
+                                        if (request.Player.ShopState.GetAvailability(Shop, secretPack) == PlayerShopItemAvailability.Available)
                                         {
                                             thisCardFoundSecretsExtend.Add(secretPack.ShopId);
                                         }

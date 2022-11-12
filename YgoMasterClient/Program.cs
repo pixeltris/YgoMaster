@@ -27,6 +27,11 @@ namespace YgoMasterClient
         static void Main(string[] args)
         {
             bool success = false;
+            if (!File.Exists(GameLauncher.LoaderDll))
+            {
+                MessageBox.Show("Couldn't find " + GameLauncher.LoaderDll);
+                return;
+            }
             if (!File.Exists(Path.Combine("..", "masterduel_Data", "Plugins", "x86_64", "duel.dll")))
             {
                 // Invalid install location...
@@ -238,13 +243,14 @@ namespace YgoMasterClient
                                                             {
                                                                 categories[cat] = new List<string>();
                                                             }
-                                                            string prefix = "    " + (name == "deleted" ? "//" : "");
+                                                            bool invalid = string.IsNullOrEmpty(name) || name == "deleted" || name == "coming soon" || name.StartsWith("ICON_FRAME");
+                                                            string prefix = "    " + (invalid ? "//" : "");
                                                             categories[cat].Add(prefix + id + ",//" + name);
                                                         }
                                                     }
                                                     StringBuilder res = new StringBuilder();
                                                     res.AppendLine("{");
-                                                    foreach (KeyValuePair<YgomGame.Utility.ItemUtil.Category, List<string>> cat in categories)
+                                                    foreach (KeyValuePair<YgomGame.Utility.ItemUtil.Category, List<string>> cat in categories.OrderBy(x => x.Key))
                                                     {
                                                         res.AppendLine("  \"" + cat.Key + "\": [");
                                                         res.AppendLine(string.Join(Environment.NewLine, cat.Value));
@@ -494,6 +500,11 @@ namespace YgoMasterClient
                                                     IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
                                                     string version = assembly.GetClass("Version", "YgomSystem.Utility").GetField("APP_COMMON_VERSION").GetValue().GetValueObj<string>();
                                                     version = "v" + version.Replace(".", "");
+                                                    if (splitted.Length > 1 && splitted[1].StartsWith("v"))
+                                                    {
+                                                        // v1.3.1 is v130...
+                                                        version = splitted[1];
+                                                    }
                                                     string[] files = 
                                                     {
                                                         "Card/Data/" + version + "/CARD_Genre",
@@ -1351,9 +1362,9 @@ namespace Steamworks
         static IL2Method methodRestartAppIfNecessary;
         static IL2Method methodRunCallbacks;
 
-        delegate bool Del_Init();
+        delegate csbool Del_Init();
         delegate void Del_Shutdown();
-        delegate bool Del_RestartAppIfNecessary(IntPtr unOwnAppID);
+        delegate csbool Del_RestartAppIfNecessary(IntPtr unOwnAppID);
         delegate void Del_RunCallbacks();
 
         static Hook<Del_Init> hookInit;
@@ -1380,7 +1391,7 @@ namespace Steamworks
             hookRunCallbacks = new Hook<Del_RunCallbacks>(RunCallbacks, methodRunCallbacks);
         }
 
-        static bool InitH()
+        static csbool InitH()
         {
             return false;
         }
@@ -1389,7 +1400,7 @@ namespace Steamworks
         {
         }
 
-        static bool RestartAppIfNecessary(IntPtr unOwnAppId)
+        static csbool RestartAppIfNecessary(IntPtr unOwnAppId)
         {
             return false;
         }

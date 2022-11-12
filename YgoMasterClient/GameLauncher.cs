@@ -29,14 +29,14 @@ namespace YgoMasterClient
 
     class GameLauncher
     {
-        const string targetProcessName = "masterduel.exe";
-        const string loaderDll = "YgoMasterLoader.dll";
+        public const string TargetProcessName = "masterduel.exe";
+        public const string LoaderDll = "YgoMasterLoader.dll";
 
         public static unsafe bool Launch(GameLauncherMode mode, params string[] args)
         {
             string exeDir = null;
-            string dllPath = Path.GetFullPath(loaderDll);
-            string exePath = targetProcessName;
+            string dllPath = Path.GetFullPath(LoaderDll);
+            string exePath = TargetProcessName;
             try
             {
                 if (!File.Exists(dllPath))
@@ -82,7 +82,7 @@ namespace YgoMasterClient
 
             if (mode == GameLauncherMode.Inject)
             {
-                Process[] processes = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(targetProcessName));
+                Process[] processes = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(TargetProcessName));
                 try
                 {
                     if (processes.Length == 1)
@@ -93,7 +93,7 @@ namespace YgoMasterClient
                             {
                                 if (!string.IsNullOrEmpty(module.ModuleName))
                                 {
-                                    if (module.ModuleName.Equals(loaderDll, StringComparison.OrdinalIgnoreCase))
+                                    if (module.ModuleName.Equals(LoaderDll, StringComparison.OrdinalIgnoreCase))
                                     {
                                         System.Windows.Forms.MessageBox.Show("Already injected");
                                         return true;
@@ -111,7 +111,7 @@ namespace YgoMasterClient
                     }
                     else
                     {
-                        System.Windows.Forms.MessageBox.Show("Process '" + targetProcessName + "' not found (or multiple)");
+                        System.Windows.Forms.MessageBox.Show("Process '" + TargetProcessName + "' not found (or multiple) (open the game or close duplicates)");
                     }
                 }
                 finally
@@ -313,7 +313,7 @@ namespace YgoMasterClient
                             try
                             {
                                 string moduleName = Path.GetFileName(moduleNameSb.ToString());
-                                if (moduleName.Equals(targetProcessName, StringComparison.OrdinalIgnoreCase))
+                                if (moduleName.Equals(TargetProcessName, StringComparison.OrdinalIgnoreCase))
                                 {
                                     IntPtr byteCount;
                                     if (ReadProcessMemory(pi.hProcess, moduleInfo.EntryPoint, entryPointInst, (IntPtr)2, out byteCount) && (int)byteCount == 2)
@@ -366,7 +366,7 @@ namespace YgoMasterClient
             Success,
         }
 
-        [DllImport(loaderDll, SetLastError = true)]
+        [DllImport(LoaderDll, SetLastError = true)]
         static extern int DetourCreateProcessWithDll_Exported(string lpApplicationName, string lpCommandLine, IntPtr lpProcessAttributes, IntPtr lpThreadAttributes, bool bInheritHandles, int dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, ref STARTUPINFO lpStartupInfo, out PROCESS_INFORMATION lpProcessInformation, string lpDllName, IntPtr pfCreateProcessA);
 
         [DllImport("kernel32.dll", SetLastError = true)]

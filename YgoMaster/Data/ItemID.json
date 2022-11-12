@@ -21,7 +21,7 @@
     1000001,//Rescue Rabbit
     1000002,//Ritual Raven
     1000003,//Dark Magician
-    1000004,//Dark Magician (Mini)
+    //1000004,//coming soon
     1000005,//Borreload Dragon (Mini)
     1000006,//Cyber Dragon Infinity (Mini)
     1000007,//Elemental HERO Stratos
@@ -41,13 +41,13 @@
     //1000021,//coming soon
     1000022,//Revendread Slayer
     //1000023,//coming soon
-    //1000024,//coming soon (NOTE: Icon but no 3d model)
+    //1000024,//coming soon
     //1000025,//coming soon
     //1000026,//coming soon
-    //1000027,//
-    //1000028,//
-    //1000029,//
-    //1000030,//
+    //1000027,//coming soon
+    //1000028,//coming soon
+    //1000029,//coming soon
+    //1000030,//coming soon
     1001001,//Instant Fusion
     1001002,//Noble Arms - Caliburn
     1001003,//Book of Moon
@@ -65,9 +65,15 @@
     1001015,//PSY-Framegear Gamma
     1001016,//Kagetokage
     //1001017,//coming soon
-    //1001018,//
-    //1001019,//
-    //1001020,//
+    //1001018,//coming soon
+    //1001019,//coming soon
+    //1001020,//coming soon
+    //1001021,//coming soon
+    //1001022,//coming soon
+    //1001023,//coming soon
+    //1001024,//coming soon
+    //1001025,//coming soon
+    //1001026,//coming soon
     1002001,//Soccer Ball
     1002002,//Basketball
     1002003,//Record Player
@@ -79,6 +85,10 @@
     1002009,//Crown
     1002010,//Inline Skates
     1002011,//Darts
+    //1002012,//coming soon
+    //1002013,//coming soon
+    //1002014,//coming soon
+    //1002015,//coming soon
   ],
   "ICON": [
     1010001,//Duelist
@@ -104,23 +114,43 @@
     1010021,//Aluber the Dogmatic
     1010022,//Destiny HERO - Destroyer Phoenix Enforcer
     1010023,//Water Enchantress of the Temple
-    //1010024,//
-    //1010025,//
-    //1010026,//
-    //1010027,//
-    //1010028,//
-    //1010029,//
-    //1010030,//
+    1010024,//Visas Starfrost
+    //1010025,//coming soon
+    //1010026,//coming soon
+    //1010027,//coming soon
+    //1010028,//coming soon
+    //1010029,//coming soon
+    //1010030,//coming soon
+    //1010031,//coming soon
+    //1010032,//coming soon
+    //1010033,//coming soon
+    //1010034,//coming soon
+    //1010035,//coming soon
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
     1011004,//DC 2022 AUG Gold Finalist
     1011005,//DC 2022 AUG Silver Finalist
     1011006,//DC 2022 AUG Bronze Finalist
-    //1011007,//
-    //1011008,//
-    //1011009,//
-    //1011010,//
+    //1011007,//coming soon
+    //1011008,//coming soon
+    //1011009,//coming soon
+    //1011010,//coming soon
+    //1011011,//coming soon
+    //1011012,//coming soon
+    //1011013,//coming soon
+    //1011014,//coming soon
+    //1011015,//coming soon
+    //1011016,//coming soon
+    //1011017,//coming soon
+    //1011018,//coming soon
+    //1011019,//coming soon
+    //1011020,//coming soon
+    //1011021,//coming soon
+    //1011022,//coming soon
+    //1011023,//coming soon
+    //1011024,//coming soon
+    //1011025,//coming soon
     1012001,//X-Krawler Synaphysis
     1012002,//Mekk-Knight Spectrum Supreme
     1012003,//Knightmare Gryphon
@@ -160,47 +190,27 @@
     1012037,//Beetrooper Sting Lancer
     1012038,//Vendread Battlelord
     1012039,//Vendread Chimera
-    //1012040,//Legendary Six Samurai - Shi En
-    //1012041,//Yoko, the Graceful Mayakashi
-  ],
-  "ICON_FRAME": [
-    1030001,//Beginner's Frame
-    1030002,//SILVER Frame
-    1030003,//BRONZE Frame
-    1030004,//GOLD Frame
-    1030005,//Green Frame
-    1030006,//Purple Frame
-    1030007,//PLATINUM Frame
-    1030008,//DIAMOND Frame
-    1030009,//Blue Frame
-    1030010,//Bronze Award Frame
-    1030011,//Silver Award Frame
-    1030012,//Gold Award Frame
-    //1030013,//ICON_FRAME13
-    //1030014,//ICON_FRAME14
-    //1030015,//ICON_FRAME15
-    //1030016,//ICON_FRAME16
-    //1030017,//ICON_FRAME17
-    //1030018,//ICON_FRAME18
-    //1030019,//ICON_FRAME19
-    //1030020,//ICON_FRAME20
-    1030021,//
-    1030022,//
-    1030023,//
-    1030024,//
-    1030025,//
-    1030026,//Link Master Frame
-    //1031001,//coming soon
-    //1031002,//coming soon
-    //1031003,//coming soon
-    //1031004,//
-    //1031005,//
-    //1031006,//
-    //1031007,//
-    //1031008,//
-    //1031009,//
-    //1031010,//
-    //1031011,//
+    //1012040,//coming soon
+    //1012041,//coming soon
+    1012042,//Ghostrick Alucard
+    //1012043,//coming soon
+    //1012044,//coming soon
+    //1012045,//coming soon
+    //1012046,//coming soon
+    //1012047,//coming soon
+    //1012048,//coming soon
+    //1012049,//coming soon
+    //1012050,//coming soon
+    //1012051,//coming soon
+    //1012052,//coming soon
+    //1012053,//coming soon
+    //1012054,//coming soon
+    //1012055,//coming soon
+    //1012056,//coming soon
+    //1012057,//coming soon
+    //1012058,//coming soon
+    //1012059,//coming soon
+    //1012060,//coming soon
   ],
   "PROFILE_TAG": [
     1020001,//Beginner Duelist
@@ -240,19 +250,81 @@
     1020035,//Link Elite
     1020036,//Link Master
     1020037,//Synchro x Xyz Festival2022
-    //1020038,//
-    //1020039,//
-    //1020040,//
-    //1020041,//
-    //1020042,//
-    //1020043,//
-    //1020044,//
+    //1020038,//coming soon
+    //1020039,//coming soon
+    //1020040,//coming soon
+    //1020041,//coming soon
+    //1020042,//coming soon
+    //1020043,//coming soon
+    1020044,//Anti-Spell Festival 2022
     //1020045,//
     //1020046,//
     //1020047,//
     //1020048,//
     //1020049,//
     //1020050,//
+    //1020051,//
+    //1020052,//
+    //1020053,//
+    //1020054,//
+    //1020055,//
+    //1020056,//
+    //1020057,//
+    //1020058,//
+    //1020059,//
+    //1020060,//
+  ],
+  "ICON_FRAME": [
+    1030001,//Beginner's Frame
+    1030002,//SILVER Frame
+    1030003,//BRONZE Frame
+    1030004,//GOLD Frame
+    1030005,//Green Frame
+    1030006,//Purple Frame
+    1030007,//PLATINUM Frame
+    1030008,//DIAMOND Frame
+    1030009,//Blue Frame
+    1030010,//Bronze Award Frame
+    1030011,//Silver Award Frame
+    1030012,//Gold Award Frame
+    //1030013,//ICON_FRAME13
+    //1030014,//ICON_FRAME14
+    //1030015,//ICON_FRAME15
+    //1030016,//ICON_FRAME16
+    //1030017,//ICON_FRAME17
+    //1030018,//ICON_FRAME18
+    //1030019,//ICON_FRAME19
+    //1030020,//ICON_FRAME20
+    //1030021,//coming soon
+    //1030022,//coming soon
+    //1030023,//coming soon
+    //1030024,//coming soon
+    //1030025,//coming soon
+    1030026,//Link Master Frame
+    //1030027,//coming soon
+    //1030028,//coming soon
+    //1030029,//coming soon
+    //1030030,//coming soon
+    //1031001,//coming soon
+    //1031002,//coming soon
+    1031003,//Magic Cylinder
+    //1031004,//coming soon
+    //1031005,//coming soon
+    //1031006,//coming soon
+    //1031007,//coming soon
+    //1031008,//coming soon
+    //1031009,//coming soon
+    //1031010,//coming soon
+    //1031011,//coming soon
+    //1031012,//coming soon
+    //1031013,//coming soon
+    //1031014,//coming soon
+    //1031015,//coming soon
+    //1032001,//coming soon
+    //1032002,//coming soon
+    //1032003,//coming soon
+    //1032004,//coming soon
+    //1032005,//coming soon
   ],
   "PROTECTOR": [
     1070001,//Yu-Gi-Oh! Trading Card Game
@@ -276,15 +348,25 @@
     1070019,//Token Collector
     1070020,//Link Blue
     1070021,//DC 2022 AUG Celebration
-    //1070022,//
-    //1070023,//
-    //1070024,//
-    //1070025,//
-    //1070026,//
-    //1070027,//
-    //1070028,//
-    //1070029,//
-    //1070030,//
+    1070022,//Ghostrick Festival
+    //1070023,//coming soon
+    //1070024,//coming soon
+    //1070025,//coming soon
+    1070026,//Mamonaka the Vaylantz United
+    //1070027,//coming soon
+    //1070028,//coming soon
+    //1070029,//coming soon
+    //1070030,//coming soon
+    //1070031,//coming soon
+    //1070032,//coming soon
+    //1070033,//coming soon
+    //1070034,//coming soon
+    //1070035,//coming soon
+    //1070036,//coming soon
+    //1070037,//coming soon
+    //1070038,//coming soon
+    //1070039,//coming soon
+    //1070040,//coming soon
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -298,13 +380,33 @@
     1071011,//Mermail Abyssmegalo
     1071012,//Giant Beetrooper Invincible Atlas
     1071013,//Revendread Slayer
-    //1071014,//
-    //1071015,//
+    1071014,//Ghostrick Alucard
+    //1071015,//coming soon
+    //1071016,//coming soon
+    //1071017,//coming soon
+    //1071018,//coming soon
+    //1071019,//coming soon
+    //1071020,//coming soon
+    //1071021,//coming soon
+    //1071022,//coming soon
+    //1071023,//coming soon
+    //1071024,//coming soon
+    //1071025,//coming soon
+    //1071026,//coming soon
+    //1071027,//coming soon
+    //1071028,//coming soon
+    //1071029,//coming soon
+    //1071030,//coming soon
     1072001,//Sky Striker Conversion: Flaming Wings of Destruction
-    //1072002,//
-    //1072003,//
-    //1072004,//
-    //1072005,//
+    //1072002,//coming soon
+    //1072003,//coming soon
+    //1072004,//coming soon
+    //1072005,//coming soon
+    //1072006,//coming soon
+    //1072007,//coming soon
+    //1072008,//coming soon
+    //1072009,//coming soon
+    //1072010,//coming soon
   ],
   "DECK_CASE": [
     1080001,//Duelist Card Case Red
@@ -325,13 +427,38 @@
     1080016,//Burning Spirits
     //1080017,//coming soon
     1080018,//Spellbook of Prophecy
-    //1080019,//
-    //1080020,//
+    //1080019,//coming soon
+    //1080020,//coming soon
+    //1080021,//coming soon
+    //1080022,//coming soon
+    //1080023,//coming soon
+    //1080024,//coming soon
+    //1080025,//coming soon
+    //1080026,//coming soon
+    //1080027,//coming soon
+    //1080028,//coming soon
+    //1080029,//coming soon
+    //1080030,//coming soon
+    //1081001,//coming soon
+    //1081002,//coming soon
+    //1081003,//coming soon
+    //1081004,//coming soon
+    //1081005,//coming soon
+    //1081006,//coming soon
+    //1081007,//coming soon
+    //1081008,//coming soon
+    //1081009,//coming soon
+    //1081010,//coming soon
     1082001,//Xyz Black
-    //1082002,//
-    //1082003,//
-    //1082004,//
-    //1082005,//
+    //1082002,//coming soon
+    //1082003,//coming soon
+    //1082004,//coming soon
+    //1082005,//coming soon
+    //1082006,//coming soon
+    //1082007,//coming soon
+    //1082008,//coming soon
+    //1082009,//coming soon
+    //1082010,//coming soon
   ],
   "FIELD": [
     1090001,//Forest
@@ -343,15 +470,27 @@
     1090007,//Foreign Capital
     1090008,//Realm of Danger!
     1090009,//Night Skyscrapers
-    1090010,//Glacial World
+    //1090010,//coming soon
     1090011,//The Desolate Temple
     1090012,//Mount Swordsoul
     1090013,//Vivid Abyssal Waters
-    1090014,//Madolche Chateau
-    //1090015,//
-    //1090016,//
-    //1090017,//
+    //1090014,//coming soon
+    1090015,//Ghostrick Mansion
+    //1090016,//coming soon
+    //1090017,//coming soon
+    //1090018,//coming soon
+    //1090019,//coming soon
+    //1090020,//coming soon
+    //1090021,//coming soon
+    //1090022,//coming soon
+    //1090023,//coming soon
+    //1090024,//coming soon
+    //1090025,//coming soon
     1092001,//Colosseum
+    //1092002,//coming soon
+    //1092003,//coming soon
+    //1092004,//coming soon
+    //1092005,//coming soon
   ],
   "FIELD_OBJ": [
     1100001,//Forest
@@ -363,27 +502,52 @@
     1100007,//Foreign Capital
     1100008,//Realm of Danger!
     1100009,//Night Skyscrapers
-    1100010,//Glacial World
+    //1100010,//coming soon
     1100011,//The Desolate Temple
     1100012,//Mount Swordsoul
     1100013,//Vivid Abyssal Waters
-    1100014,//Madolche Chateau
-    //1100015,//
-    //1100016,//
-    //1100017,//
+    //1100014,//coming soon
+    1100015,//Ghostrick Mansion
+    //1100016,//coming soon
+    //1100017,//coming soon
+    //1100018,//coming soon
+    //1100019,//coming soon
+    //1100020,//coming soon
+    //1100021,//coming soon
+    //1100022,//coming soon
+    //1100023,//coming soon
+    //1100024,//coming soon
+    //1100025,//coming soon
     1101001,//Trap Hole
     1101002,//Magical Hats
-    1101003,//Summon Limit
+    //1101003,//coming soon
     1101004,//Giant Trap Hole
     1101005,//TG1-EM1
     1101006,//Predaplant Chimerafflesia
     1101007,//Contract with the Abyss
     1101008,//Loop of Destruction
-    1101009,//Genex Furnace
-    //1101010,//
-    //1101011,//
-    //1101012,//
+    //1101009,//coming soon
+    //1101010,//coming soon
+    //1101011,//coming soon
+    //1101012,//coming soon
+    //1101013,//coming soon
+    //1101014,//coming soon
+    //1101015,//coming soon
+    //1101016,//coming soon
+    //1101017,//coming soon
+    //1101018,//coming soon
+    //1101019,//coming soon
+    //1101020,//coming soon
+    //1101021,//coming soon
+    //1101022,//coming soon
+    //1101023,//coming soon
+    //1101024,//coming soon
+    //1101025,//coming soon
     1102001,//Colosseum
+    //1102002,//coming soon
+    //1102003,//coming soon
+    //1102004,//coming soon
+    //1102005,//coming soon
   ],
   "AVATAR_HOME": [
     1110001,//Forest
@@ -395,30 +559,52 @@
     1110007,//Foreign Capital
     1110008,//Realm of Danger!
     1110009,//Night Skyscrapers
-    1110010,//Glacial World
+    //1110010,//coming soon
     1110011,//The Desolate Temple
     1110012,//Mount Swordsoul
     1110013,//Vivid Abyssal Waters
-    1110014,//Madolche Chateau
-    //1110015,//
-    //1110016,//
-    //1110017,//
+    //1110014,//coming soon
+    1110015,//Ghostrick Mansion
+    //1110016,//coming soon
+    //1110017,//coming soon
+    //1110018,//coming soon
+    //1110019,//coming soon
+    //1110020,//coming soon
+    //1110021,//coming soon
+    //1110022,//coming soon
+    //1110023,//coming soon
+    //1110024,//coming soon
+    //1110025,//coming soon
     1111001,//Destiny Board
     1111002,//Bug Matrix
     1111003,//Shien's Dojo
     1111004,//Flower Gathering
     1111005,//Dragonic Tactics
-    1111006,//Catapult Turtle
+    //1111006,//coming soon
     1111007,//World Legacy - "World Key"
     1111008,//Rank-Up-Magic Barian's Force
     1111009,//Rank-Up-Magic Astral Force
-    //1111010,//
-    //1111011,//
-    //1111012,//
-    //1111013,//
-    //1111014,//
-    //1111015,//
+    //1111010,//coming soon
+    //1111011,//coming soon
+    //1111012,//coming soon
+    //1111013,//coming soon
+    //1111014,//coming soon
+    //1111015,//coming soon
+    //1111016,//coming soon
+    //1111017,//coming soon
+    //1111018,//coming soon
+    //1111019,//coming soon
+    //1111020,//coming soon
+    //1111021,//coming soon
+    //1111022,//coming soon
+    //1111023,//coming soon
+    //1111024,//coming soon
+    //1111025,//coming soon
     1112001,//Colosseum
+    //1112002,//coming soon
+    //1112003,//coming soon
+    //1112004,//coming soon
+    //1112005,//coming soon
   ],
   "STRUCTURE": [
     1120001,//Starting Deck
@@ -437,10 +623,20 @@
     1120014,//Gem-Knights' Resolution
     1120015,//Dragonmaid-To-Order
     1120016,//Burning Spirits
-    1120017,//coming soon
+    //1120017,//coming soon
     1120018,//Spellbook of Prophecy
-    1120019,//
-    1120020,//
+    //1120019,//coming soon
+    //1120020,//coming soon
+    //1120021,//coming soon
+    //1120022,//coming soon
+    //1120023,//coming soon
+    //1120024,//coming soon
+    //1120025,//coming soon
+    //1120026,//coming soon
+    //1120027,//coming soon
+    //1120028,//coming soon
+    //1120029,//coming soon
+    //1120030,//coming soon
   ],
   "WALLPAPER": [
     1130001,//Blue-Eyes Alternative White Dragon
@@ -457,12 +653,22 @@
     1130012,//Number F0: Utopic Draco Future
     1130013,//Odd-Eyes Arc Pendulum Dragon
     1130014,//Accesscode Talker
-    //1130015,//
-    //1130016,//
-    //1130017,//
-    //1130018,//
-    //1130019,//
-    //1130020,//
+    1130015,//Ghostrick Festival
+    //1130016,//coming soon
+    //1130017,//coming soon
+    //1130018,//coming soon
+    //1130019,//coming soon
+    //1130020,//coming soon
+    //1130021,//coming soon
+    //1130022,//coming soon
+    //1130023,//coming soon
+    //1130024,//coming soon
+    //1130025,//coming soon
+    //1130026,//coming soon
+    //1130027,//coming soon
+    //1130028,//coming soon
+    //1130029,//coming soon
+    //1130030,//coming soon
   ],
   "PACK_TICKET": [
     1140001,//Legacy Pack ticket
@@ -471,9 +677,9 @@
     1141002,//Fusion Reward Ticket
     1141003,//Synchro Reward Ticket
     1141004,//Duelist Cup Reward Tickets
-    1141005,//
-    1141006,//
-    1141007,//
+    //1141005,//
+    //1141006,//
+    //1141007,//
   ],
   "DECK_LIMIT": [
     1150001,//Deck Slot

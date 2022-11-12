@@ -87,7 +87,7 @@ namespace YgoMaster
             }
             WriteDeck_num_empty(request);
             request.Remove("Deck.list." + id);
-            request.Remove("Deck.last_set");
+            request.Remove("Deck.last_set");// Not required for "Deck.delete_deck_multi"?
             request.Remove("DeckList." + id);
         }
 
@@ -129,6 +129,7 @@ namespace YgoMaster
                 { "status", 0 },
                 { "et", deckInfo.TimeEdited },
                 { "ct", deckInfo.TimeCreated },
+                { "regulation_id", deckInfo.RegulationId },
                 { "accessory", deckInfo.Accessory.ToDictionary() },
                 { "pick_cards", deckInfo.DisplayCards.ToIndexDictionary() }
             };

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace YgoMaster
@@ -27,6 +28,7 @@ namespace YgoMaster
                 DeleteDeck(deck);
                 request.Player.Decks.Remove(deckId);
                 WriteDeckRemoval(request, deckId);
+                SavePlayer(request.Player);
             }
             else
             {
@@ -34,11 +36,32 @@ namespace YgoMaster
             }
         }
 
+        void Act_DeckDeleteDeckMulti(GameServerWebRequest request)
+        {
+            List<int> deckIdList = Utils.GetIntList(request.ActParams, "deck_id_list");
+            foreach (int deckId in deckIdList)
+            {
+                DeckInfo deck;
+                if (request.Player.Decks.TryGetValue(deckId, out deck))
+                {
+                    DeleteDeck(deck);
+                    request.Player.Decks.Remove(deckId);
+                    WriteDeckRemoval(request, deckId);
+                }
+                else
+                {
+                    WriteDeckRemoval(request, deckId, true);
+                }
+            }
+            SavePlayer(request.Player);
+        }
+
         void Act_DeckUpdate(GameServerWebRequest request)
         {
             DeckInfo deck = new DeckInfo();
             deck.Id = Utils.GetValue(request.ActParams, "deck_id", 0);
             deck.Name = Utils.GetValue(request.ActParams, "name", "Deck");
+            deck.RegulationId = Utils.GetValue(request.ActParams, "regulation_id", DeckInfo.DefaultRegulationId);
             Dictionary<string, object> accessory = Utils.GetDictionary(request.ActParams, "accessory");
             deck.Accessory.FromDictionary(accessory);
             Dictionary<string, object> displayCards = Utils.GetDictionary(request.ActParams, "pick_cards");

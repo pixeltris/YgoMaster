@@ -1,0 +1,80 @@
+{
+  "101": {
+    "id": "1",
+    "regulation_id": 101,
+    "name": "IDS_REGURATION_NAME_101",
+    "icon": "RegulationLogoEvent"
+  },
+  "102": {
+    "id": "2",
+    "regulation_id": 102,
+    "name": "IDS_REGURATION_NAME_102",
+    "icon": "RegulationLogoEvent"
+  },
+  "104": {
+    "id": "3",
+    "regulation_id": 104,
+    "name": "IDS_EXHIBITION_REG_003",
+    "icon": "RegulationLogoEvent"
+  },
+  "106": {
+    "id": "4",
+    "regulation_id": 106,
+    "name": "IDS_EXHIBITION_REG_011",
+    "icon": "RegulationLogoEvent"
+  },
+  "8": {
+    "id": "5",
+    "regulation_id": 8,
+    "name": "IDS_CARDMENU_REGULATION_UNLIMITED",
+    "icon": "RegulationLogoUnlimited"
+  },
+  "107": {
+    "id": "6",
+    "regulation_id": 107,
+    "name": "IDS_EXHIBITION_REG_012",
+    "icon": "RegulationLogoEvent"
+  },
+  "108": {
+    "id": "7",
+    "regulation_id": 108,
+    "name": "IDS_RANKEVENT_REG_001",
+    "icon": "RegulationLogoEvent"
+  },
+  "109": {
+    "id": "8",
+    "regulation_id": 109,
+    "name": "IDS_EXHIBITION_REG_013",
+    "icon": "RegulationLogoEvent"
+  },
+  "10": {
+    "id": "9",
+    "regulation_id": 10,
+    "name": "IDS_CARDMENU_REGULATION_NORMAL",
+    "icon": "RegulationLogoStandard"
+  },
+  "2001": {
+    "id": "2001",
+    "regulation_id": 2001,
+    "name": "IDS_REGULATION_FUSION",
+    "icon": "RegulationLogoFusion"
+  },
+  "3001": {
+    "id": "3001",
+    "regulation_id": 3001,
+    "name": "IDS_REGULATION_SYNCHRO",
+    "icon": "RegulationLogoSynchro"
+  },
+  "4001": {
+    "id": "4001",
+    "regulation_id": 4001,
+    "name": "IDS_REGULATION_XYZ",
+    "icon": "RegulationLogoXyz"
+  },
+  "5001": {
+    "id": "5001",
+    "regulation_id": 5001,
+    "name": "IDS_REGULATION_LINK",
+    "icon": "RegulationLogoLink"
+  }
+}
