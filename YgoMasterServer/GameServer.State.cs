@@ -187,9 +187,20 @@ namespace YgoMaster
             {
                 Regulation = MiniJSON.Json.DeserializeStripped(File.ReadAllText(regulationFile)) as Dictionary<string, object>;
             }
-            if (Utils.GetValue<bool>(values, "DisableBanList"))
+            if (Utils.GetValue<bool>(values, "DisableBanList") && Regulation != null)
             {
-                Regulation.Clear();
+                Dictionary<string, object> defaultRegulation = Utils.GetDictionary(Regulation, DeckInfo.DefaultRegulationId.ToString());
+                if (defaultRegulation != null)
+                {
+                    Dictionary<string, object> available = Utils.GetDictionary(defaultRegulation, "available");
+                    if (available != null)
+                    {
+                        for (int i = 0; i <= 3; i++)
+                        {
+                            available["a" + i] = new int[0];
+                        }
+                    }
+                }
             }
 
             string regulationIconFile = Path.Combine(dataDirectory, "RegulationIcon.json");
