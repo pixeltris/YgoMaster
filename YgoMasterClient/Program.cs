@@ -498,35 +498,30 @@ namespace YgoMasterClient
                                             case "carddata":// dumps card data
                                                 {
                                                     IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
-                                                    string version = assembly.GetClass("Version", "YgomSystem.Utility").GetField("APP_COMMON_VERSION").GetValue().GetValueObj<string>();
-                                                    version = "v" + version.Replace(".", "");
-                                                    if (splitted.Length > 1 && splitted[1].StartsWith("v"))
-                                                    {
-                                                        // v1.3.1 is v130...
-                                                        version = splitted[1];
-                                                    }
+                                                    string intIdPath = assembly.GetClass("Content", "YgomGame.Card").GetField("IntIdPath").GetValue().GetValueObj<string>();
+                                                    string path = intIdPath.Substring(0, intIdPath.LastIndexOf('/'));
                                                     string[] files = 
                                                     {
-                                                        "Card/Data/" + version + "/CARD_Genre",
-                                                        "Card/Data/" + version + "/CARD_IntID",
-                                                        "Card/Data/" + version + "/CARD_Named",
-                                                        "Card/Data/" + version + "/CARD_Prop",
-                                                        "Card/Data/" + version + "/CARD_RubyIndx",
-                                                        "Card/Data/" + version + "/CARD_RubyName",
-                                                        "Card/Data/" + version + "/en-US/CARD_Desc",
-                                                        "Card/Data/" + version + "/en-US/CARD_Indx",
-                                                        "Card/Data/" + version + "/en-US/CARD_Name",
-                                                        "Card/Data/" + version + "/en-US/DLG_Indx",
-                                                        "Card/Data/" + version + "/en-US/DLG_Text",
-                                                        "Card/Data/" + version + "/en-US/WORD_Indx",
-                                                        "Card/Data/" + version + "/en-US/WORD_Text",
-                                                        "Card/Data/" + version + "/MD/all_gadget_monsters",
-                                                        "Card/Data/" + version + "/MD/all_monsters",
-                                                        "Card/Data/" + version + "/MD/cards_all",
-                                                        "Card/Data/" + version + "/MD/cards_in_maindeck",
-                                                        "Card/Data/" + version + "/MD/CARD_Link",
-                                                        "Card/Data/" + version + "/MD/CARD_Same",
-                                                        "Card/Data/" + version + "/MD/monsters_in_maindeck"
+                                                        path + "/CARD_Genre",
+                                                        path + "/CARD_IntID",
+                                                        path + "/CARD_Named",
+                                                        path + "/CARD_Prop",
+                                                        path + "/CARD_RubyIndx",
+                                                        path + "/CARD_RubyName",
+                                                        path + "/en-US/CARD_Desc",
+                                                        path + "/en-US/CARD_Indx",
+                                                        path + "/en-US/CARD_Name",
+                                                        path + "/en-US/DLG_Indx",
+                                                        path + "/en-US/DLG_Text",
+                                                        path + "/en-US/WORD_Indx",
+                                                        path + "/en-US/WORD_Text",
+                                                        path + "/MD/all_gadget_monsters",
+                                                        path + "/MD/all_monsters",
+                                                        path + "/MD/cards_all",
+                                                        path + "/MD/cards_in_maindeck",
+                                                        path + "/MD/CARD_Link",
+                                                        path + "/MD/CARD_Same",
+                                                        path + "/MD/monsters_in_maindeck"
                                                     };
                                                     foreach (string file in files)
                                                     {
