@@ -120,7 +120,8 @@ namespace YgoMaster
         Drop,
         Search,
         Used,
-        Put
+        Put,
+        Normal3,//v1.3.1
     }
 
     /// <summary>
@@ -334,7 +335,8 @@ namespace YgoMaster
         InsCard,
         InsType,
         InsAttr,
-        InsNum
+        InsNum,
+        InsStringIfable,//v1.3.1
     }
 
     /// <summary>
@@ -495,6 +497,9 @@ namespace YgoMaster
         Tuning = 8192,
         ByBattle = 16384,
         Opponent = 32768,
+        Activate = 65536,//v1.3.1
+        Cost = 131072,//v1.3.1
+        End = 262144,//v1.3.1
         FromMask = 63
     }
 

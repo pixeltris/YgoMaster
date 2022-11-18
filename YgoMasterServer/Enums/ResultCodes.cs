@@ -132,6 +132,17 @@ namespace YgoMaster
             ERROR_EXHIBITION_STATUS = 1405,
             ERROR_DECK_NAME_LEN = 1406,
             ERROR_DECK_SAME_CARDS = 1407,
+            ERROR_DECK_NO,//v1.3.1
+            ERROR_CARD_ID,//v1.3.1
+            INVALID_DECK_COUNT = 1440,//v1.3.1
+            INVALID_DECK_NAME,//v1.3.1
+            INVALID_DECK_BIKO,//v1.3.1
+            CGN_ID_NOT_LINKED,//v1.3.1
+            OVER_DECK_LIMIT,//v1.3.1
+            INVALID_ACCESS,//v1.3.1
+            CDB_SERVER_ERROR,//v1.3.1
+            KONAMIID_SERVER_ERROR,//v1.3.1
+            NEURON_MAINTENANCE,//v1.3.1
         }
 
         public enum CraftCode
@@ -216,6 +227,11 @@ namespace YgoMaster
             NOT_EXIST_ROOM = 2116,
             NOT_EXIST_ROOM_OPP = 2117,
             AUDIENCE_LIMIT_MAX = 2118,
+            NOT_EXIST_TEAM,//v1.3.1
+            INVALID_TEAM_INFO,//v1.3.1
+            VS_TEAM_DECIDED,//v1.3.1
+            TEAM_MATCHING_CANCELED,//v1.3.1
+            VS_TEAM_WAITING,//v1.3.1
         }
 
         public enum StructureCode
@@ -226,6 +242,51 @@ namespace YgoMaster
             CRITICAL = 3,
             INVALID_PARAM = 2200,
             ALREADY_FIRST_SET = 2201,
+        }
+
+        public enum TeamCode//v1.3.1
+        {
+            NONE,
+            ERROR,
+            FATAL,
+            CRITICAL,
+            ERR_INVALID_PARAM = 3900,
+            ERR_INVALID_TEAM,
+            ERR_ENTRY_FAILED,
+            ERR_INVALID_NEW_TEAM_ID,
+            ERR_NO_VACANT_TABLES,
+            ERR_INVALID_DECKSET,
+            ERR_TEAM_CREATE_FAILED,
+            ERR_USER_BLOCK,
+            ERR_INVALID_DATA,
+            ERR_PLATFORM_AUTH_EXPIRED,
+            ERR_ALREADY_ENTRY_TEAM,
+            ERR_TEAM_MEMBER_MAX,
+            ERR_RIVAL_LEAVE_TABLE,
+            ERR_ENTRY_TEAM_CROSS_INVALID,
+            ERR_ENTRY_TEAM_CROSS_PF_INVALID,
+            ERR_ENTRY_TEAM_CROSS_XB_BOTH_INVALID,
+            ERR_ENTRY_TEAM_CROSS_XB_DEVICE_INVALID,
+            ERR_ENTRY_TEAM_CROSS_XB_APP_INVALID,
+            ERR_ENTRY_TEAM_CROSS_PF_APP_INVALID,
+            ERR_ENTRY_TEAM_VALID_CROSS_XB_BOTH_INVALID,
+            ERR_ENTRY_TEAM_VALID_CROSS_XB_DEVICE_INVALID,
+            ERR_ENTRY_TEAM_VALID_CROSS_XB_APP_INVALID,
+            ERR_ENTRY_TEAM_VALID_CROSS_PF_APP_INVALID,
+            ERR_DECK_EMPTY,
+            ERR_DECK_REG,
+            ERR_LIMIT_REGULATION_PERIOD,
+            ERR_HOST_CLIENT_VERSION,
+            WAITING_OTHER_MEMBER,
+            SEARCHING_TEAM,
+            MATCHING_TIME_OUT,
+            ERR_ALREADY_MEMBER_COMPLETE,
+            ERR_KICK_TIMEOUT,
+            ERR_KICK_NOT_SEATED,
+            ERR_CANNOT_SIT_TABLE,
+            ERR_CANNOT_REASON_TEAM_STATUS,
+            ERR_TEAM_REMOVED,
+            ERR_RIVAL_MATCHING_FAILED,
         }
 
         public enum ShopCode
@@ -331,6 +392,9 @@ namespace YgoMaster
             FATAL = 2,
             CRITICAL = 3,
             MAINTE = 4,
+            INVALID_USER_TOKEN = 5,//v1.3.1
+            ID_NOT_REGISTERD = 6,//v1.3.1
+            DECK_NOT_FOUND = 7,//v1.3.1
         }
 
         public enum RoomCode
