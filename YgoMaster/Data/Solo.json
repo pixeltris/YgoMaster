@@ -15,189 +15,189 @@
                 "clear_chapter": 10003
               },
               "2": {
-                "priority": 18,
+                "priority": 19,
                 "parent_gate": 21,
                 "unlock_id": 8,
                 "view_gate": 5,
                 "clear_chapter": 20120
               },
               "3": {
-                "priority": 19,
+                "priority": 20,
                 "parent_gate": 21,
                 "unlock_id": 10,
                 "view_gate": 5,
                 "clear_chapter": 30126
               },
               "4": {
-                "priority": 14,
+                "priority": 15,
                 "parent_gate": 0,
                 "unlock_id": 7,
                 "view_gate": 5,
                 "clear_chapter": 40018
               },
               "5": {
-                "priority": 5,
+                "priority": 6,
                 "parent_gate": 0,
                 "unlock_id": 1,
                 "view_gate": 1,
                 "clear_chapter": 50021
               },
               "6": {
-                "priority": 6,
+                "priority": 7,
                 "parent_gate": 0,
                 "unlock_id": 1,
                 "view_gate": 1,
                 "clear_chapter": 60025
               },
               "7": {
-                "priority": 7,
+                "priority": 8,
                 "parent_gate": 0,
                 "unlock_id": 2,
                 "view_gate": 5,
                 "clear_chapter": 70037
               },
               "8": {
-                "priority": 8,
+                "priority": 9,
                 "parent_gate": 0,
                 "unlock_id": 3,
                 "view_gate": 5,
                 "clear_chapter": 80043
               },
               "9": {
-                "priority": 9,
+                "priority": 10,
                 "parent_gate": 0,
                 "unlock_id": 2,
                 "view_gate": 5,
                 "clear_chapter": 90049
               },
               "10": {
-                "priority": 10,
+                "priority": 11,
                 "parent_gate": 0,
                 "unlock_id": 4,
                 "view_gate": 5,
                 "clear_chapter": 100055
               },
               "11": {
-                "priority": 11,
+                "priority": 12,
                 "parent_gate": 0,
                 "unlock_id": 5,
                 "view_gate": 5,
                 "clear_chapter": 110061
               },
               "12": {
-                "priority": 12,
+                "priority": 13,
                 "parent_gate": 0,
                 "unlock_id": 6,
                 "view_gate": 5,
                 "clear_chapter": 120067
               },
               "13": {
-                "priority": 13,
+                "priority": 14,
                 "parent_gate": 0,
                 "unlock_id": 5,
                 "view_gate": 5,
                 "clear_chapter": 130073
               },
               "14": {
-                "priority": 15,
+                "priority": 16,
                 "parent_gate": 0,
                 "unlock_id": 8,
                 "view_gate": 5,
                 "clear_chapter": 140079
               },
               "15": {
-                "priority": 16,
+                "priority": 17,
                 "parent_gate": 0,
                 "unlock_id": 9,
                 "view_gate": 5,
                 "clear_chapter": 150085
               },
               "16": {
-                "priority": 23,
+                "priority": 25,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
                 "clear_chapter": 160091
               },
               "17": {
-                "priority": 21,
+                "priority": 23,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
                 "clear_chapter": 170099
               },
               "19": {
-                "priority": 24,
+                "priority": 26,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
                 "clear_chapter": 190109
               },
               "20": {
-                "priority": 42,
+                "priority": 49,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
                 "clear_chapter": 200139
               },
               "21": {
-                "priority": 17,
+                "priority": 18,
                 "parent_gate": 0,
                 "unlock_id": 8,
                 "view_gate": 5,
                 "clear_chapter": 230184
               },
               "22": {
-                "priority": 3,
+                "priority": 4,
                 "parent_gate": 31,
                 "unlock_id": 1,
                 "view_gate": 1,
                 "clear_chapter": 220150
               },
               "23": {
-                "priority": 20,
+                "priority": 21,
                 "parent_gate": 21,
                 "unlock_id": 14,
                 "view_gate": 5,
                 "clear_chapter": 230184
               },
               "24": {
-                "priority": 32,
+                "priority": 34,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
                 "clear_chapter": 240195
               },
               "26": {
-                "priority": 25,
+                "priority": 27,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
                 "clear_chapter": 260211
               },
               "27": {
-                "priority": 26,
+                "priority": 28,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
                 "clear_chapter": 270219
               },
               "28": {
-                "priority": 27,
+                "priority": 29,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
                 "clear_chapter": 280226
               },
               "29": {
-                "priority": 43,
+                "priority": 50,
                 "parent_gate": 0,
                 "unlock_id": 13,
                 "view_gate": 5,
                 "clear_chapter": 290240
               },
               "30": {
-                "priority": 4,
+                "priority": 5,
                 "parent_gate": 31,
                 "unlock_id": 15,
                 "view_gate": 1,
@@ -211,32 +211,39 @@
                 "clear_chapter": 300247
               },
               "32": {
-                "priority": 29,
+                "priority": 31,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
                 "clear_chapter": 320259
               },
               "35": {
-                "priority": 30,
+                "priority": 32,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
                 "clear_chapter": 350283
               },
               "36": {
-                "priority": 28,
+                "priority": 30,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
                 "clear_chapter": 360290
               },
               "37": {
-                "priority": 31,
+                "priority": 33,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
                 "clear_chapter": 370301
+              },
+              "40": {
+                "priority": 40,
+                "parent_gate": 0,
+                "unlock_id": 11,
+                "view_gate": 5,
+                "clear_chapter": 400322
               }
             },
             "chapter": {
@@ -2722,6 +2729,71 @@
                   "begin_sn": "",
                   "npc_id": 1123
                 }
+              },
+              "40": {
+                "400319": {
+                  "parent_chapter": 0,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 803,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00400319",
+                  "npc_id": 0
+                },
+                "400320": {
+                  "parent_chapter": 400319,
+                  "difficulty": 1,
+                  "mydeck_set_id": 0,
+                  "set_id": 803,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1130
+                },
+                "400321": {
+                  "parent_chapter": 400320,
+                  "difficulty": 3,
+                  "mydeck_set_id": 11403,
+                  "set_id": 10673,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1130
+                },
+                "400322": {
+                  "parent_chapter": 400321,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 803,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00400322",
+                  "npc_id": 0
+                },
+                "400323": {
+                  "parent_chapter": 400321,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 0,
+                  "unlock_id": 10810,
+                  "begin_sn": "",
+                  "npc_id": 0
+                },
+                "400324": {
+                  "parent_chapter": 400323,
+                  "difficulty": 4,
+                  "mydeck_set_id": 1140102,
+                  "set_id": 1071014,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1131
+                },
+                "400325": {
+                  "parent_chapter": 400324,
+                  "difficulty": 5,
+                  "mydeck_set_id": 104,
+                  "set_id": 1012042,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1132
+                }
               }
             },
             "unlock": {
@@ -2920,6 +2992,41 @@
               "10904": {
                 "3": [
                   904
+                ]
+              },
+              "10905": {
+                "3": [
+                  905
+                ]
+              },
+              "10906": {
+                "3": [
+                  906
+                ]
+              },
+              "10907": {
+                "3": [
+                  907
+                ]
+              },
+              "10908": {
+                "3": [
+                  908
+                ]
+              },
+              "10909": {
+                "3": [
+                  909
+                ]
+              },
+              "10910": {
+                "3": [
+                  910
+                ]
+              },
+              "10911": {
+                "3": [
+                  911
                 ]
               },
               "11001": {
@@ -3127,6 +3234,11 @@
                   2015
                 ]
               },
+              "12016": {
+                "3": [
+                  2016
+                ]
+              },
               "20001": {
                 "5": [
                   3001
@@ -3247,6 +3359,41 @@
               "904": {
                 "1": {
                   "9": 200
+                }
+              },
+              "905": {
+                "1": {
+                  "9": 250
+                }
+              },
+              "906": {
+                "1": {
+                  "9": 300
+                }
+              },
+              "907": {
+                "1": {
+                  "9": 350
+                }
+              },
+              "908": {
+                "1": {
+                  "9": 400
+                }
+              },
+              "909": {
+                "1": {
+                  "9": 450
+                }
+              },
+              "910": {
+                "1": {
+                  "9": 500
+                }
+              },
+              "911": {
+                "1": {
+                  "9": 550
                 }
               },
               "1001": {
@@ -3486,6 +3633,15 @@
                 "1": {
                   "8": 200,
                   "9": 400
+                }
+              },
+              "2016": {
+                "1": {
+                  "8": 50,
+                  "10": 50,
+                  "11": 250,
+                  "12": 50,
+                  "13": 50
                 }
               },
               "3001": {
@@ -4385,6 +4541,31 @@
                   "5245": 3
                 }
               },
+              "11403": {
+                "2": {
+                  "11403": 3
+                }
+              },
+              "10673": {
+                "2": {
+                  "10673": 3
+                }
+              },
+              "4992": {
+                "2": {
+                  "4992": 3
+                }
+              },
+              "4364": {
+                "2": {
+                  "4364": 3
+                }
+              },
+              "16824": {
+                "2": {
+                  "16824": 3
+                }
+              },
               "1120001": {
                 "12": {
                   "1120001": 1
@@ -4660,6 +4841,26 @@
                   "1012038": 1
                 }
               },
+              "1012042": {
+                "4": {
+                  "1012042": 1
+                }
+              },
+              "1012046": {
+                "4": {
+                  "1012046": 1
+                }
+              },
+              "1012045": {
+                "4": {
+                  "1012045": 1
+                }
+              },
+              "1012044": {
+                "4": {
+                  "1012044": 1
+                }
+              },
               "1020012": {
                 "5": {
                   "1020012": 1
@@ -4723,6 +4924,21 @@
               "1071013": {
                 "7": {
                   "1071013": 1
+                }
+              },
+              "1071014": {
+                "7": {
+                  "1071014": 1
+                }
+              },
+              "1071019": {
+                "7": {
+                  "1071019": 1
+                }
+              },
+              "1071018": {
+                "7": {
+                  "1071018": 1
                 }
               },
               "1090006": {

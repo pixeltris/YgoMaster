@@ -1404,7 +1404,11 @@ namespace YgoMaster
                                 info.SubCategory = (int)ShopSubCategoryAccessory.Protector;
                                 break;
                             case ItemID.Category.ICON:
+                            case ItemID.Category.ICON_FRAME:
                                 info.SubCategory = (int)ShopSubCategoryAccessory.Icon;
+                                break;
+                            case ItemID.Category.WALLPAPER:
+                                info.SubCategory = (int)ShopSubCategoryAccessory.Wallpaper;
                                 break;
                             default:
                                 Utils.LogWarning("Unhandled shop accessory type " + itemCategory + " for item id " + info.Id);

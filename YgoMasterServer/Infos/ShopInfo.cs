@@ -495,7 +495,7 @@ namespace YgoMaster
     }
 
     /// <summary>
-    /// YgomGame.Shop.AccessorySubCategory
+    /// YgomGame.Shop.AccessorySubCategory - removed v1.3.1?
     /// </summary>
     enum ShopSubCategoryAccessory
     {
@@ -503,7 +503,8 @@ namespace YgoMaster
         Mate,
         Field,
         Protector,
-        Icon
+        Icon,
+        Wallpaper
     }
 
     /// <summary>
