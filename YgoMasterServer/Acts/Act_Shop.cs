@@ -155,6 +155,7 @@ namespace YgoMaster
                         data["normalCardListId"] = normalCardListId;
                         data["pickupCardListId"] = pickupCardListId;
                         data["isFinalizedUR"] = request.Player.ShopState.IsUltraRareGuaranteed(shopItem.Id);
+                        data["isSpecialTime"] = shopItem.IsSpecialTime;
                         break;
                     case ShopCategory.Structure:
                         structureShop[shopItem.ShopId.ToString()] = data;

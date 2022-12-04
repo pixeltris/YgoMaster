@@ -1433,6 +1433,7 @@ namespace YgoMaster
                         info.Flexibility = Utils.GetValue<int>(data, "flexibility");
                         info.Difficulty = Utils.GetValue<int>(data, "difficulty");
                         info.OddsName = Utils.GetValue<string>(data, "oddsName");// custom
+                        info.IsSpecialTime = Utils.GetValue<bool>(data, "isSpecialTime");
                         break;
                 }
                 foreach (Dictionary<string, object> priceData in Utils.GetDictionaryCollection(data, "prices"))

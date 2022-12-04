@@ -702,7 +702,7 @@ namespace YgoMaster
             buyLimit = 0;
             expireTime = 0;
             isNew = false;
-            if (shop.UnlockAllSecrets)
+            if (shop.UnlockAllSecrets || shopItem.IsSpecialTime)
             {
                 return PlayerShopItemAvailability.Available;
             }

@@ -49,31 +49,67 @@
   },
   "10": {
     "id": "9",
-    "regulation_id": 10,
+    "regulation_id": 1002,
+    "name": "IDS_CARDMENU_REGULATION_NORMAL",
+    "icon": "RegulationLogoStandard"
+  },
+  "110": {
+    "id": "110",
+    "regulation_id": 110,
+    "name": "IDS_EXHIBITION_REG_014",
+    "icon": "RegulationLogoEvent"
+  },
+  "1002": {
+    "id": "1002",
+    "regulation_id": 1002,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard"
   },
   "2001": {
     "id": "2001",
-    "regulation_id": 2001,
+    "regulation_id": 2002,
+    "name": "IDS_REGULATION_FUSION",
+    "icon": "RegulationLogoFusion"
+  },
+  "2002": {
+    "id": "2002",
+    "regulation_id": 2002,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion"
   },
   "3001": {
     "id": "3001",
-    "regulation_id": 3001,
+    "regulation_id": 3002,
+    "name": "IDS_REGULATION_SYNCHRO",
+    "icon": "RegulationLogoSynchro"
+  },
+  "3002": {
+    "id": "3002",
+    "regulation_id": 3002,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro"
   },
   "4001": {
     "id": "4001",
-    "regulation_id": 4001,
+    "regulation_id": 4002,
+    "name": "IDS_REGULATION_XYZ",
+    "icon": "RegulationLogoXyz"
+  },
+  "4002": {
+    "id": "4002",
+    "regulation_id": 4002,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz"
   },
   "5001": {
     "id": "5001",
-    "regulation_id": 5001,
+    "regulation_id": 5002,
+    "name": "IDS_REGULATION_LINK",
+    "icon": "RegulationLogoLink"
+  },
+  "5002": {
+    "id": "5002",
+    "regulation_id": 5002,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink"
   }

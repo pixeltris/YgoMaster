@@ -166,6 +166,11 @@ namespace YgoMaster
         public string OddsName;
 
         /// <summary>
+        /// Special time secret packs like "Alba Abyss"
+        /// </summary>
+        public bool IsSpecialTime;
+
+        /// <summary>
         /// The image to use when opening the pack (e.g. "CardPackTex01_0000" / "CardPackTex03_4041")
         /// This is usually "CardPackTexXX_YYYY" where XX is is the pack type (standard/selection/secret/bonus) and YYYY is the card id on the pack)
         /// </summary>
