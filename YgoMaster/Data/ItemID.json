@@ -116,7 +116,7 @@
     1010023,//Water Enchantress of the Temple
     1010024,//Visas Starfrost
     //1010025,//coming soon
-    //1010026,//coming soon
+    1010026,//The Weather Painter Moonbow
     //1010027,//coming soon
     //1010028,//coming soon
     //1010029,//coming soon
@@ -132,9 +132,9 @@
     1011004,//DC 2022 AUG Gold Finalist
     1011005,//DC 2022 AUG Silver Finalist
     1011006,//DC 2022 AUG Bronze Finalist
-    //1011007,//coming soon
-    //1011008,//coming soon
-    //1011009,//coming soon
+    1011007,//DC 2022 DEC Gold Finalist
+    1011008,//DC 2022 DEC Silver Finalist
+    1011009,//DC 2022 DEC Bronze Finalist
     //1011010,//coming soon
     //1011011,//coming soon
     //1011012,//coming soon
@@ -196,7 +196,7 @@
     //1012043,//coming soon
     //1012044,//coming soon
     //1012045,//coming soon
-    //1012046,//coming soon
+    1012046,//Starry Night, Starry Dragon
     //1012047,//coming soon
     //1012048,//coming soon
     //1012049,//coming soon
@@ -250,12 +250,12 @@
     1020035,//Link Elite
     1020036,//Link Master
     1020037,//Synchro x Xyz Festival2022
-    //1020038,//coming soon
-    //1020039,//coming soon
-    //1020040,//coming soon
-    //1020041,//coming soon
-    //1020042,//coming soon
-    //1020043,//coming soon
+    1020038,//DC 2022 DEC Top 10
+    1020039,//DC 2022 DEC Top 100
+    1020040,//DC 2022 DEC Top 500
+    1020041,//DC 2022 DEC Top 1000
+    1020042,//DC 2022 DEC Top 10000
+    1020043,//DC 2022 DEC 2nd Stage Duelist
     1020044,//Anti-Spell Festival 2022
     //1020045,//
     //1020046,//
@@ -320,7 +320,7 @@
     //1031013,//coming soon
     //1031014,//coming soon
     //1031015,//coming soon
-    //1032001,//coming soon
+    1032001,//Festive Ornament
     //1032002,//coming soon
     //1032003,//coming soon
     //1032004,//coming soon
@@ -350,13 +350,13 @@
     1070021,//DC 2022 AUG Celebration
     1070022,//Ghostrick Festival
     //1070023,//coming soon
-    //1070024,//coming soon
-    //1070025,//coming soon
+    1070024,//Runick Fountain
+    1070025,//Lovely Labrynth of the Silver Castle
     1070026,//Mamonaka the Vaylantz United
     //1070027,//coming soon
-    //1070028,//coming soon
-    //1070029,//coming soon
-    //1070030,//coming soon
+    1070028,//Tri-Brigade
+    1070029,//The Weather Forecast
+    1070030,//DC 2022 DEC Celebration
     //1070031,//coming soon
     //1070032,//coming soon
     //1070033,//coming soon
@@ -366,7 +366,7 @@
     //1070037,//coming soon
     //1070038,//coming soon
     //1070039,//coming soon
-    //1070040,//coming soon
+    1070040,//Five-Headed Dragon
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -385,7 +385,7 @@
     //1071016,//coming soon
     //1071017,//coming soon
     //1071018,//coming soon
-    //1071019,//coming soon
+    1071019,//Starry Night, Starry Dragon
     //1071020,//coming soon
     //1071021,//coming soon
     //1071022,//coming soon
@@ -427,7 +427,7 @@
     1080016,//Burning Spirits
     //1080017,//coming soon
     1080018,//Spellbook of Prophecy
-    //1080019,//coming soon
+    1080019,//Immortal Glory
     //1080020,//coming soon
     //1080021,//coming soon
     //1080022,//coming soon
@@ -520,7 +520,7 @@
     //1100025,//coming soon
     1101001,//Trap Hole
     1101002,//Magical Hats
-    //1101003,//coming soon
+    1101003,//Summon Limit
     1101004,//Giant Trap Hole
     1101005,//TG1-EM1
     1101006,//Predaplant Chimerafflesia
@@ -585,7 +585,7 @@
     1111008,//Rank-Up-Magic Barian's Force
     1111009,//Rank-Up-Magic Astral Force
     //1111010,//coming soon
-    //1111011,//coming soon
+    1111011,//Destiny Signal
     //1111012,//coming soon
     //1111013,//coming soon
     //1111014,//coming soon
@@ -625,7 +625,7 @@
     1120016,//Burning Spirits
     //1120017,//coming soon
     1120018,//Spellbook of Prophecy
-    //1120019,//coming soon
+    1120019,//Immortal Glory
     //1120020,//coming soon
     //1120021,//coming soon
     //1120022,//coming soon
