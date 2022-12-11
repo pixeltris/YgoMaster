@@ -9,7 +9,7 @@ namespace YgoMaster
     class DeckInfo
     {
         // TODO: Replace hard coded regulation value with lookup from file
-        public const int DefaultRegulationId = 10;
+        public const int DefaultRegulationId = 1002;
         public const string DefaultRegulationName = "IDS_CARDMENU_REGULATION_NORMAL";
 
         public int Id;
