@@ -49,12 +49,14 @@ For shop pack odds...
 
 ## YdkIds.txt
 
-*To be run on client updates only.*
+*Do this for client updates.*
 
 - In the client console run `carddata` which should create `/Data/ClientDataDump/Card/Data/{CLIENT_VERSION}/`, move and rename the `{CLIENT_VERSION}` folder to `/Data/CardData/`. You must do this while using the `English` language setting.
 - Run `--updateydk` to update `YdkIds.txt`.
 
 ## ItemID.cs
+
+*Do this for new download data updates.*
 
 - In the client console run `itemid` which will create `ItemID.json` in the game folder.
 - Copy it over to `/Data/` and remove any invalid entries (some make the client crash / are blank).
