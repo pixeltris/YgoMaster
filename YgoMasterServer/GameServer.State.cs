@@ -1398,6 +1398,8 @@ namespace YgoMaster
                                 info.SubCategory = (int)ShopSubCategoryAccessory.Mate;
                                 break;
                             case ItemID.Category.FIELD:
+                            case ItemID.Category.FIELD_OBJ:
+                            case ItemID.Category.AVATAR_HOME:
                                 info.SubCategory = (int)ShopSubCategoryAccessory.Field;
                                 break;
                             case ItemID.Category.PROTECTOR:

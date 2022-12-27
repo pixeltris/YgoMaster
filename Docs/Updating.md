@@ -30,6 +30,8 @@ Certain logs will be dumped as json into `C:/Program Files (x86)/Fiddler/YgoMast
 - Log `/ayk/api/Duel.begin` for each duel (**loaner deck only**)
 - Copy all files in `YgoMasterUpdate/SoloDuels/` to `YgoMaster/Data/SoloDuels/`
 
+*Enable the hidden client setting `AlwaysWin` to win duels on the live game by surrendering to log this data faster.*
+
 ## Shop
 
 - Download the latest shops list from [here](https://github.com/pixeltris/YgoMaster/issues/129) and place them `YgoMaster/Data/ShopDumps/`
