@@ -49,7 +49,7 @@
   },
   "10": {
     "id": "9",
-    "regulation_id": 1002,
+    "regulation_id": 1003,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard"
   },
@@ -61,55 +61,85 @@
   },
   "1002": {
     "id": "1002",
-    "regulation_id": 1002,
+    "regulation_id": 1003,
+    "name": "IDS_CARDMENU_REGULATION_NORMAL",
+    "icon": "RegulationLogoStandard"
+  },
+  "1003": {
+    "id": "1003",
+    "regulation_id": 1003,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard"
   },
   "2001": {
     "id": "2001",
-    "regulation_id": 2002,
+    "regulation_id": 2003,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion"
   },
   "2002": {
     "id": "2002",
-    "regulation_id": 2002,
+    "regulation_id": 2003,
+    "name": "IDS_REGULATION_FUSION",
+    "icon": "RegulationLogoFusion"
+  },
+  "2003": {
+    "id": "2003",
+    "regulation_id": 2003,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion"
   },
   "3001": {
     "id": "3001",
-    "regulation_id": 3002,
+    "regulation_id": 3003,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro"
   },
   "3002": {
     "id": "3002",
-    "regulation_id": 3002,
+    "regulation_id": 3003,
+    "name": "IDS_REGULATION_SYNCHRO",
+    "icon": "RegulationLogoSynchro"
+  },
+  "3003": {
+    "id": "3003",
+    "regulation_id": 3003,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro"
   },
   "4001": {
     "id": "4001",
-    "regulation_id": 4002,
+    "regulation_id": 4003,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz"
   },
   "4002": {
     "id": "4002",
-    "regulation_id": 4002,
+    "regulation_id": 4003,
+    "name": "IDS_REGULATION_XYZ",
+    "icon": "RegulationLogoXyz"
+  },
+  "4003": {
+    "id": "4003",
+    "regulation_id": 4003,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz"
   },
   "5001": {
     "id": "5001",
-    "regulation_id": 5002,
+    "regulation_id": 5003,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink"
   },
   "5002": {
     "id": "5002",
-    "regulation_id": 5002,
+    "regulation_id": 5003,
+    "name": "IDS_REGULATION_LINK",
+    "icon": "RegulationLogoLink"
+  },
+  "5003": {
+    "id": "5003",
+    "regulation_id": 5003,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink"
   }

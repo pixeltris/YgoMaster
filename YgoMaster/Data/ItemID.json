@@ -194,8 +194,8 @@
     //1012041,//coming soon
     1012042,//Ghostrick Alucard
     //1012043,//coming soon
-    //1012044,//coming soon
-    //1012045,//coming soon
+    1012044,//Myutant GB-88
+    1012045,//Myutant Mutant
     1012046,//Starry Night, Starry Dragon
     //1012047,//coming soon
     //1012048,//coming soon
@@ -257,7 +257,7 @@
     1020042,//DC 2022 DEC Top 10000
     1020043,//DC 2022 DEC 2nd Stage Duelist
     1020044,//Anti-Spell Festival 2022
-    //1020045,//
+    1020045,//Theme Chronicle 2023
     //1020046,//
     //1020047,//
     //1020048,//
@@ -305,7 +305,7 @@
     //1030028,//coming soon
     //1030029,//coming soon
     //1030030,//coming soon
-    //1031001,//coming soon
+    1031001,//The Path of the Blue Sky Striker
     //1031002,//coming soon
     1031003,//Magic Cylinder
     //1031004,//coming soon
@@ -353,7 +353,7 @@
     1070024,//Runick Fountain
     1070025,//Lovely Labrynth of the Silver Castle
     1070026,//Mamonaka the Vaylantz United
-    //1070027,//coming soon
+    1070027,//Therion "King" Regulus
     1070028,//Tri-Brigade
     1070029,//The Weather Forecast
     1070030,//DC 2022 DEC Celebration
@@ -384,7 +384,7 @@
     //1071015,//coming soon
     //1071016,//coming soon
     //1071017,//coming soon
-    //1071018,//coming soon
+    1071018,//Myutant Ultimus
     1071019,//Starry Night, Starry Dragon
     //1071020,//coming soon
     //1071021,//coming soon
@@ -476,7 +476,7 @@
     1090013,//Vivid Abyssal Waters
     //1090014,//coming soon
     1090015,//Ghostrick Mansion
-    //1090016,//coming soon
+    1090016,//Myutant Evolution Lab
     //1090017,//coming soon
     //1090018,//coming soon
     //1090019,//coming soon
@@ -508,7 +508,7 @@
     1100013,//Vivid Abyssal Waters
     //1100014,//coming soon
     1100015,//Ghostrick Mansion
-    //1100016,//coming soon
+    1100016,//Myutant Evolution Lab
     //1100017,//coming soon
     //1100018,//coming soon
     //1100019,//coming soon
@@ -565,7 +565,7 @@
     1110013,//Vivid Abyssal Waters
     //1110014,//coming soon
     1110015,//Ghostrick Mansion
-    //1110016,//coming soon
+    1110016,//Myutant Evolution Lab
     //1110017,//coming soon
     //1110018,//coming soon
     //1110019,//coming soon
@@ -586,10 +586,10 @@
     1111009,//Rank-Up-Magic Astral Force
     //1111010,//coming soon
     1111011,//Destiny Signal
-    //1111012,//coming soon
-    //1111013,//coming soon
-    //1111014,//coming soon
-    //1111015,//coming soon
+    1111012,//H - Heated Heart
+    1111013,//E - Emergency Call
+    1111014,//R - Righteous Justice
+    1111015,//O - Oversoul
     //1111016,//coming soon
     //1111017,//coming soon
     //1111018,//coming soon

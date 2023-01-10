@@ -1237,6 +1237,19 @@ namespace YgoMaster
             LoadShopItems(Shop.AccessoryShop, "AccessoryShop", data, secretPackDuration);
             LoadShopItems(Shop.SpecialShop, "SpecialShop", data, secretPackDuration);
 
+            List<int> specialTimeShops = Utils.GetIntList(data, "SpecialTimePackShops");
+            if (specialTimeShops != null)
+            {
+                foreach (int shopId in specialTimeShops)
+                {
+                    ShopItemInfo info;
+                    if (Shop.PackShop.TryGetValue(shopId, out info))
+                    {
+                        info.IsSpecialTime = true;
+                    }
+                }
+            }
+
             List<object> packShopImageStrings = Utils.GetValue(data, "PackShopImages", default(List<object>));
             if (packShopImageStrings != null)
             {
@@ -1435,7 +1448,7 @@ namespace YgoMaster
                         info.Flexibility = Utils.GetValue<int>(data, "flexibility");
                         info.Difficulty = Utils.GetValue<int>(data, "difficulty");
                         info.OddsName = Utils.GetValue<string>(data, "oddsName");// custom
-                        info.IsSpecialTime = Utils.GetValue<bool>(data, "isSpecialTime");
+                        //info.IsSpecialTime = Utils.GetValue<bool>(data, "isSpecialTime");// This will be annoying to maintain. Get it from a seperate list.
                         break;
                 }
                 foreach (Dictionary<string, object> priceData in Utils.GetDictionaryCollection(data, "prices"))
