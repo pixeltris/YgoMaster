@@ -41,13 +41,23 @@
     //1000021,//coming soon
     1000022,//Revendread Slayer
     1000023,//Toadally Awesome
-    //1000024,//coming soon
+    1000024,//Blue-Eyes White Dragon
     //1000025,//coming soon
     //1000026,//coming soon
     //1000027,//coming soon
     //1000028,//coming soon
     //1000029,//coming soon
     //1000030,//coming soon
+    //1000031,//coming soon
+    //1000032,//coming soon
+    //1000033,//coming soon
+    //1000034,//coming soon
+    //1000035,//coming soon
+    //1000036,//coming soon
+    //1000037,//coming soon
+    //1000038,//coming soon
+    //1000039,//coming soon
+    //1000040,//coming soon
     1001001,//Instant Fusion
     1001002,//Noble Arms - Caliburn
     1001003,//Book of Moon
@@ -62,8 +72,8 @@
     1001012,//Kuriboh
     1001013,//Danger!? Jackalope?
     1001014,//Quillbolt Hedgehog
-    1001015,//PSY-Framegear Gamma
-    1001016,//Kagetokage
+    //1001015,//coming soon
+    //1001016,//coming soon
     //1001017,//coming soon
     //1001018,//coming soon
     //1001019,//coming soon
@@ -74,6 +84,10 @@
     //1001024,//coming soon
     //1001025,//coming soon
     //1001026,//coming soon
+    //1001027,//coming soon
+    //1001028,//coming soon
+    //1001029,//coming soon
+    //1001030,//coming soon
     1002001,//Soccer Ball
     1002002,//Basketball
     1002003,//Record Player
@@ -89,6 +103,21 @@
     //1002013,//coming soon
     //1002014,//coming soon
     //1002015,//coming soon
+    //1002016,//coming soon
+    //1002017,//coming soon
+    //1002018,//coming soon
+    //1002019,//coming soon
+    //1002020,//coming soon
+    //1003001,//coming soon
+    //1003002,//coming soon
+    //1003003,//coming soon
+    //1003004,//coming soon
+    //1003005,//coming soon
+    //1003006,//coming soon
+    //1003007,//coming soon
+    //1003008,//coming soon
+    //1003009,//coming soon
+    //1003010,//coming soon
   ],
   "ICON": [
     1010001,//Duelist
@@ -117,8 +146,8 @@
     1010024,//Visas Starfrost
     1010025,//White Relic of Dogmatika
     1010026,//The Weather Painter Moonbow
-    //1010027,//coming soon
-    //1010028,//coming soon
+    1010027,//Blue-Eyes White Dragon
+    1010028,//Dark Magician
     //1010029,//coming soon
     //1010030,//coming soon
     //1010031,//coming soon
@@ -126,6 +155,21 @@
     //1010033,//coming soon
     //1010034,//coming soon
     //1010035,//coming soon
+    //1010036,//coming soon
+    //1010037,//coming soon
+    //1010038,//coming soon
+    //1010039,//coming soon
+    //1010040,//coming soon
+    //1010041,//coming soon
+    //1010042,//coming soon
+    //1010043,//coming soon
+    //1010044,//coming soon
+    //1010045,//coming soon
+    //1010046,//coming soon
+    //1010047,//coming soon
+    //1010048,//coming soon
+    //1010049,//coming soon
+    //1010050,//coming soon
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -151,6 +195,21 @@
     //1011023,//coming soon
     //1011024,//coming soon
     //1011025,//coming soon
+    //1011026,//coming soon
+    //1011027,//coming soon
+    //1011028,//coming soon
+    //1011029,//coming soon
+    //1011030,//coming soon
+    //1011031,//coming soon
+    //1011032,//coming soon
+    //1011033,//coming soon
+    //1011034,//coming soon
+    //1011035,//coming soon
+    //1011036,//coming soon
+    //1011037,//coming soon
+    //1011038,//coming soon
+    //1011039,//coming soon
+    //1011040,//coming soon
     1012001,//X-Krawler Synaphysis
     1012002,//Mekk-Knight Spectrum Supreme
     1012003,//Knightmare Gryphon
@@ -201,7 +260,7 @@
     //1012048,//coming soon
     //1012049,//coming soon
     //1012050,//coming soon
-    //1012051,//coming soon
+    1012051,//Teardrop the Rikka Queen
     //1012052,//coming soon
     //1012053,//coming soon
     //1012054,//coming soon
@@ -211,6 +270,26 @@
     //1012058,//coming soon
     //1012059,//coming soon
     //1012060,//coming soon
+    //1012061,//coming soon
+    //1012062,//coming soon
+    //1012063,//coming soon
+    //1012064,//coming soon
+    //1012065,//coming soon
+    //1012066,//coming soon
+    //1012067,//coming soon
+    //1012068,//coming soon
+    //1012069,//coming soon
+    //1012070,//coming soon
+    1013001,//PawaPuro
+    //1013002,//coming soon
+    //1013003,//coming soon
+    //1013004,//coming soon
+    //1013005,//coming soon
+    //1013006,//coming soon
+    //1013007,//coming soon
+    //1013008,//coming soon
+    //1013009,//coming soon
+    //1013010,//coming soon
   ],
   "PROFILE_TAG": [
     1020001,//Beginner Duelist
@@ -233,7 +312,7 @@
     1020018,//Strategy Expert
     1020019,//Unfathomable
     1020020,//Synchro Festival 2022
-    //1020021,//
+    //1020021,//coming soon
     1020022,//<color=#9933CC>Fusion Festival 2022</color>
     1020023,//Limit One Festival 2022
     1020024,//EX-ZERO Festival 2022
@@ -258,21 +337,31 @@
     1020043,//DC 2022 DEC 2nd Stage Duelist
     1020044,//Anti-Spell Festival 2022
     1020045,//Theme Chronicle 2023
-    //1020046,//
-    //1020047,//
-    //1020048,//
-    //1020049,//
-    //1020050,//
-    //1020051,//
-    //1020052,//
-    //1020053,//
-    //1020054,//
-    //1020055,//
-    //1020056,//
-    //1020057,//
-    //1020058,//
-    //1020059,//
-    //1020060,//
+    1020046,//Legend Anthology 2023
+    //1020047,//coming soon
+    //1020048,//coming soon
+    //1020049,//coming soon
+    //1020050,//coming soon
+    //1020051,//coming soon
+    //1020052,//coming soon
+    1020053,//Xyz Festival 2023
+    //1020054,//coming soon
+    //1020055,//coming soon
+    //1020056,//coming soon
+    //1020057,//coming soon
+    //1020058,//coming soon
+    //1020059,//coming soon
+    //1020060,//coming soon
+    //1020061,//coming soon
+    //1020062,//coming soon
+    //1020063,//coming soon
+    //1020064,//coming soon
+    //1020065,//coming soon
+    //1020066,//coming soon
+    //1020067,//coming soon
+    //1020068,//coming soon
+    //1020069,//coming soon
+    //1020070,//coming soon
   ],
   "ICON_FRAME": [
     1030001,//Beginner's Frame
@@ -287,14 +376,14 @@
     1030010,//Bronze Award Frame
     1030011,//Silver Award Frame
     1030012,//Gold Award Frame
-    //1030013,//ICON_FRAME13
-    //1030014,//ICON_FRAME14
-    //1030015,//ICON_FRAME15
-    //1030016,//ICON_FRAME16
-    //1030017,//ICON_FRAME17
-    //1030018,//ICON_FRAME18
-    //1030019,//ICON_FRAME19
-    //1030020,//ICON_FRAME20
+    //1030013,//coming soon
+    //1030014,//coming soon
+    //1030015,//coming soon
+    //1030016,//coming soon
+    //1030017,//coming soon
+    //1030018,//coming soon
+    //1030019,//coming soon
+    //1030020,//coming soon
     //1030021,//coming soon
     //1030022,//coming soon
     //1030023,//coming soon
@@ -305,10 +394,20 @@
     //1030028,//coming soon
     //1030029,//coming soon
     //1030030,//coming soon
+    //1030031,//coming soon
+    //1030032,//coming soon
+    //1030033,//coming soon
+    //1030034,//coming soon
+    //1030035,//coming soon
+    //1030036,//coming soon
+    //1030037,//coming soon
+    //1030038,//coming soon
+    //1030039,//coming soon
+    //1030040,//coming soon
     1031001,//The Path of the Blue Sky Striker
     //1031002,//coming soon
     1031003,//Magic Cylinder
-    //1031004,//coming soon
+    1031004,//Dark Magical Circle
     //1031005,//coming soon
     //1031006,//coming soon
     //1031007,//coming soon
@@ -320,11 +419,21 @@
     //1031013,//coming soon
     //1031014,//coming soon
     //1031015,//coming soon
+    //1031016,//coming soon
+    //1031017,//coming soon
+    //1031018,//coming soon
+    //1031019,//coming soon
+    //1031020,//coming soon
     1032001,//Festive Ornament
     //1032002,//coming soon
     //1032003,//coming soon
     //1032004,//coming soon
     //1032005,//coming soon
+    //1032006,//coming soon
+    //1032007,//coming soon
+    //1032008,//coming soon
+    //1032009,//coming soon
+    //1032010,//coming soon
   ],
   "PROTECTOR": [
     1070001,//Yu-Gi-Oh! Trading Card Game
@@ -357,16 +466,26 @@
     1070028,//Tri-Brigade
     1070029,//The Weather Forecast
     1070030,//DC 2022 DEC Celebration
-    //1070031,//coming soon
+    1070031,//The Millennium Puzzle
     //1070032,//coming soon
     //1070033,//coming soon
-    //1070034,//coming soon
+    1070034,//Gigantic Spright
     //1070035,//coming soon
     //1070036,//coming soon
-    //1070037,//coming soon
+    1070037,//Exosisters Magnifica
     //1070038,//coming soon
     1070039,//Video Game Awards 2022 Commemoration
     1070040,//Five-Headed Dragon
+    //1070041,//coming soon
+    //1070042,//coming soon
+    //1070043,//coming soon
+    //1070044,//coming soon
+    //1070045,//coming soon
+    //1070046,//coming soon
+    //1070047,//coming soon
+    //1070048,//coming soon
+    //1070049,//coming soon
+    //1070050,//coming soon
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -389,7 +508,7 @@
     //1071020,//coming soon
     //1071021,//coming soon
     //1071022,//coming soon
-    //1071023,//coming soon
+    1071023,//Teardrop the Rikka Queen
     //1071024,//coming soon
     //1071025,//coming soon
     //1071026,//coming soon
@@ -397,6 +516,26 @@
     //1071028,//coming soon
     //1071029,//coming soon
     //1071030,//coming soon
+    //1071031,//coming soon
+    //1071032,//coming soon
+    //1071033,//coming soon
+    //1071034,//coming soon
+    //1071035,//coming soon
+    //1071036,//coming soon
+    //1071037,//coming soon
+    //1071038,//coming soon
+    //1071039,//coming soon
+    //1071040,//coming soon
+    //1071041,//coming soon
+    //1071042,//coming soon
+    //1071043,//coming soon
+    //1071044,//coming soon
+    //1071045,//coming soon
+    //1071046,//coming soon
+    //1071047,//coming soon
+    //1071048,//coming soon
+    //1071049,//coming soon
+    //1071050,//coming soon
     1072001,//Sky Striker Conversion: Flaming Wings of Destruction
     //1072002,//coming soon
     //1072003,//coming soon
@@ -428,7 +567,7 @@
     //1080017,//coming soon
     1080018,//Spellbook of Prophecy
     1080019,//Immortal Glory
-    //1080020,//coming soon
+    1080020,//Vortex of Magic
     //1080021,//coming soon
     //1080022,//coming soon
     //1080023,//coming soon
@@ -450,7 +589,7 @@
     //1081009,//coming soon
     //1081010,//coming soon
     1082001,//Xyz Black
-    //1082002,//coming soon
+    1082002,//The Millennium Puzzle
     //1082003,//coming soon
     //1082004,//coming soon
     //1082005,//coming soon
@@ -470,7 +609,7 @@
     1090007,//Foreign Capital
     1090008,//Realm of Danger!
     1090009,//Night Skyscrapers
-    //1090010,//coming soon
+    1090010,//Glacial World
     1090011,//The Desolate Temple
     1090012,//Mount Swordsoul
     1090013,//Vivid Abyssal Waters
@@ -478,7 +617,7 @@
     1090015,//Ghostrick Mansion
     1090016,//Myutant Evolution Lab
     //1090017,//coming soon
-    //1090018,//coming soon
+    1090018,//Memories of an Ancient Duel
     //1090019,//coming soon
     //1090020,//coming soon
     //1090021,//coming soon
@@ -486,11 +625,21 @@
     //1090023,//coming soon
     //1090024,//coming soon
     //1090025,//coming soon
+    //1090026,//coming soon
+    //1090027,//coming soon
+    //1090028,//coming soon
+    //1090029,//coming soon
+    //1090030,//coming soon
     1092001,//Colosseum
     //1092002,//coming soon
     //1092003,//coming soon
     //1092004,//coming soon
     //1092005,//coming soon
+    //1092006,//coming soon
+    //1092007,//coming soon
+    //1092008,//coming soon
+    //1092009,//coming soon
+    //1092010,//coming soon
   ],
   "FIELD_OBJ": [
     1100001,//Forest
@@ -502,7 +651,7 @@
     1100007,//Foreign Capital
     1100008,//Realm of Danger!
     1100009,//Night Skyscrapers
-    //1100010,//coming soon
+    1100010,//Glacial World
     1100011,//The Desolate Temple
     1100012,//Mount Swordsoul
     1100013,//Vivid Abyssal Waters
@@ -510,7 +659,7 @@
     1100015,//Ghostrick Mansion
     1100016,//Myutant Evolution Lab
     //1100017,//coming soon
-    //1100018,//coming soon
+    1100018,//Memories of an Ancient Duel
     //1100019,//coming soon
     //1100020,//coming soon
     //1100021,//coming soon
@@ -518,6 +667,11 @@
     //1100023,//coming soon
     //1100024,//coming soon
     //1100025,//coming soon
+    //1100026,//coming soon
+    //1100027,//coming soon
+    //1100028,//coming soon
+    //1100029,//coming soon
+    //1100030,//coming soon
     1101001,//Trap Hole
     1101002,//Magical Hats
     1101003,//Summon Limit
@@ -528,7 +682,7 @@
     1101008,//Loop of Destruction
     //1101009,//coming soon
     //1101010,//coming soon
-    //1101011,//coming soon
+    1101011,//Negate Attack
     //1101012,//coming soon
     //1101013,//coming soon
     //1101014,//coming soon
@@ -543,11 +697,21 @@
     //1101023,//coming soon
     //1101024,//coming soon
     //1101025,//coming soon
+    //1101026,//coming soon
+    //1101027,//coming soon
+    //1101028,//coming soon
+    //1101029,//coming soon
+    //1101030,//coming soon
     1102001,//Colosseum
     //1102002,//coming soon
     //1102003,//coming soon
     //1102004,//coming soon
     //1102005,//coming soon
+    //1102006,//coming soon
+    //1102007,//coming soon
+    //1102008,//coming soon
+    //1102009,//coming soon
+    //1102010,//coming soon
   ],
   "AVATAR_HOME": [
     1110001,//Forest
@@ -559,7 +723,7 @@
     1110007,//Foreign Capital
     1110008,//Realm of Danger!
     1110009,//Night Skyscrapers
-    //1110010,//coming soon
+    1110010,//Glacial World
     1110011,//The Desolate Temple
     1110012,//Mount Swordsoul
     1110013,//Vivid Abyssal Waters
@@ -567,7 +731,7 @@
     1110015,//Ghostrick Mansion
     1110016,//Myutant Evolution Lab
     //1110017,//coming soon
-    //1110018,//coming soon
+    1110018,//Memories of an Ancient Duel
     //1110019,//coming soon
     //1110020,//coming soon
     //1110021,//coming soon
@@ -575,6 +739,11 @@
     //1110023,//coming soon
     //1110024,//coming soon
     //1110025,//coming soon
+    //1110026,//coming soon
+    //1110027,//coming soon
+    //1110028,//coming soon
+    //1110029,//coming soon
+    //1110030,//coming soon
     1111001,//Destiny Board
     1111002,//Bug Matrix
     1111003,//Shien's Dojo
@@ -590,7 +759,7 @@
     1111013,//E - Emergency Call
     1111014,//R - Righteous Justice
     1111015,//O - Oversoul
-    //1111016,//coming soon
+    1111016,//Normal Monster Card
     //1111017,//coming soon
     //1111018,//coming soon
     //1111019,//coming soon
@@ -600,11 +769,21 @@
     //1111023,//coming soon
     //1111024,//coming soon
     //1111025,//coming soon
+    //1111026,//coming soon
+    //1111027,//coming soon
+    //1111028,//coming soon
+    //1111029,//coming soon
+    //1111030,//coming soon
     1112001,//Colosseum
     //1112002,//coming soon
     //1112003,//coming soon
     //1112004,//coming soon
     //1112005,//coming soon
+    //1112006,//coming soon
+    //1112007,//coming soon
+    //1112008,//coming soon
+    //1112009,//coming soon
+    //1112010,//coming soon
   ],
   "STRUCTURE": [
     1120001,//Starting Deck
@@ -626,7 +805,7 @@
     //1120017,//coming soon
     1120018,//Spellbook of Prophecy
     1120019,//Immortal Glory
-    //1120020,//coming soon
+    1120020,//Vortex of Magic
     //1120021,//coming soon
     //1120022,//coming soon
     //1120023,//coming soon
@@ -655,7 +834,7 @@
     1130014,//Accesscode Talker
     1130015,//Ghostrick Festival
     //1130016,//coming soon
-    //1130017,//coming soon
+    1130017,//Dark Magician
     //1130018,//coming soon
     //1130019,//coming soon
     //1130020,//coming soon
@@ -669,6 +848,26 @@
     //1130028,//coming soon
     //1130029,//coming soon
     //1130030,//coming soon
+    //1130031,//coming soon
+    //1130032,//coming soon
+    //1130033,//coming soon
+    //1130034,//coming soon
+    //1130035,//coming soon
+    //1130036,//coming soon
+    //1130037,//coming soon
+    //1130038,//coming soon
+    //1130039,//coming soon
+    //1130040,//coming soon
+    //1130041,//coming soon
+    //1130042,//coming soon
+    //1130043,//coming soon
+    //1130044,//coming soon
+    //1130045,//coming soon
+    //1130046,//coming soon
+    //1130047,//coming soon
+    //1130048,//coming soon
+    //1130049,//coming soon
+    //1130050,//coming soon
   ],
   "PACK_TICKET": [
     1140001,//Legacy Pack ticket

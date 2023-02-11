@@ -17,19 +17,19 @@ namespace YgoMaster
                 return false;
             }
 
-            byte[] bufferInternalID = File.ReadAllBytes(Path.Combine(cardDataDir, "CARD_IntID.bytes"));
+            byte[] bufferInternalID = File.ReadAllBytes(Path.Combine(cardDataDir, "#", "CARD_IntID.bytes"));
             DLL_SetInternalID(bufferInternalID);
 
-            byte[] bufferProp = File.ReadAllBytes(Path.Combine(cardDataDir, "CARD_Prop.bytes"));
+            byte[] bufferProp = File.ReadAllBytes(Path.Combine(cardDataDir, "#", "CARD_Prop.bytes"));
             DLL_SetCardProperty(bufferProp, bufferProp.Length);
 
             byte[] bufferSame = File.ReadAllBytes(Path.Combine(cardDataDir, "MD", "CARD_Same.bytes"));
             DLL_SetCardSame(bufferSame, bufferSame.Length);
             
-            byte[] bufferGenre = File.ReadAllBytes(Path.Combine(cardDataDir, "CARD_Genre.bytes"));
+            byte[] bufferGenre = File.ReadAllBytes(Path.Combine(cardDataDir, "#", "CARD_Genre.bytes"));
             DLL_SetCardGenre(bufferGenre);
             
-            byte[] bufferNamed = File.ReadAllBytes(Path.Combine(cardDataDir, "CARD_Named.bytes"));
+            byte[] bufferNamed = File.ReadAllBytes(Path.Combine(cardDataDir, "#", "CARD_Named.bytes"));
             DLL_SetCardNamed(bufferNamed);
             
             byte[] bufferLink = File.ReadAllBytes(Path.Combine(cardDataDir, "MD", "CARD_Link.bytes"));

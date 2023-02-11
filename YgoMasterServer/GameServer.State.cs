@@ -182,10 +182,27 @@ namespace YgoMaster
                 }
             }
 
+            string regulationIconFile = Path.Combine(dataDirectory, "RegulationIcon.json");
+            if (File.Exists(regulationIconFile))
+            {
+                RegulationIcon = MiniJSON.Json.DeserializeStripped(File.ReadAllText(regulationIconFile)) as Dictionary<string, object>;
+            }
+
+            string regulationInfoFile = Path.Combine(dataDirectory, "RegulationInfo.json");
+            if (File.Exists(regulationInfoFile))
+            {
+                RegulationInfo = MiniJSON.Json.DeserializeStripped(File.ReadAllText(regulationInfoFile)) as Dictionary<string, object>;
+            }
+
             string regulationFile = Path.Combine(dataDirectory, "Regulation.json");
             if (File.Exists(regulationFile))
             {
                 Regulation = MiniJSON.Json.DeserializeStripped(File.ReadAllText(regulationFile)) as Dictionary<string, object>;
+
+                if (Regulation != null && RegulationInfo != null)
+                {
+                    DeckInfo.DefaultRegulationId = int.Parse(Utils.GetDictionary(RegulationInfo, "rule_list").FirstOrDefault(x => (string)x.Value == DeckInfo.DefaultRegulationName).Key);
+                }
             }
             if (Utils.GetValue<bool>(values, "DisableBanList") && Regulation != null)
             {
@@ -201,18 +218,6 @@ namespace YgoMaster
                         }
                     }
                 }
-            }
-
-            string regulationIconFile = Path.Combine(dataDirectory, "RegulationIcon.json");
-            if (File.Exists(regulationIconFile))
-            {
-                RegulationIcon = MiniJSON.Json.DeserializeStripped(File.ReadAllText(regulationIconFile)) as Dictionary<string, object>;
-            }
-
-            string regulationInfoFile = Path.Combine(dataDirectory, "RegulationInfo.json");
-            if (File.Exists(regulationInfoFile))
-            {
-                RegulationInfo = MiniJSON.Json.DeserializeStripped(File.ReadAllText(regulationInfoFile)) as Dictionary<string, object>;
             }
 
             Craft = new CraftInfo();
@@ -1285,7 +1290,7 @@ namespace YgoMaster
                 {
                     info.Preview = previewObj as string;
                 }
-                else if (previewObj is Dictionary<string, object>)
+                else if (previewObj != null)
                 {
                     info.Preview = MiniJSON.Json.Serialize(previewObj);
                 }

@@ -54,7 +54,7 @@ namespace YgoMaster
                 Console.WriteLine("Failed to find folder '" + cardDataDir + "'");
                 return;
             }
-            string cardDataPropsFile = Path.Combine(cardDataDir, "CARD_Prop.bytes");
+            string cardDataPropsFile = Path.Combine(cardDataDir, "#", "CARD_Prop.bytes");
             if (!File.Exists(cardDataPropsFile))
             {
                 Console.Write("Failed to find '" + cardDataPropsFile + "'");

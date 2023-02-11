@@ -499,15 +499,18 @@ namespace YgoMasterClient
                                                 {
                                                     IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
                                                     string intIdPath = assembly.GetClass("Content", "YgomGame.Card").GetField("IntIdPath").GetValue().GetValueObj<string>();
-                                                    string path = intIdPath.Substring(0, intIdPath.LastIndexOf('/'));
+                                                    Console.WriteLine("intIdPath: " + intIdPath);
+                                                    string path = intIdPath.Replace("/#/", "/");
+                                                    path = path.Substring(0, path.LastIndexOf('/'));
+                                                    Console.WriteLine("path: " + path);
                                                     string[] files = 
                                                     {
-                                                        path + "/CARD_Genre",
-                                                        path + "/CARD_IntID",
-                                                        path + "/CARD_Named",
-                                                        path + "/CARD_Prop",
-                                                        path + "/CARD_RubyIndx",
-                                                        path + "/CARD_RubyName",
+                                                        path + "/#/CARD_Genre",
+                                                        path + "/#/CARD_IntID",
+                                                        path + "/#/CARD_Named",
+                                                        path + "/#/CARD_Prop",
+                                                        path + "/#/CARD_RubyIndx",
+                                                        path + "/#/CARD_RubyName",
                                                         path + "/en-US/CARD_Desc",
                                                         path + "/en-US/CARD_Indx",
                                                         path + "/en-US/CARD_Name",

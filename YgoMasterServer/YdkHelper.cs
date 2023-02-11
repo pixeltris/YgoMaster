@@ -540,7 +540,7 @@ namespace YgoMaster
             string cardIndxFile = Path.Combine(dataDir, "CardData/en-US/CARD_Indx.bytes");
             string cardNameFile = Path.Combine(dataDir, "CardData/en-US/CARD_Name.bytes");
             string cardDescFile = Path.Combine(dataDir, "CardData/en-US/CARD_Desc.bytes");
-            string cardPropFile = Path.Combine(dataDir, "CardData/CARD_Prop.bytes");
+            string cardPropFile = Path.Combine(dataDir, "CardData/#/CARD_Prop.bytes");
             using (BinaryReader indxReader = new BinaryReader(File.OpenRead(cardIndxFile)))
             using (BinaryReader nameReader = new BinaryReader(File.OpenRead(cardNameFile)))
             using (BinaryReader descriptionReader = new BinaryReader(File.OpenRead(cardDescFile)))

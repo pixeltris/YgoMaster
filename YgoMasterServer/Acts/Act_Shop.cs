@@ -194,7 +194,8 @@ namespace YgoMaster
                 }
                 if (!string.IsNullOrEmpty(shopItem.Preview))
                 {
-                    data["preview"] = shopItem.Preview;
+                    // Prior to v1.4.1 this was a string in many cases. It's no longer a string (shop fails to load)
+                    data["preview"] = MiniJSON.Json.Deserialize(shopItem.Preview);
                 }
                 data["searchCategory"] = shopItem.SearchCategory.ToArray();
                 data["limitdate_ts"] = expireTime;
@@ -495,12 +496,21 @@ namespace YgoMaster
                     WritePerPackRarities(request, packCardRare);
                 }
 
+                // 1 = Blue smoke
+                // 2 = Orange smoke
+                // 3 = A lot of orange smoke
+                int smokeType = rand.Next(100) < 15 ? 2 : 1;
+                if (packCount == shopExtraGuaranteePackCount)
+                {
+                    smokeType = 3;
+                }
+
                 HashSet<int> foundSecrets = new HashSet<int>();// Hashset of shop ids
                 HashSet<int> cardIdsToUpdate = new HashSet<int>();
                 HashSet<int> newCardIds = new HashSet<int>();
-                List<object> packInfos = new List<object>();
+                Dictionary<ShopItemInfo, List<Dictionary<string, object>>> packInfos = new Dictionary<ShopItemInfo, List<Dictionary<string, object>>>();
+                HashSet<ShopItemInfo> pickupPacks = new HashSet<ShopItemInfo>();
                 bool showSecretFoundResult = false;
-                bool isPickup = false;
                 bool pulledUltraRare = false;
                 bool isUltraRareGuaranteed = request.Player.ShopState.IsUltraRareGuaranteed(shopItem.Id);
                 Dictionary<CardRarity, int> numCardsByRarity = shopItem.GetNumCardsByRarity(packCardRare);
@@ -625,7 +635,7 @@ namespace YgoMaster
                         }
                         if (match.Standard)
                         {
-                            isPickup = true;
+                            pickupPacks.Add(shopItem);
                         }
                         int foundCardId = 0;
                         List<int> shuffledCards = Utils.Shuffle(rand, new List<int>(match.Standard ? Shop.StandardPack.Cards.Keys : shopItem.Cards.Keys));
@@ -826,13 +836,22 @@ namespace YgoMaster
                         // 3 = White flash over the card pack (x2), gets big and emits a yellow effect
                         // 4 = White flash over the card pack (x2), gets big and emits a rainbow effect
                         int rarityUpType = jebaitRarity && !jebaitRarityBg ? (int)highestCardBackRarity : 1;
-                        packInfos.Add(new Dictionary<string, object>()
+                        Dictionary<string, object> effects = new Dictionary<string, object>()
                         {
                             { "thunder", showRarityOnPack ? thunderType : rand.Next(1, 4) },
                             { "rarityup", showRarityOnPack ? rarityUpType : 1 },
                             { "cut", cutType },
                             { "rarityupBg", showRarityOnPack ? rarityUpBgType : 1 },
                             { "rarity", (jebaitRarity || !showRarityOnPack ? 1 : (int)highestCardBackRarity) },
+                        };
+                        List<Dictionary<string, object>> packList;
+                        if (!packInfos.TryGetValue(shopItem, out packList))
+                        {
+                            packInfos[shopItem] = packList = new List<Dictionary<string, object>>();
+                        }
+                        packList.Add(new Dictionary<string, object>()
+                        {
+                            { "effects", effects },
                             { "cardInfo", cardInfos },
                         });
                     }
@@ -840,29 +859,37 @@ namespace YgoMaster
                 bool isNextPackUR = packCount == shopExtraGuaranteePackCount && !pulledUltraRare && !Shop.DisableUltraRareGuarantee;
                 if (packInfos.Count > 0)
                 {
-                    // 1 = Blue smoke
-                    // 2 = Orange smoke
-                    // 3 = A lot of orange smoke
-                    int smokeType = rand.Next(100) < 15 ? 2 : 1;
-                    if (packCount == shopExtraGuaranteePackCount)
-                    {
-                        smokeType = 3;
-                    }
                     Dictionary<string, object> gacha = request.GetOrCreateDictionary("Gacha");
-                    gacha["drawPackInfo"] = packInfos;
 
-                    gacha["effects"] = new Dictionary<string, object>()
+                    // TODO: Add support for more than 10 per pack type (would need to split this up based on set of 10 per pack type)
+                    List<object> packs = new List<object>();
+                    foreach (KeyValuePair<ShopItemInfo, List<Dictionary<string, object>>> pack in packInfos)
                     {
-                        { "isPickup", isPickup },
-                        { "imageName", shopItem.PackImageName },
-                        { "isNextFinalizedUR", isNextPackUR },
-                        { "NextFinalizedURNameTextId", "IDS_CARDPACK_ID0001_NAME" },
-                        { "smokeType", smokeType },
+                        packs.Add(new Dictionary<string, object>()
+                        {
+                            { "packInfo", pack.Value },
+                            { "effects", new Dictionary<string, object>()
+                            {
+                                { "isPickup", pickupPacks.Contains(pack.Key) },
+                                { "imageName", shopItem.PackImageName },
+                                { "smokeType", smokeType }
+                            } },
+                        });
+                    }
+
+                    Dictionary<string, object> drawInfo = Utils.GetOrCreateDictionary(gacha, "drawInfo");
+                    drawInfo["packs"] = packs;
+                    drawInfo["options"] = new Dictionary<string, object>()
+                    {
+                        { "skippable", true },
                     };
-                    gacha["info"] = new Dictionary<string, object>()
+
+                    gacha["resultInfo"] = new Dictionary<string, object>()
                     {
                         { "isSendGift", false },
                         { "showSecretFoundResult", showSecretFoundResult },
+                        { "isNextFinalizedUR", isNextPackUR },
+                        { "NextFinalizedURNameTextId", "IDS_CARDPACK_ID0001_NAME" },
                     };
                 }
                 WriteCards_have(request, cardIdsToUpdate);

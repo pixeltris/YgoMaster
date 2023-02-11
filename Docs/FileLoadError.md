@@ -6,7 +6,7 @@ You may see some variation of the above error or infinite loading screens, corru
 
 ## 1) Game not updated / multiple folders inside of LocalData
 
-Fully update your game. If you have multipler folders inside of LocalData, you need to make sure they are ALL updated or delete the ones which aren't updated.
+Fully update your game. If you have multiple folders inside of LocalData, you need to make sure they are ALL updated or delete the ones which aren't updated.
 
 YgoMaster picks the first valid folder it finds in LocalData. There is no way for YgoMaster to know which is the updated folder.
 
