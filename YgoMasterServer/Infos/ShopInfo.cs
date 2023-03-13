@@ -509,7 +509,8 @@ namespace YgoMaster
         Field,
         Protector,
         Icon,
-        Wallpaper
+        Wallpaper,
+        DeckCase
     }
 
     /// <summary>
