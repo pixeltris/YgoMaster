@@ -13,11 +13,27 @@ namespace YgoMaster
             DuelSettings duelSettings;
             ChapterStatus chapterStatus;
             if (SoloDuels.TryGetValue(chapterId, out duelSettings) &&
-                player.SoloChapters.TryGetValue(chapterId, out chapterStatus) &&
-                chapterStatus == ChapterStatus.COMPLETE)
+                player.SoloChapters.TryGetValue(chapterId, out chapterStatus))
             {
+                if (!IsPracticeDuel(chapterId))
+                {
+                    // NOTE: "Solo.detail" is only requested once. We might need to tell the client of updates on duel completion?
+                    if (chapterStatus == ChapterStatus.COMPLETE ||
+                        (player.Duel.IsMyDeck && chapterStatus == ChapterStatus.MYDECK_CLEAR) ||
+                        (!player.Duel.IsMyDeck && chapterStatus == ChapterStatus.RENTAL_CLEAR))
+                    {
+                        duelSettings.FirstPlayer = -1;
+                    }
+                    else if (player.Duel.IsMyDeck)
+                    {
+                        // As GetSoloDuelSettings is called over multiple functions this might show a different value in different places?
+                        // i.e. "XXX is going first" then a different player starts first in-game
+                        duelSettings.FirstPlayer = rand.Next(2);
+                    }
+                }
+
                 FileInfo customDuelFile = new FileInfo(Path.Combine(dataDirectory, "CustomDuel.json"));
-                if (customDuelFile.Exists)
+                if (chapterStatus == ChapterStatus.COMPLETE && customDuelFile.Exists)
                 {
                     if (CustomDuelSettings == null || customDuelFile.LastWriteTime != CustomDuelLastModified)
                     {

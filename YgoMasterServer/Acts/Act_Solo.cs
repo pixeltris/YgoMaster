@@ -50,6 +50,39 @@ namespace YgoMaster
             return result;
         }
 
+        bool IsPracticeDuel(int chapterId)
+        {
+            int gateId = GetChapterGateId(chapterId);
+            Dictionary<string, object> allChapterData = Utils.GetDictionary(SoloData, "chapter");
+            if (allChapterData == null)
+            {
+                return false;
+            }
+            Dictionary<string, object> chapterGateData = Utils.GetDictionary(allChapterData, gateId.ToString());
+            if (chapterGateData == null)
+            {
+                return false;
+            }
+            Dictionary<string, object> chapterData = Utils.GetDictionary(chapterGateData, chapterId.ToString());
+            if (chapterData == null)
+            {
+                return false;
+            }
+            if (!string.IsNullOrWhiteSpace(Utils.GetValue<string>(chapterData, "begin_sn")))
+            {
+                // This is a scenario chapter
+                return false;
+            }
+            if (Utils.GetValue<int>(chapterData, "unlock_id") != 0)
+            {
+                // This is a lock
+                return false;
+            }
+            return Utils.GetValue<int>(chapterData, "npc_id") != 0 &&
+                Utils.GetValue<int>(chapterData, "mydeck_set_id") == 0 &&
+                Utils.GetValue<int>(chapterData, "set_id") != 0;
+        }
+
         bool IsValidNonDuelChapter(int chapterId)
         {
             int gateId = GetChapterGateId(chapterId);
