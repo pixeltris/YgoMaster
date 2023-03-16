@@ -13,6 +13,7 @@
     "SoloRewardsInDuelResult": false,
     "SoloRewardsInDuelResultAreRare": false,
     "CardCraftableAll": false,
+    "DisableNoDismantle": false,
     "DisableBanList": false,
     "ProgressiveCardList": false,
     "ProgressiveCardRarities": false,

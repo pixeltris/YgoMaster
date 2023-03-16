@@ -108,7 +108,7 @@
     //1002018,//coming soon
     //1002019,//coming soon
     //1002020,//coming soon
-    //1003001,//coming soon
+    1003001,//Gaia The Fierce Knight
     //1003002,//coming soon
     //1003003,//coming soon
     //1003004,//coming soon
@@ -150,7 +150,7 @@
     1010028,//Dark Magician
     //1010029,//coming soon
     //1010030,//coming soon
-    //1010031,//coming soon
+    1010031,//Kurikara Divincarnate
     //1010032,//coming soon
     //1010033,//coming soon
     //1010034,//coming soon
@@ -179,9 +179,9 @@
     1011007,//DC 2022 DEC Gold Finalist
     1011008,//DC 2022 DEC Silver Finalist
     1011009,//DC 2022 DEC Bronze Finalist
-    //1011010,//coming soon
-    //1011011,//coming soon
-    //1011012,//coming soon
+    1011010,//DC 2023 MAR Gold Finalist
+    1011011,//DC 2023 MAR Silver Finalist
+    1011012,//DC 2023 MAR Bronze Finalist
     //1011013,//coming soon
     //1011014,//coming soon
     //1011015,//coming soon
@@ -338,12 +338,12 @@
     1020044,//Anti-Spell Festival 2022
     1020045,//Theme Chronicle 2023
     1020046,//Legend Anthology 2023
-    //1020047,//coming soon
-    //1020048,//coming soon
-    //1020049,//coming soon
-    //1020050,//coming soon
-    //1020051,//coming soon
-    //1020052,//coming soon
+    1020047,//DC 2023 MAR Top 10
+    1020048,//DC 2023 MAR Top 100
+    1020049,//DC 2023 MAR Top 500
+    1020050,//DC 2023 MAR Top 1000
+    1020051,//DC 2023 MAR Top 10000
+    1020052,//DC 2023 MAR 2nd Stage Duelist
     1020053,//Xyz Festival 2023
     //1020054,//coming soon
     //1020055,//coming soon
@@ -470,14 +470,14 @@
     //1070032,//coming soon
     //1070033,//coming soon
     1070034,//Gigantic Spright
-    //1070035,//coming soon
+    1070035,//Kurikara Divincarnate
     //1070036,//coming soon
     1070037,//Exosisters Magnifica
     //1070038,//coming soon
     1070039,//Video Game Awards 2022 Commemoration
     1070040,//Five-Headed Dragon
     //1070041,//coming soon
-    //1070042,//coming soon
+    1070042,//DC 2023 MAR Celebration
     //1070043,//coming soon
     //1070044,//coming soon
     //1070045,//coming soon
@@ -568,7 +568,7 @@
     1080018,//Spellbook of Prophecy
     1080019,//Immortal Glory
     1080020,//Vortex of Magic
-    //1080021,//coming soon
+    1080021,//Spiral Spear Strike
     //1080022,//coming soon
     //1080023,//coming soon
     //1080024,//coming soon
@@ -683,7 +683,7 @@
     //1101009,//coming soon
     //1101010,//coming soon
     1101011,//Negate Attack
-    //1101012,//coming soon
+    1101012,//Twin Twisters
     //1101013,//coming soon
     //1101014,//coming soon
     //1101015,//coming soon
@@ -749,7 +749,7 @@
     1111003,//Shien's Dojo
     1111004,//Flower Gathering
     1111005,//Dragonic Tactics
-    //1111006,//coming soon
+    1111006,//Catapult Turtle
     1111007,//World Legacy - "World Key"
     1111008,//Rank-Up-Magic Barian's Force
     1111009,//Rank-Up-Magic Astral Force
@@ -806,7 +806,7 @@
     1120018,//Spellbook of Prophecy
     1120019,//Immortal Glory
     1120020,//Vortex of Magic
-    //1120021,//coming soon
+    1120021,//Spiral Spear Strike
     //1120022,//coming soon
     //1120023,//coming soon
     //1120024,//coming soon

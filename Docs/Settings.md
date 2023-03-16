@@ -31,6 +31,7 @@ You can copy/paste/move/rename (but not modify the contents of) files in this fo
 - `CardCraftableAll` - sets all cards to craftable.
 - `DuelRewards` - custom reward list (needs balancing, you can also delete the entry to disable custom rewards).
 - `Craft` - card crafting cost / dismantling reward.
+- `DisableNoDismantle` - all cards given to the player can be dismantled (doesn't impact previously given cards).
 
 ### /Data/Shop.json
 

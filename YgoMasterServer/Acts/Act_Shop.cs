@@ -12,10 +12,10 @@ namespace YgoMaster
         // TODO: Put this somewhere else (called by Act_ShopPurchase / SoloUpdateChapterStatus / GiveDuelReward)
         bool GiveStructureDeck(GameServerWebRequest request, int structureDeckId)
         {
-            if (request.Player.Items.Contains(structureDeckId))
+            /*if (request.Player.Items.Contains(structureDeckId))
             {
                 return false;
-            }
+            }*/
             request.Player.Items.Add(structureDeckId);
             DeckInfo deck;
             if (!StructureDecks.TryGetValue(structureDeckId, out deck))
@@ -27,7 +27,7 @@ namespace YgoMaster
             foreach (int cardId in cards)
             {
                 uniqueCardIds.Add(cardId);
-                request.Player.Cards.Add(cardId, 1, PlayerCardKind.NoDismantle, CardStyleRarity.Normal);
+                request.Player.Cards.Add(cardId, 1, DisableNoDismantle ? PlayerCardKind.Dismantle : PlayerCardKind.NoDismantle, CardStyleRarity.Normal);
             }
             Dictionary<string, object> itemsData = request.GetOrCreateDictionary("Item");
             Dictionary<string, object> itemsHave = Utils.GetOrCreateDictionary(itemsData, "have");
@@ -159,8 +159,8 @@ namespace YgoMaster
                         break;
                     case ShopCategory.Structure:
                         structureShop[shopItem.ShopId.ToString()] = data;
-                        buyLimit = 1;
-                        have = request.Player.Items.Contains(shopItem.Id) || request.Player.ShopState.GetPurchasedCount(shopItem) > 0 ? 1 : 0;
+                        buyLimit = shopItem.Buylimit;
+                        have = Math.Min(shopItem.Buylimit, (int)request.Player.ShopState.GetPurchasedCount(shopItem));
                         DeckInfo deck = StructureDecks[shopItem.Id];
                         data["structure_id"] = deck.Id;
                         data["accessory"] = deck.Accessory.ToDictionary();
@@ -364,9 +364,9 @@ namespace YgoMaster
                             success = Act_ShopPurchase_Pack(request, price, shopItem);
                             break;
                         case ShopCategory.Structure:
-                            if (request.Player.Items.Contains(shopItem.Id))
+                            if ((int)request.Player.ShopState.GetPurchasedCount(shopItem) >= shopItem.Buylimit)
                             {
-                                Utils.LogWarning("Tried to re-purchase owned item " + shopItem.Id);
+                                Utils.LogWarning("Tried to re-purchase owned structure deck " + shopItem.Id);
                             }
                             else
                             {
@@ -385,7 +385,7 @@ namespace YgoMaster
                                     {
                                         { "StructureShop", new Dictionary<string, object>() {
                                             { shopItem.ShopId.ToString(), new Dictionary<string, object>() {
-                                                { "now_buy_count", 1 }
+                                                { "now_buy_count", (int)request.Player.ShopState.GetPurchasedCount(shopItem) + 1 }
                                             }}
                                         }}
                                     };

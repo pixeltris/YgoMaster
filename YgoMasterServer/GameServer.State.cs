@@ -86,6 +86,10 @@ namespace YgoMaster
         /// NOTE: Incomplete
         /// </summary>
         bool MultiplayerEnabled;
+        /// <summary>
+        /// Any card which is given the player can be dismantled
+        /// </summary>
+        bool DisableNoDismantle;
 
         void LoadSettings()
         {
@@ -144,6 +148,7 @@ namespace YgoMaster
             ProgressiveCardList = Utils.GetValue<bool>(values, "ProgressiveCardList");
             ProgressiveCardRarities = Utils.GetValue<bool>(values, "ProgressiveCardRarities");
             ShowTopics = Utils.GetValue<bool>(values, "ShowTopics");
+            DisableNoDismantle = Utils.GetValue<bool>(values, "DisableNoDismantle");
 
             CardRare = new Dictionary<int, int>();
             string cardListFile = Path.Combine(dataDirectory, "CardList.json");
@@ -884,7 +889,7 @@ namespace YgoMaster
                         {
                             foreach (int cardId in deck.GetAllCards())
                             {
-                                player.Cards.Add(cardId, 1, PlayerCardKind.NoDismantle, CardStyleRarity.Normal);
+                                player.Cards.Add(cardId, 1, DisableNoDismantle ? PlayerCardKind.Dismantle : PlayerCardKind.NoDismantle, CardStyleRarity.Normal);
                             }
                         }
                     }
@@ -1399,6 +1404,10 @@ namespace YgoMaster
                     case "StructureShop":
                         info.Category = ShopCategory.Structure;
                         info.Id = Utils.GetValue<int>(data, "structure_id");
+                        if (info.Buylimit == 0)
+                        {
+                            info.Buylimit = 3;
+                        }
                         if (!StructureDecks.ContainsKey(info.Id))
                         {
                             // Unknown structure deck

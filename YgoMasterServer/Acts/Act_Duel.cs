@@ -366,7 +366,7 @@ namespace YgoMaster
                         break;
                     case DuelCustomRewardType.Card:
                         {
-                            PlayerCardKind dismantle = reward.CardNoDismantle ? PlayerCardKind.NoDismantle : PlayerCardKind.Dismantle;
+                            PlayerCardKind dismantle = reward.CardNoDismantle && !DisableNoDismantle ? PlayerCardKind.NoDismantle : PlayerCardKind.Dismantle;
                             int numCards = Math.Max(1, Math.Min(reward.MinValue, reward.MaxValue));
                             double randValue = rand.NextDouble() * 100;
                             if (reward.Rate >= randValue)

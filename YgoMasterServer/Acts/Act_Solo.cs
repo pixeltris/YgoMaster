@@ -589,7 +589,7 @@ namespace YgoMaster
                                 {
                                     if (!SoloRewardsInDuelResult)
                                     {
-                                        request.Player.Cards.Add(itemId, count, PlayerCardKind.NoDismantle, CardStyleRarity.Normal);
+                                        request.Player.Cards.Add(itemId, count, DisableNoDismantle ? PlayerCardKind.Dismantle : PlayerCardKind.NoDismantle, CardStyleRarity.Normal);
                                     }
                                 }
                                 break;
