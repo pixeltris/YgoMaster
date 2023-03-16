@@ -1406,6 +1406,10 @@ namespace YgoMaster
                         info.Id = Utils.GetValue<int>(data, "structure_id");
                         if (info.Buylimit == 0)
                         {
+                            info.Buylimit = Utils.GetValue<int>(data, "limit_buy_count");
+                        }
+                        if (info.Buylimit == 0)
+                        {
                             info.Buylimit = 3;
                         }
                         if (!StructureDecks.ContainsKey(info.Id))
