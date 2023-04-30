@@ -74,10 +74,10 @@
     1001014,//Quillbolt Hedgehog
     //1001015,//coming soon
     //1001016,//coming soon
-    //1001017,//coming soon
+    1001017,//Gunkan Suship Ikura
     //1001018,//coming soon
     //1001019,//coming soon
-    //1001020,//coming soon
+    1001020,//A New Life - Galatea
     //1001021,//coming soon
     //1001022,//coming soon
     //1001023,//coming soon
@@ -151,7 +151,7 @@
     //1010029,//coming soon
     //1010030,//coming soon
     1010031,//Kurikara Divincarnate
-    //1010032,//coming soon
+    1010032,//Melffy Staring Contest
     //1010033,//coming soon
     //1010034,//coming soon
     //1010035,//coming soon
@@ -160,7 +160,7 @@
     //1010038,//coming soon
     //1010039,//coming soon
     //1010040,//coming soon
-    //1010041,//coming soon
+    1010041,//Number 41: Bagooska the Terribly Tired Tapir
     //1010042,//coming soon
     //1010043,//coming soon
     //1010044,//coming soon
@@ -256,12 +256,12 @@
     1012044,//Myutant GB-88
     1012045,//Myutant Mutant
     1012046,//Starry Night, Starry Dragon
-    //1012047,//coming soon
-    //1012048,//coming soon
-    //1012049,//coming soon
+    1012047,//Mekk-Knight Crusadia Avramax
+    1012048,//Dingirsu, the Orcust of the Evening Star
+    1012049,//Knightmare Incarnation Idlee
     //1012050,//coming soon
     1012051,//Teardrop the Rikka Queen
-    //1012052,//coming soon
+    1012052,//Subterror Behemoth Speleogeist
     //1012053,//coming soon
     //1012054,//coming soon
     //1012055,//coming soon
@@ -281,7 +281,7 @@
     //1012069,//coming soon
     //1012070,//coming soon
     1013001,//PawaPuro
-    //1013002,//coming soon
+    1013002,//Memories of Intersecting Duels
     //1013003,//coming soon
     //1013004,//coming soon
     //1013005,//coming soon
@@ -345,7 +345,7 @@
     1020051,//DC 2023 MAR Top 10000
     1020052,//DC 2023 MAR 2nd Stage Duelist
     1020053,//Xyz Festival 2023
-    //1020054,//coming soon
+    1020054,//Attribute 4 (2023)
     //1020055,//coming soon
     //1020056,//coming soon
     //1020057,//coming soon
@@ -376,7 +376,7 @@
     1030010,//Bronze Award Frame
     1030011,//Silver Award Frame
     1030012,//Gold Award Frame
-    //1030013,//coming soon
+    1030013,//Red Frame
     //1030014,//coming soon
     //1030015,//coming soon
     //1030016,//coming soon
@@ -425,7 +425,7 @@
     //1031019,//coming soon
     //1031020,//coming soon
     1032001,//Festive Ornament
-    //1032002,//coming soon
+    1032002,//Celebration of Spring Breeze
     //1032003,//coming soon
     //1032004,//coming soon
     //1032005,//coming soon
@@ -467,24 +467,24 @@
     1070029,//The Weather Forecast
     1070030,//DC 2022 DEC Celebration
     1070031,//The Millennium Puzzle
-    //1070032,//coming soon
-    //1070033,//coming soon
+    1070032,//The World Legacy
+    1070033,//Vera the Vernusylph Goddess
     1070034,//Gigantic Spright
     1070035,//Kurikara Divincarnate
-    //1070036,//coming soon
+    1070036,//Tearlaments Kaleido-Heart
     1070037,//Exosisters Magnifica
     //1070038,//coming soon
     1070039,//Video Game Awards 2022 Commemoration
     1070040,//Five-Headed Dragon
-    //1070041,//coming soon
+    1070041,//Number 41: Bagooska the Terribly Tired Tapir
     1070042,//DC 2023 MAR Celebration
     //1070043,//coming soon
-    //1070044,//coming soon
+    1070044,//Spirit Charmers
     //1070045,//coming soon
     //1070046,//coming soon
     //1070047,//coming soon
     //1070048,//coming soon
-    //1070049,//coming soon
+    1070049,//Witchcrafter Vice-Madame
     //1070050,//coming soon
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
@@ -505,11 +505,11 @@
     //1071017,//coming soon
     1071018,//Myutant Ultimus
     1071019,//Starry Night, Starry Dragon
-    //1071020,//coming soon
-    //1071021,//coming soon
+    1071020,//Mekk-Knight Crusadia Avramax
+    1071021,//Dingirsu, the Orcust of the Evening Star
     //1071022,//coming soon
     1071023,//Teardrop the Rikka Queen
-    //1071024,//coming soon
+    1071024,//Subterror Behemoth Speleogeist
     //1071025,//coming soon
     //1071026,//coming soon
     //1071027,//coming soon
@@ -613,10 +613,10 @@
     1090011,//The Desolate Temple
     1090012,//Mount Swordsoul
     1090013,//Vivid Abyssal Waters
-    //1090014,//coming soon
+    1090014,//Madolche Chateau
     1090015,//Ghostrick Mansion
     1090016,//Myutant Evolution Lab
-    //1090017,//coming soon
+    1090017,//Cyber Universe
     1090018,//Memories of an Ancient Duel
     //1090019,//coming soon
     //1090020,//coming soon
@@ -655,10 +655,10 @@
     1100011,//The Desolate Temple
     1100012,//Mount Swordsoul
     1100013,//Vivid Abyssal Waters
-    //1100014,//coming soon
+    1100014,//Madolche Chateau
     1100015,//Ghostrick Mansion
     1100016,//Myutant Evolution Lab
-    //1100017,//coming soon
+    1100017,//Cyber Universe
     1100018,//Memories of an Ancient Duel
     //1100019,//coming soon
     //1100020,//coming soon
@@ -727,10 +727,10 @@
     1110011,//The Desolate Temple
     1110012,//Mount Swordsoul
     1110013,//Vivid Abyssal Waters
-    //1110014,//coming soon
+    1110014,//Madolche Chateau
     1110015,//Ghostrick Mansion
     1110016,//Myutant Evolution Lab
-    //1110017,//coming soon
+    1110017,//Cyber Universe
     1110018,//Memories of an Ancient Duel
     //1110019,//coming soon
     //1110020,//coming soon
@@ -833,10 +833,10 @@
     1130013,//Odd-Eyes Arc Pendulum Dragon
     1130014,//Accesscode Talker
     1130015,//Ghostrick Festival
-    //1130016,//coming soon
+    1130016,//The World Legacy
     1130017,//Dark Magician
-    //1130018,//coming soon
-    //1130019,//coming soon
+    1130018,//Vernusylph of the Flourishing Hills
+    1130019,//Ursarctic Radiation
     //1130020,//coming soon
     //1130021,//coming soon
     //1130022,//coming soon
@@ -858,7 +858,7 @@
     //1130038,//coming soon
     //1130039,//coming soon
     //1130040,//coming soon
-    //1130041,//coming soon
+    1130041,//Number 41: Bagooska the Terribly Tired Tapir
     //1130042,//coming soon
     //1130043,//coming soon
     //1130044,//coming soon
