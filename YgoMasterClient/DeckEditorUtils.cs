@@ -219,11 +219,12 @@ namespace YgomGame.Deck
 
                         int reg = 0;//?
                         bool sort = false;
+                        bool isRental = false;//?
                         bool isIni = false;//? isInitializeSelect?
                         bool noAdd = false;//?
                         method.Invoke(thisPtr, new IntPtr[]
                         {
-                            new IntPtr(&id), new IntPtr(&prem), new IntPtr(&owned), new IntPtr(&reg), new IntPtr(&sort),
+                            new IntPtr(&id), new IntPtr(&prem), new IntPtr(&owned), new IntPtr(&isRental), new IntPtr(&reg), new IntPtr(&sort),
                             new IntPtr(&isIni), new IntPtr(&noAdd)
                         });
                     }
@@ -682,7 +683,7 @@ namespace YgomGame.SubMenu
                                     if (columns.Length > nameColumnIndex && (columns.Length > quantityColumnIndex || quantityColumnIndex == -1))
                                     {
                                         string name = Utils.GetInnerText(columns[nameColumnIndex].TrimStart('>')).ToLowerInvariant();
-                                        string quantityStr =quantityColumnIndex == -1 ? "1" : Utils.GetInnerText(columns[quantityColumnIndex].TrimStart('>'));
+                                        string quantityStr = quantityColumnIndex == -1 ? "1" : Utils.GetInnerText(columns[quantityColumnIndex].TrimStart('>'));
                                         int quantity;
                                         BasicCardInfo cardInfo;
                                         if (int.TryParse(quantityStr, out quantity) && allCardsByNameLower.TryGetValue(name, out cardInfo))
@@ -1126,6 +1127,12 @@ namespace YgomGame.SubMenu
     {
         static IL2Method methodAddMenuItem;
 
+        public enum Badge
+        {
+            DEFAULT,
+            WCS_CONFIRM
+        }
+
         static SubMenuViewController()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
@@ -1133,11 +1140,11 @@ namespace YgomGame.SubMenu
             methodAddMenuItem = classInfo.GetMethod("AddMenuItem");
         }
 
-        public static void AddMenuItem(IntPtr thisPtr, string text, Action clickCallback, string onClickSL = null)
+        public static void AddMenuItem(IntPtr thisPtr, string text, Action clickCallback, string onClickSL = null, Badge badge = Badge.DEFAULT)
         {
             //IntPtr callback = DelegateHelper.DelegateIl2cppDelegate(clickCallback, clickCallback.GetType().GetClass());
             IntPtr callback = UnityEngine.Events._UnityAction.CreateUnityAction(clickCallback);
-            methodAddMenuItem.Invoke(thisPtr, new IntPtr[] { new IL2String(text).ptr, callback, new IL2String(onClickSL).ptr });
+            methodAddMenuItem.Invoke(thisPtr, new IntPtr[] { new IL2String(text).ptr, callback, new IL2String(onClickSL).ptr, new IntPtr(&badge) });
         }
     }
 }
