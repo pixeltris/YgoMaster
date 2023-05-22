@@ -125,14 +125,64 @@ namespace YgomGame.Duel
         }
     }
 
+    unsafe static class DuelHUD_PrepareToDuelProcess
+    {
+        delegate csbool Del_MoveNext(IntPtr thisPtr);
+        static Hook<Del_MoveNext> hookMoveNext;
+
+        public static bool IsMoveNext;
+
+        static DuelHUD_PrepareToDuelProcess()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            IL2Class duelHudClassInfo = assembly.GetClass("DuelHUD", "YgomGame.Duel");
+            foreach (IL2Class nestedClassInfo in duelHudClassInfo.GetNestedTypes())
+            {
+                if (nestedClassInfo.Name.Contains("PrepareToDuelProcess"))
+                {
+                    hookMoveNext = new Hook<Del_MoveNext>(MoveNext, nestedClassInfo.GetMethod("MoveNext"));
+                    break;
+                }
+            }
+        }
+
+        static csbool MoveNext(IntPtr thisPtr)
+        {
+            //Console.WriteLine("State: " + *(int*)(thisPtr + 0x10));
+            IsMoveNext = true;
+            csbool result = hookMoveNext.Original(thisPtr);
+            IsMoveNext = false;
+            return result;
+        }
+    }
+
+    unsafe static class Util
+    {
+        delegate csbool Del_IsReplay();
+        static Hook<Del_IsReplay> hookIsReplay;
+
+        static Util()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            IL2Class classInfo = assembly.GetClass("Util", "YgomGame.Duel");
+            hookIsReplay = new Hook<Del_IsReplay>(IsReplay, classInfo.GetMethod("IsReplay"));
+        }
+
+        static csbool IsReplay()
+        {
+            if (ClientSettings.ReplayControlsAlwaysEnabled && DuelHUD_PrepareToDuelProcess.IsMoveNext)
+            {
+                return true;
+            }
+            return hookIsReplay.Original();
+        }
+    }
+
     unsafe static class Engine
     {
         static IL2Method methodGetCardNum;
         static IL2Method methodGetCardID;
         static IL2Method methodGetCardUniqueID;
-
-        delegate csbool Del_IsReplayMode();
-        static Hook<Del_IsReplayMode> hookIsReplayMode;
 
         static Engine()
         {
@@ -141,7 +191,6 @@ namespace YgomGame.Duel
             methodGetCardNum = classInfo.GetMethod("GetCardNum");
             methodGetCardID = classInfo.GetMethod("GetCardID");
             methodGetCardUniqueID = classInfo.GetMethod("GetCardUniqueID");
-            hookIsReplayMode = new Hook<Del_IsReplayMode>(IsReplayMode, classInfo.GetMethod("IsReplayMode"));
         }
 
         public static int GetCardNum(int player, int locate)
@@ -157,15 +206,6 @@ namespace YgomGame.Duel
         public static int GetCardUniqueID(int player, int position, int index)
         {
             return methodGetCardUniqueID.Invoke(new IntPtr[] { new IntPtr(&player), new IntPtr(&position), new IntPtr(&index) }).GetValueRef<int>();
-        }
-
-        static csbool IsReplayMode()
-        {
-            if (ClientSettings.ReplayControlsAlwaysEnabled)
-            {
-                return true;
-            }
-            return hookIsReplayMode.Original();
         }
     }
 

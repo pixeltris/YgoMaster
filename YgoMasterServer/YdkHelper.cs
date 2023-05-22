@@ -494,6 +494,7 @@ namespace YgoMaster
                         case CardKind.RirualTunerFX:
                         case CardKind.R_Fusion:// Ritual or fusion?
                         case CardKind.R_FusionFX:// Ritual or fusion?
+                        case CardKind.RitualFlip:
                             return CardFrame.Ritual;
                         case CardKind.RitualPend:
                             return CardFrame.RitualPend;

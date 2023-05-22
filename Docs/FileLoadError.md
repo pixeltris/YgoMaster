@@ -12,7 +12,7 @@ YgoMaster picks the first valid folder it finds in LocalData. There is no way fo
 
 ## 2) Language setting missmatch
 
-Change the language to match the language set via Steam. If the issue persists follow these instructions:
+Make sure the language matches the language on Steam by doing the following:
 
 - Navigate to `/Yu-Gi-Oh! Master Duel/LocalSave/`.
 - There should be two folders in `/LocalSave/`; one with a bunch of random letters, and one called `00000000`.

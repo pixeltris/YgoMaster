@@ -256,9 +256,20 @@ namespace YgoMaster
                     HowToObtainCard howToObtain = i == 0 ? HowToObtainCard.Pack : HowToObtainCard.SalesStructure;
                     foreach (ShopItemInfo shopItem in shopItems)
                     {
-                        if (!shopItem.Cards.ContainsKey(cardId))
+                        if (i == 0)
                         {
-                            continue;
+                            if (!shopItem.Cards.ContainsKey(cardId))
+                            {
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            DeckInfo deck;
+                            if (!StructureDecks.TryGetValue(shopItem.Id, out deck) || !deck.GetAllCards().Contains(cardId))
+                            {
+                                continue;
+                            }
                         }
                         bool isRouteOpen = true;
                         switch (shopItem.SecretType)
@@ -278,10 +289,11 @@ namespace YgoMaster
                             { "route_category", (int)howToObtain },
                             { "route_param", shopItem.ShopId },
                             { "route_open", isRouteOpen },
-                            { "route_name_id", Utils.FixIdString(shopItem.NameText) },
+                            { "route_name_id", i == 0 ? Utils.FixIdString(shopItem.NameText) : "IDS_ITEM_ID" + shopItem.Id },
                             { "route_icon_type", (int)shopItem.IconType },
                             { "route_icon_data", shopItem.IconData },
-                            { "route_icon_mrk", shopItem.IconMrk }
+                            { "route_icon_mrk", shopItem.IconMrk },
+                            { "route_pack_thumb", shopItem.IconMrk.ToString() }
                         });
                     }
                 }
@@ -321,13 +333,14 @@ namespace YgoMaster
                                                 { "route_name_id", string.Empty },//, "IDS_SOLO_GATE001" }, <--- removed to display no text
                                                 { "route_icon_type", 0 },
                                                 { "route_icon_data", string.Empty },
-                                                { "route_icon_mrk", 0 }
+                                                { "route_icon_mrk", 0 },
+                                                { "route_pack_thumb", string.Empty }
                                             });
                                         }
                                     }
                                     else if (category == ItemID.Category.STRUCTURE)
                                     {
-                                        Act_CraftGetCardRoute_TryAddStructureDeck(request, routes, cardId, itemId, HowToObtainCard.Solo);
+                                        //Act_CraftGetCardRoute_TryAddStructureDeck(request, routes, cardId, itemId, HowToObtainCard.Solo);
                                     }
                                 }
                             }
@@ -337,6 +350,7 @@ namespace YgoMaster
                 if (routes.Count > 0)
                 {
                     request.Response["Route"] = routes;
+                    request.Remove("Route");
                 }
             }
         }
@@ -356,7 +370,8 @@ namespace YgoMaster
                         { "route_name_id", "IDS_ITEM_ID" + structureId },
                         { "route_icon_type", 0 },
                         { "route_icon_data", string.Empty },
-                        { "route_icon_mrk", 0 }
+                        { "route_icon_mrk", 0 },
+                        { "route_pack_thumb", string.Empty }
                     });
                 }
             }

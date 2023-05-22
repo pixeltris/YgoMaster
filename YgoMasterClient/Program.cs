@@ -132,6 +132,8 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomGame.Duel.ReplayControl));
                 nativeTypes.Add(typeof(YgomGame.Duel.DuelClient));
                 nativeTypes.Add(typeof(YgomGame.Duel.CameraShaker));
+                nativeTypes.Add(typeof(YgomGame.Duel.DuelHUD_PrepareToDuelProcess));
+                nativeTypes.Add(typeof(YgomGame.Duel.Util));
                 nativeTypes.Add(typeof(YgomGame.Duel.Engine));
                 nativeTypes.Add(typeof(YgomGame.Duel.EngineApiUtil));
                 nativeTypes.Add(typeof(YgomGame.Duel.GenericCardListController));
@@ -773,6 +775,25 @@ namespace YgoMasterClient
                                                 YgomSystem.Utility.ClientWork.UpdateJson(splitted[1]);
                                                 Console.WriteLine("Done");
                                                 break;
+                                            case "cardswithart":// List all cards with art (requires setup of YgoMaster/Data/CardData/)
+                                                {
+                                                    HashSet<int> missingCardsWithArt = new HashSet<int>();
+                                                    IntPtr cardRarePtr = YgomSystem.Utility.ClientWork.GetByJsonPath("$.Master.CardRare");
+                                                    if (cardRarePtr != IntPtr.Zero)
+                                                    {
+                                                        IL2Dictionary<string, object> cardRare = new IL2Dictionary<string, object>(cardRarePtr);
+                                                        Dictionary<int, YgoMaster.YdkHelper.GameCardInfo> cards = YgoMaster.YdkHelper.LoadCardDataFromGame(DataDir);
+                                                        foreach (KeyValuePair<int, YgoMaster.YdkHelper.GameCardInfo> card in cards)
+                                                        {
+                                                            if (!cardRare.ContainsKey(card.Key.ToString()) && AssetHelper.FileExists("Card/Images/Illust/tcg/" + card.Key) && card.Value.Frame != YgoMaster.CardFrame.Token)
+                                                            {
+                                                                missingCardsWithArt.Add(card.Key);
+                                                            }
+                                                        }
+                                                    }
+                                                    Console.WriteLine("Missing cards with art: " + string.Join(", ", missingCardsWithArt));
+                                                }
+                                                break;
                                         }
                                     }
                                     catch (Exception e)
@@ -1251,7 +1272,26 @@ namespace YgomSystem.LocalFileSystem
         delegate void Del_SetupStorageDirectory(IntPtr thisPtr, IntPtr storage, IntPtr mountPath);
         static Hook<Del_SetupStorageDirectory> hookSetupStorageDirectory;
 
-        public static string LocalDataDir;
+        private static string localDataDir;
+        public static string LocalDataDir
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(localDataDir))
+                {
+                    foreach (string dir in Directory.GetDirectories("LocalData"))
+                    {
+                        if (dir != "00000000")
+                        {
+                            localDataDir = dir;
+                            break;
+                        }
+                    }
+                }
+                return localDataDir;
+            }
+            private set { localDataDir = value; }
+        }
 
         static StandardStorageIO()
         {

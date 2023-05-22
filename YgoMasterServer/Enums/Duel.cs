@@ -523,6 +523,7 @@ namespace YgoMaster
         SelFree,
         SelFreeMax = 137,
         BlindSelect,
+        AutoSelect,//v1.5.2
         SelAllCard,
         SelAllDeck,
         SelAllMonst,

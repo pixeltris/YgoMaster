@@ -90,7 +90,8 @@ namespace YgoMaster
         TokenTuner,
         R_Fusion,
         R_FusionFX,
-        RitualPend
+        RitualPend,
+        RitualFlip,//v1.5.2
     }
 
     /// <summary>

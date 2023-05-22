@@ -1719,6 +1719,7 @@ namespace YgoMaster
                 return;
             }
             Dictionary<int, Dictionary<string, object>> packShop = new Dictionary<int, Dictionary<string, object>>();
+            Dictionary<int, Dictionary<string, object>> packShopSecretsOnly = new Dictionary<int, Dictionary<string, object>>();
             Dictionary<int, Dictionary<string, object>> structureShop = new Dictionary<int, Dictionary<string, object>>();
             Dictionary<int, Dictionary<string, object>> accessoryShop = new Dictionary<int, Dictionary<string, object>>();
             Dictionary<int, Dictionary<string, object>> specialShop = new Dictionary<int, Dictionary<string, object>>();
@@ -1734,6 +1735,7 @@ namespace YgoMaster
                     {
                         Action<string, Dictionary<int, Dictionary<string, object>>> fetchShop = (string shopName, Dictionary<int, Dictionary<string, object>> shop) =>
                             {
+                                bool foundPackShop = false;
                                 Dictionary<string, object> items = Utils.GetValue(shopData, shopName, default(Dictionary<string, object>));
                                 foreach (KeyValuePair<string, object> item in items)
                                 {
@@ -1743,7 +1745,34 @@ namespace YgoMaster
                                         Dictionary<string, object> itemData = item.Value as Dictionary<string, object>;
                                         if (itemData != null)
                                         {
-                                            shop[shopId] = itemData;
+                                            if (shopName == "PackShop")
+                                            {
+                                                if (itemData.ContainsKey("limitdate"))
+                                                {
+                                                    // Ignore time limited packs as they overwrite the previous secret
+                                                    continue;
+                                                }
+
+                                                ShopPackType packType = Utils.GetValue<ShopPackType>(itemData, "packType");
+                                                if (packType == ShopPackType.Secret)
+                                                {
+                                                    packShopSecretsOnly[shopId] = itemData;
+                                                }
+                                                else
+                                                {
+                                                    // Special case. We aren't merging pack shops anymore due to old assets not being downlaoded.
+                                                    if (!foundPackShop)
+                                                    {
+                                                        foundPackShop = true;
+                                                        shop.Clear();
+                                                    }
+                                                    shop[shopId] = itemData;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                shop[shopId] = itemData;
+                                            }
                                         }
                                         Dictionary<string, object> gachaData = Utils.GetValue(data, "Gacha", default(Dictionary<string, object>));
                                         if (gachaData != null)
@@ -1802,8 +1831,17 @@ namespace YgoMaster
                     }
                 }
             }
+            foreach (KeyValuePair<int, Dictionary<string, object>> secretPackShopItem in packShopSecretsOnly)
+            {
+                packShop[secretPackShopItem.Key] = secretPackShopItem.Value;
+            }
             foreach (KeyValuePair<int, List<int>> cardList in extraCardLists)
             {
+                if (!packShop.ContainsKey(cardList.Key))
+                {
+                    Console.WriteLine("[WARNING] Couldn't find shop for gacha list " + cardList.Key);
+                    continue;
+                }
                 packShop[cardList.Key]["cardList"] = cardList.Value;
             }
             // NOTE:
