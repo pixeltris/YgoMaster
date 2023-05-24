@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
+using System.IO;
 
 namespace YgoMaster
 {
     class DeckInfo
     {
+        Random rand = new Random();
+
 #pragma warning disable CS0649
         public static int DefaultRegulationId;
 #pragma warning restore CS0649
@@ -30,6 +33,20 @@ namespace YgoMaster
         /// </summary>
         public string File;
 
+        public bool IsRandomDeckPath
+        {
+            get
+            {
+                try
+                {
+                    return !string.IsNullOrEmpty(File) && Directory.Exists(File);
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
         public bool IsYdkDeck
         {
             get { return !string.IsNullOrEmpty(File) && File.ToLowerInvariant().EndsWith(".ydk"); }
@@ -116,7 +133,48 @@ namespace YgoMaster
 
         public void Load()
         {
-            if (IsYdkDeck)
+            if (IsRandomDeckPath)
+            {
+                SearchOption searchOption = SearchOption.AllDirectories;
+#if YGO_MASTER_CLIENT
+                if (YgoMasterClient.ClientSettings.RandomDecksNonRecursive)
+                {
+                    searchOption = SearchOption.TopDirectoryOnly;
+                }
+#endif
+                List<string> files = Directory.GetFiles(File, "*.*", searchOption).ToList();
+                files = Utils.Shuffle(rand, files);
+                foreach (string file in files)
+                {
+                    string extension = Path.GetExtension(file);
+                    switch (extension.ToLowerInvariant())
+                    {
+                        case ".ydk":
+                            Name = Path.GetFileNameWithoutExtension(file) + ".ydk";
+                            YdkHelper.LoadDeck(this, System.IO.File.ReadAllText(file));
+                            break;
+                        case ".json":
+                            {
+                                string text = System.IO.File.ReadAllText(file);
+                                if ((text.Contains("\"m\"") && text.Contains("\"e\"")) ||
+                                    (text.Contains("\"Main\"") && text.Contains("\"Extra\"")))
+                                {
+                                    FromDictionaryEx(MiniJSON.Json.DeserializeStripped(text) as Dictionary<string, object>);
+                                }
+                            }
+                            break;
+                    }
+                    if (GetAllCards().Count == 0)
+                    {
+                        ClearContentsAndAccessories();
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+            }
+            else if (IsYdkDeck)
             {
                 YdkHelper.LoadDeck(this);
             }
@@ -132,7 +190,7 @@ namespace YgoMaster
 
         public void Save()
         {
-            if (string.IsNullOrEmpty(File))
+            if (string.IsNullOrEmpty(File) || IsRandomDeckPath)
             {
                 return;
             }
@@ -153,12 +211,14 @@ namespace YgoMaster
             Name = other.Name;
             TimeCreated = other.TimeCreated;
             TimeEdited = other.TimeEdited;
+            RegulationId = other.RegulationId;
             Accessory.CopyFrom(other.Accessory);
             DisplayCards.CopyFrom(other.DisplayCards);
             MainDeckCards.CopyFrom(other.MainDeckCards);
             ExtraDeckCards.CopyFrom(other.ExtraDeckCards);
             SideDeckCards.CopyFrom(other.SideDeckCards);
             TrayCards.CopyFrom(other.TrayCards);
+            File = other.File;
         }
 
         public void Clear()
@@ -168,6 +228,16 @@ namespace YgoMaster
             File = null;
             TimeCreated = 0;
             TimeEdited = 0;
+            Accessory.Clear();
+            DisplayCards.Clear();
+            MainDeckCards.Clear();
+            ExtraDeckCards.Clear();
+            SideDeckCards.Clear();
+            TrayCards.Clear();
+        }
+
+        public void ClearContentsAndAccessories()
+        {
             Accessory.Clear();
             DisplayCards.Clear();
             MainDeckCards.Clear();
@@ -219,6 +289,12 @@ namespace YgoMaster
             ExtraDeckCards.FromDictionary(Utils.GetDictionary(data, longKeys ? "Extra" : "e"), longKeys);
             SideDeckCards.FromDictionary(Utils.GetDictionary(data, longKeys ? "Side" : "s"), longKeys);
             TrayCards.FromDictionary(Utils.GetDictionary(data, longKeys ? "Tray" : "t"), longKeys);
+
+            string randomDeckPath = Utils.GetValue<string>(data, "random_deck_path");
+            if (!string.IsNullOrEmpty(randomDeckPath))
+            {
+                File = randomDeckPath;
+            }
         }
 
         public Dictionary<string, object> ToDictionaryEx(bool longKeys = false)
@@ -233,6 +309,10 @@ namespace YgoMaster
             data[longKeys ? "Main" : "m"] = MainDeckCards.ToDictionary(longKeys);
             data[longKeys ? "Extra" : "e"] = ExtraDeckCards.ToDictionary(longKeys);
             data[longKeys ? "Side" : "s"] = SideDeckCards.ToDictionary(longKeys);
+            if (IsRandomDeckPath)
+            {
+                data["random_deck_path"] = File;
+            }
             return data;
         }
 

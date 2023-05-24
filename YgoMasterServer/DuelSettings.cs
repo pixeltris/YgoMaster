@@ -148,6 +148,32 @@ namespace YgoMaster
             BgmsFromValue(rand.Next(1, (8 + 1)));
         }
 
+        public void LoadRandomDecks()
+        {
+            for (int i = 0; i < Deck.Length; i++)
+            {
+                if (Deck[i].IsRandomDeckPath)
+                {
+                    Deck[i].Load();
+                }
+            }
+        }
+
+        public void ClearRandomDeckPaths(bool setCpuNameFromDeckName)
+        {
+            for (int i = 0; i < Deck.Length; i++)
+            {
+                if (Deck[i].IsRandomDeckPath)
+                {
+                    if (setCpuNameFromDeckName && i > 0 && !string.IsNullOrEmpty(Deck[i].Name))
+                    {
+                        name[i] = Deck[i].Name;
+                    }
+                    Deck[i].File = null;
+                }
+            }
+        }
+
         public void SetRequiredDefaults()
         {
             // cpu int.MaxValue is used by DuelStarter to state the default value should be used

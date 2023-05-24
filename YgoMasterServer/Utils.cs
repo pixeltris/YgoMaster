@@ -97,14 +97,14 @@ namespace YgoMaster
             }
         }
 
-        public static List<int> Shuffle(Random rng, List<int> values)
+        public static List<T> Shuffle<T>(Random rng, List<T> values)
         {
-            List<int> array = new List<int>(values);
+            List<T> array = new List<T>(values);
             int n = array.Count;
             while (n > 1)
             {
                 int k = rng.Next(n--);
-                int temp = array[n];
+                T temp = array[n];
                 array[n] = array[k];
                 array[k] = temp;
             }

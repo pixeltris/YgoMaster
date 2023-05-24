@@ -36,6 +36,8 @@ namespace YgoMasterClient
         public static bool ChangeWindowTitleOnLiveMod;
         public static bool AlwaysWin;
         public static bool CustomDuelCmdLog;
+        public static bool RandomDecksNonRecursive;
+        public static bool RandomDecksDontSetCpuName;
 
         public static string FilePath
         {
@@ -88,6 +90,8 @@ namespace YgoMasterClient
             ChangeWindowTitleOnLiveMod = YgoMaster.Utils.GetValue<bool>(data, "ChangeWindowTitleOnLiveMod");
             AlwaysWin = YgoMaster.Utils.GetValue<bool>(data, "AlwaysWin");
             CustomDuelCmdLog = YgoMaster.Utils.GetValue<bool>(data, "CustomDuelCmdLog");
+            RandomDecksNonRecursive = YgoMaster.Utils.GetValue<bool>(data, "RandomDecksNonRecursive");
+            RandomDecksDontSetCpuName = YgoMaster.Utils.GetValue<bool>(data, "RandomDecksDontSetCpuName");
             return true;
         }
 

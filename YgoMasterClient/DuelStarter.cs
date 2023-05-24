@@ -207,6 +207,7 @@ namespace YgomSystem.Network
                 {
                     DuelSettings settings = new DuelSettings();
                     settings.CopyFrom(YgomGame.Room.RoomCreateViewController.Settings);
+                    settings.ClearRandomDeckPaths(!ClientSettings.RandomDecksDontSetCpuName);
                     settings.FirstPlayer = YgomGame.Solo.SoloStartProductionViewController.DuelStarterFirstPlayer;
                     rule["duelStarterData"] = settings.ToDictionary();
                 }
@@ -307,6 +308,7 @@ namespace YgomSystem.Network
                                 {
                                     DuelSettings settings = new DuelSettings();
                                     settings.CopyFrom(YgomGame.Room.RoomCreateViewController.Settings);
+                                    settings.ClearRandomDeckPaths(!ClientSettings.RandomDecksDontSetCpuName);
                                     settings.FirstPlayer = YgomGame.Solo.SoloStartProductionViewController.DuelStarterFirstPlayer;
                                     SetDuelRequiredDefaults(settings);
                                     YgomSystem.Utility.ClientWork.DeleteByJsonPath("Duel");
@@ -319,8 +321,10 @@ namespace YgomSystem.Network
                             break;
                         case "Solo.start":
                             {
+                                YgomGame.Room.RoomCreateViewController.Settings.LoadRandomDecks();
                                 DuelSettings settings = new DuelSettings();
                                 settings.CopyFrom(YgomGame.Room.RoomCreateViewController.Settings);
+                                settings.ClearRandomDeckPaths(!ClientSettings.RandomDecksDontSetCpuName);
                                 SetDuelRequiredDefaults(settings);
                                 YgomSystem.Utility.ClientWork.DeleteByJsonPath("Duel");
                                 YgomSystem.Utility.ClientWork.UpdateJson(MiniJSON.Json.Serialize(new Dictionary<string, object>()
@@ -759,7 +763,7 @@ namespace YgomGame.Room
             class Buttons
             {
                 public Dictionary<IntPtr, DeckInfo> Decks = new Dictionary<IntPtr, DeckInfo>();
-                public IntPtr LoadFromFile; public IntPtr ClearAllDecks; public IntPtr OpenDeckEditor;
+                public IntPtr LoadDeckFrom; public IntPtr ClearAllDecks; public IntPtr OpenDeckEditor;
                 public IntPtr LoadIncludingDecks; public IntPtr Load; public IntPtr Save;
                 public IntPtr StartingPlayer; public IntPtr LifePoints; public IntPtr Hand; public IntPtr Field;
                 public IntPtr DuelType; public IntPtr Seed; public IntPtr Shuffle; public IntPtr Cpu;
@@ -1183,7 +1187,7 @@ namespace YgomGame.Room
                 AddDeckDetailsButton(infosList, isv, 1);
                 //AddDeckDetailsButton(infosList, isv, 2);
                 //AddDeckDetailsButton(infosList, isv, 3);
-                buttons.LoadFromFile = AddButtonYesNo(infosList, isv, "Load deck from file", false);
+                buttons.LoadDeckFrom = AddButton(infosList, isv, "Load deck from", new string[] { "Game", "File", "Folder (random deck)" });
                 AddLabel(infosList, "Settings");
                 buttons.StartingPlayer = AddButton(infosList, isv, "Starting player", new string[] { "Random", "1", "2"/*, "3", "4"*/ });
                 buttons.LifePoints = AddButton(infosList, isv, "Life points", lpStrings);
@@ -1280,56 +1284,84 @@ namespace YgomGame.Room
                         DeckInfo deck;
                         if (buttons.Decks.TryGetValue(buttonPtr, out deck))
                         {
-                            bool loadFromFile = buttonCurrentSetting.GetValue(buttons.LoadFromFile).GetValueRef<int>() == 0;
-                            if (loadFromFile)
+                            int loadDeckFrom = buttonCurrentSetting.GetValue(buttons.LoadDeckFrom).GetValueRef<int>();
+                            switch (loadDeckFrom)
                             {
-                                OpenFileDialog ofd = new OpenFileDialog();
-                                ofd.Filter =
-                                    "JSON (*.json)|*.json" +
-                                    "|YDK (*.ydk)|*.ydk" +
-                                    "|JSON / YDK (*.json;*.ydk)|*.json;*.ydk" +
-                                    "|All Files (*.*)|*.*";
-                                ofd.FilterIndex = 3;
-                                ofd.RestoreDirectory = true;
-                                if (ofd.ShowDialog() == DialogResult.OK && File.Exists(ofd.FileName))
-                                {
-                                    try
+                                case 0:// Game
                                     {
-                                        string extension = Path.GetExtension(ofd.FileName).ToLowerInvariant();
-                                        switch (extension)
+                                        IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
+                                        YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "DeckEdit/DeckSelect",
+                                            new Dictionary<string, object>()
+                                            {
+                                                { "GameMode", (int)9 }// SoloSingle
+                                            });
+                                    }
+                                    break;
+                                case 1:// File
+                                    {
+                                        OpenFileDialog ofd = new OpenFileDialog();
+                                        ofd.Filter =
+                                            "JSON (*.json)|*.json" +
+                                            "|YDK (*.ydk)|*.ydk" +
+                                            "|JSON / YDK (*.json;*.ydk)|*.json;*.ydk" +
+                                            "|All Files (*.*)|*.*";
+                                        ofd.FilterIndex = 3;
+                                        ofd.RestoreDirectory = true;
+                                        if (ofd.ShowDialog() == DialogResult.OK && File.Exists(ofd.FileName))
                                         {
-                                            case ".ydk":
-                                                deck.Clear();
-                                                deck.File = ofd.FileName;
-                                                YdkHelper.LoadDeck(deck);
-                                                break;
-                                            case ".json":
-                                                deck.Clear();
-                                                deck.File = ofd.FileName;
-                                                deck.FromDictionaryEx(MiniJSON.Json.DeserializeStripped(
-                                                    File.ReadAllText(ofd.FileName)) as Dictionary<string, object>);
-                                                break;
-                                            default:
-                                                deck.Clear();
-                                                break;
+                                            try
+                                            {
+                                                string extension = Path.GetExtension(ofd.FileName).ToLowerInvariant();
+                                                switch (extension)
+                                                {
+                                                    case ".ydk":
+                                                        deck.Clear();
+                                                        deck.File = ofd.FileName;
+                                                        YdkHelper.LoadDeck(deck);
+                                                        break;
+                                                    case ".json":
+                                                        deck.Clear();
+                                                        deck.File = ofd.FileName;
+                                                        deck.FromDictionaryEx(MiniJSON.Json.DeserializeStripped(
+                                                            File.ReadAllText(ofd.FileName)) as Dictionary<string, object>);
+                                                        break;
+                                                    default:
+                                                        deck.Clear();
+                                                        break;
+                                                }
+                                                UpdateDeckName(buttonPtr, deck);
+                                                UpdateData();
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                Console.WriteLine("Load deck failed '" + ofd.FileName + "' exception: " + e);
+                                            }
                                         }
-                                        UpdateDeckName(buttonPtr, deck);
-                                        UpdateData();
                                     }
-                                    catch (Exception e)
+                                    break;
+                                case 2:// Folder (random deck)
                                     {
-                                        Console.WriteLine("Load deck failed '" + ofd.FileName + "' exception: " + e);
+                                        string decksDir = Path.Combine(Program.DataDir, "Decks");
+                                        try
+                                        {
+                                            Directory.CreateDirectory(decksDir);
+                                        }
+                                        catch
+                                        {
+                                        }
+
+                                        FolderBrowserDialog fbd = new FolderBrowserDialog();
+                                        fbd.SelectedPath = decksDir;
+                                        if (fbd.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(fbd.SelectedPath) && Directory.Exists(fbd.SelectedPath))
+                                        {
+                                            DirectoryInfo directoryInfo = new DirectoryInfo(fbd.SelectedPath);
+                                            deck.Clear();
+                                            deck.File = directoryInfo.FullName;
+                                            UpdateDeckName(buttonPtr, deck);
+                                            UpdateData();
+                                        }
                                     }
-                                }
-                            }
-                            else
-                            {
-                                IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
-                                YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "DeckEdit/DeckSelect",
-                                    new Dictionary<string, object>()
-                                    {
-                                        { "GameMode", (int)9 }// SoloSingle
-                                    });
+                                    break;
                             }
                             return true;
                         }
@@ -1395,6 +1427,10 @@ namespace YgomGame.Room
 
             string GetDeckName(DeckInfo deck)
             {
+                if (deck.IsRandomDeckPath)
+                {
+                    return "Random (" + new DirectoryInfo(deck.File).Name + ")";
+                }
                 if (!string.IsNullOrEmpty(deck.Name))
                 {
                     return deck.Name;
