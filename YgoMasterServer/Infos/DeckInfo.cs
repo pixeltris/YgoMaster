@@ -9,7 +9,7 @@ namespace YgoMaster
 {
     class DeckInfo
     {
-        Random rand = new Random();
+        static Random rand = new Random();
 
 #pragma warning disable CS0649
         public static int DefaultRegulationId;
