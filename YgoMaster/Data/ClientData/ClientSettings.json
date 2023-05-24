@@ -21,6 +21,6 @@
     "TimeMultiplier": 0,// Time multiplier applied at all times (a value of 0 means no change)
     "DisableVSync": false,// Disables vsync. Might be required to use the time multipliers on some systems
     "ChangeWindowTitleOnLiveMod": true,
-	"RandomDecksNonRecursive": false,
-	"RandomDecksDontSetCpuName": false,
+    "RandomDecksNonRecursive": false,
+    "RandomDecksDontSetCpuName": false,
 }
