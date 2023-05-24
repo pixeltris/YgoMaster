@@ -8,5 +8,3 @@ It's possible to add cards to game before they are officially released as packs.
 You should now see `missing-cards.txt` in your folder. You can then use these card ids and just add them to the end of `CardList.json` and `CardCraftableList.json`. You will also need images for these cards if they aren't already in the game. To do this create an image in the following location where `XXXXX` is the card id:
 
 `Data/ClientData/Card/Images/Illust/tcg/XXXXX.png`
-
-You will likely add monsters which are flagged with animations but don't yet have animation files. This will freeze the game when you summon them. To disable all summon animations open `Data/ClientData/ClientSettings.json` and change `DuelClientDisableCutinAnimations` from `false` to `true`.

@@ -360,6 +360,8 @@ namespace YgomGame.Duel
         delegate csbool Del_IsMonsterCutin(int cardID);
         static Hook<Del_IsMonsterCutin> hookIsMonsterCutin;
 
+        static Dictionary<int, bool> cardsWithImages = new Dictionary<int, bool>();
+
         static CardIndividualSetting()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
@@ -369,11 +371,20 @@ namespace YgomGame.Duel
 
         static csbool IsMonsterCutin(int cardID)
         {
-            if (ClientSettings.DuelClientDisableCutinAnimations)
+            if (ClientSettings.DuelClientDisableCutinAnimations || !HasImage(cardID))
             {
                 return false;
             }
             return hookIsMonsterCutin.Original(cardID);
+        }
+
+        public static bool HasImage(int cardID)
+        {
+            if (!cardsWithImages.ContainsKey(cardID))
+            {
+                cardsWithImages[cardID] = AssetHelper.FileExists("Card/Images/Illust/<_CARD_ILLUST_>/" + cardID);
+            }
+            return cardsWithImages[cardID];
         }
     }
 
@@ -391,7 +402,7 @@ namespace YgomGame.Duel
 
         static IntPtr Get(IntPtr thisPtr, int mrk, int player)
         {
-            if (ClientSettings.DuelClientDisableCutinAnimations)
+            if (ClientSettings.DuelClientDisableCutinAnimations || !CardIndividualSetting.HasImage(mrk))
             {
                 return IntPtr.Zero;
             }
