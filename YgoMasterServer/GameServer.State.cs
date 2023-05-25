@@ -1747,7 +1747,7 @@ namespace YgoMaster
                                         {
                                             if (shopName == "PackShop")
                                             {
-                                                if (itemData.ContainsKey("limitdate"))
+                                                if (itemData.ContainsKey("limitdate") && Utils.GetValue<int>(itemData, "packType") != 2)
                                                 {
                                                     // Ignore time limited packs as they overwrite the previous secret
                                                     continue;
@@ -1763,6 +1763,7 @@ namespace YgoMaster
                                                     // Special case. We aren't merging pack shops anymore due to old assets not being downlaoded.
                                                     if (!foundPackShop)
                                                     {
+                                                        Console.WriteLine(file);
                                                         foundPackShop = true;
                                                         shop.Clear();
                                                     }
