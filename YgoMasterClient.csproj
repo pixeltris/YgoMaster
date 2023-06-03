@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="YgoMasterClient\ActionSheetViewController.cs" />
     <Compile Include="YgoMasterClient\AssetHelper.cs" />
     <Compile Include="YgoMasterClient\AssetHelper.Solo.cs" />
     <Compile Include="YgoMasterClient\ClientSettings.cs" />

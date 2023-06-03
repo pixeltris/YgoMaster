@@ -9,6 +9,10 @@ using IL2CPP;
 using YgoMasterClient;
 using YgoMaster;
 using System.Reflection;
+using System.Runtime;
+
+// TODO:
+// Try hooking OpenPlayerActionSheet to modify player buttons to inject "Trade" (or do it on player profile full menu)
 
 // TODO:
 // Merge the live / non-live duel starters (they currently take a different code path). It would make sense to keep live and remove non-live.
@@ -456,7 +460,7 @@ namespace YgomGame.Duel
                         case 0:
                             if (cmdItems.Length >= 7)
                             {
-                                DuellDll.DLL_DuelComCheatCard(cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4], cmdItems[5], cmdItems[6]);
+                                DuelDll.DLL_DuelComCheatCard(cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4], cmdItems[5], cmdItems[6]);
                                 if (ClientSettings.CustomDuelCmdLog)
                                 {
                                     Console.WriteLine("DLL_DuelComCheatCard {0} {1} {2} {3} {4} {5}", cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4], cmdItems[5], cmdItems[6]);
@@ -466,7 +470,7 @@ namespace YgomGame.Duel
                         case 1:
                             if (cmdItems.Length >= 5)
                             {
-                                DuellDll.DLL_DuelComDoDebugCommand(cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4]);
+                                DuelDll.DLL_DuelComDoDebugCommand(cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4]);
                                 if (ClientSettings.CustomDuelCmdLog)
                                 {
                                     Console.WriteLine("DLL_DuelComDoDebugCommand {0} {1} {2} {3}", cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4]);
@@ -476,7 +480,7 @@ namespace YgomGame.Duel
                         case 2:
                             if (cmdItems.Length >= 1)
                             {
-                                DuellDll.DLL_DuelComDebugCommand(); Console.WriteLine("DLL_DuelComDebugCommand");
+                                DuelDll.DLL_DuelComDebugCommand(); Console.WriteLine("DLL_DuelComDebugCommand");
                                 if (ClientSettings.CustomDuelCmdLog)
                                 {
                                     Console.WriteLine("DLL_DuelComDebugCommand");
@@ -486,7 +490,7 @@ namespace YgomGame.Duel
                         case 3:
                             if (cmdItems.Length >= 5)
                             {
-                                DuellDll.DLL_DuelComDoCommand(cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4]);
+                                DuelDll.DLL_DuelComDoCommand(cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4]);
                                 if (ClientSettings.CustomDuelCmdLog)
                                 {
                                     Console.WriteLine("DLL_DuelComDoCommand {0} {1} {2} {3}", cmdItems[1], cmdItems[2], cmdItems[3], cmdItems[4]);
@@ -496,7 +500,7 @@ namespace YgomGame.Duel
                         case 4:
                             if (cmdItems.Length >= 1)
                             {
-                                DuellDll.DLL_DuelSysAct();
+                                DuelDll.DLL_DuelSysAct();
                                 if (ClientSettings.CustomDuelCmdLog)
                                 {
                                     Console.WriteLine("DLL_DuelSysAct");
@@ -597,6 +601,7 @@ namespace YgomGame.Room
             if (!IsNextInstanceHacked)
             {
                 activeViewController = IntPtr.Zero;
+                hookOnCreatedView.Original.Invoke(thisPtr);
                 return;
             }
             IsNextInstanceHacked = false;
@@ -1605,9 +1610,17 @@ namespace YgomSystem.UI
                 string prefabpath = new IL2String(prefabpathPtr).ToString();
                 if (!Program.IsLive && prefabpath == "Colosseum/Colosseum")
                 {
-                    // Redirect the home screen "DUEL" button to RoomCreate
-                    YgomGame.Room.RoomCreateViewController.IsNextInstanceHacked = true;
-                    prefabpathPtr = new IL2String("Room/RoomCreate").ptr;
+                    if (string.IsNullOrEmpty(ClientSettings.MultiplayerToken))
+                    {
+                        // Redirect the home screen "DUEL" button to RoomCreate
+                        YgomGame.Room.RoomCreateViewController.IsNextInstanceHacked = true;
+                        prefabpathPtr = new IL2String("Room/RoomCreate").ptr;
+                    }
+                    else
+                    {
+                        YgomGame.Menu.CommonDialogViewController.OpenYesNoConfirmationDialog("Duel", "Duel Room or Duel Starter?", OpenDuelStarterMenu, OpenRoomMenu, null, "Duel Starter (PvE)", "Duel Room (PvP)");
+                        return;
+                    }
                 }
             }
             hookPushChildViewController.Original.Invoke(thisPtr, prefabpathPtr);
@@ -1660,6 +1673,70 @@ namespace YgomSystem.UI
             IL2Object result = methodGetStackTopViewController.Invoke(thisPtr);
             return result != null ? result.ptr : IntPtr.Zero;
         }
+
+        static Action OpenRoomMenu = () =>
+        {
+            IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
+            if (manager != IntPtr.Zero)
+            {
+                int roomId = YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Room.room_info.room_id");
+                csbool isMember = YgomSystem.Utility.ClientWork.GetByJsonPath<csbool>("Room.room_info.is_join_player");
+                if (roomId != 0)
+                {
+                    PushChildViewController(manager, "Room/Room", new Dictionary<string, object>()
+                    {
+                        { "Mode", isMember ? YgomGame.Room.RoomEntryViewController.Mode.NORMAL : YgomGame.Room.RoomEntryViewController.Mode.SPECTER }
+                    });
+                }
+                else
+                {
+                    YgomGame.Menu.ActionSheetViewController.Open(YgomSystem.Utility.TextData.GetText("IDS_ROOM.ROOM_MATCH"),
+                        new string[]
+                        {
+                            YgomSystem.Utility.TextData.GetText("IDS_ROOM.ROOM_CREATE"),
+                            YgomSystem.Utility.TextData.GetText("IDS_ROOM.ROOM_ENTRY"),
+                            YgomSystem.Utility.TextData.GetText("IDS_ROOM.SPECTATE")
+                        },
+                        OnClickRoomMatchMenuItem);
+                }
+            }
+        };
+
+        static Action<int> OnClickRoomMatchMenuItem = (int index) =>
+        {
+            IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
+            if (manager != IntPtr.Zero)
+            {
+                switch (index)
+                {
+                    case 0:
+                        PushChildViewController(manager, "Room/RoomCreate");
+                        break;
+                    case 1:
+                        PushChildViewController(manager, "Room/RoomEntry", new Dictionary<string, object>()
+                        {
+                            { "Mode", YgomGame.Room.RoomEntryViewController.Mode.NORMAL }
+                        });
+                        break;
+                    case 2:
+                        PushChildViewController(manager, "Room/RoomEntry", new Dictionary<string, object>()
+                        {
+                            { "Mode", YgomGame.Room.RoomEntryViewController.Mode.SPECTER }
+                        });
+                        break;
+                }
+            }
+        };
+
+        static Action OpenDuelStarterMenu = () =>
+        {
+            IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
+            if (manager != IntPtr.Zero)
+            {
+                YgomGame.Room.RoomCreateViewController.IsNextInstanceHacked = true;
+                PushChildViewController(manager, "Room/RoomCreate");
+            }
+        };
     }
 
     static unsafe class BindingTextMeshProUGUI
@@ -1685,6 +1762,18 @@ namespace YgomSystem.UI
         public static void SetTextId(IntPtr thisPtr, string value)
         {
             methodSetTextId.Invoke(thisPtr, new IntPtr[] { new IL2String(YgomSystem.Utility.TextData.HackID + value).ptr });
+        }
+    }
+}
+
+namespace YgomGame.Room
+{
+    unsafe static class RoomEntryViewController
+    {
+        public enum Mode
+        {
+            NORMAL,
+            SPECTER
         }
     }
 }

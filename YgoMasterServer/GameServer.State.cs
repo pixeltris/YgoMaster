@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
+using System.Net;
 
 namespace YgoMaster
 {
@@ -15,6 +16,9 @@ namespace YgoMaster
         static readonly string deckSearchUrl = "https://ayk-deck.mo.konami.net/ayk/yocgapi/search";
         static readonly string deckSearchDetailUrl = "https://ayk-deck.mo.konami.net/ayk/yocgapi/detail";
         static readonly string deckSearchAttributesUrl = "https://ayk-deck.mo.konami.net/ayk/yocgapi/attributes";
+
+        static string sessionServerIP;
+        static int sessionServerPort;
 
         static string bindIP;
         static string serverUrl;
@@ -28,8 +32,20 @@ namespace YgoMaster
 
         Player localPlayer;
         FileSystemWatcher localPlayerDecksFileWatcher;
+
+        object playersLock = new object();
         Dictionary<string, Player> playersByToken = new Dictionary<string, Player>();
-        uint nextPlayerCode;
+        Dictionary<uint, Player> playersById = new Dictionary<uint, Player>();
+        /// <summary>
+        /// NOTE: Unused if zero IP release time (MultiplayerReleasePlayerIPInHours)
+        /// </summary>
+        Dictionary<string, HashSet<Player>> playersByIP = new Dictionary<string, HashSet<Player>>();
+
+        object duelRoomsLocker = new object();
+        Dictionary<uint, DuelRoom> duelRoomsByRoomId = new Dictionary<uint, DuelRoom>();
+        Dictionary<uint, DuelRoom> duelRoomsBySpectatorRoomId = new Dictionary<uint, DuelRoom>();
+        URNG.LinearCongruentialGenerator duelRoomIdRng;
+        URNG.LinearCongruentialGenerator duelRoomSpectatorRoomIdRng;
 
         int NumDeckSlots;
         bool UnlockAllCards;
@@ -82,14 +98,61 @@ namespace YgoMaster
         /// </summary>
         bool ShowTopics;
         /// <summary>
-        /// Allows mulitple connections. Players are saved seperately
-        /// NOTE: Incomplete
-        /// </summary>
-        bool MultiplayerEnabled;
-        /// <summary>
         /// Any card which is given the player can be dismantled
         /// </summary>
         bool DisableNoDismantle;
+        /// <summary>
+        /// How many search results to return for friend searches
+        /// </summary>
+        int FriendSearchLimit;
+        /// <summary>
+        /// How long to wait before the client sends a Friend.refresh_info request
+        /// </summary>
+        int FriendsRefreshInSeconds;
+        /// <summary>
+        /// How long until a friend is seen as offline
+        /// </summary>
+        int FriendOfflineInSeconds;
+        /// <summary>
+        /// Maximum value of a duel room id
+        /// </summary>
+        int DuelRoomMaxId;
+        /// <summary>
+        /// Maximum number of results for the duel room list
+        /// </summary>
+        int DuelRoomMaxSearchResults;
+        /// <summary>
+        /// Maximum number of spectators allowed in a duel room / duel
+        /// </summary>
+        int DuelRoomMaxSpectators;
+        /// <summary>
+        /// How long the comment speech bubbles should appear for in seconds
+        /// </summary>
+        int DuelRoomCommentTimeoutInSeconds;
+        /// <summary>
+        /// Allows mulitple connections
+        /// </summary>
+        bool MultiplayerEnabled;
+        /// <summary>
+        /// Allow the user to specify a token such as "111-111-111" to be given that specific player code
+        /// </summary>
+        bool MultiplayerAllowUserSpecifiedPlayerCode;
+        /// <summary>
+        /// If non-null/empty this prefix is required on all user provided tokens. Any requests without this prefix will be ignored
+        /// </summary>
+        string MultiplayerTokenPrefixSecret;
+        /// <summary>
+        /// A maximum player limit per IP to avoid spamming of different tokens (which would make many player folders)
+        /// </summary>
+        int MultiplayerMaxPlayersPerIP;
+        /// <summary>
+        /// Specific max player limits per IP
+        /// </summary>
+        Dictionary<string, int> MultiplayerMaxPlayersPerIPEx;
+        /// <summary>
+        /// How long to wait until a player is removed from the given IP's player list
+        /// </summary>
+        int MultiplayerReleasePlayerIPInHours;
 
         void LoadSettings()
         {
@@ -125,14 +188,44 @@ namespace YgoMaster
                 throw new Exception("Failed to parse settings json");
             }
 
-            serverUrl = Utils.GetValue<string>(values, "ServerUrl");
-            serverPollUrl = Utils.GetValue<string>(values, "ServerPollUrl");
-            bindIP = Utils.GetValue<string>(values, "BindIP");
+            string baseIP = Utils.GetValue<string>(values, "BaseIP");
+            int basePort = Utils.GetValue<int>(values, "BasePort");
+            sessionServerPort = Utils.GetValue<int>(values, "SessionServerPort");
+            Func<string, string> FixupUrl = (string str) =>
+            {
+                str = str.Replace("{BaseIP}", baseIP);
+                str = str.Replace("{BasePort}", basePort.ToString());
+                str = str.Replace("{SessionServerPort}", sessionServerPort.ToString());
+                return str;
+            };
+
+            sessionServerIP = FixupUrl(Utils.GetValue<string>(values, "SessionServerIP"));
+            serverUrl = FixupUrl(Utils.GetValue<string>(values, "ServerUrl"));
+            serverPollUrl = FixupUrl(Utils.GetValue<string>(values, "ServerPollUrl"));
+            bindIP = FixupUrl(Utils.GetValue<string>(values, "BindIP"));
             if (string.IsNullOrEmpty(serverUrl) || string.IsNullOrEmpty(serverPollUrl) || string.IsNullOrEmpty(bindIP))
             {
                 throw new Exception("Failed to get server url settings");
             }
+
             MultiplayerEnabled = Utils.GetValue<bool>(values, "MultiplayerEnabled");
+            MultiplayerAllowUserSpecifiedPlayerCode = Utils.GetValue<bool>(values, "MultiplayerAllowUserSpecifiedPlayerCode");
+            MultiplayerTokenPrefixSecret = Utils.GetValue<string>(values, "MultiplayerTokenPrefixSecret");
+            MultiplayerMaxPlayersPerIP = Utils.GetValue<int>(values, "MultiplayerMaxPlayersPerIP", 6);
+            MultiplayerMaxPlayersPerIPEx = new Dictionary<string, int>();
+            Dictionary<string, object> maxPlayersPerIPData = Utils.GetDictionary(values, "maxPlayersPerIPData");
+            if (maxPlayersPerIPData != null && maxPlayersPerIPData.Count > 0)
+            {
+                foreach (KeyValuePair<string, object> ipEntry in maxPlayersPerIPData)
+                {
+                    IPAddress ipAddress;
+                    if (IPAddress.TryParse(ipEntry.Key, out ipAddress))
+                    {
+                        MultiplayerMaxPlayersPerIPEx[ipEntry.Key] = (int)Convert.ChangeType(ipEntry.Value, typeof(int));
+                    }
+                }
+            }
+            MultiplayerReleasePlayerIPInHours = Utils.GetValue<int>(values, "MultiplayerReleasePlayerIPInHours");
 
             NumDeckSlots = Utils.GetValue<int>(values, "DeckSlots", 20);
             Utils.GetIntHashSet(values, "DefaultItems", DefaultItems = new HashSet<int>(), ignoreZero: true);
@@ -149,6 +242,24 @@ namespace YgoMaster
             ProgressiveCardRarities = Utils.GetValue<bool>(values, "ProgressiveCardRarities");
             ShowTopics = Utils.GetValue<bool>(values, "ShowTopics");
             DisableNoDismantle = Utils.GetValue<bool>(values, "DisableNoDismantle");
+
+            FriendSearchLimit = Utils.GetValue<int>(values, "FriendSearchLimit", 100);
+            FriendOfflineInSeconds = Utils.GetValue<int>(values, "FriendOfflineInSeconds", 300);
+
+            const int FriendsRefreshInSecondsDefault = 15;
+            FriendsRefreshInSeconds = Utils.GetValue<int>(values, "FriendsRefreshInSeconds", FriendsRefreshInSecondsDefault);
+            if (FriendsRefreshInSeconds < 1)
+            {
+                FriendsRefreshInSeconds = FriendsRefreshInSecondsDefault;
+            }
+
+            DuelRoomMaxId = Utils.GetValue<int>(values, "DuelRoomMaxId", 999999);
+            duelRoomIdRng = new URNG.LinearCongruentialGenerator(rand.Next(), 0, DuelRoomMaxId);
+            duelRoomSpectatorRoomIdRng = new URNG.LinearCongruentialGenerator(rand.Next(), 0, DuelRoomMaxId);
+
+            DuelRoomMaxSearchResults = Utils.GetValue<int>(values, "DuelRoomMaxSearchResults", 50);
+            DuelRoomMaxSpectators = Utils.GetValue<int>(values, "DuelRoomMaxSpectators", 100);
+            DuelRoomCommentTimeoutInSeconds = Utils.GetValue<int>(values, "DuelRoomCommentTimeoutInSeconds", 7);
 
             CardRare = new Dictionary<int, int>();
             string cardListFile = Path.Combine(dataDirectory, "CardList.json");
@@ -238,7 +349,11 @@ namespace YgoMaster
 
             if (MultiplayerEnabled)
             {
-                nextPlayerCode = 1;
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+
+                Console.WriteLine("Loading players...");
+
                 string playersDir = Path.Combine(dataDirectory, "Players");
                 if (Directory.Exists(playersDir))
                 {
@@ -247,10 +362,6 @@ namespace YgoMaster
                         uint playerCode;
                         if (uint.TryParse(new DirectoryInfo(dir).Name, out playerCode) && playerCode > 0)
                         {
-                            if (playerCode > nextPlayerCode)
-                            {
-                                nextPlayerCode = playerCode + 1;
-                            }
                             string playerFile = Path.Combine(dir, "Player.json");
                             if (File.Exists(playerFile))
                             {
@@ -258,15 +369,19 @@ namespace YgoMaster
                                 uint playerCodeInData;
                                 string token;
                                 if (playerData != null && Utils.TryGetValue(playerData, "Code", out playerCodeInData) && playerCodeInData == playerCode &&
-                                    Utils.TryGetValue(playerData, "token", out token) && !string.IsNullOrEmpty(token))
+                                    Utils.TryGetValue(playerData, "Token", out token) && !string.IsNullOrEmpty(token))
                                 {
-                                    playersByToken[token] = null;
+                                    Player player = playersByToken[token] = playersById[playerCode] = new Player(playerCode);
+                                    LoadPlayer(player);
                                 }
                             }
                         }
                     }
                 }
+
+                Console.WriteLine("Loaded " + playersById.Count + " players in " + stopwatch.Elapsed.TotalSeconds + " seconds");
             }
+
             InitDecksWatcher();
 
             // TODO: Move elsewhere (these are helpers to generate files)
@@ -695,62 +810,69 @@ namespace YgoMaster
 
         void SavePlayerNow(Player player)
         {
-            //LogInfo("Save (player)");
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            if (MultiplayerEnabled)
+            lock (player)
             {
-                data["Token"] = player.Token;
+                //LogInfo("Save (player)");
+                Dictionary<string, object> data = new Dictionary<string, object>();
+                if (MultiplayerEnabled)
+                {
+                    data["Token"] = player.Token;
+                }
+                data["Code"] = player.Code;
+                data["Name"] = player.Name;
+                data["Rank"] = player.Rank;
+                data["Rate"] = player.Rate;
+                data["Level"] = player.Level;
+                data["Exp"] = player.Exp;
+                data["Gems"] = player.Gems;
+                data["IconId"] = player.IconId;
+                data["IconFrameId"] = player.IconFrameId;
+                data["AvatarId"] = player.AvatarId;
+                data["Wallpaper"] = player.Wallpaper;
+                data["CardFavorites"] = player.CardFavorites.ToDictionary();
+                data["TitleTags"] = player.TitleTags.ToArray();
+                if (!UnlockAllItems)
+                {
+                    data["Items"] = player.Items.ToArray();
+                }
+                if (!UnlockAllSoloChapters)
+                {
+                    data["SoloChapters"] = player.SoloChaptersToDictionary();
+                }
+                data["CraftPoints"] = player.CraftPoints.ToDictionary();
+                data["OrbPoints"] = player.OrbPoints.ToDictionary();
+                data["SelectedDeck"] = player.Duel.SelectedDeckToDictionary();
+                data["ShopState"] = player.ShopState.ToDictionary();
+                if (!UnlockAllCards)
+                {
+                    data["Cards"] = player.Cards.ToDictionary();
+                }
+                if (MultiplayerEnabled)
+                {
+                    data["Friends"] = GetFriends(player);
+                }
+                string jsonFormatted = MiniJSON.Json.Format(MiniJSON.Json.Serialize(data));
+                string dir = GetPlayerDirectory(player);
+                if (MultiplayerEnabled)
+                {
+                    Utils.TryCreateDirectory(dir);
+                }
+                try
+                {
+                    File.WriteAllText(Path.Combine(dir, "Player.json"), jsonFormatted);
+                }
+                catch
+                {
+                }
+                player.RequiresSaving = false;
             }
-            data["Code"] = player.Code;
-            data["Name"] = player.Name;
-            data["Rank"] = player.Rank;
-            data["Rate"] = player.Rate;
-            data["Level"] = player.Level;
-            data["Exp"] = player.Exp;
-            data["Gems"] = player.Gems;
-            data["IconId"] = player.IconId;
-            data["IconFrameId"] = player.IconFrameId;
-            data["AvatarId"] = player.AvatarId;
-            data["Wallpaper"] = player.Wallpaper;
-            data["CardFavorites"] = player.CardFavorites.ToDictionary();
-            data["TitleTags"] = player.TitleTags.ToArray();
-            if (!UnlockAllItems)
-            {
-                data["Items"] = player.Items.ToArray();
-            }
-            if (!UnlockAllSoloChapters)
-            {
-                data["SoloChapters"] = player.SoloChaptersToDictionary();
-            }
-            data["CraftPoints"] = player.CraftPoints.ToDictionary();
-            data["OrbPoints"] = player.OrbPoints.ToDictionary();
-            data["SelectedDeck"] = player.Duel.SelectedDeckToDictionary();
-            data["ShopState"] = player.ShopState.ToDictionary();
-            if (!UnlockAllCards)
-            {
-                data["Cards"] = player.Cards.ToDictionary();
-            }
-            string jsonFormatted = MiniJSON.Json.Format(MiniJSON.Json.Serialize(data));
-            string dir = GetPlayerDirectory(player);
-            if (MultiplayerEnabled)
-            {
-                Utils.TryCreateDirectory(dir);
-            }
-            try
-            {
-                File.WriteAllText(Path.Combine(dir, "Player.json"), jsonFormatted);
-            }
-            catch
-            {
-            }
-            player.RequiresSaving = false;
         }
 
         string GetPlayerDirectory(Player player)
         {
             if (MultiplayerEnabled)
             {
-                return Path.Combine(dataDirectory, player.Code.ToString());
+                return Path.Combine(dataDirectory, "Players", player.Code.ToString());
             }
             else
             {
@@ -904,6 +1026,35 @@ namespace YgoMaster
                 }
             }
             player.Duel.SelectedDeckFromDictionary(Utils.GetDictionary(data, "SelectedDeck"));
+
+            if (MultiplayerEnabled)
+            {
+                lock (player.Friends)
+                {
+                    Dictionary<string, object> friends = Utils.GetDictionary(data, "Friends");
+                    if (friends != null)
+                    {
+                        player.Friends.Clear();
+                        foreach (KeyValuePair<string, object> friend in friends)
+                        {
+                            FriendState friendState = FriendState.None;
+                            if (friend.Value is string)
+                            {
+                                friendState = (FriendState)Enum.Parse(typeof(FriendState), friend.Value as string, false);
+                            }
+                            else
+                            {
+                                friendState = (FriendState)Convert.ChangeType(friend.Value, typeof(FriendState).GetEnumUnderlyingType());
+                            }
+                            uint friendId;
+                            if (friendState != FriendState.None && uint.TryParse(friend.Key, out friendId))
+                            {
+                                player.Friends[friendId] = friendState;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         void SaveDeck(DeckInfo deck)
@@ -1763,7 +1914,6 @@ namespace YgoMaster
                                                     // Special case. We aren't merging pack shops anymore due to old assets not being downlaoded.
                                                     if (!foundPackShop)
                                                     {
-                                                        Console.WriteLine(file);
                                                         foundPackShop = true;
                                                         shop.Clear();
                                                     }

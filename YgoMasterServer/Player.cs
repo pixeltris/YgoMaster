@@ -8,6 +8,10 @@ namespace YgoMaster
 {
     class Player
     {
+        public string IP;
+        public DateTime LoginTime;
+        public DateTime LastRequestTime;
+        public bool HasWrittenToken;
         public bool RequiresSaving;
         public string Token;
         public uint Code;
@@ -31,6 +35,14 @@ namespace YgoMaster
         public PlayerCraftPoints CraftPoints { get; private set; }
         public PlayerOrbPoints OrbPoints { get; private set; }
         public PlayerDuelState Duel { get; private set; }
+        public Dictionary<uint, FriendState> Friends { get; private set; }
+        public Dictionary<uint, uint> DuelRoomInvitesByFriendId { get; private set; }
+        public DuelRoom DuelRoom;
+
+        public bool IsDuelingPVP
+        {
+            get { return false; }
+        }
 
         public string Lang;// Temporary / not saved. Used to display topic text in "User.home"
         public int NextDeckUId = 1;
@@ -48,6 +60,8 @@ namespace YgoMaster
             CraftPoints = new PlayerCraftPoints();
             OrbPoints = new PlayerOrbPoints();
             Duel = new PlayerDuelState(this);
+            Friends = new Dictionary<uint, FriendState>();
+            DuelRoomInvitesByFriendId = new Dictionary<uint, uint>();
         }
 
         public Dictionary<string, object> SoloChaptersToDictionary()
@@ -918,5 +932,14 @@ namespace YgoMaster
             }
             return result;
         }
+    }
+
+    [Flags]
+    enum FriendState
+    {
+        None = 0,
+        Following = 1,
+        Follower = 2,
+        Pinned = 4
     }
 }

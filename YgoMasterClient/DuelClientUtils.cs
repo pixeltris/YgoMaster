@@ -5,6 +5,8 @@ using System.Text;
 using YgoMasterClient;
 using IL2CPP;
 using System.Runtime.InteropServices;
+using YgoMaster;
+using System.IO;
 
 namespace UnityEngine
 {
@@ -72,16 +74,50 @@ namespace YgomGame.Duel
     {
         static IL2Method methodSetDuelSpeed;
 
+        delegate int Del_RunEffect(int id, int param1, int param2, int param3);
+        static Hook<Del_RunEffect> hookRunEffect;
+
         static DuelClient()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("DuelClient", "YgomGame.Duel");
             methodSetDuelSpeed = classInfo.GetMethod("SetDuelSpeed");
+            //hookRunEffect = new Hook<Del_RunEffect>(RunEffect, classInfo.GetMethod("RunEffect"));
         }
 
         public static void SetDuelSpeed(DuelSpeed duelSpeed)
         {
             methodSetDuelSpeed.Invoke(new IntPtr[] { new IntPtr(&duelSpeed) });
+        }
+
+        static int RunEffect(int id, int param1, int param2, int param3)
+        {
+            Console.WriteLine("RunEffect " + (DuelViewType)id + " " + param1 + " " + param2 + " " + param3 + " lp0:" + DuelDll.DLL_DuelGetLP(0) + " lp1:" + DuelDll.DLL_DuelGetLP(1));
+            switch ((DuelViewType)id)
+            {
+                case DuelViewType.WaitInput:
+                    switch ((DuelMenuActType)param1)
+                    {
+                        case DuelMenuActType.DrawPhase:
+                            if (DuelDll.DLL_DuelWhichTurnNow() != 0)
+                            {
+                                DuelDll.DLL_DuelComDoCommand(DuelDll.DLL_DuelWhichTurnNow(), 0, 0, (int)DuelCommandType.Draw);
+                                return 0;
+                            }
+                            break;
+                        case DuelMenuActType.MainPhase:
+                            if (DuelDll.DLL_DuelWhichTurnNow() != 0)
+                            {
+                                return 0;
+                            }
+                            break;
+                        default:
+                            Console.WriteLine("WaitInput unhandled " + (DuelMenuActType)param1);
+                            break;
+                    }
+                    break;
+            }
+            return hookRunEffect.Original(id, param1, param2, param3);
         }
 
         public enum DuelSpeed
@@ -360,7 +396,7 @@ namespace YgomGame.Duel
         delegate csbool Del_IsMonsterCutin(int cardID);
         static Hook<Del_IsMonsterCutin> hookIsMonsterCutin;
 
-        static Dictionary<int, bool> cardsWithImages = new Dictionary<int, bool>();
+        static HashSet<int> cardsWithCustomImages;
 
         static CardIndividualSetting()
         {
@@ -371,20 +407,33 @@ namespace YgomGame.Duel
 
         static csbool IsMonsterCutin(int cardID)
         {
-            if (ClientSettings.DuelClientDisableCutinAnimations || !HasImage(cardID))
+            if (ClientSettings.DuelClientDisableCutinAnimations ||
+                (ClientSettings.DuelClientDisableCutinAnimationsForCardsWithCustomImages && IsCustomImage(cardID)))
             {
                 return false;
             }
             return hookIsMonsterCutin.Original(cardID);
         }
 
-        public static bool HasImage(int cardID)
+        public static bool IsCustomImage(int cardID)
         {
-            if (!cardsWithImages.ContainsKey(cardID))
+            if (cardsWithCustomImages == null)
             {
-                cardsWithImages[cardID] = AssetHelper.FileExists("Card/Images/Illust/<_CARD_ILLUST_>/" + cardID);
+                cardsWithCustomImages = new HashSet<int>();
+                string dir = Path.Combine(Program.ClientDataDir, "Card", "Images", "Illust");
+                if (Directory.Exists(dir))
+                {
+                    foreach (string file in Directory.GetFiles(dir, "*.png", SearchOption.AllDirectories))
+                    {
+                        int cardId;
+                        if (int.TryParse(Path.GetFileNameWithoutExtension(file), out cardId))
+                        {
+                            cardsWithCustomImages.Add(cardId);
+                        }
+                    }
+                }
             }
-            return cardsWithImages[cardID];
+            return cardsWithCustomImages.Contains(cardID);
         }
     }
 
@@ -402,7 +451,8 @@ namespace YgomGame.Duel
 
         static IntPtr Get(IntPtr thisPtr, int mrk, int player)
         {
-            if (ClientSettings.DuelClientDisableCutinAnimations || !CardIndividualSetting.HasImage(mrk))
+            if (ClientSettings.DuelClientDisableCutinAnimations ||
+                (ClientSettings.DuelClientDisableCutinAnimationsForCardsWithCustomImages && CardIndividualSetting.IsCustomImage(mrk)))
             {
                 return IntPtr.Zero;
             }

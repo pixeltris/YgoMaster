@@ -9,6 +9,8 @@ namespace YgoMaster
     {
         void Act_AccountAuth(GameServerWebRequest request)
         {
+            request.Player.LoginTime = DateTime.UtcNow;
+
             WriteToken(request);
             request.Response["Server"] = new Dictionary<string, object>()
             {

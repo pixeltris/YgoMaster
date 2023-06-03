@@ -26,6 +26,20 @@ namespace YgoMasterClient
 
         static void Main(string[] args)
         {
+            bool isMultiplayerClient = false;
+            try
+            {
+                ClientDataDir = Path.Combine("Data", "ClientData");
+                ClientSettings.Load();
+                if (!string.IsNullOrEmpty(ClientSettings.MultiplayerToken))
+                {
+                    isMultiplayerClient = true;
+                }
+            }
+            catch
+            {
+            }
+
             bool success = false;
             if (!File.Exists(GameLauncher.LoaderDll))
             {
@@ -36,7 +50,7 @@ namespace YgoMasterClient
             {
                 // Invalid install location...
             }
-            else if ((args.Length > 0 && args[0].ToLower() == "live") || !File.Exists("YgoMaster.exe"))
+            else if ((args.Length > 0 && args[0].ToLower() == "live") || (!File.Exists("YgoMaster.exe") && !isMultiplayerClient))
             {
                 using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
                 {
@@ -60,26 +74,29 @@ namespace YgoMasterClient
             }
             else
             {
-                Process[] processes = Process.GetProcessesByName("YgoMaster");
-                try
+                if (!isMultiplayerClient)
                 {
-                    if (processes.Length == 0)
+                    Process[] processes = Process.GetProcessesByName("YgoMaster");
+                    try
                     {
-                        string serverExe = Path.Combine(Environment.CurrentDirectory, "YgoMaster.exe");
-                        if (File.Exists(serverExe))
+                        if (processes.Length == 0)
                         {
-                            Process.Start(serverExe);
+                            string serverExe = Path.Combine(Environment.CurrentDirectory, "YgoMaster.exe");
+                            if (File.Exists(serverExe))
+                            {
+                                Process.Start(serverExe);
+                            }
                         }
                     }
-                }
-                catch
-                {
-                }
-                finally
-                {
-                    foreach (Process process in processes)
+                    catch
                     {
-                        process.Close();
+                    }
+                    finally
+                    {
+                        foreach (Process process in processes)
+                        {
+                            process.Close();
+                        }
                     }
                 }
                 success = GameLauncher.Launch(GameLauncherMode.Detours);
@@ -155,7 +172,7 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomSystem.Network.API));
                 nativeTypes.Add(typeof(YgomSystem.Network.Request));
                 nativeTypes.Add(typeof(YgomSystem.Network.RequestStructure));
-                nativeTypes.Add(typeof(DuellDll));
+                nativeTypes.Add(typeof(DuelDll));
                 // DeckEditorUtils
                 nativeTypes.Add(typeof(TMPro.TMP_Text));
                 nativeTypes.Add(typeof(YgomGame.Deck.DeckView));
@@ -163,8 +180,9 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomGame.DeckEditViewController2));
                 nativeTypes.Add(typeof(YgomGame.SubMenu.DeckEditSubMenuViewController));
                 nativeTypes.Add(typeof(YgomGame.SubMenu.SubMenuViewController));
-                nativeTypes.Add(typeof(YgomGame.Menu.CommonDialogViewController));
                 // Misc
+                nativeTypes.Add(typeof(YgomGame.Menu.CommonDialogViewController));
+                nativeTypes.Add(typeof(YgomGame.Menu.ActionSheetViewController));
                 nativeTypes.Add(typeof(Win32Hooks));
                 nativeTypes.Add(typeof(AssetHelper));
                 nativeTypes.Add(typeof(YgomGame.Utility.ItemUtil));
@@ -567,11 +585,14 @@ namespace YgoMasterClient
                                                     allEnums["CardRarity"] = contentClass.GetNestedType("Rarity");
                                                     allEnums["CardStyleRarity"] = assembly.GetClass("SearchFilter", "YgomGame.Deck").GetNestedType("Setting").GetNestedType("STYLE");
                                                     allEnums["StandardRank"] = assembly.GetClass("ColosseumUtil", "YgomGame.Colosseum").GetNestedType("StandardRank");
+                                                    allEnums["PlayMode"] = assembly.GetClass("ColosseumUtil", "YgomGame.Colosseum").GetNestedType("PlayMode");
                                                     allEnums["ServerStatus"] = assembly.GetClass("ServerStatus", "YgomSystem.Network");
                                                     allEnums["GameMode"] = assembly.GetClass("Util", "YgomGame.Duel").GetNestedType("GameMode");
+                                                    allEnums["PlatformID"] = assembly.GetClass("Util", "YgomGame.Duel").GetNestedType("PlatformID");
                                                     allEnums["ChapterStatus"] = assembly.GetClass("SoloModeUtil", "YgomGame.Solo").GetNestedType("ChapterStatus");
                                                     allEnums["ChapterUnlockType"] = assembly.GetClass("SoloModeUtil", "YgomGame.Solo").GetNestedType("UnlockType");
                                                     allEnums["SoloDeckType"] = assembly.GetClass("SoloModeUtil", "YgomGame.Solo").GetNestedType("DeckType");
+                                                    allEnums["RoomEntryViewController.Mode"] = assembly.GetClass("RoomEntryViewController", "YgomGame.Room").GetNestedType("Mode");
                                                     allEnums["HowToObtainCard"] = null;
                                                     allEnums["DuelResultScore"] = null;
                                                     allEnums["Category"] = assembly.GetClass("ItemUtil", "YgomGame.Utility").GetNestedType("Category");
@@ -794,6 +815,37 @@ namespace YgoMasterClient
                                                     Console.WriteLine("Missing cards with art: " + string.Join(", ", missingCardsWithArt));
                                                 }
                                                 break;
+                                            case "vcargs":// Get the args for the top view controller
+                                                {
+                                                    IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
+                                                    if (manager != IntPtr.Zero)
+                                                    {
+                                                        IntPtr topViewController = YgomSystem.UI.ViewControllerManager.GetStackTopViewController(manager);
+                                                        if (topViewController != IntPtr.Zero)
+                                                        {
+                                                            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+                                                            IL2Class classInfo = assembly.GetClass("ViewController", "YgomSystem.UI");
+                                                            IL2Object instance = classInfo.GetField("args").GetValue(topViewController);
+
+                                                            string className = "UNKNOWN";
+                                                            IntPtr viewControllerClass = Import.Object.il2cpp_object_get_class(topViewController);
+                                                            if (viewControllerClass != IntPtr.Zero)
+                                                            {
+                                                                className = Marshal.PtrToStringAnsi(Import.Class.il2cpp_class_get_name(viewControllerClass));
+                                                            }
+
+                                                            if (instance != null)
+                                                            {
+                                                                Console.WriteLine(className + " args: " + YgomMiniJSON.Json.Serialize(instance.ptr));
+                                                            }
+                                                            else
+                                                            {
+                                                                Console.WriteLine(className + " args: (null)");
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                break;
                                         }
                                     }
                                     catch (Exception e)
@@ -850,10 +902,49 @@ unsafe static class Win32Hooks
     }
 }
 
-unsafe static class DuellDll
+unsafe static class DuelDll
 {
     delegate int Del_DLL_DuelSysInitCustom(int fDuelType, bool tag, int life0, int life1, int hand0, int hand1, bool shuf);
     static Hook<Del_DLL_DuelSysInitCustom> hookDLL_DuelSysInitCustom;
+
+    delegate void Del_DLL_DuelComMovePhase(int phase);
+    static Hook<Del_DLL_DuelComMovePhase> hookDLL_DuelComMovePhase;
+
+    delegate void Del_DLL_DuelComDoCommand(int player, int position, int index, int commandId);
+    static Hook<Del_DLL_DuelComDoCommand> hookDLL_DuelComDoCommand;
+
+    delegate int Del_DLL_DuelGetCardFace(int player, int position, int index);
+    static Hook<Del_DLL_DuelGetCardFace> hookDLL_DuelGetCardFace;
+
+    delegate void Del_DLL_DuelDlgSetResult(uint result);
+    static Hook<Del_DLL_DuelDlgSetResult> hookDLL_DuelDlgSetResult;
+
+    delegate void Del_DLL_DuelListSetCardExData(int index, int data);
+    static Hook<Del_DLL_DuelListSetCardExData> hookDLL_DuelListSetCardExData;
+
+    delegate void Del_DLL_DuelListSetIndex(int index);
+    static Hook<Del_DLL_DuelListSetIndex> hookDLL_DuelListSetIndex;
+
+    delegate bool Del_DLL_DuelCanIDoSummonMonster(int player);
+    static Hook<Del_DLL_DuelCanIDoSummonMonster> hookDLL_DuelCanIDoSummonMonster;
+
+    delegate bool Del_DLL_DuelIsHuman(int player);
+    static Hook<Del_DLL_DuelIsHuman> hookDLL_DuelIsHuman;
+
+    delegate bool Del_DLL_DuelIsMyself(int player);
+    static Hook<Del_DLL_DuelIsMyself> hookDLL_DuelIsMyself;
+
+    delegate bool Del_DLL_DuelIsRival(int player);
+    static Hook<Del_DLL_DuelIsRival> hookDLL_DuelIsRival;
+
+    delegate int Del_DLL_DuelMyself();
+    static Hook<Del_DLL_DuelMyself> hookDLL_DuelMyself;
+
+    delegate int Del_DLL_DuelRival();
+    static Hook<Del_DLL_DuelRival> hookDLL_DuelRival;
+
+    delegate void Del_DLL_DuelSetPlayerType(int player, int type);
+    static Hook<Del_DLL_DuelSetPlayerType> hookDLL_DuelSetPlayerType;
 
     public delegate void Del_DLL_DuelComCheatCard(int player, int position, int index, int cardId, int face, int turn);
     public static Del_DLL_DuelComCheatCard DLL_DuelComCheatCard;
@@ -864,25 +955,42 @@ unsafe static class DuellDll
     public delegate void Del_DLL_DuelComDebugCommand();
     public static Del_DLL_DuelComDebugCommand DLL_DuelComDebugCommand;
 
-    public delegate void Del_DLL_DuelComDoCommand(int player, int position, int index, int commandId);
-    public static Del_DLL_DuelComDoCommand DLL_DuelComDoCommand;
-
     public delegate int Del_DLL_DuelSysAct();
     public static Del_DLL_DuelSysAct DLL_DuelSysAct;
 
-    static DuellDll()
+    public delegate int Del_DLL_DuelWhichTurnNow();
+    public static Del_DLL_DuelWhichTurnNow DLL_DuelWhichTurnNow;
+
+    public delegate int Del_DLL_DuelGetLP(int player);
+    public static Del_DLL_DuelGetLP DLL_DuelGetLP;
+
+    static DuelDll()
     {
         IntPtr lib = PInvoke.LoadLibrary(Path.Combine("masterduel_Data", "Plugins", "x86_64", "duel.dll"));
         if (lib == IntPtr.Zero)
         {
             throw new Exception("Failed to load duel.dll");
         }
-        hookDLL_DuelSysInitCustom = new Hook<Del_DLL_DuelSysInitCustom>(DLL_DuelSysInitCustom, PInvoke.GetProcAddress(lib, "DLL_DuelSysInitCustom"));
+        //hookDLL_DuelSysInitCustom = new Hook<Del_DLL_DuelSysInitCustom>(DLL_DuelSysInitCustom, PInvoke.GetProcAddress(lib, "DLL_DuelSysInitCustom"));
+        //hookDLL_DuelComMovePhase = new Hook<Del_DLL_DuelComMovePhase>(DLL_DuelComMovePhase, PInvoke.GetProcAddress(lib, "DLL_DuelComMovePhase"));
+        //hookDLL_DuelComDoCommand = new Hook<Del_DLL_DuelComDoCommand>(DLL_DuelComDoCommand, PInvoke.GetProcAddress(lib, "DLL_DuelComDoCommand"));
+        //hookDLL_DuelGetCardFace = new Hook<Del_DLL_DuelGetCardFace>(DLL_GetCardFace, PInvoke.GetProcAddress(lib, "DLL_DuelGetCardFace"));
+        //hookDLL_DuelDlgSetResult = new Hook<Del_DLL_DuelDlgSetResult>(DLL_DuelDlgSetResult, PInvoke.GetProcAddress(lib, "DLL_DuelDlgSetResult"));
+        //hookDLL_DuelListSetCardExData = new Hook<Del_DLL_DuelListSetCardExData>(DLL_DuelListSetCardExData, PInvoke.GetProcAddress(lib, "DLL_DuelListSetCardExData"));
+        //hookDLL_DuelListSetIndex = new Hook<Del_DLL_DuelListSetIndex>(DLL_DuelListSetIndex, PInvoke.GetProcAddress(lib, "DLL_DuelListSetIndex"));
+        //hookDLL_DuelCanIDoSummonMonster = new Hook<Del_DLL_DuelCanIDoSummonMonster>(DLL_DuelCanIDoSummonMonster, PInvoke.GetProcAddress(lib, "DLL_DuelCanIDoSummonMonster"));
+        //hookDLL_DuelIsHuman = new Hook<Del_DLL_DuelIsHuman>(DLL_DuelIsHuman, PInvoke.GetProcAddress(lib, "DLL_DuelIsHuman"));
+        //hookDLL_DuelIsMyself = new Hook<Del_DLL_DuelIsMyself>(DLL_DuelIsMyself, PInvoke.GetProcAddress(lib, "DLL_DuelIsMyself"));
+        //hookDLL_DuelIsRival = new Hook<Del_DLL_DuelIsRival>(DLL_DuelIsRival, PInvoke.GetProcAddress(lib, "DLL_DuelIsRival"));
+        //hookDLL_DuelMyself = new Hook<Del_DLL_DuelMyself>(DLL_DuelMyself, PInvoke.GetProcAddress(lib, "DLL_DuelMyself"));
+        //hookDLL_DuelRival = new Hook<Del_DLL_DuelRival>(DLL_DuelRival, PInvoke.GetProcAddress(lib, "DLL_DuelRival"));
+        //hookDLL_DuelSetPlayerType = new Hook<Del_DLL_DuelSetPlayerType>(DLL_DuelSetPlayerType, PInvoke.GetProcAddress(lib, "DLL_DuelSetPlayerType"));
         DLL_DuelComCheatCard = GetFunc<Del_DLL_DuelComCheatCard>(PInvoke.GetProcAddress(lib, "DLL_DuelComCheatCard"));
         DLL_DuelComDoDebugCommand = GetFunc<Del_DLL_DuelComDoDebugCommand>(PInvoke.GetProcAddress(lib, "DLL_DuelComDoDebugCommand"));
         DLL_DuelComDebugCommand = GetFunc<Del_DLL_DuelComDebugCommand>(PInvoke.GetProcAddress(lib, "DLL_DuelComDebugCommand"));
-        DLL_DuelComDoCommand = GetFunc<Del_DLL_DuelComDoCommand>(PInvoke.GetProcAddress(lib, "DLL_DuelComDoCommand"));
         DLL_DuelSysAct = GetFunc<Del_DLL_DuelSysAct>(PInvoke.GetProcAddress(lib, "DLL_DuelSysAct"));
+        DLL_DuelWhichTurnNow = GetFunc<Del_DLL_DuelWhichTurnNow>(PInvoke.GetProcAddress(lib, "DLL_DuelWhichTurnNow"));
+        DLL_DuelGetLP = GetFunc<Del_DLL_DuelGetLP>(PInvoke.GetProcAddress(lib, "DLL_DuelGetLP"));
     }
 
     static int DLL_DuelSysInitCustom(int fDuelType, bool tag, int life0, int life1, int hand0, int hand1, bool shuf)
@@ -892,6 +1000,79 @@ unsafe static class DuellDll
         //life0 = 9000000;
         //life1 = 1;
         return hookDLL_DuelSysInitCustom.Original(fDuelType, tag, life0, life1, hand0, hand1, shuf);
+    }
+
+    static void DLL_DuelComMovePhase(int phase)
+    {
+        Console.WriteLine("DLL_DuelComMovePhase " + phase);
+        hookDLL_DuelComMovePhase.Original(phase);
+    }
+
+    public static void DLL_DuelComDoCommand(int player, int position, int index, int commandId)
+    {
+        Console.WriteLine("DLL_DuelComDoCommand player:" + player + " pos:" + position + " indx:" + index + " cmd:" + commandId);
+        hookDLL_DuelComDoCommand.Original(player, position, index, commandId);
+    }
+
+    static int DLL_GetCardFace(int player, int position, int index)
+    {
+        return 1;
+        //return hookDLL_DuelGetCardFace.Original(player, position, index);
+    }
+
+    static void DLL_DuelDlgSetResult(uint result)
+    {
+        Console.WriteLine("DLL_DuelDlgSetResult " + result);
+        hookDLL_DuelDlgSetResult.Original(result);
+    }
+
+    static void DLL_DuelListSetCardExData(int index, int data)
+    {
+        Console.WriteLine("DLL_DuelListSetCardExData " + index + " " + data);
+        hookDLL_DuelListSetCardExData.Original(index, data);
+    }
+
+    static void DLL_DuelListSetIndex(int index)
+    {
+        Console.WriteLine("DLL_DuelListSetIndex " + index);
+        hookDLL_DuelListSetIndex.Original(index);
+    }
+
+    static bool DLL_DuelCanIDoSummonMonster(int player)
+    {
+        //Console.WriteLine("DLL_DuelCanIDoSummonMonster " + player + " " + hookDLL_DuelCanIDoSummonMonster.Original(player));
+        return hookDLL_DuelCanIDoSummonMonster.Original(player);
+    }
+
+    static bool DLL_DuelIsMyself(int player)
+    {
+        return player == 0;
+    }
+
+    static bool DLL_DuelIsHuman(int player)
+    {
+        return player == 0;
+    }
+
+    static bool DLL_DuelIsRival(int player)
+    {
+        return player == 1;
+    }
+
+    static int DLL_DuelMyself()
+    {
+        return 0;
+    }
+
+    static int DLL_DuelRival()
+    {
+        return 1;
+    }
+
+    static void DLL_DuelSetPlayerType(int player, int type)
+    {
+        hookDLL_DuelSetPlayerType.Original(player, (int)YgoMaster.DuelPlayerType.Human);
+        //hookDLL_DuelSetPlayerType.Original(player, type);
     }
 
     static T GetFunc<T>(IntPtr ptr)
@@ -1153,6 +1334,12 @@ namespace YgomSystem.Utility
         {
             IL2Object obj = methodGetByJsonPath.Invoke(new IntPtr[] { new IL2String(jsonPath).ptr });
             return obj != null ? obj.ptr : IntPtr.Zero;
+        }
+
+        public static T GetByJsonPath<T>(string jsonPath) where T : struct
+        {
+            IL2Object obj = methodGetByJsonPath.Invoke(new IntPtr[] { new IL2String(jsonPath).ptr });
+            return obj != null ? obj.GetValueRef<T>() : default(T);
         }
 
         // Custom func to take a json path and get a re-serialized string back

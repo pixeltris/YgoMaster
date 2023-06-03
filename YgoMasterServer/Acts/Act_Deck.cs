@@ -111,6 +111,7 @@ namespace YgoMaster
             SaveDeck(deck);
             WriteDeck(request, deck.Id);
             WriteDeckList(request, deck.Id);
+            SavePlayer(request.Player);
         }
 
         void Act_DeckSetDeckAccessory(GameServerWebRequest request)

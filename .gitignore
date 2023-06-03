@@ -6,6 +6,7 @@
 YgoMaster/Data/CardData/*
 YgoMaster/Data/CpuContest/*
 YgoMaster/Data/Decks/*
+YgoMaster/Data/Players/*
 YgoMaster/Data/Player.json
 YgoMaster/YgoMaster.exe.config
 YgoMaster/*.vshost.*

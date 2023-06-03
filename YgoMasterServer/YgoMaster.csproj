@@ -48,6 +48,8 @@
   <ItemGroup>
     <Compile Include="Acts\Act_Craft.cs" />
     <Compile Include="Acts\Act_Duel.cs" />
+    <Compile Include="Acts\Act_Friend.cs" />
+    <Compile Include="Acts\Act_Room.cs" />
     <Compile Include="Acts\Act_Solo.cs" />
     <Compile Include="Acts\Act_SystemAccount.cs" />
     <Compile Include="Acts\Act_Deck.cs" />
@@ -55,6 +57,9 @@
     <Compile Include="Acts\Act_User.cs" />
     <Compile Include="Enums\Card.cs" />
     <Compile Include="Enums\Duel.cs" />
+    <Compile Include="GameServer.Multiplayer.cs" />
+    <Compile Include="Infos\DuelRoom.cs" />
+    <Compile Include="Lib\LinearCongruentialGenerator.cs" />
     <Compile Include="Sim\CpuContest.cs" />
     <Compile Include="Updater.cs" />
     <Compile Include="WikiDump\HtmlAgilityPack.Merged.cs" />

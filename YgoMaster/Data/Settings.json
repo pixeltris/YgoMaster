@@ -1,7 +1,17 @@
 {
-    "ServerUrl": "http://localhost:4989/ygo",
-    "ServerPollUrl": "http://localhost:4989/ygo/poll",
-    "BindIP": "http://localhost:4989/",
+    "BaseIP": "localhost",
+    "BasePort": 4989,
+    "SessionServerPort": 4988,
+    "SessionServerIP": "{BaseIP}",
+    "ServerUrl": "http://{BaseIP}:{BasePort}/ygo",
+    "ServerPollUrl": "http://{BaseIP}:{BasePort}/ygo/poll",
+    "BindIP": "http://{BaseIP}:{BasePort}/",
+    "MultiplayerEnabled": false,// [WARNING] Only use if you know what you're doing
+    "MultiplayerAllowUserSpecifiedPlayerCode": true,
+    "MultiplayerTokenPrefixSecret": "",
+    "MultiplayerMaxPlayersPerIP": 6,
+    "MultiplayerMaxPlayersPerIPEx": null,// { "1.1.1.1": 10, "1.1.1.2": 15, }
+    "MultiplayerReleasePlayerIPInHours": 200,
     "ShowTopics": true,
     "DeckSlots": 999,
     "UnlockAllCards": false,// [WARNING] Enabling this permanently wipes your saved cards (all cards are set to 3x without any shine/royal and any newly obtained cards don't save)
@@ -17,6 +27,13 @@
     "DisableBanList": false,
     "ProgressiveCardList": false,
     "ProgressiveCardRarities": false,
+    "FriendSearchLimit": 100,
+    "FriendOfflineInSeconds": 300,
+    "FriendRefreshInSeconds": 60,
+    "DuelRoomMaxId": 999999,
+    "DuelRoomMaxSearchResults": 1000,
+    "DuelRoomMaxSpectators": 1000,
+    "DuelRoomCommentTimeoutInSeconds": 7,
     "DefaultGems": 2000,
     "DefaultItems": [
         1000001,// Rescue Rabbit (AVATAR)

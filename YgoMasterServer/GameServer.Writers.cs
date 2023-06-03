@@ -9,6 +9,7 @@ namespace YgoMaster
     {
         void WriteUser(GameServerWebRequest request)
         {
+            Dictionary<uint, FriendState> friends = GetFriends(request.Player);
             request.Response["User"] = new Dictionary<string, object>()
             {
                 { "profile", new Dictionary<string, object>() {
@@ -21,8 +22,8 @@ namespace YgoMaster
                     { "need_exp", 0 },
                     { "icon_id", request.Player.IconId },
                     { "icon_frame_id", request.Player.IconFrameId },
-                    { "follow_num", 0 },
-                    { "follower_num", 0 },
+                    { "follow_num", friends.Count(x => x.Value.HasFlag(FriendState.Following)) },
+                    { "follower_num", friends.Count(x => x.Value.HasFlag(FriendState.Follower)) },
                     { "avatar_id", request.Player.AvatarId },
                     { "wallpaper", request.Player.Wallpaper },
                     { "tag", request.Player.TitleTags.ToArray() }
@@ -201,7 +202,7 @@ namespace YgoMaster
             solo["deck_info"] = new Dictionary<string, object>()
             {
                 { "deck_id", deck != null ? deck.Id : 0 },
-                { "valid", deck != null ? deck.IsValid(request.Player) : false },
+                { "valid", deck != null ? deck.IsValid(request.Player, DeckInfo.DefaultRegulationId, Regulation) : false },
                 { "possession", true }//request.Player.Duel.IsMyDeck }
             };
         }
@@ -226,6 +227,7 @@ namespace YgoMaster
                     { "pcode", request.Player.Code },
                 }},
             };
+            request.Player.HasWrittenToken = true;
         }
     }
 }

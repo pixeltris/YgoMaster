@@ -1,6 +1,11 @@
 {
-    "ServerUrl": "http://localhost:4989/ygo",
-    "ServerPollUrl": "http://localhost:4989/ygo/poll",
+    "BaseIP": "localhost",
+    "BasePort": 4989,
+    "SessionServerPort": 4988,
+    "SessionServerIP": "{BaseIP}",
+    "ServerUrl": "http://{BaseIP}:{BasePort}/ygo",
+    "ServerPollUrl": "http://{BaseIP}:{BasePort}/ygo/poll",
+    "MultiplayerToken": "",// [WARNING] Only use this if you know what you're doing
     "ShowConsole": false,
     "LogIDs": false,
     "AssetHelperLog": false,
@@ -15,6 +20,7 @@
     "DuelClientMillenniumEye": false,
     "DuelClientDisableCameraShake": false,
     "DuelClientDisableCutinAnimations": false,
+    "DuelClientDisableCutinAnimationsForCardsWithCustomImages": true,
     "DuelClientTimeMultiplier": 0,// Time multiplier applied during duels (a value of 0 means no change)
     "ReplayControlsAlwaysEnabled": false,
     "ReplayControlsTimeMultiplier": 0,// Time multiplier applied when pressing fast forward on the replay controls (a value of 0 means no change)

@@ -163,13 +163,19 @@ namespace YgoMaster
 
         void Act_DuelBegin(GameServerWebRequest request)
         {
-            //request.StringResponse = @"{""code"":0,""res"":[[10,{""Duel"":{""IsCustomDuel"":true,""OpponentType"":2,""OpponentPartnerType"":0,""RandSeed"":2081258956,""FirstPlayer"":1,""noshuffle"":false,""tag"":false,""dlginfo"":false,""MyID"":0,""MyType"":0,""Type"":0,""MyPartnerType"":1,""PlayableTagPartner"":0,""regulation_id"":0,""duel_start_timestamp"":0,""surrender"":true,""Limit"":0,""GameMode"":0,""cpu"":100,""cpuflag"":null,""LeftTimeMax"":0,""TurnTimeMax"":0,""TotalTimeMax"":0,""Auto"":-1,""rec"":false,""recf"":false,""did"":0,""duel"":null,""is_pvp"":false,""chapter"":0,""bgms"":[],""Deck"":[{""name"":""new ydk"",""ct"":0,""et"":1645640915,""accessory"":{""box"":1080001,""sleeve"":1070001,""field"":1090001,""object"":1100001,""av_base"":0},""pick_cards"":{""ids"":{""1"":0,""2"":0,""3"":0},""r"":{""1"":1,""2"":1,""3"":1}},""Main"":{""CardIds"":[4007,4007,4007,4711,4711,9455,9455,9455,9063,9229,9229,11308,11308,14259,14587,14911,9190,9190,9190,6949,6949,12901,4844,4844,4844,5328,6432,7187,7381,14304,14304,14304,16405,16405,9066,9066,9066,13619,13619,15299,15299],""Rare"":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]},""Extra"":{""CardIds"":[11313,11313,11930,12694,14910,8129,9196,9272,11648,12705,14586,13543,14295,14295,14052],""Rare"":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]},""Side"":{""CardIds"":[],""Rare"":[]}},{""name"":""241244.ydk"",""ct"":0,""et"":0,""accessory"":{""box"":0,""sleeve"":0,""field"":0,""object"":0,""av_base"":0},""pick_cards"":{""ids"":{""1"":0,""2"":0,""3"":0},""r"":{""1"":1,""2"":1,""3"":1}},""Main"":{""CardIds"":[12950,12950,12950,8933,8933,9455,9455,9455,13670,13670,13670,14829,14829,11851,14876,14876,13680,13672,13673,13676,13674,13677,13677,13677,13675,13675,4343,13679,13679,13671,13671,5537,4895,5328,13631,13631,13447,13447,4817,4817],""Rare"":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]},""Extra"":{""CardIds"":[13763,13763,13763,13668,13669,13669,13669,14947,13508,13600,14132,14133,13089,15032,14937],""Rare"":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]},""Side"":{""CardIds"":[],""Rare"":[]}},{""name"":null,""ct"":0,""et"":0,""accessory"":{""box"":0,""sleeve"":0,""field"":0,""object"":0,""av_base"":0},""pick_cards"":{""ids"":{""1"":0,""2"":0,""3"":0},""r"":{""1"":1,""2"":1,""3"":1}},""Main"":{""CardIds"":[],""Rare"":[]},""Extra"":{""CardIds"":[],""Rare"":[]},""Side"":{""CardIds"":[],""Rare"":[]}},{""name"":null,""ct"":0,""et"":0,""accessory"":{""box"":0,""sleeve"":0,""field"":0,""object"":0,""av_base"":0},""pick_cards"":{""ids"":{""1"":0,""2"":0,""3"":0},""r"":{""1"":1,""2"":1,""3"":1}},""Main"":{""CardIds"":[],""Rare"":[]},""Extra"":{""CardIds"":[],""Rare"":[]},""Side"":{""CardIds"":[],""Rare"":[]}}],""reg"":[0,0,0,0],""level"":[0,0,0,0],""follow_num"":[0,0,0,0],""pcode"":[0,0,0,0],""rank"":[0,0,0,0],""DuelistLv"":[0,0,0,0],""name"":[""Duelist"",null,null,null],""avatar"":[0,0,0,0],""avatar_home"":[0,0,0,0],""icon"":[1100001,1100001,1100001,1100001],""icon_frame"":[1030001,1030001,1030001,1030001],""sleeve"":[1070001,1070001,1070001,1070001],""mat"":[1090001,1090001,1090001,1090001],""duel_object"":[1100001,1100001,1100001,1100001],""wallpaper"":[1130001,1130001,1130001,1130001],""profile_tag"":[[],[],[],[]],""story_deck_id"":[0,0,0,0]}},0,0]],""remove"":[""Duel"",""DuelResult"",""Result""]}";
             Dictionary<string, object> rule;
             if (Utils.TryGetValue(request.ActParams, "rule", out rule))
             {
                 PlayerDuelState duel = request.Player.Duel;
                 duel.Mode = (GameMode)Utils.GetValue<int>(rule, "GameMode");
                 duel.ChapterId = Utils.GetValue<int>(rule, "chapter");
+
+                if (duel.Mode == GameMode.Room)
+                {
+                    Act_DuelBeginPvp(request);
+                    return;
+                }
+
                 DuelSettings duelSettings = null;
                 Dictionary<string, object> duelStarterData = Utils.GetDictionary(rule, "duelStarterData");
                 if (duelStarterData != null)
@@ -242,6 +248,9 @@ namespace YgoMaster
                         }
                         GiveDuelReward(request, DuelRewards, res, finish, chapterStatusChanged);
                         SavePlayer(request.Player);
+                        break;
+                    case GameMode.Room:
+                        // TODO: Give rewards (or fetch given rewards from session server)
                         break;
                 }
             }

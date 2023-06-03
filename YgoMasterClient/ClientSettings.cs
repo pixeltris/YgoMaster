@@ -9,6 +9,8 @@ namespace YgoMasterClient
 {
     static class ClientSettings
     {
+        public static string SessionServerIP;
+        public static int SessionServerPort;
         public static string ServerUrl;
         public static string ServerPollUrl;
         public static string MultiplayerToken;
@@ -27,6 +29,7 @@ namespace YgoMasterClient
         public static bool DuelClientMillenniumEye;
         public static bool DuelClientDisableCameraShake;
         public static bool DuelClientDisableCutinAnimations;
+        public static bool DuelClientDisableCutinAnimationsForCardsWithCustomImages;
         public static bool DuelClientDisableChains;
         public static double DuelClientTimeMultiplier;
         public static bool ReplayControlsAlwaysEnabled;
@@ -63,35 +66,49 @@ namespace YgoMasterClient
             {
                 return false;
             }
-            ServerUrl = YgoMaster.Utils.GetValue<string>(data, "ServerUrl");
-            ServerPollUrl = YgoMaster.Utils.GetValue<string>(data, "ServerPollUrl");
-            MultiplayerToken = YgoMaster.Utils.GetValue<string>(data, "MultiplayerToken");
-            ShowConsole = YgoMaster.Utils.GetValue<bool>(data, "ShowConsole");
-            LogIDs = YgoMaster.Utils.GetValue<bool>(data, "LogIDs");
-            AssetHelperLog = YgoMaster.Utils.GetValue<bool>(data, "AssetHelperLog");
-            AssetHelperDump = YgoMaster.Utils.GetValue<bool>(data, "AssetHelperDump");
-            AssetHelperDisableFileErrorPopup = YgoMaster.Utils.GetValue<bool>(data, "AssetHelperDisableFileErrorPopup");
-            DeckEditorDisableLimits = YgoMaster.Utils.GetValue<bool>(data, "DeckEditorDisableLimits");
-            DeckEditorConvertStyleRarity = YgoMaster.Utils.GetValue<bool>(data, "DeckEditorConvertStyleRarity");
-            DeckEditorShowStats = YgoMaster.Utils.GetValue<bool>(data, "DeckEditorShowStats");
-            DuelStarterShowFirstPlayer = YgoMaster.Utils.GetValue<bool>(data, "DuelStarterShowFirstPlayer");
-            DuelStarterLiveChapterId = YgoMaster.Utils.GetValue<int>(data, "DuelStarterLiveChapterId");
-            DuelStarterLiveNotLiveTest = YgoMaster.Utils.GetValue<bool>(data, "DuelStarterLiveNotLiveTest");
-            DuelClientShowRemainingCardsInDeck = YgoMaster.Utils.GetValue<bool>(data, "DuelClientShowRemainingCardsInDeck");
-            DuelClientMillenniumEye = YgoMaster.Utils.GetValue<bool>(data, "DuelClientMillenniumEye");
-            DuelClientDisableCameraShake = YgoMaster.Utils.GetValue<bool>(data, "DuelClientDisableCameraShake");
+
+            string baseIP = Utils.GetValue<string>(data, "BaseIP");
+            int basePort = Utils.GetValue<int>(data, "BasePort");
+            SessionServerPort = Utils.GetValue<int>(data, "SessionServerPort");
+            Func<string, string> FixupUrl = (string str) =>
+            {
+                str = str.Replace("{BaseIP}", baseIP);
+                str = str.Replace("{BasePort}", basePort.ToString());
+                str = str.Replace("{SessionServerPort}", SessionServerPort.ToString());
+                return str;
+            };
+
+            SessionServerIP = FixupUrl(Utils.GetValue<string>(data, "SessionServerIP"));
+            ServerUrl = FixupUrl(Utils.GetValue<string>(data, "ServerUrl"));
+            ServerPollUrl = FixupUrl(Utils.GetValue<string>(data, "ServerPollUrl"));
+            MultiplayerToken = Utils.GetValue<string>(data, "MultiplayerToken");
+            ShowConsole = Utils.GetValue<bool>(data, "ShowConsole");
+            LogIDs = Utils.GetValue<bool>(data, "LogIDs");
+            AssetHelperLog = Utils.GetValue<bool>(data, "AssetHelperLog");
+            AssetHelperDump = Utils.GetValue<bool>(data, "AssetHelperDump");
+            AssetHelperDisableFileErrorPopup = Utils.GetValue<bool>(data, "AssetHelperDisableFileErrorPopup");
+            DeckEditorDisableLimits = Utils.GetValue<bool>(data, "DeckEditorDisableLimits");
+            DeckEditorConvertStyleRarity = Utils.GetValue<bool>(data, "DeckEditorConvertStyleRarity");
+            DeckEditorShowStats = Utils.GetValue<bool>(data, "DeckEditorShowStats");
+            DuelStarterShowFirstPlayer = Utils.GetValue<bool>(data, "DuelStarterShowFirstPlayer");
+            DuelStarterLiveChapterId = Utils.GetValue<int>(data, "DuelStarterLiveChapterId");
+            DuelStarterLiveNotLiveTest = Utils.GetValue<bool>(data, "DuelStarterLiveNotLiveTest");
+            DuelClientShowRemainingCardsInDeck = Utils.GetValue<bool>(data, "DuelClientShowRemainingCardsInDeck");
+            DuelClientMillenniumEye = Utils.GetValue<bool>(data, "DuelClientMillenniumEye");
+            DuelClientDisableCameraShake = Utils.GetValue<bool>(data, "DuelClientDisableCameraShake");
             DuelClientDisableCutinAnimations = Utils.GetValue<bool>(data, "DuelClientDisableCutinAnimations");
+            DuelClientDisableCutinAnimationsForCardsWithCustomImages = Utils.GetValue<bool>(data, "DuelClientDisableCutinAnimationsForCardsWithCustomImages");
             DuelClientDisableChains = Utils.GetValue<bool>(data, "DuelClientDisableChains");
             DuelClientTimeMultiplier = Utils.GetValue<double>(data, "DuelClientTimeMultiplier");
-            ReplayControlsAlwaysEnabled = YgoMaster.Utils.GetValue<bool>(data, "ReplayControlsAlwaysEnabled");
+            ReplayControlsAlwaysEnabled = Utils.GetValue<bool>(data, "ReplayControlsAlwaysEnabled");
             ReplayControlsTimeMultiplier = Utils.GetValue<double>(data, "ReplayControlsTimeMultiplier");
             TimeMultiplier = Utils.GetValue<double>(data, "TimeMultiplier");
-            DisableVSync = YgoMaster.Utils.GetValue<bool>(data, "DisableVSync");
-            ChangeWindowTitleOnLiveMod = YgoMaster.Utils.GetValue<bool>(data, "ChangeWindowTitleOnLiveMod");
-            AlwaysWin = YgoMaster.Utils.GetValue<bool>(data, "AlwaysWin");
-            CustomDuelCmdLog = YgoMaster.Utils.GetValue<bool>(data, "CustomDuelCmdLog");
-            RandomDecksNonRecursive = YgoMaster.Utils.GetValue<bool>(data, "RandomDecksNonRecursive");
-            RandomDecksDontSetCpuName = YgoMaster.Utils.GetValue<bool>(data, "RandomDecksDontSetCpuName");
+            DisableVSync = Utils.GetValue<bool>(data, "DisableVSync");
+            ChangeWindowTitleOnLiveMod = Utils.GetValue<bool>(data, "ChangeWindowTitleOnLiveMod");
+            AlwaysWin = Utils.GetValue<bool>(data, "AlwaysWin");
+            CustomDuelCmdLog = Utils.GetValue<bool>(data, "CustomDuelCmdLog");
+            RandomDecksNonRecursive = Utils.GetValue<bool>(data, "RandomDecksNonRecursive");
+            RandomDecksDontSetCpuName = Utils.GetValue<bool>(data, "RandomDecksDontSetCpuName");
             return true;
         }
 

@@ -62,6 +62,24 @@ namespace YgoMaster
     }
 
     /// <summary>
+    /// YgomGame.Colosseum..ColosseumUtil.PlayMode
+    /// </summary>
+    enum PlayMode
+    {
+        NONE,
+        RANK,
+        TOURNAMENT,
+        ROOM,
+        EXHIBITION,
+        FREE,
+        DUELISTCUP,
+        RANKEVENT,
+        TEAMMATCH,
+        DUELTRIAL,
+        WCS
+    }
+
+    /// <summary>
     /// YgomSystem.Network.ServerStatus
     /// </summary>
     enum ServerStatus
@@ -101,6 +119,24 @@ namespace YgoMaster
         Room,
         Exhibition,
         Null
+    }
+
+    /// <summary>
+    /// YgomGame.Duel.Util.PlatformID
+    /// </summary>
+    enum PlatformID
+    {
+        Invalid,
+        Android,
+        iOS,
+        Steam,
+        PS4,
+        NX,
+        XboxOne,
+        Stadia,
+        PS5,
+        XboxSX,
+        Editor = 100
     }
 
     /// <summary>

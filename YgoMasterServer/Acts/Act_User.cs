@@ -31,7 +31,45 @@ namespace YgoMaster
             WriteCards(request);
             WriteItem(request);
             request.Response["Craft"] = Craft.ToDictionary();
+
+            WriteRoomInfo(request, request.Player.DuelRoom);
+            Dictionary<string, object> roomData = request.GetOrCreateDictionary("Room");
+            Dictionary<string, object> roomSettingDefData = Utils.GetOrCreateDictionary(roomData, "setting_def");
+            roomSettingDefData["default_time_id"] = 1;
+            roomSettingDefData["time"] = new Dictionary<string, object>()
+            {
+                { "1", new Dictionary<string, object>() {
+                    { "name", "IDS_ROOM_TIME_NORMAL" },
+                    { "add_time", 60 },
+                    { "add_time_after", 30 },
+                    { "rest_time", 300 },
+                    { "sort", 2 }
+                }},
+                { "2", new Dictionary<string, object>() {
+                    { "name", "IDS_ROOM_TIME_LONG" },
+                    { "add_time", 120 },
+                    { "add_time_after", 60 },
+                    { "rest_time", 600 },
+                    { "sort", 3 }
+                }},
+                { "3", new Dictionary<string, object>() {
+                    { "name", "IDS_ROOM_TIME_SHORT" },
+                    { "add_time", 30 },
+                    { "add_time_after", 15 },
+                    { "rest_time", 150 },
+                    { "sort", 1 }
+                }},
+                { "4", new Dictionary<string, object>() {
+                    { "name", "IDS_ROOM_TIME_VERY_LONG" },
+                    { "add_time", 600 },
+                    { "add_time_after", 300 },
+                    { "rest_time", 900 },
+                    { "sort", 4 }
+                }},
+            };
+
             request.Remove(
+                "Room.room_info",
                 "Master",
                 "User",
                 "Deck",
@@ -98,6 +136,16 @@ namespace YgoMaster
 
         void Act_UserHome(GameServerWebRequest request)
         {
+            DuelRoom duelRoom = request.Player.DuelRoom;
+            if (duelRoom != null && !duelRoom.Disbanded)
+            {
+                DuelRoomTable table = duelRoom.GetTable(request.Player);
+                if (table != null)
+                {
+                    table.RemovePlayer(request.Player);
+                }
+            }
+
             // Room / Master.Regulation are required to create decks / view public decks without breaking the client
             Dictionary<string, object> structure = new Dictionary<string, object>();
             foreach (DeckInfo deck in StructureDecks.Values)
@@ -238,7 +286,10 @@ namespace YgoMaster
                 "EXHDeckList",
                 "Topic",
                 "Notification",
-                "Duelpass");
+                "Duelpass",
+                "Room.rule_list",
+                "Room.holding_rule_list",
+                "Room.common");
         }
 
         void Act_EventNotifyGetList(GameServerWebRequest request)
@@ -252,6 +303,7 @@ namespace YgoMaster
             // 5 = gift box (!/num)
             // 6 = notifications (!/num)
             // 7 = solo (!)
+            const int friendType = 2;
             const int shopType = 4;
             Dictionary<string, object> notificationBadges = new Dictionary<string, object>();
             if (request.Player.ShopState.HasNew())
@@ -262,12 +314,89 @@ namespace YgoMaster
                     { "num", 0 }
                 };
             }
+            lock (request.Player.DuelRoomInvitesByFriendId)
+            {
+                if (request.Player.DuelRoomInvitesByFriendId.Count > 0)
+                {
+                    notificationBadges[friendType.ToString()] = new Dictionary<string, object>()
+                    {
+                        { "type", friendType },
+                        { "num", request.Player.DuelRoomInvitesByFriendId.Count }
+                    };
+                }
+            }
             request.Response["EventNotify"] = new Dictionary<string, object>()
             {
                 { "Notify", new object[0] },// These are popup notifications on the bottom right of the screen
                 { "Badge", notificationBadges }
             };
             request.Remove("EventNotify");
+        }
+
+        void Act_UserProfile(GameServerWebRequest request)
+        {
+            uint pcode = Utils.GetValue<uint>(request.ActParams, "pcode");
+            if (pcode == 0 || pcode == request.Player.Code)
+            {
+                Dictionary<string, object> userData = request.GetOrCreateDictionary("User");
+                Dictionary<string, object> profileData = Utils.GetOrCreateDictionary(userData, "profile");
+                GetCommonProfileData(request.Player, profileData);
+
+                // TODO: Item.sort { "1000012": { "category": 3, "item_id": 1000012, "sort_order": 7 }, ... }
+            }
+            else
+            {
+                Player player;
+                lock (playersLock)
+                {
+                    playersById.TryGetValue(pcode, out player);
+                }
+                if (player != null)
+                {
+                    Dictionary<string, object> friendData = request.GetOrCreateDictionary("Friend");
+                    Dictionary<string, object> profileData = Utils.GetOrCreateDictionary(friendData, "profile");
+                    GetCommonProfileData(player, profileData);
+
+                    FriendState friendState;
+                    GetFriends(request.Player).TryGetValue(player.Code, out friendState);
+                    profileData["is_follow"] = friendState.HasFlag(FriendState.Following);
+
+                    profileData["is_block"] = false;
+                    profileData["is_ps_block"] = false;
+                    profileData["is_xbox_block"] = false;
+
+                    request.Remove("Friend.profile");
+                }
+                else
+                {
+                    // TODO: Find correct error code to give
+                    request.ResultCode = (int)ResultCodes.UserCode.ERR_ACCOUNT_NOT_EXIST;
+                }
+            }
+        }
+
+        void GetCommonProfileData(Player player, Dictionary<string, object> profileData)
+        {
+            Dictionary<uint, FriendState> friends = GetFriends(player);
+            profileData["name"] = player.Name;
+            profileData["rank"] = player.Rank;
+            profileData["rate"] = player.Rate;
+            profileData["level"] = player.Level;
+            profileData["exp"] = player.Exp;
+            //profileData["need_exp"] = player.NeedExp;
+            profileData["icon_id"] = player.IconId;
+            profileData["icon_frame_id"] = player.IconFrameId;
+            profileData["avatar_id"] = player.AvatarId;
+            profileData["wallpaper"] = player.Wallpaper;
+            profileData["tag"] = player.TitleTags.ToArray();
+            profileData["follow_num"] = friends.Count(x => x.Value.HasFlag(FriendState.Following));
+            profileData["follower_num"] = friends.Count(x => x.Value.HasFlag(FriendState.Follower));
+        }
+
+        void Act_UserRecord(GameServerWebRequest request)
+        {
+            Dictionary<string, object> userData = request.GetOrCreateDictionary("User");
+            Utils.GetOrCreateDictionary(userData, "record");
         }
     }
 }

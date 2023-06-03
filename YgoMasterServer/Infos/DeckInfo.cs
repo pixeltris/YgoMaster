@@ -68,29 +68,102 @@ namespace YgoMaster
         }
 
 #if !YGO_MASTER_CLIENT
-        public bool IsValid(Player player)
+        private bool IsValid(Player player)
         {
             if (MainDeckCards.Count < 40 || MainDeckCards.Count > 60 || ExtraDeckCards.Count > 15 || SideDeckCards.Count > 15)
             {
                 return false;
             }
-            // TODO: Validate the StyleRarity of the cards
-            Dictionary<int, int> count = new Dictionary<int, int>();
-            IEnumerable<int>[] collections = { MainDeckCards.GetIds(), ExtraDeckCards.GetIds(), SideDeckCards.GetIds() };
-            foreach (IEnumerable<int> collection in collections)
+
+            Dictionary<int, Dictionary<CardStyleRarity, int>> count = new Dictionary<int, Dictionary<CardStyleRarity, int>>();
+            IEnumerable<KeyValuePair<int, CardStyleRarity>>[] collections = { MainDeckCards.GetCollection(), ExtraDeckCards.GetCollection(), SideDeckCards.GetCollection() };
+            foreach (IEnumerable<KeyValuePair<int, CardStyleRarity>> collection in collections)
             {
-                foreach (int id in collection)
+                foreach (KeyValuePair<int, CardStyleRarity> idRarity in collection)
                 {
-                    if (!count.ContainsKey(id))
+                    if (!count.ContainsKey(idRarity.Key))
                     {
-                        count[id] = player.Cards.GetCount(id);
+                        count[idRarity.Key] = new Dictionary<CardStyleRarity, int>();
+                        for (CardStyleRarity i = CardStyleRarity.Normal; i <= CardStyleRarity.Shine; i++)
+                        {
+                            count[idRarity.Key][i] = player.Cards.GetCount(idRarity.Key, PlayerCardKind.All, i);
+                        }
                     }
-                    if (--count[id] < 0)
+                    if (--count[idRarity.Key][idRarity.Value] < 0)
                     {
                         return false;
                     }
                 }
             }
+
+            return true;
+        }
+
+
+        public bool IsValid(Player player, int regulationId, Dictionary<string, object> regulations)
+        {
+            if (!IsValid(player))
+            {
+                return false;
+            }
+
+            if (regulationId == 0 || regulations == null)
+            {
+                return true;
+            }
+
+            Dictionary<string, object> regulationData = Utils.GetDictionary(regulations, regulationId.ToString());
+            if (regulationData == null)
+            {
+                return true;
+            }
+
+            // TODO: Handle "require" / "card_pool" (currently unused by official regulations)
+            Dictionary<string, object> availableData = Utils.GetDictionary(regulationData, "available");
+            Dictionary<string, object> requireData = Utils.GetDictionary(regulationData, "require");
+            List<int> cardPool = Utils.GetValueTypeList<int>(regulationData, "card_pool");
+
+            List<int> r1 = Utils.GetValueTypeList<int>(requireData, "r1");
+            List<int> r2 = Utils.GetValueTypeList<int>(requireData, "r2");
+            List<int> r3 = Utils.GetValueTypeList<int>(requireData, "r3");
+
+            List<int> a0 = Utils.GetValueTypeList<int>(availableData, "a0");// Banned
+            List<int> a1 = Utils.GetValueTypeList<int>(availableData, "a1");// 2
+            List<int> a2 = Utils.GetValueTypeList<int>(availableData, "a2");// 1
+            List<int> a3 = Utils.GetValueTypeList<int>(availableData, "a3");// ?
+            Dictionary<List<int>, int> limits = new Dictionary<List<int>, int>()
+            {
+                { a0, 0 },
+                { a1, 2 },
+                { a2, 1 }
+            };
+
+            Dictionary<int, int> cards = new Dictionary<int, int>();
+            IEnumerable<int>[] collections = { MainDeckCards.GetIds(), ExtraDeckCards.GetIds() };
+            foreach (IEnumerable<int> collection in collections)
+            {
+                foreach (int id in collection)
+                {
+                    if (!cards.ContainsKey(id))
+                    {
+                        cards[id] = 0;
+                    }
+                    cards[id]++;
+                }
+            }
+
+            foreach (KeyValuePair<List<int>, int> limit in limits)
+            {
+                foreach (int id in limit.Key)
+                {
+                    int cardCount;
+                    if (cards.TryGetValue(id, out cardCount) && cardCount > limit.Value)
+                    {
+                        return false;
+                    }
+                }
+            }
+
             return true;
         }
 #endif

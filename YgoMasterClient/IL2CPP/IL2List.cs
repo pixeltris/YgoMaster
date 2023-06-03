@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace IL2CPP
 {
@@ -140,6 +141,7 @@ namespace IL2CPP
             public IL2Method MethodCountGet;
             public IL2Method MethodAdd;
             public IL2Method MethodClear;
+            public IL2Method MethodAsReadOnly;
         }
 
         public ListClassInfo ClassInfo;
@@ -157,6 +159,7 @@ namespace IL2CPP
                 ClassInfo.MethodCountGet = ClassInfo.Class.GetProperty("Count").GetGetMethod();
                 ClassInfo.MethodAdd = ClassInfo.Class.GetMethod("Add");
                 ClassInfo.MethodClear = ClassInfo.Class.GetMethod("Clear");
+                ClassInfo.MethodAsReadOnly = ClassInfo.Class.GetMethod("AsReadOnly");
                 Classes[type.ptr] = ClassInfo;
             }
             if (nullPtrMakeNew && ptr == IntPtr.Zero)
@@ -198,6 +201,12 @@ namespace IL2CPP
         public void Clear()
         {
             ClassInfo.MethodClear.Invoke(ptr, new IntPtr[] { ClassInfo.MethodAdd.ptr });
+        }
+
+        public IntPtr MethodAsReadOnly()
+        {
+            IL2Object obj = ClassInfo.MethodAsReadOnly.Invoke(ptr);
+            return obj != null ? obj.ptr : IntPtr.Zero;
         }
     }
 }

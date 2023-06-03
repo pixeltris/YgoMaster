@@ -155,6 +155,25 @@ namespace YgoMaster
             }
         }
 
+        public static List<T> GetValueTypeList<T>(Dictionary<string, object> values, string key, bool ignoreZero = false)
+        {
+            List<T> result = new List<T>();
+            GetValueTypeList(values, key, result, ignoreZero);
+            return result;
+        }
+
+        public static void GetValueTypeList<T>(Dictionary<string, object> values, string key, List<T> result, bool ignoreZero = false)
+        {
+            List<object> items;
+            if (TryGetValue(values, key, out items))
+            {
+                foreach (object item in items)
+                {
+                    result.Add((T)Convert.ChangeType(item, typeof(T)));
+                }
+            }
+        }
+
         public static void GetIntHashSet(Dictionary<string, object> values, string key, HashSet<int> result, bool ignoreZero = false)
         {
             List<object> items;

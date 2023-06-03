@@ -7,12 +7,18 @@ using System.Threading;
 using System.IO;
 using System.Diagnostics;
 using System.Globalization;
+using System.Security.Cryptography;
+using System.CodeDom;
+using System.Net.Sockets;
+using System.Runtime.Remoting.Contexts;
+using System.Security.Permissions;
 
 namespace YgoMaster
 {
     partial class GameServer
     {
         Thread thread;
+        Thread updateThread;
         HttpListener listener;
 
         public void Start()
@@ -27,32 +33,88 @@ namespace YgoMaster
                 return;
             }
 
-            thread = new Thread(delegate()
+            thread = new Thread(delegate ()
+            {
+                listener = new HttpListener();
+                try
                 {
-                    listener = new HttpListener();
-                    try
+                    listener.Prefixes.Add(bindIP);
+                    listener.Start();
+                }
+                catch
+                {
+                    Console.WriteLine("[ERROR] Failed to bind to " + bindIP + " (ensure the program isn't already running, or try running as admin)");
+                    return;
+                }
+
+                HttpListener tempListener = listener;
+
+                updateThread = new Thread(delegate ()
+                {
+                    DateTime lastReleaseIP = DateTime.UtcNow;
+                    TimeSpan releaseIPDelay = TimeSpan.FromMinutes(30);
+
+                    while (listener != null && tempListener == listener)
                     {
-                        listener.Prefixes.Add(bindIP);
-                        listener.Start();
-                    }
-                    catch
-                    {
-                        Console.WriteLine("[ERROR] Failed to bind to " + bindIP + " (ensure the program isn't already running, or try running as admin)");
-                        return;
-                    }
-                    Console.WriteLine("Initialized");
-                    while (listener != null)
-                    {
-                        try
+                        Thread.Sleep(10000);
+                        
+                        lock (duelRoomsLocker)
                         {
-                            HttpListenerContext context = listener.GetContext();
-                            Process(context);
+                            foreach (DuelRoom duelRoom in GetDuelRoomsByRoomId().Values)
+                            {
+                                if (duelRoom.TimeExpire < DateTime.UtcNow)
+                                {
+                                    DisbandRoom(duelRoom);
+                                }
+                            }
                         }
-                        catch
+
+                        if (MultiplayerReleasePlayerIPInHours > 0 && lastReleaseIP < DateTime.UtcNow - releaseIPDelay)
                         {
+                            lock (playersLock)
+                            {
+                                foreach (KeyValuePair<string, HashSet<Player>> playersOnIP in playersByIP)
+                                {
+                                    foreach (Player player in new HashSet<Player>(playersOnIP.Value))
+                                    {
+                                        if (player.LastRequestTime < DateTime.UtcNow - TimeSpan.FromHours(MultiplayerReleasePlayerIPInHours))
+                                        {
+                                            playersOnIP.Value.Remove(player);
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 });
+                updateThread.CurrentCulture = CultureInfo.InvariantCulture;
+                updateThread.SetApartmentState(ApartmentState.STA);
+                updateThread.Start();
+
+                Console.WriteLine("Initialized");
+
+                while (listener != null && tempListener == listener)
+                {
+                    try
+                    {
+                        HttpListenerContext context = listener.GetContext();
+                        if (MultiplayerEnabled)
+                        {
+                            ThreadPool.QueueUserWorkItem((x) =>
+                            {
+                                Process(context);
+                            });
+                        }
+                        else
+                        {
+                            Process(context);
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
+            });
             thread.CurrentCulture = CultureInfo.InvariantCulture;
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
@@ -117,25 +179,41 @@ namespace YgoMaster
 
                             if (MultiplayerEnabled)
                             {
-                                lock (playersByToken)
+                                if (string.IsNullOrEmpty(sessionToken))
                                 {
-                                    if (string.IsNullOrEmpty(sessionToken) || !playersByToken.TryGetValue(sessionToken, out gameServerWebRequest.Player))
+                                    throw new Exception("Session token required");
+                                }
+
+                                sessionToken = Encoding.UTF8.GetString(Convert.FromBase64String(sessionToken));
+
+                                uint playerId = GetPlayerIdFromToken(sessionToken);
+                                if (playerId == 0)
+                                {
+                                    throw new Exception("Invalid player id " + playerId + " from token '" + sessionToken + "'");
+                                }
+
+                                lock (playersLock)
+                                {
+                                    if (!playersByToken.TryGetValue(sessionToken, out gameServerWebRequest.Player))
                                     {
-                                        if (string.IsNullOrEmpty(sessionToken))
+                                        Player possibleExistingPlayer;
+                                        if (playersById.TryGetValue(playerId, out possibleExistingPlayer))
                                         {
-                                            while (true)
-                                            {
-                                                sessionToken = Guid.NewGuid().ToString();
-                                                if (!playersByToken.ContainsKey(sessionToken))
-                                                {
-                                                    break;
-                                                }
-                                            }
+                                            throw new Exception("Duplicate player code " + playerId + ". Requested token: '" + sessionToken + "'. Existing token: '" + possibleExistingPlayer.Token + "'");
                                         }
-                                        playersByToken[sessionToken] = gameServerWebRequest.Player = new Player(nextPlayerCode++);
+                                        playersByToken[sessionToken] = playersById[playerId] = gameServerWebRequest.Player = new Player(playerId);
+                                        gameServerWebRequest.Player.LastRequestTime = DateTime.UtcNow;
+                                        CheckPlayerLimitForIP(gameServerWebRequest.Player, context.Request.RemoteEndPoint.Address.ToString());
                                         LoadPlayer(gameServerWebRequest.Player);
-                                        WriteToken(gameServerWebRequest);
+                                        gameServerWebRequest.Player.Token = sessionToken;
+                                        SavePlayerNow(gameServerWebRequest.Player);
                                     }
+                                    CheckPlayerLimitForIP(gameServerWebRequest.Player, context.Request.RemoteEndPoint.Address.ToString());
+                                }
+
+                                if (!gameServerWebRequest.Player.HasWrittenToken)
+                                {
+                                    WriteToken(gameServerWebRequest);
                                 }
                             }
                             else
@@ -150,6 +228,7 @@ namespace YgoMaster
 
                             if (gameServerWebRequest.Player != null)
                             {
+                                gameServerWebRequest.Player.LastRequestTime = DateTime.UtcNow;
                                 switch (actName)
                                 {
                                     case "System.info":
@@ -172,6 +251,12 @@ namespace YgoMaster
                                         break;
                                     case "User.set_profile":
                                         Act_UserSetProfile(gameServerWebRequest);
+                                        break;
+                                    case "User.profile":
+                                        Act_UserProfile(gameServerWebRequest);
+                                        break;
+                                    case "User.record":
+                                        Act_UserRecord(gameServerWebRequest);
                                         break;
                                     case "EventNotify.get_list":
                                         Act_EventNotifyGetList(gameServerWebRequest);
@@ -244,6 +329,63 @@ namespace YgoMaster
                                         break;
                                     case "Duel.end":
                                         Act_DuelEnd(gameServerWebRequest);
+                                        break;
+                                    case "Friend.get_list":
+                                        Act_FriendGetList(gameServerWebRequest);
+                                        break;
+                                    case "Friend.refresh_info":
+                                        Act_FriendRefreshInfo(gameServerWebRequest);
+                                        break;
+                                    case "Friend.follow":
+                                        Act_FriendFollow(gameServerWebRequest);
+                                        break;
+                                    case "Friend.id_search":
+                                        Act_FriendIdSearch(gameServerWebRequest);
+                                        break;
+                                    case "Friend.set_pin":
+                                        Act_FriendSetPin(gameServerWebRequest);
+                                        break;
+                                    case "Room.get_room_list":
+                                        Act_RoomGetList(gameServerWebRequest);
+                                        break;
+                                    case "Room.room_entry":
+                                        Act_RoomEntry(gameServerWebRequest);
+                                        break;
+                                    case "Room.room_exit":
+                                        Act_RoomExit(gameServerWebRequest);
+                                        break;
+                                    case "Room.room_create":
+                                        Act_RoomCreate(gameServerWebRequest);
+                                        break;
+                                    case "Room.room_table_polling":
+                                        Act_RoomTablePolling(gameServerWebRequest);
+                                        break;
+                                    case "Room.table_arrive":
+                                        Act_RoomTableArrive(gameServerWebRequest);
+                                        break;
+                                    case "Room.table_leave":
+                                        Act_RoomTableLeave(gameServerWebRequest);
+                                        break;
+                                    case "Room.set_user_comment":
+                                        Act_RoomSetUserComment(gameServerWebRequest);
+                                        break;
+                                    case "Room.room_friend_invite":
+                                        Act_RoomFriendInvite(gameServerWebRequest);
+                                        break;
+                                    case "Room.is_room_battle_ready":
+                                        Act_RoomBattleReady(gameServerWebRequest);
+                                        break;
+                                    case "DuelMenu.deck_check":
+                                        Act_DuelMenuDeckCheck(gameServerWebRequest);
+                                        break;
+                                    case "Duel.matching":
+                                        Act_DuelMatching(gameServerWebRequest);
+                                        break;
+                                    case "Duel.start_waiting":
+                                        Act_DuelStartWating(gameServerWebRequest);
+                                        break;
+                                    case "Duel.start_selecting":
+                                        Act_DuelStartSelecting(gameServerWebRequest);
                                         break;
                                     default:
                                         Utils.LogInfo("Unhandled act " + actsHeader);
@@ -390,6 +532,94 @@ namespace YgoMaster
                 return ms.ToArray();
             }
             //return Encoding.UTF8.GetBytes("@" + value);
+        }
+
+        uint GetPlayerIdFromToken(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                return 0;
+            }
+
+            if (!string.IsNullOrEmpty(MultiplayerTokenPrefixSecret))
+            {
+                if (!token.StartsWith(MultiplayerTokenPrefixSecret))
+                {
+                    return 0;
+                }
+                token = token.Substring(0, MultiplayerTokenPrefixSecret.Length);
+                if (string.IsNullOrEmpty(token))
+                {
+                    return 0;
+                }
+            }
+
+            if (MultiplayerAllowUserSpecifiedPlayerCode)
+            {
+                // First check for manually entered player code e.g. "000-000-001"
+                string[] splitted = token.Trim().Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+                if (splitted.Length == 3)
+                {
+                    uint[] numbers = new uint[3];
+                    bool allNumbers = false;
+                    for (int i = 0; i < numbers.Length; i++)
+                    {
+                        uint number;
+                        if (!uint.TryParse(splitted[i], out number) || splitted[i].Length != 3)
+                        {
+                            allNumbers = false;
+                        }
+                        numbers[i] = number;
+                    }
+                    if (allNumbers)
+                    {
+                        return (numbers[0] * 1000000) + (numbers[1] * 1000) + numbers[2];
+                    }
+                }
+            }
+
+            using (MD5 md5 = MD5.Create())
+            {
+                return BitConverter.ToUInt32(md5.ComputeHash(Encoding.UTF8.GetBytes(token)), 0) % 999999999;
+            }
+        }
+
+        void CheckPlayerLimitForIP(Player player, string remoteIP)
+        {
+            if (string.IsNullOrEmpty(player.IP))
+            {
+                player.IP = remoteIP;
+
+                int playerLimit;
+                if (MultiplayerMaxPlayersPerIPEx.TryGetValue(remoteIP, out playerLimit))
+                {
+                    if (playerLimit == 0)
+                    {
+                        throw new Exception("Request from banned IP " + remoteIP);
+                    }
+                }
+                else
+                {
+                    playerLimit = MultiplayerMaxPlayersPerIP;
+                }
+
+                if (MultiplayerReleasePlayerIPInHours > 0 && playerLimit > 0)
+                {
+                    HashSet<Player> playersOnThisIP;
+                    if (!playersByIP.TryGetValue(remoteIP, out playersOnThisIP))
+                    {
+                        playersOnThisIP = new HashSet<Player>();
+                    }
+                    if (!playersOnThisIP.Contains(player))
+                    {
+                        if (playersOnThisIP.Count >= MultiplayerMaxPlayersPerIP)
+                        {
+                            throw new Exception("Ignore request from " + remoteIP + " due to reaching player IP limit of " + playerLimit);
+                        }
+                        playersOnThisIP.Add(player);
+                    }
+                }
+            }
         }
     }
 
