@@ -871,7 +871,7 @@ namespace YgoMaster
             request.Player.Duel.Mode = GameMode.Room;
 
             DuelSettings duelSettings = new DuelSettings();
-            duelSettings.RandSeed = (uint)rand.Next();
+            duelSettings.RandSeed = table.Seed;
             duelSettings.FirstPlayer = table.FirstPlayer;
             duelSettings.noshuffle = false;
             duelSettings.tag = false;

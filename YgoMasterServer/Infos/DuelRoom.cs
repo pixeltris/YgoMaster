@@ -228,6 +228,7 @@ namespace YgoMaster
             }
         }
         public bool HasError;
+        public uint Seed { get; private set; }
         public int FirstPlayer;
         public int CoinFlipCounter;
         public int CoinFlipPlayerIndex { get; private set; }
@@ -324,6 +325,7 @@ namespace YgoMaster
                     if (state == DuelRoomTableState.Joinable)
                     {
                         HasError = false;
+                        Seed = (uint)rand.Next();
                         FirstPlayer = -1;
                         CoinFlipPlayerIndex = rand.Next(2);
                         CoinFlipCounter = 5;
