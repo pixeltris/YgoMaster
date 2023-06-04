@@ -293,6 +293,7 @@ namespace YgoMaster
             }
             else
             {
+                duelRoom.ResetTableStateIfMatchingOrDueling(request.Player);
                 WriteRoomInfo(request, duelRoom);
             }
             request.Remove("Room.room_info");
@@ -312,6 +313,8 @@ namespace YgoMaster
             }
             else
             {
+                duelRoom.ResetTableStateIfMatchingOrDueling(request.Player);
+
                 int tableIndex = Utils.GetValue<int>(request.ActParams, "table_no");
                 if (tableIndex >= 0 && tableIndex < duelRoom.Tables.Length)
                 {
@@ -352,6 +355,8 @@ namespace YgoMaster
             }
             else
             {
+                duelRoom.ResetTableStateIfMatchingOrDueling(request.Player);
+
                 DuelRoomTable table = duelRoom.GetTable(request.Player);
                 if (table != null)
                 {
@@ -465,10 +470,38 @@ namespace YgoMaster
                     DuelRoomTableEntry playerTableEntry = table.GetEntry(request.Player);
                     if (playerTableEntry != null)
                     {
+                        bool anyBattleReady = false;
+                        foreach (DuelRoomTableEntry entry in table.Entries)
+                        {
+                            if (isBattleReady || entry.IsMatchingOrInDuel)
+                            {
+                                anyBattleReady = true;
+                                if (table.State == DuelRoomTableState.Joinable)
+                                {
+                                    table.State = DuelRoomTableState.Matching;
+                                    table.Seed = (uint)rand.Next();
+                                    table.FirstPlayer = -1;
+                                    table.CoinFlipPlayerIndex = rand.Next(2);
+                                    table.CoinFlipCounter = 5;
+                                    using (SHA1 sha1 = SHA1.Create())
+                                    {
+                                        table.TableHash = BitConverter.ToString(sha1.ComputeHash(Guid.NewGuid().ToByteArray())).Replace("-", string.Empty);
+                                    }
+                                    using (MD5 md5 = MD5.Create())
+                                    {
+                                        table.TableTicket = BitConverter.ToString(md5.ComputeHash(Guid.NewGuid().ToByteArray())).Replace("-", string.Empty);
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                        if (!anyBattleReady)
+                        {
+                            table.State = DuelRoomTableState.Joinable;
+                        }
+
                         playerTableEntry.IsMatchingOrInDuel = isBattleReady;
                     }
-
-                    table.UpdateState();
 
                     WriteRoomInfo(request, duelRoom);
                 }
@@ -623,6 +656,9 @@ namespace YgoMaster
                 return;
             }
 
+            //Dictionary<string, object> rule = Utils.GetDictionary(request.ActParams, "rule");
+            //Utils.GetValue<int>(rule, "mode");// 5 for room duel?
+
             DuelRoom duelRoom = request.Player.DuelRoom;
             if (duelRoom == null)
             {
@@ -631,7 +667,7 @@ namespace YgoMaster
             }
 
             DuelRoomTable table = duelRoom.GetTable(request.Player);
-            if (table == null || table.HasError)
+            if (table == null)
             {
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM;
                 return;
@@ -646,7 +682,7 @@ namespace YgoMaster
                 Player p2 = table.Player2;
                 if (p1 == null || p2 == null)
                 {
-                    request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM_OPP;
+                    request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                     return;
                 }
                 DeckInfo d1 = p1.Duel.GetDeck(GameMode.Room);
@@ -657,8 +693,28 @@ namespace YgoMaster
                     return;
                 }
 
+                DuelRoomTableEntry tableEntry = table.GetEntry(request.Player);
+                if (tableEntry == null || !tableEntry.IsMatchingOrInDuel)
+                {
+                    request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
+                    return;
+                }
+
+                DuelRoomTableState state = table.State;
+                if (state != DuelRoomTableState.Matching && state != DuelRoomTableState.Matched)
+                {
+                    request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
+                    return;
+                }
+
                 if (table.IsMatched)
                 {
+                    if (state != DuelRoomTableState.Matched)
+                    {
+                        table.MatchedTime = DateTime.UtcNow;
+                        table.State = DuelRoomTableState.Matched;
+                    }
+
                     Dictionary<string, object> duelData = request.GetOrCreateDictionary("Duel");
                     /*duelData["match"] = new Dictionary<string, object>()
                     {
@@ -730,6 +786,24 @@ namespace YgoMaster
             request.ResultCode = (int)ResultCodes.PvPCode.TIMEOUT;
         }
 
+        void Act_DuelMatchingCancel(GameServerWebRequest request)
+        {
+            if (!MultiplayerEnabled)
+            {
+                return;
+            }
+
+            DuelRoom duelRoom = request.Player.DuelRoom;
+            if (duelRoom == null)
+            {
+                request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM;
+                return;
+            }
+
+            duelRoom.ResetTableStateIfMatchingOrDueling(request.Player);
+            WriteRoomInfo(request, duelRoom);
+        }
+
         void Act_DuelStartWating(GameServerWebRequest request)
         {
             if (!MultiplayerEnabled)
@@ -745,9 +819,16 @@ namespace YgoMaster
             }
 
             DuelRoomTable table = duelRoom.GetTable(request.Player);
-            if (table == null || table.HasError)
+            if (table == null)
             {
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM;
+                return;
+            }
+
+            DuelRoomTableEntry tableEntry = table.GetEntry(request.Player);
+            if (tableEntry == null || !tableEntry.IsMatchingOrInDuel)
+            {
+                request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
             }
 
@@ -755,7 +836,20 @@ namespace YgoMaster
             Player p2 = table.Player2;
             if (p1 == null || p2 == null)
             {
-                request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM_OPP;
+                request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
+                return;
+            }
+
+            DuelRoomTableState state = table.State;
+            if (state != DuelRoomTableState.Matched && state != DuelRoomTableState.Dueling)
+            {
+                request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
+                return;
+            }
+
+            if (table.MatchedTime < DateTime.UtcNow - TimeSpan.FromSeconds(DuelRoomTableMatchingTimeoutInSeconds))
+            {
+                request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
             }
 
@@ -774,6 +868,13 @@ namespace YgoMaster
             {
                 if (firstPlayer == -1 && table.Entries[table.CoinFlipPlayerIndex].Player == request.Player)
                 {
+                    state = table.State;
+                    if (state != DuelRoomTableState.Matched && state != DuelRoomTableState.Dueling)
+                    {
+                        request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
+                        return;
+                    }
+                    table.State = DuelRoomTableState.Dueling;
                     table.FirstPlayer = firstPlayer = rand.Next(2);
                 }
                 if (firstPlayer >= 0)
@@ -795,6 +896,11 @@ namespace YgoMaster
 
         void Act_DuelStartSelecting(GameServerWebRequest request)
         {
+            if (!MultiplayerEnabled)
+            {
+                return;
+            }
+
             DuelRoom duelRoom = request.Player.DuelRoom;
             if (duelRoom == null)
             {
@@ -803,9 +909,29 @@ namespace YgoMaster
             }
 
             DuelRoomTable table = duelRoom.GetTable(request.Player);
-            if (table == null || table.HasError)
+            if (table == null)
             {
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM;
+                return;
+            }
+
+            DuelRoomTableEntry tableEntry = table.GetEntry(request.Player);
+            if (tableEntry == null || !tableEntry.IsMatchingOrInDuel)
+            {
+                request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
+                return;
+            }
+
+            DuelRoomTableState state = table.State;
+            if (state != DuelRoomTableState.Matched && state != DuelRoomTableState.Dueling)
+            {
+                request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
+                return;
+            }
+
+            if (table.MatchedTime < DateTime.UtcNow - TimeSpan.FromSeconds(DuelRoomTableMatchingTimeoutInSeconds))
+            {
+                request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
             }
 
@@ -813,27 +939,29 @@ namespace YgoMaster
             Player p2 = table.Player2;
             if (p1 == null || p2 == null)
             {
-                request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM_OPP;
+                request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
             }
 
             int select = Utils.GetValue<int>(request.ActParams, "select");
             if (select >= 0 && select <= 1)
             {
+                table.State = DuelRoomTableState.Dueling;
                 table.FirstPlayer = select;
             }
             else
             {
-                table.HasError = true;
+                table.Clear();
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM;
             }
         }
 
         void Act_DuelBeginPvp(GameServerWebRequest request)
         {
-            //request.StringResponse = @"{""code"":0,""res"":[[10,{""Duel"":{""IsCustomDuel"":true,""OpponentType"":2,""OpponentPartnerType"":0,""RandSeed"":2081258956,""FirstPlayer"":1,""noshuffle"":false,""tag"":false,""dlginfo"":false,""MyID"":0,""MyType"":0,""Type"":0,""MyPartnerType"":1,""PlayableTagPartner"":0,""regulation_id"":0,""duel_start_timestamp"":0,""surrender"":true,""Limit"":0,""GameMode"":0,""cpu"":100,""cpuflag"":null,""LeftTimeMax"":0,""TurnTimeMax"":0,""TotalTimeMax"":0,""Auto"":-1,""rec"":false,""recf"":false,""did"":0,""duel"":null,""is_pvp"":false,""chapter"":0,""bgms"":[],""Deck"":[{""name"":""new ydk"",""ct"":0,""et"":1645640915,""accessory"":{""box"":1080001,""sleeve"":1070001,""field"":1090001,""object"":1100001,""av_base"":0},""pick_cards"":{""ids"":{""1"":0,""2"":0,""3"":0},""r"":{""1"":1,""2"":1,""3"":1}},""Main"":{""CardIds"":[4007,4007,4007,4711,4711,9455,9455,9455,9063,9229,9229,11308,11308,14259,14587,14911,9190,9190,9190,6949,6949,12901,4844,4844,4844,5328,6432,7187,7381,14304,14304,14304,16405,16405,9066,9066,9066,13619,13619,15299,15299],""Rare"":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]},""Extra"":{""CardIds"":[11313,11313,11930,12694,14910,8129,9196,9272,11648,12705,14586,13543,14295,14295,14052],""Rare"":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]},""Side"":{""CardIds"":[],""Rare"":[]}},{""name"":""241244.ydk"",""ct"":0,""et"":0,""accessory"":{""box"":0,""sleeve"":0,""field"":0,""object"":0,""av_base"":0},""pick_cards"":{""ids"":{""1"":0,""2"":0,""3"":0},""r"":{""1"":1,""2"":1,""3"":1}},""Main"":{""CardIds"":[12950,12950,12950,8933,8933,9455,9455,9455,13670,13670,13670,14829,14829,11851,14876,14876,13680,13672,13673,13676,13674,13677,13677,13677,13675,13675,4343,13679,13679,13671,13671,5537,4895,5328,13631,13631,13447,13447,4817,4817],""Rare"":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]},""Extra"":{""CardIds"":[13763,13763,13763,13668,13669,13669,13669,14947,13508,13600,14132,14133,13089,15032,14937],""Rare"":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]},""Side"":{""CardIds"":[],""Rare"":[]}},{""name"":null,""ct"":0,""et"":0,""accessory"":{""box"":0,""sleeve"":0,""field"":0,""object"":0,""av_base"":0},""pick_cards"":{""ids"":{""1"":0,""2"":0,""3"":0},""r"":{""1"":1,""2"":1,""3"":1}},""Main"":{""CardIds"":[],""Rare"":[]},""Extra"":{""CardIds"":[],""Rare"":[]},""Side"":{""CardIds"":[],""Rare"":[]}},{""name"":null,""ct"":0,""et"":0,""accessory"":{""box"":0,""sleeve"":0,""field"":0,""object"":0,""av_base"":0},""pick_cards"":{""ids"":{""1"":0,""2"":0,""3"":0},""r"":{""1"":1,""2"":1,""3"":1}},""Main"":{""CardIds"":[],""Rare"":[]},""Extra"":{""CardIds"":[],""Rare"":[]},""Side"":{""CardIds"":[],""Rare"":[]}}],""reg"":[0,0,0,0],""level"":[0,0,0,0],""follow_num"":[0,0,0,0],""pcode"":[0,0,0,0],""rank"":[0,0,0,0],""DuelistLv"":[0,0,0,0],""name"":[""Duelist"",null,null,null],""avatar"":[0,0,0,0],""avatar_home"":[0,0,0,0],""icon"":[1100001,1100001,1100001,1100001],""icon_frame"":[1030001,1030001,1030001,1030001],""sleeve"":[1070001,1070001,1070001,1070001],""mat"":[1090001,1090001,1090001,1090001],""duel_object"":[1100001,1100001,1100001,1100001],""wallpaper"":[1130001,1130001,1130001,1130001],""profile_tag"":[[],[],[],[]],""story_deck_id"":[0,0,0,0]}},0,0]],""remove"":[""Duel"",""DuelResult"",""Result""]}";
-            //request.StringResponse = @"{""code"":0,""res"":[[110,{""Duel"":{""IsCustomDuel"":true,""OpponentType"":0,""OpponentPartnerType"":0,""RandSeed"":2035564777,""FirstPlayer"":1,""noshuffle"":false,""tag"":false,""dlginfo"":false,""MyID"":0,""MyType"":0,""Type"":0,""MyPartnerType"":1,""PlayableTagPartner"":0,""regulation_id"":0,""duel_start_timestamp"":0,""surrender"":true,""Limit"":0,""GameMode"":0,""cpu"":100,""cpuflag"":null,""LeftTimeMax"":0,""TurnTimeMax"":0,""TotalTimeMax"":0,""Auto"":-1,""rec"":false,""recf"":false,""did"":0,""duel"":null,""is_pvp"":false,""chapter"":0,""bgms"":[""BGM_DUEL_NORMAL_07"",""BGM_DUEL_KEYCARD_07"",""BGM_DUEL_CLIMAX_07""],""Deck"":[{""name"":""Absorbing Kid from the Sky - Usual Shining"",""ct"":1647218442,""et"":1647218442,""regulation_id"":0,""accessory"":{""box"":1080001,""sleeve"":1070001,""field"":1090001,""object"":1100001,""av_base"":0},""pick_cards"":{""ids"":{""1"":6696,""2"":4910,""3"":4887},""r"":{""1"":1,""2"":1,""3"":1}},""Main"":{""CardIds"":[6034,6034,6034,7052,7052,7048,6688,6688,6000,7047,7047,7047,7051,4924,4924,4924,5951,5951,6696,6705,6705,4910,4909,4905,5355,5905,5982,5982,5982,6999,6999,7053,7053,4989,6712,6712,5133,4887,5125,5125],""Rare"":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]},""Extra"":{""CardIds"":[],""Rare"":[]},""Side"":{""CardIds"":[],""Rare"":[]}},{""name"":""Adrian Gecko - Cloudian"",""ct"":1647218445,""et"":1647218445,""regulation_id"":0,""accessory"":{""box"":1080001,""sleeve"":1070001,""field"":1090001,""object"":1100001,""av_base"":0},""pick_cards"":{""ids"":{""1"":7278,""2"":5537,""3"":4938},""r"":{""1"":1,""2"":1,""3"":1}},""Main"":{""CardIds"":[7278,7278,7278,7280,7280,7280,7279,7279,7279,7052,4434,6000,7305,7305,7305,4938,4938,4938,5908,5908,5537,5982,5982,5982,5614,5614,5614,6448,6448,6448,4865,4865,5124,4887,5738,5738,5738,5799,5799,5990],""Rare"":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]},""Extra"":{""CardIds"":[],""Rare"":[]},""Side"":{""CardIds"":[],""Rare"":[]}},{""name"":null,""ct"":0,""et"":0,""regulation_id"":0,""accessory"":{""box"":0,""sleeve"":0,""field"":0,""object"":0,""av_base"":0},""pick_cards"":{""ids"":{""1"":0,""2"":0,""3"":0},""r"":{""1"":1,""2"":1,""3"":1}},""Main"":{""CardIds"":[],""Rare"":[]},""Extra"":{""CardIds"":[],""Rare"":[]},""Side"":{""CardIds"":[],""Rare"":[]}},{""name"":null,""ct"":0,""et"":0,""regulation_id"":0,""accessory"":{""box"":0,""sleeve"":0,""field"":0,""object"":0,""av_base"":0},""pick_cards"":{""ids"":{""1"":0,""2"":0,""3"":0},""r"":{""1"":1,""2"":1,""3"":1}},""Main"":{""CardIds"":[],""Rare"":[]},""Extra"":{""CardIds"":[],""Rare"":[]},""Side"":{""CardIds"":[],""Rare"":[]}}],""reg"":[0,0,0,0],""level"":[0,0,0,0],""follow_num"":[0,0,0,0],""pcode"":[0,0,0,0],""rank"":[0,0,0,0],""DuelistLv"":[0,0,0,0],""name"":[""Frr"",""CPU"",""CPU"",""CPU""],""avatar"":[0,0,0,0],""avatar_home"":[0,0,0,0],""icon"":[1010001,1010001,1010001,1010001],""icon_frame"":[1030001,1030001,1030001,1030001],""sleeve"":[1070001,1070001,1070001,1070001],""mat"":[1090001,1090001,1090001,1090001],""duel_object"":[1100001,1100001,1100001,1100001],""wallpaper"":[1130001,1130001,1130001,1130001],""profile_tag"":[[],[],[],[]],""story_deck_id"":[0,0,0,0]}},0,0]],""remove"":[""Duel"",""DuelResult"",""Result""]}";
-            //request.StringResponse = "{\"code\":0,\"res\":[[12,{\"Duel\":{\"IsCustomDuel\":true,\"OpponentType\":0,\"OpponentPartnerType\":0,\"RandSeed\":1809804944,\"FirstPlayer\":0,\"noshuffle\":false,\"tag\":false,\"dlginfo\":false,\"MyID\":0,\"MyType\":0,\"Type\":0,\"MyPartnerType\":1,\"PlayableTagPartner\":0,\"regulation_id\":0,\"duel_start_timestamp\":0,\"surrender\":true,\"Limit\":0,\"GameMode\":0,\"cpu\":100,\"cpuflag\":null,\"LeftTimeMax\":0,\"TurnTimeMax\":0,\"TotalTimeMax\":0,\"Auto\":-1,\"rec\":false,\"recf\":false,\"did\":0,\"duel\":null,\"is_pvp\":false,\"chapter\":0,\"bgms\":[\"BGM_DUEL_NORMAL_07\",\"BGM_DUEL_KEYCARD_07\",\"BGM_DUEL_CLIMAX_07\"],\"Deck\":[{\"name\":\"FirstDeck\",\"ct\":1685805324,\"et\":1685827560,\"regulation_id\":1008,\"accessory\":{\"box\":1080003,\"sleeve\":1070012,\"field\":1090014,\"object\":1100015,\"av_base\":1111012},\"pick_cards\":{\"ids\":{\"1\":4007,\"2\":4041,\"3\":3863},\"r\":{\"1\":1,\"2\":1,\"3\":1}},\"Main\":{\"CardIds\":[4017,4028,4039,4085,4096,4384,4394,4407,4430,4041,3863,4044,4088,4364,4396,4397,4432,4712,4717,4729,4732,4743,4787,5147,5814,6653,9372,11212,4007,4709,4711,4714,5946,5950,6962,9720,10025,12591,12942,14628],\"Rare\":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]},\"Extra\":{\"CardIds\":[],\"Rare\":[]},\"Side\":{\"CardIds\":[],\"Rare\":[]}},{\"name\":\"Abyss Soldier - The Lost City\",\"ct\":1647218440,\"et\":1647218440,\"regulation_id\":0,\"accessory\":{\"box\":1080001,\"sleeve\":1070001,\"field\":1090001,\"object\":1100001,\"av_base\":0},\"pick_cards\":{\"ids\":{\"1\":6883,\"2\":4817,\"3\":4966},\"r\":{\"1\":1,\"2\":1,\"3\":1}},\"Main\":{\"CardIds\":[6412,6412,5927,5927,6883,6194,6194,5035,5035,5260,5260,4108,5967,5967,4926,4926,5803,4530,4530,7107,7107,5387,5387,5387,5290,5290,4817,4817,4909,5978,6511,4966,5908,5908,5743,5400,5400,4988,4988,5134],\"Rare\":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]},\"Extra\":{\"CardIds\":[],\"Rare\":[]},\"Side\":{\"CardIds\":[],\"Rare\":[]}},{\"name\":null,\"ct\":0,\"et\":0,\"regulation_id\":0,\"accessory\":{\"box\":0,\"sleeve\":0,\"field\":0,\"object\":0,\"av_base\":0},\"pick_cards\":{\"ids\":{\"1\":0,\"2\":0,\"3\":0},\"r\":{\"1\":1,\"2\":1,\"3\":1}},\"Main\":{\"CardIds\":[],\"Rare\":[]},\"Extra\":{\"CardIds\":[],\"Rare\":[]},\"Side\":{\"CardIds\":[],\"Rare\":[]}},{\"name\":null,\"ct\":0,\"et\":0,\"regulation_id\":0,\"accessory\":{\"box\":0,\"sleeve\":0,\"field\":0,\"object\":0,\"av_base\":0},\"pick_cards\":{\"ids\":{\"1\":0,\"2\":0,\"3\":0},\"r\":{\"1\":1,\"2\":1,\"3\":1}},\"Main\":{\"CardIds\":[],\"Rare\":[]},\"Extra\":{\"CardIds\":[],\"Rare\":[]},\"Side\":{\"CardIds\":[],\"Rare\":[]}}],\"reg\":[0,0,0,0],\"level\":[0,0,0,0],\"follow_num\":[0,0,0,0],\"pcode\":[0,0,0,0],\"rank\":[0,0,0,0],\"DuelistLv\":[0,0,0,0],\"name\":[\"Frr\",\"CPU\",\"CPU\",\"CPU\"],\"avatar\":[0,0,0,0],\"avatar_home\":[1111012,0,0,0],\"icon\":[1010001,1010001,1010001,1010001],\"icon_frame\":[1030001,1030001,1030001,1030001],\"sleeve\":[1070012,1070001,1070001,1070001],\"mat\":[1090014,1090001,1090001,1090001],\"duel_object\":[1100015,1100001,1100001,1100001],\"wallpaper\":[1130001,1130001,1130001,1130001],\"profile_tag\":[[],[],[],[]],\"story_deck_id\":[0,0,0,0]}},0,0]],\"remove\":[\"Duel\",\"DuelResult\",\"Result\"]}";
+            if (!MultiplayerEnabled)
+            {
+                return;
+            }
 
             DuelRoom duelRoom = request.Player.DuelRoom;
             if (duelRoom == null)
@@ -843,9 +971,22 @@ namespace YgoMaster
             }
 
             DuelRoomTable table = duelRoom.GetTable(request.Player);
-            if (table == null || table.HasError)
+            if (table == null)
             {
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM;
+                return;
+            }
+
+            DuelRoomTableEntry tableEntry = table.GetEntry(request.Player);
+            if (tableEntry == null || !tableEntry.IsMatchingOrInDuel)
+            {
+                request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
+                return;
+            }
+
+            if (table.MatchedTime < DateTime.UtcNow - TimeSpan.FromSeconds(DuelRoomTableMatchingTimeoutInSeconds))
+            {
+                request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
             }
 
@@ -853,7 +994,7 @@ namespace YgoMaster
             Player p2 = table.Player2;
             if (p1 == null || p2 == null)
             {
-                request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM_OPP;
+                request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
             }
 
@@ -862,6 +1003,12 @@ namespace YgoMaster
             if (d1 == null || d2 == null)
             {
                 request.ResultCode = (int)ResultCodes.PvPCode.INVALID_DECK;
+                return;
+            }
+
+            if (table.State != DuelRoomTableState.Dueling)
+            {
+                request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
             }
 

@@ -130,6 +130,10 @@ namespace YgoMaster
         /// </summary>
         int DuelRoomCommentTimeoutInSeconds;
         /// <summary>
+        /// Cancel the matching if the duel hasn't fully started after this period of time
+        /// </summary>
+        int DuelRoomTableMatchingTimeoutInSeconds;
+        /// <summary>
         /// Allows mulitple connections
         /// </summary>
         bool MultiplayerEnabled;
@@ -260,6 +264,7 @@ namespace YgoMaster
             DuelRoomMaxSearchResults = Utils.GetValue<int>(values, "DuelRoomMaxSearchResults", 50);
             DuelRoomMaxSpectators = Utils.GetValue<int>(values, "DuelRoomMaxSpectators", 100);
             DuelRoomCommentTimeoutInSeconds = Utils.GetValue<int>(values, "DuelRoomCommentTimeoutInSeconds", 7);
+            DuelRoomTableMatchingTimeoutInSeconds = Utils.GetValue<int>(values, "DuelRoomTableMatchingTimeoutInSeconds", 30);
 
             CardRare = new Dictionary<int, int>();
             string cardListFile = Path.Combine(dataDirectory, "CardList.json");

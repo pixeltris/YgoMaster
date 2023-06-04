@@ -381,6 +381,9 @@ namespace YgoMaster
                                     case "Duel.matching":
                                         Act_DuelMatching(gameServerWebRequest);
                                         break;
+                                    case "Duel.matching_cancel":
+                                        Act_DuelMatchingCancel(gameServerWebRequest);
+                                        break;
                                     case "Duel.start_waiting":
                                         Act_DuelStartWating(gameServerWebRequest);
                                         break;

@@ -159,12 +159,36 @@ namespace YgoMaster
             }
             return null;
         }
+
+        public void ResetTableStateIfMatchingOrDueling(Player player)
+        {
+            DuelRoomTable table = GetTable(player);
+            if (table != null)
+            {
+                DuelRoomTableEntry tableEntry = table.GetEntry(player);
+                if (tableEntry != null)
+                {
+                    switch (table.State)
+                    {
+                        case DuelRoomTableState.Matched:
+                        case DuelRoomTableState.Dueling:
+                            table.State = DuelRoomTableState.Joinable;
+                            foreach (DuelRoomTableEntry entry in table.Entries)
+                            {
+                                entry.IsMatchingOrInDuel = false;
+                            }
+                            break;
+                    }
+                }
+            }
+        }
     }
 
     class DuelRoomTable
     {
         public DuelRoomTableEntry[] Entries;
         public DuelRoomTableState State = DuelRoomTableState.Joinable;
+        public DateTime MatchedTime;
 
         static Random rand = new Random();
 
@@ -227,13 +251,12 @@ namespace YgoMaster
                 return true;
             }
         }
-        public bool HasError;
-        public uint Seed { get; private set; }
+        public uint Seed;
         public int FirstPlayer;
         public int CoinFlipCounter;
-        public int CoinFlipPlayerIndex { get; private set; }
-        public string TableHash { get; private set; }
-        public string TableTicket { get; private set; }
+        public int CoinFlipPlayerIndex;
+        public string TableHash;
+        public string TableTicket;
 
         public DuelRoomTable()
         {
@@ -315,34 +338,19 @@ namespace YgoMaster
             return null;
         }
 
-        public void UpdateState()
+        public void Clear()
         {
-            DuelRoomTableState state = DuelRoomTableState.Joinable;
-            foreach (DuelRoomTableEntry entry in Entries)
+            lock (Entries)
             {
-                if (entry.IsMatchingOrInDuel)
+                foreach (DuelRoomTableEntry entry in Entries)
                 {
-                    if (state == DuelRoomTableState.Joinable)
-                    {
-                        HasError = false;
-                        Seed = (uint)rand.Next();
-                        FirstPlayer = -1;
-                        CoinFlipPlayerIndex = rand.Next(2);
-                        CoinFlipCounter = 5;
-                        using (SHA1 sha1 = SHA1.Create())
-                        {
-                            TableHash = BitConverter.ToString(sha1.ComputeHash(Guid.NewGuid().ToByteArray())).Replace("-", string.Empty);
-                        }
-                        using (MD5 md5 = MD5.Create())
-                        {
-                            TableTicket = BitConverter.ToString(md5.ComputeHash(Guid.NewGuid().ToByteArray())).Replace("-", string.Empty);
-                        }
-                    }
-                    state = DuelRoomTableState.Waiting;
-                    break;
+                    entry.Player = null;
+                    entry.IsMatchingOrInDuel = false;
+                    entry.Comment = 0;
+                    entry.CommentTime = default(DateTime);
                 }
+                State = DuelRoomTableState.Joinable;
             }
-            State = state;
         }
     }
 
@@ -364,11 +372,21 @@ namespace YgoMaster
         public int Comment;
     }
 
+    /// <summary>
+    /// NOTE:
+    /// This isn't quite right...
+    /// 2 = response to clicking "Begin Duel" where opponent hasn't yet clicked it
+    /// 3 = what the opponent sees in response to "room_table_polling" after doing the above
+    /// 4 = when you do "Begin Duel" after your opponent
+    /// 5 = matched? or after coin flip?
+    /// </summary>
     enum DuelRoomTableState
     {
         None,
         Joinable = 1,
-        Waiting = 3
+        Matching = 3,
+        Matched = 4,
+        Dueling = 5
     }
 
     class DuelRoomRecord

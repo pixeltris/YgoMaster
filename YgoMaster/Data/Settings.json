@@ -34,6 +34,7 @@
     "DuelRoomMaxSearchResults": 1000,
     "DuelRoomMaxSpectators": 1000,
     "DuelRoomCommentTimeoutInSeconds": 7,
+    "DuelRoomTableMatchingTimeoutInSeconds": 30,
     "DefaultGems": 2000,
     "DefaultItems": [
         1000001,// Rescue Rabbit (AVATAR)
