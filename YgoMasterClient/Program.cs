@@ -6,12 +6,16 @@ using System.IO;
 using System.Threading;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using IL2CPP;
-using YgoMasterClient;
 using System.Windows.Forms;
 using System.Globalization;
 using System.Security.Principal;
 using System.Diagnostics;
+using IL2CPP;
+using YgoMasterClient;
+using YgoMaster;
+using YgoMaster.Net;
+using YgoMaster.Net.Message;
+using System.ComponentModel.Design;
 
 namespace YgoMasterClient
 {
@@ -23,7 +27,7 @@ namespace YgoMasterClient
         public static string DataDir;// Path of misc data
         public static string ClientDataDir;// Path of the custom client content
         public static string ClientDataDumpDir;// Path to dump client content when dumping is enabled
-        public static YgoMaster.Net.NetClient NetClient;
+        public static NetClient NetClient;
 
         static void Main(string[] args)
         {
@@ -119,11 +123,11 @@ namespace YgoMasterClient
                 IsLive = arg == "live";
 
                 CurrentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                DataDir = YgoMaster.Utils.GetDataDirectory(false, CurrentDir);
+                DataDir = Utils.GetDataDirectory(false, CurrentDir);
                 ClientDataDir = Path.Combine(DataDir, "ClientData");
                 ClientDataDumpDir = Path.Combine(DataDir, "ClientDataDump");
-                YgoMaster.ItemID.Load(DataDir);
-                YgoMaster.YdkHelper.LoadIdMap(DataDir);
+                ItemID.Load(DataDir);
+                YdkHelper.LoadIdMap(DataDir);
 
                 if (!ClientSettings.Load())
                 {
@@ -142,7 +146,7 @@ namespace YgoMasterClient
                 if (!string.IsNullOrEmpty(ClientSettings.MultiplayerToken) &&
                     !string.IsNullOrEmpty(ClientSettings.SessionServerIP) && ClientSettings.SessionServerPort != 0)
                 {
-                    NetClient = new YgoMaster.Net.NetClient();
+                    NetClient = new NetClient();
                     NetClient.Disconnected += (x) =>
                     {
                         Console.WriteLine("Disconnected from " + ClientSettings.SessionServerIP + ":" + ClientSettings.SessionServerPort);
@@ -160,7 +164,7 @@ namespace YgoMasterClient
                                 try
                                 {
                                     NetClient.Connect(ClientSettings.SessionServerIP, ClientSettings.SessionServerPort);
-                                    NetClient.Send(new YgoMaster.Net.Messages.ConnectionRequestMessage()
+                                    NetClient.Send(new ConnectionRequestMessage()
                                     {
                                         Token = ClientSettings.MultiplayerToken
                                     });
@@ -248,6 +252,11 @@ namespace YgoMasterClient
                     System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
                 }
                 PInvoke.WL_EnableAllHooks(true);
+
+                if (NetClient != null)
+                {
+                    NetClient.HandleMessage += DuelDll.HandleNetMessage;
+                }
 
                 if (ClientSettings.DisableVSync)
                 {
@@ -845,8 +854,8 @@ namespace YgoMasterClient
                                                     if (cardRarePtr != IntPtr.Zero)
                                                     {
                                                         IL2Dictionary<string, object> cardRare = new IL2Dictionary<string, object>(cardRarePtr);
-                                                        Dictionary<int, YgoMaster.YdkHelper.GameCardInfo> cards = YgoMaster.YdkHelper.LoadCardDataFromGame(DataDir);
-                                                        foreach (KeyValuePair<int, YgoMaster.YdkHelper.GameCardInfo> card in cards)
+                                                        Dictionary<int, YdkHelper.GameCardInfo> cards = YdkHelper.LoadCardDataFromGame(DataDir);
+                                                        foreach (KeyValuePair<int, YdkHelper.GameCardInfo> card in cards)
                                                         {
                                                             if (!cardRare.ContainsKey(card.Key.ToString()) && AssetHelper.FileExists("Card/Images/Illust/tcg/" + card.Key) && card.Value.Frame != YgoMaster.CardFrame.Token)
                                                             {
@@ -946,8 +955,18 @@ unsafe static class Win32Hooks
 
 unsafe static class DuelDll
 {
-    delegate int Del_DLL_DuelSysInitCustom(int fDuelType, bool tag, int life0, int life1, int hand0, int hand1, bool shuf);
-    static Hook<Del_DLL_DuelSysInitCustom> hookDLL_DuelSysInitCustom;
+    public static Queue<DuelComMessage> DuelComMessageQueue = new Queue<DuelComMessage>();
+
+    public static ulong RunEffectSeq;
+    public static bool IsPvpDuel;
+    public static int MyID;
+    public static int RivalID
+    {
+        get { return MyID == 0 ? 1 : 0; }
+    }
+
+    delegate int Del_RunEffect(int id, int param1, int param2, int param3);
+    static Hook<Del_RunEffect> hookRunEffect;
 
     delegate void Del_DLL_DuelComMovePhase(int phase);
     static Hook<Del_DLL_DuelComMovePhase> hookDLL_DuelComMovePhase;
@@ -967,24 +986,6 @@ unsafe static class DuelDll
     delegate void Del_DLL_DuelListSetIndex(int index);
     static Hook<Del_DLL_DuelListSetIndex> hookDLL_DuelListSetIndex;
 
-    delegate bool Del_DLL_DuelCanIDoSummonMonster(int player);
-    static Hook<Del_DLL_DuelCanIDoSummonMonster> hookDLL_DuelCanIDoSummonMonster;
-
-    delegate bool Del_DLL_DuelIsHuman(int player);
-    static Hook<Del_DLL_DuelIsHuman> hookDLL_DuelIsHuman;
-
-    delegate bool Del_DLL_DuelIsMyself(int player);
-    static Hook<Del_DLL_DuelIsMyself> hookDLL_DuelIsMyself;
-
-    delegate bool Del_DLL_DuelIsRival(int player);
-    static Hook<Del_DLL_DuelIsRival> hookDLL_DuelIsRival;
-
-    delegate int Del_DLL_DuelMyself();
-    static Hook<Del_DLL_DuelMyself> hookDLL_DuelMyself;
-
-    delegate int Del_DLL_DuelRival();
-    static Hook<Del_DLL_DuelRival> hookDLL_DuelRival;
-
     delegate void Del_DLL_DuelSetPlayerType(int player, int type);
     static Hook<Del_DLL_DuelSetPlayerType> hookDLL_DuelSetPlayerType;
 
@@ -997,8 +998,8 @@ unsafe static class DuelDll
     public delegate void Del_DLL_DuelComDebugCommand();
     public static Del_DLL_DuelComDebugCommand DLL_DuelComDebugCommand;
 
-    public delegate int Del_DLL_DuelSysAct();
-    public static Del_DLL_DuelSysAct DLL_DuelSysAct;
+    delegate int Del_DLL_DuelSysAct();
+    static Hook<Del_DLL_DuelSysAct> hookDLL_DuelSysAct;
 
     public delegate int Del_DLL_DuelWhichTurnNow();
     public static Del_DLL_DuelWhichTurnNow DLL_DuelWhichTurnNow;
@@ -1013,108 +1014,262 @@ unsafe static class DuelDll
         {
             throw new Exception("Failed to load duel.dll");
         }
-        //hookDLL_DuelSysInitCustom = new Hook<Del_DLL_DuelSysInitCustom>(DLL_DuelSysInitCustom, PInvoke.GetProcAddress(lib, "DLL_DuelSysInitCustom"));
-        //hookDLL_DuelComMovePhase = new Hook<Del_DLL_DuelComMovePhase>(DLL_DuelComMovePhase, PInvoke.GetProcAddress(lib, "DLL_DuelComMovePhase"));
-        //hookDLL_DuelComDoCommand = new Hook<Del_DLL_DuelComDoCommand>(DLL_DuelComDoCommand, PInvoke.GetProcAddress(lib, "DLL_DuelComDoCommand"));
-        //hookDLL_DuelGetCardFace = new Hook<Del_DLL_DuelGetCardFace>(DLL_GetCardFace, PInvoke.GetProcAddress(lib, "DLL_DuelGetCardFace"));
-        //hookDLL_DuelDlgSetResult = new Hook<Del_DLL_DuelDlgSetResult>(DLL_DuelDlgSetResult, PInvoke.GetProcAddress(lib, "DLL_DuelDlgSetResult"));
-        //hookDLL_DuelListSetCardExData = new Hook<Del_DLL_DuelListSetCardExData>(DLL_DuelListSetCardExData, PInvoke.GetProcAddress(lib, "DLL_DuelListSetCardExData"));
-        //hookDLL_DuelListSetIndex = new Hook<Del_DLL_DuelListSetIndex>(DLL_DuelListSetIndex, PInvoke.GetProcAddress(lib, "DLL_DuelListSetIndex"));
-        //hookDLL_DuelCanIDoSummonMonster = new Hook<Del_DLL_DuelCanIDoSummonMonster>(DLL_DuelCanIDoSummonMonster, PInvoke.GetProcAddress(lib, "DLL_DuelCanIDoSummonMonster"));
-        //hookDLL_DuelIsHuman = new Hook<Del_DLL_DuelIsHuman>(DLL_DuelIsHuman, PInvoke.GetProcAddress(lib, "DLL_DuelIsHuman"));
-        //hookDLL_DuelIsMyself = new Hook<Del_DLL_DuelIsMyself>(DLL_DuelIsMyself, PInvoke.GetProcAddress(lib, "DLL_DuelIsMyself"));
-        //hookDLL_DuelIsRival = new Hook<Del_DLL_DuelIsRival>(DLL_DuelIsRival, PInvoke.GetProcAddress(lib, "DLL_DuelIsRival"));
-        //hookDLL_DuelMyself = new Hook<Del_DLL_DuelMyself>(DLL_DuelMyself, PInvoke.GetProcAddress(lib, "DLL_DuelMyself"));
-        //hookDLL_DuelRival = new Hook<Del_DLL_DuelRival>(DLL_DuelRival, PInvoke.GetProcAddress(lib, "DLL_DuelRival"));
-        //hookDLL_DuelSetPlayerType = new Hook<Del_DLL_DuelSetPlayerType>(DLL_DuelSetPlayerType, PInvoke.GetProcAddress(lib, "DLL_DuelSetPlayerType"));
+        hookDLL_DuelComMovePhase = new Hook<Del_DLL_DuelComMovePhase>(DLL_DuelComMovePhase, PInvoke.GetProcAddress(lib, "DLL_DuelComMovePhase"));
+        hookDLL_DuelComDoCommand = new Hook<Del_DLL_DuelComDoCommand>(DLL_DuelComDoCommand, PInvoke.GetProcAddress(lib, "DLL_DuelComDoCommand"));
+        hookDLL_DuelDlgSetResult = new Hook<Del_DLL_DuelDlgSetResult>(DLL_DuelDlgSetResult, PInvoke.GetProcAddress(lib, "DLL_DuelDlgSetResult"));
+        hookDLL_DuelListSetCardExData = new Hook<Del_DLL_DuelListSetCardExData>(DLL_DuelListSetCardExData, PInvoke.GetProcAddress(lib, "DLL_DuelListSetCardExData"));
+        hookDLL_DuelListSetIndex = new Hook<Del_DLL_DuelListSetIndex>(DLL_DuelListSetIndex, PInvoke.GetProcAddress(lib, "DLL_DuelListSetIndex"));
+        hookDLL_DuelSysAct = new Hook<Del_DLL_DuelSysAct>(DLL_DuelSysAct, PInvoke.GetProcAddress(lib, "DLL_DuelSysAct"));
+        hookDLL_DuelSetPlayerType = new Hook<Del_DLL_DuelSetPlayerType>(DLL_DuelSetPlayerType, PInvoke.GetProcAddress(lib, "DLL_DuelSetPlayerType"));
+        hookDLL_DuelGetCardFace = new Hook<Del_DLL_DuelGetCardFace>(DLL_GetCardFace, PInvoke.GetProcAddress(lib, "DLL_DuelGetCardFace"));
+
         DLL_DuelComCheatCard = GetFunc<Del_DLL_DuelComCheatCard>(PInvoke.GetProcAddress(lib, "DLL_DuelComCheatCard"));
         DLL_DuelComDoDebugCommand = GetFunc<Del_DLL_DuelComDoDebugCommand>(PInvoke.GetProcAddress(lib, "DLL_DuelComDoDebugCommand"));
         DLL_DuelComDebugCommand = GetFunc<Del_DLL_DuelComDebugCommand>(PInvoke.GetProcAddress(lib, "DLL_DuelComDebugCommand"));
-        DLL_DuelSysAct = GetFunc<Del_DLL_DuelSysAct>(PInvoke.GetProcAddress(lib, "DLL_DuelSysAct"));
         DLL_DuelWhichTurnNow = GetFunc<Del_DLL_DuelWhichTurnNow>(PInvoke.GetProcAddress(lib, "DLL_DuelWhichTurnNow"));
         DLL_DuelGetLP = GetFunc<Del_DLL_DuelGetLP>(PInvoke.GetProcAddress(lib, "DLL_DuelGetLP"));
+
+        IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+        IL2Class classInfo = assembly.GetClass("DuelClient", "YgomGame.Duel");
+        if (!string.IsNullOrEmpty(ClientSettings.MultiplayerToken))
+        {
+            hookRunEffect = new Hook<Del_RunEffect>(RunEffect, classInfo.GetMethod("RunEffect"));
+        }
     }
 
-    static int DLL_DuelSysInitCustom(int fDuelType, bool tag, int life0, int life1, int hand0, int hand1, bool shuf)
+    public static void HandleNetMessage(NetClient client, NetMessage message)
     {
-        //hand0 = 7;
-        //hand1 = 0;
-        //life0 = 9000000;
-        //life1 = 1;
-        return hookDLL_DuelSysInitCustom.Original(fDuelType, tag, life0, life1, hand0, hand1, shuf);
+        DuelComMessage duelComMessage = message as DuelComMessage;
+        if (duelComMessage != null)
+        {
+            lock (DuelComMessageQueue)
+            {
+                DuelComMessageQueue.Enqueue(duelComMessage);
+            }
+        }
+
+        switch (message.Type)
+        {
+            case NetMessageType.ConnectionResponse: OnConnectionResponse(client, (ConnectionResponseMessage)message); break;
+            case NetMessageType.Ping: OnPing(client, (PingMessage)message); break;
+            case NetMessageType.DuelError: OnDuelError(client, (DuelErrorMessage)message); break;
+        }
+    }
+
+    static void OnConnectionResponse(NetClient client, ConnectionResponseMessage message)
+    {
+        if (!message.Success)
+        {
+            Console.WriteLine("Session server failed to validate token '" + ClientSettings.MultiplayerToken + "'");
+        }
+    }
+
+    static void OnPing(NetClient client, PingMessage message)
+    {
+        if (message.DuelingState != DuelRoomTableState.Dueling)
+        {
+            // TODO: Check if actively dueling and stop the duel (network error)
+        }
+
+        client.Send(new PongMessage()
+        {
+            ServerToClientLatency = Utils.GetEpochTime() - Utils.GetEpochTime(message.RequestTime),
+            ResponseTime = DateTime.UtcNow
+        });
+    }
+
+    static void OnDuelError(NetClient client, DuelErrorMessage message)
+    {
+        Console.WriteLine("TODO: OnDuelError");
+    }
+
+    static void HandleDuelComMessage(DuelComMessage message)
+    {
+        switch (message.Type)
+        {
+            case NetMessageType.DuelComMovePhase: OnDuelComMovePhase((DuelComMovePhaseMessage)message); break;
+            case NetMessageType.DuelComDoCommand: OnDuelComDoCommand((DuelComDoCommandMessage)message); break;
+            case NetMessageType.DuelDlgSetResult: OnDuelDlgSetResult((DuelDlgSetResultMessage)message); break;
+            case NetMessageType.DuelListSetCardExData: OnDuelListSetCardExData((DuelListSetCardExDataMessage)message); break;
+            case NetMessageType.DuelListSetIndex: OnDuelListSetIndex((DuelListSetIndexMessage)message); break;
+        }
+    }
+
+    static void OnDuelComMovePhase(DuelComMovePhaseMessage message)
+    {
+        Console.WriteLine("OnDuelComMovePhase phase:" + message.Phase + " seq:" + RunEffectSeq);
+        hookDLL_DuelComMovePhase.Original(message.Phase);
+    }
+
+    static void OnDuelComDoCommand(DuelComDoCommandMessage message)
+    {
+        Console.WriteLine("OnDuelComDoCommand player:" + message.Player + " pos:" + message.Position + " indx:" + message.Index + " cmd:" + message.CommandId + " seq:" + RunEffectSeq);
+        hookDLL_DuelComDoCommand.Original(message.Player, message.Position, message.Index, message.CommandId);
+    }
+
+    static void OnDuelDlgSetResult(DuelDlgSetResultMessage message)
+    {
+        Console.WriteLine("OnDuelDlgSetResult result:" + message.Result + " seq:" + RunEffectSeq);
+        hookDLL_DuelDlgSetResult.Original(message.Result);
+    }
+
+    static void OnDuelListSetCardExData(DuelListSetCardExDataMessage message)
+    {
+        Console.WriteLine("OnDuelListSetCardExData index:" + message.Index + " data:" + message.Data + " seq:" + RunEffectSeq);
+        hookDLL_DuelListSetCardExData.Original(message.Index, message.Data);
+    }
+
+    static void OnDuelListSetIndex(DuelListSetIndexMessage message)
+    {
+        Console.WriteLine("OnDuelListSetIndex index:" + message.Index + " seq:" + RunEffectSeq);
+        hookDLL_DuelListSetIndex.Original(message.Index);
+    }
+
+    static int RunEffect(int id, int param1, int param2, int param3)
+    {
+        if (IsPvpDuel)
+        {
+            RunEffectSeq++;
+            Console.WriteLine("RunEffect " + (DuelViewType)id + " " + param1 + " " + param2 + " " + param3 + " lp0:" + DLL_DuelGetLP(0) + " lp1:" + DLL_DuelGetLP(1) + " whichTurn:" + DLL_DuelWhichTurnNow() + " myID:" + MyID);
+            switch ((DuelViewType)id)
+            {
+                case DuelViewType.WaitInput:
+                    switch ((DuelMenuActType)param1)
+                    {
+                        case DuelMenuActType.DrawPhase:
+                            if (DLL_DuelWhichTurnNow() != MyID)
+                            {
+                                //DuelDll.DLL_DuelComDoCommand(DuelDll.DLL_DuelWhichTurnNow(), 0, 0, (int)DuelCommandType.Draw);
+                                return 0;
+                            }
+                            break;
+                        case DuelMenuActType.MainPhase:
+                            if (DLL_DuelWhichTurnNow() != MyID)
+                            {
+                                return 0;
+                            }
+                            break;
+                        default:
+                            Console.WriteLine("WaitInput unhandled " + (DuelMenuActType)param1);
+                            break;
+                    }
+                    break;
+            }
+        }
+        return hookRunEffect.Original(id, param1, param2, param3);
+    }
+
+    public static int DLL_DuelSysAct()
+    {
+        if (IsPvpDuel)
+        {
+            if (DuelComMessageQueue.Count > 0)
+            {
+                lock (DuelComMessageQueue)
+                {
+                    if (DuelComMessageQueue.Count > 0)
+                    {
+                        DuelComMessage duelComMessage = DuelComMessageQueue.Peek();
+
+                        if (RunEffectSeq >= duelComMessage.RunEffectSeq)
+                        {
+                            if (RunEffectSeq != duelComMessage.RunEffectSeq)
+                            {
+                                // Our run effect sequence is beyond the other client
+                                Console.WriteLine("RunEffectSeq: " + RunEffectSeq + " msgRunEffectSeq: " + duelComMessage.RunEffectSeq);
+                            }
+
+                            HandleDuelComMessage(duelComMessage);
+
+                            DuelComMessageQueue.Dequeue();
+                        }
+                    }
+                }
+            }
+        }
+        return hookDLL_DuelSysAct.Original();
     }
 
     static void DLL_DuelComMovePhase(int phase)
     {
-        Console.WriteLine("DLL_DuelComMovePhase " + phase);
+        Console.WriteLine("DLL_DuelComMovePhase phase:" + phase + " seq:" + RunEffectSeq);
+        Program.NetClient.Send(new DuelComMovePhaseMessage()
+        {
+            RunEffectSeq = RunEffectSeq,
+            Phase = phase
+        });
+
         hookDLL_DuelComMovePhase.Original(phase);
     }
 
     public static void DLL_DuelComDoCommand(int player, int position, int index, int commandId)
     {
-        Console.WriteLine("DLL_DuelComDoCommand player:" + player + " pos:" + position + " indx:" + index + " cmd:" + commandId);
+        Console.WriteLine("DLL_DuelComDoCommand player:" + player + " pos:" + position + " indx:" + index + " cmd:" + commandId + " seq:" + RunEffectSeq);
+        Program.NetClient.Send(new YgoMaster.Net.Message.DuelComDoCommandMessage()
+        {
+            RunEffectSeq = RunEffectSeq,
+            Player = player,
+            Position = position,
+            Index = index,
+            CommandId = commandId
+        });
+        
         hookDLL_DuelComDoCommand.Original(player, position, index, commandId);
+    }
+
+    static void DLL_DuelDlgSetResult(uint result)
+    {
+        Console.WriteLine("DLL_DuelDlgSetResult result:" + result + " seq:" + RunEffectSeq);
+        Program.NetClient.Send(new YgoMaster.Net.Message.DuelDlgSetResultMessage()
+        {
+            RunEffectSeq = RunEffectSeq,
+            Result = result
+        });
+
+        hookDLL_DuelDlgSetResult.Original(result);
+    }
+
+    static void DLL_DuelListSetCardExData(int index, int data)
+    {
+        Console.WriteLine("DLL_DuelListSetCardExData index:" + index + " data:" + data + " seq:" + RunEffectSeq);
+        Program.NetClient.Send(new YgoMaster.Net.Message.DuelListSetCardExDataMessage()
+        {
+            RunEffectSeq = RunEffectSeq,
+            Index = index,
+            Data = data
+        });
+
+        hookDLL_DuelListSetCardExData.Original(index, data);
+    }
+
+    static void DLL_DuelListSetIndex(int index)
+    {
+        Console.WriteLine("DLL_DuelListSetIndex index:" + index + "seq:" + RunEffectSeq);
+        Program.NetClient.Send(new YgoMaster.Net.Message.DuelListSetIndexMessage()
+        {
+            RunEffectSeq = RunEffectSeq,
+            Index = index
+        });
+
+        hookDLL_DuelListSetIndex.Original(index);
+    }
+
+    static void DLL_DuelSetPlayerType(int player, int type)
+    {
+        if (IsPvpDuel)
+        {
+            hookDLL_DuelSetPlayerType.Original(player, (int)YgoMaster.DuelPlayerType.Human);
+        }
+        else
+        {
+            hookDLL_DuelSetPlayerType.Original(player, type);
+        }
     }
 
     static int DLL_GetCardFace(int player, int position, int index)
     {
         return 1;
         //return hookDLL_DuelGetCardFace.Original(player, position, index);
-    }
-
-    static void DLL_DuelDlgSetResult(uint result)
-    {
-        Console.WriteLine("DLL_DuelDlgSetResult " + result);
-        hookDLL_DuelDlgSetResult.Original(result);
-    }
-
-    static void DLL_DuelListSetCardExData(int index, int data)
-    {
-        Console.WriteLine("DLL_DuelListSetCardExData " + index + " " + data);
-        hookDLL_DuelListSetCardExData.Original(index, data);
-    }
-
-    static void DLL_DuelListSetIndex(int index)
-    {
-        Console.WriteLine("DLL_DuelListSetIndex " + index);
-        hookDLL_DuelListSetIndex.Original(index);
-    }
-
-    static bool DLL_DuelCanIDoSummonMonster(int player)
-    {
-        //Console.WriteLine("DLL_DuelCanIDoSummonMonster " + player + " " + hookDLL_DuelCanIDoSummonMonster.Original(player));
-        return hookDLL_DuelCanIDoSummonMonster.Original(player);
-    }
-
-    static bool DLL_DuelIsMyself(int player)
-    {
-        return player == 0;
-    }
-
-    static bool DLL_DuelIsHuman(int player)
-    {
-        return player == 0;
-    }
-
-    static bool DLL_DuelIsRival(int player)
-    {
-        return player == 1;
-    }
-
-    static int DLL_DuelMyself()
-    {
-        return 0;
-    }
-
-    static int DLL_DuelRival()
-    {
-        return 1;
-    }
-
-    static void DLL_DuelSetPlayerType(int player, int type)
-    {
-        hookDLL_DuelSetPlayerType.Original(player, (int)YgoMaster.DuelPlayerType.Human);
-        //hookDLL_DuelSetPlayerType.Original(player, type);
     }
 
     static T GetFunc<T>(IntPtr ptr)

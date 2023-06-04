@@ -6,10 +6,6 @@ using System.Net.Sockets;
 using System.Net;
 using System.IO;
 using System.Reflection;
-#if YGO_MASTER_CLIENT
-using YgoMasterClient;
-using YgoMaster.Net.Messages;
-#endif
 
 namespace YgoMaster.Net
 {
@@ -81,6 +77,9 @@ namespace YgoMaster.Net
         private byte[] tempBuffer;
         private NetPacketBuffer buffer;
 
+        public delegate void MessageHandlerEvent(NetClient client, NetMessage message);
+        public event MessageHandlerEvent HandleMessage;
+
         public delegate void ConnectedEvent(NetClient client);
         public event ConnectedEvent Connected;
 
@@ -88,6 +87,20 @@ namespace YgoMaster.Net
         public event DisconnectedEvent Disconnected;
 
         public object Data { get; set; }
+
+        static Dictionary<NetMessageType, Type> messageTypes = new Dictionary<NetMessageType, Type>();
+
+        static NetClient()
+        {
+            foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
+            {
+                if (type.IsSubclassOf(typeof(NetMessage)) && !type.IsAbstract)
+                {
+                    NetMessage message = (NetMessage)Activator.CreateInstance(type);
+                    messageTypes[message.Type] = type;
+                }
+            }
+        }
 
         public NetClient()
         {
@@ -136,7 +149,7 @@ namespace YgoMaster.Net
             using (MemoryStream stream = new MemoryStream())
             using (BinaryWriter writer = new BinaryWriter(stream))
             {
-                writer.Write(NetMessage.GetOpcode(message.GetType()));
+                writer.Write((ushort)message.Type);
                 message.Write(writer);
                 writer.Flush();
                 Send(stream.ToArray());
@@ -205,36 +218,20 @@ namespace YgoMaster.Net
                             using (MemoryStream stream = new MemoryStream(packet))
                             using (BinaryReader reader = new BinaryReader(stream))
                             {
-                                uint opcode = reader.ReadUInt32();
-                                Type type = NetMessage.GetType(opcode);
-                                if (type == null)
+                                NetMessageType messageType = (NetMessageType)reader.ReadUInt16();
+                                Type type;
+                                if (messageTypes.TryGetValue(messageType, out type))
                                 {
-                                    Utils.LogWarning("Unknown opcode " + opcode);
-                                    return;
+                                    if (HandleMessage != null)
+                                    {
+                                        NetMessage message = (NetMessage)Activator.CreateInstance(type);
+                                        message.Read(reader);
+                                        HandleMessage(this, message);
+                                    }
                                 }
-
-                                LastMessageTime = DateTime.UtcNow;
-
-#if YGO_MASTER_CLIENT
-                                Dictionary<Type, MethodInfo> handlers = NetMessageHandlers<NetClient>.Handlers;
-#else
-                                Dictionary<Type, MethodInfo> handlers = IsServer ?
-                                    NetMessageHandlers<NetServer>.Handlers : NetMessageHandlers<NetClient>.Handlers;
-#endif
-
-                                MethodInfo handler;
-                                if (handlers.TryGetValue(type, out handler))
+                                else
                                 {
-                                    NetMessage message = (NetMessage)Activator.CreateInstance(type);
-                                    message.Read(reader);
-                                    if (IsServer)
-                                    {
-                                        handler.Invoke(Owner, new object[] { this, message });
-                                    }
-                                    else
-                                    {
-                                        handler.Invoke(Owner, new object[] { message });
-                                    }
+                                    Utils.LogWarning("Unknown net message type " + messageType);
                                 }
                             }
                         }
@@ -277,29 +274,5 @@ namespace YgoMaster.Net
                 OnDisconnected();
             }
         }
-
-#if YGO_MASTER_CLIENT
-        void OnConnectionResponse(ConnectionResponseMessage message)
-        {
-            if (!message.Success)
-            {
-                Console.WriteLine("Session server failed to validate token '" + ClientSettings.MultiplayerToken + "'");
-            }
-        }
-
-        void OnPing(PingMessage message)
-        {
-            if (message.DuelingState != DuelRoomTableState.Dueling)
-            {
-                // TODO: Check if actively dueling
-            }
-
-            Send(new PongMessage()
-            {
-                ServerToClientLatency = Utils.GetEpochTime() - Utils.GetEpochTime(message.RequestTime),
-                ResponseTime = DateTime.UtcNow
-            });
-        }
-#endif
     }
 }

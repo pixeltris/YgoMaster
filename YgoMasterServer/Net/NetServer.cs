@@ -5,8 +5,7 @@ using System.Text;
 using System.Net.Sockets;
 using System.Net;
 using System.IO;
-using System.Reflection;
-using YgoMaster.Net.Messages;
+using YgoMaster.Net.Message;
 
 namespace YgoMaster.Net
 {
@@ -18,7 +17,8 @@ namespace YgoMaster.Net
         public string IP { get; private set; }
         public int Port { get; private set; }
 
-        private List<NetClient> connections;
+        private List<NetClient> connections = new List<NetClient>();
+        private Dictionary<string, NetClient> connectionByToken = new Dictionary<string, NetClient>();
 
         public bool Listening { get; private set; }
 
@@ -31,7 +31,6 @@ namespace YgoMaster.Net
         {
             IP = ip;
             Port = port;
-            connections = new List<NetClient>();
         }
 
         void ConnectCallback(IAsyncResult ar)
@@ -39,6 +38,7 @@ namespace YgoMaster.Net
             try
             {
                 NetClient client = new NetClient(socket.EndAccept(ar), this);
+                client.HandleMessage += OnMessage;
                 client.Disconnected += new NetClient.DisconnectedEvent(client_Disconnected);
                 lock (connections)
                 {
@@ -82,6 +82,7 @@ namespace YgoMaster.Net
                 foreach (NetClient client in new List<NetClient>(connections))
                     client.Close();
                 connections.Clear();
+                connectionByToken.Clear();
             }
         }
 
@@ -90,6 +91,11 @@ namespace YgoMaster.Net
             lock (connections)
             {
                 connections.Remove(client);
+                string token = client.Token;
+                if (!string.IsNullOrEmpty(token))
+                {
+                    connectionByToken.Remove(token);
+                }
                 client.Close();
             }
         }
@@ -107,7 +113,7 @@ namespace YgoMaster.Net
             using (MemoryStream stream = new MemoryStream())
             using (BinaryWriter writer = new BinaryWriter(stream))
             {
-                writer.Write(NetMessage.GetOpcode(message.GetType()));
+                writer.Write((ushort)message.Type);
                 message.Write(writer);
                 writer.Flush();
                 Send(stream.ToArray());
@@ -137,7 +143,14 @@ namespace YgoMaster.Net
         void client_Disconnected(NetClient client)
         {
             lock (connections)
+            {
                 connections.Remove(client);
+                string token = client.Token;
+                if (!string.IsNullOrEmpty(token))
+                {
+                    connectionByToken.Remove(token);
+                }
+            }
         }
 
         public bool HasClientWithToken(string token)
@@ -150,6 +163,23 @@ namespace YgoMaster.Net
             lock (connections)
             {
                 return connections.OrderByDescending(x => x.LastMessageTime).FirstOrDefault(x => x.Token == token);
+            }
+        }
+
+        void OnMessage(NetClient client, NetMessage message)
+        {
+            switch (message.Type)
+            {
+                case NetMessageType.ConnectionRequest: OnConnectionRequest(client, (ConnectionRequestMessage)message); break;
+                case NetMessageType.Pong: OnPong(client, (PongMessage)message); break;
+
+                case NetMessageType.DuelComMovePhase:
+                case NetMessageType.DuelComDoCommand:
+                case NetMessageType.DuelDlgSetResult:
+                case NetMessageType.DuelListSetCardExData:
+                case NetMessageType.DuelListSetIndex:
+                    OnDuelCom(client, (DuelComMessage)message);
+                    break;
             }
         }
 
@@ -167,12 +197,38 @@ namespace YgoMaster.Net
             }
             if (playerId != 0)
             {
-                client.Token = message.Token;
+                lock (connections)
+                {
+                    client.Token = message.Token;
+                    connectionByToken[client.Token] = client;
+                }
             }
             client.Send(new ConnectionResponseMessage()
             {
                 Success = playerId != 0
             });
+        }
+
+        void OnPong(NetClient client, PongMessage message)
+        {
+        }
+
+        void OnDuelCom(NetClient client, DuelComMessage message)
+        {
+            string opponentToken = GameServer.GetDuelingOpponentToken(client.Token);
+            NetClient opponentClient;
+            lock (connections)
+            {
+                connectionByToken.TryGetValue(opponentToken, out opponentClient);
+            }
+            if (opponentClient != null)
+            {
+                opponentClient.Send(message);
+            }
+            else
+            {
+                client.Send(new DuelErrorMessage());
+            }
         }
     }
 }

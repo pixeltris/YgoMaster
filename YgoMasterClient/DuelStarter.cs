@@ -302,6 +302,17 @@ namespace YgomSystem.Network
                         PInvoke.SetTimeMultiplier(ClientSettings.TimeMultiplier);
                         break;
                 }
+                if (!string.IsNullOrEmpty(ClientSettings.MultiplayerToken))
+                {
+                    YgoMaster.GameMode gameMode = (YgoMaster.GameMode)YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Duel.GameMode");
+                    lock (DuelDll.DuelComMessageQueue)
+                    {
+                        DuelDll.DuelComMessageQueue.Clear();
+                    }
+                    DuelDll.RunEffectSeq = 0;
+                    DuelDll.IsPvpDuel = gameMode == GameMode.Room;
+                    DuelDll.MyID = YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Duel.MyID");
+                }
                 if (YgomGame.Room.RoomCreateViewController.IsHacked)
                 {
                     switch (cmd)

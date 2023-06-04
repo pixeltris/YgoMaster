@@ -4,10 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace YgoMaster.Net.Messages
+namespace YgoMaster.Net.Message
 {
     class ConnectionRequestMessage : NetMessage
     {
+        public override NetMessageType Type
+        {
+            get { return NetMessageType.ConnectionRequest; }
+        }
+
         public string Token;
 
         public override void Read(BinaryReader reader)

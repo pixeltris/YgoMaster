@@ -74,50 +74,16 @@ namespace YgomGame.Duel
     {
         static IL2Method methodSetDuelSpeed;
 
-        delegate int Del_RunEffect(int id, int param1, int param2, int param3);
-        static Hook<Del_RunEffect> hookRunEffect;
-
         static DuelClient()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("DuelClient", "YgomGame.Duel");
             methodSetDuelSpeed = classInfo.GetMethod("SetDuelSpeed");
-            //hookRunEffect = new Hook<Del_RunEffect>(RunEffect, classInfo.GetMethod("RunEffect"));
         }
 
         public static void SetDuelSpeed(DuelSpeed duelSpeed)
         {
             methodSetDuelSpeed.Invoke(new IntPtr[] { new IntPtr(&duelSpeed) });
-        }
-
-        static int RunEffect(int id, int param1, int param2, int param3)
-        {
-            Console.WriteLine("RunEffect " + (DuelViewType)id + " " + param1 + " " + param2 + " " + param3 + " lp0:" + DuelDll.DLL_DuelGetLP(0) + " lp1:" + DuelDll.DLL_DuelGetLP(1));
-            switch ((DuelViewType)id)
-            {
-                case DuelViewType.WaitInput:
-                    switch ((DuelMenuActType)param1)
-                    {
-                        case DuelMenuActType.DrawPhase:
-                            if (DuelDll.DLL_DuelWhichTurnNow() != 0)
-                            {
-                                DuelDll.DLL_DuelComDoCommand(DuelDll.DLL_DuelWhichTurnNow(), 0, 0, (int)DuelCommandType.Draw);
-                                return 0;
-                            }
-                            break;
-                        case DuelMenuActType.MainPhase:
-                            if (DuelDll.DLL_DuelWhichTurnNow() != 0)
-                            {
-                                return 0;
-                            }
-                            break;
-                        default:
-                            Console.WriteLine("WaitInput unhandled " + (DuelMenuActType)param1);
-                            break;
-                    }
-                    break;
-            }
-            return hookRunEffect.Original(id, param1, param2, param3);
         }
 
         public enum DuelSpeed

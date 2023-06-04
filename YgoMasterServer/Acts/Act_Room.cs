@@ -1131,5 +1131,45 @@ namespace YgoMaster
 
             request.Remove("Duel", "DuelResult", "Result");
         }
+
+        public string GetDuelingOpponentToken(string playerToken)
+        {
+            Player player;
+            lock (playersLock)
+            {
+                playersByToken.TryGetValue(playerToken, out player);
+            }
+
+            if (player == null)
+            {
+                return null;
+            }
+
+            DuelRoom duelRoom = player.DuelRoom;
+            if (duelRoom == null)
+            {
+                return null;
+            }
+
+            DuelRoomTable table = duelRoom.GetTable(player);
+            if (table == null || table.State != DuelRoomTableState.Dueling)
+            {
+                return null;
+            }
+
+            Player p1 = table.Player1;
+            Player p2 = table.Player2;
+            if (p1 == null || p2 == null)
+            {
+                return null;
+            }
+
+            if (p1 != player && p2 != player)
+            {
+                return null;
+            }
+
+            return p1 == player ? p2.Token : p1.Token;
+        }
     }
 }

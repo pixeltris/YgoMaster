@@ -4,10 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace YgoMaster.Net.Messages
+namespace YgoMaster.Net.Message
 {
     class PingMessage : NetMessage
     {
+        public override NetMessageType Type
+        {
+            get { return NetMessageType.Ping; }
+        }
+
         public DateTime RequestTime;
         public DuelRoomTableState DuelingState;
 

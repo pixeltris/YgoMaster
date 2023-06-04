@@ -4,10 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace YgoMaster.Net.Messages
+namespace YgoMaster.Net.Message
 {
     class PongMessage : NetMessage
     {
+        public override NetMessageType Type
+        {
+            get { return NetMessageType.Pong; }
+        }
+
         public long ServerToClientLatency;
         public DateTime ResponseTime;
 

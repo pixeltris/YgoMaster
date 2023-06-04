@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+
+namespace YgoMaster.Net.Message
+{
+    class DuelListSetIndexMessage : DuelComMessage
+    {
+        public override NetMessageType Type
+        {
+            get { return NetMessageType.DuelListSetIndex; }
+        }
+
+        public int Index;
+
+        public override void Read(BinaryReader reader)
+        {
+            base.Read(reader);
+            Index = reader.ReadInt32();
+        }
+
+        public override void Write(BinaryWriter writer)
+        {
+            base.Write(writer);
+            writer.Write(Index);
+        }
+    }
+}
