@@ -225,4 +225,22 @@ namespace YgoMaster
         PerformedPendulumSummon,
         LinkSummon
     }
+
+    /// <summary>
+    /// NOTE: Our values aren't quite right...
+    /// 2 = response to clicking "Begin Duel" where opponent hasn't yet clicked it
+    /// 3 = what the opponent sees in response to "room_table_polling" after doing the above
+    /// 4 = when you do "Begin Duel" after your opponent
+    /// 5 = matched? or after coin flip?
+    /// 
+    /// Not sure what the real enum name is
+    /// </summary>
+    enum DuelRoomTableState
+    {
+        None,
+        Joinable = 1,
+        Matching = 3,
+        Matched = 4,
+        Dueling = 5
+    }
 }

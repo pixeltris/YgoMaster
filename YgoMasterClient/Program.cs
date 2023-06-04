@@ -15,7 +15,7 @@ using System.Diagnostics;
 
 namespace YgoMasterClient
 {
-    public static class Program
+    static class Program
     {
         public static Random Rand = new Random();
         public static bool IsLive;
@@ -23,6 +23,7 @@ namespace YgoMasterClient
         public static string DataDir;// Path of misc data
         public static string ClientDataDir;// Path of the custom client content
         public static string ClientDataDumpDir;// Path to dump client content when dumping is enabled
+        public static YgoMaster.Net.NetClient NetClient;
 
         static void Main(string[] args)
         {
@@ -136,6 +137,47 @@ namespace YgoMasterClient
                 if (ClientSettings.ShowConsole)
                 {
                     ConsoleHelper.ShowConsole();
+                }
+
+                if (!string.IsNullOrEmpty(ClientSettings.MultiplayerToken) &&
+                    !string.IsNullOrEmpty(ClientSettings.SessionServerIP) && ClientSettings.SessionServerPort != 0)
+                {
+                    NetClient = new YgoMaster.Net.NetClient();
+                    NetClient.Disconnected += (x) =>
+                    {
+                        Console.WriteLine("Disconnected from " + ClientSettings.SessionServerIP + ":" + ClientSettings.SessionServerPort);
+                    };
+
+                    DateTime lastConnectAttempt = DateTime.MinValue;
+
+                    new Thread(delegate ()
+                    {
+                        while (true)
+                        {
+                            if (!NetClient.IsConnected && lastConnectAttempt < DateTime.UtcNow - TimeSpan.FromSeconds(ClientSettings.SessionServerConnectDelayInSeconds))
+                            {
+                                lastConnectAttempt = DateTime.UtcNow;
+                                try
+                                {
+                                    NetClient.Connect(ClientSettings.SessionServerIP, ClientSettings.SessionServerPort);
+                                    NetClient.Send(new YgoMaster.Net.Messages.ConnectionRequestMessage()
+                                    {
+                                        Token = ClientSettings.MultiplayerToken
+                                    });
+                                    Console.WriteLine("Connected to " + ClientSettings.SessionServerIP + ":" + ClientSettings.SessionServerPort);
+                                }
+                                catch
+                                {
+                                    Console.WriteLine("Failed to connect to " + ClientSettings.SessionServerIP + ":" + ClientSettings.SessionServerPort);
+                                }
+                            }
+                            if (NetClient.LastMessageTime < DateTime.UtcNow - TimeSpan.FromSeconds(ClientSettings.SessionServerPingTimeoutInSeconds))
+                            {
+                                NetClient.Close();
+                            }
+                            Thread.Sleep(1000);
+                        }
+                    }).Start();
                 }
 
                 PInvoke.WL_InitHooks();

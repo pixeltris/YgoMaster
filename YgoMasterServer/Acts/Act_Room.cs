@@ -293,7 +293,6 @@ namespace YgoMaster
             }
             else
             {
-                duelRoom.ResetTableStateIfMatchingOrDueling(request.Player);
                 WriteRoomInfo(request, duelRoom);
             }
             request.Remove("Room.room_info");
@@ -453,9 +452,20 @@ namespace YgoMaster
             bool isBattleReady = Utils.GetValue<bool>(request.ActParams, "isBattleReady");
             //int opponentCode = Utils.GetValue<int>(request.ActParams, "opp_code");
 
+            if (isBattleReady)
+            {
+                if (!sessionServer.HasClientWithToken(request.Player.Token))
+                {
+                    Utils.LogWarning("[Act_RoomBattleReady] Player '" + request.Player.Name + "' can't enter ready state as they aren't connected to the session server");
+                    request.ResultCode = (int)ResultCodes.RoomCode.ERR_INVALID_DATA;
+                    return;
+                }
+            }
+
             DuelRoom duelRoom = request.Player.DuelRoom;
             if (duelRoom == null)
             {
+                Utils.LogWarning("[Act_RoomBattleReady] duelRoom");
                 request.ResultCode = (int)ResultCodes.RoomCode.ERR_INVALID_ROOM;
             }
             else
@@ -463,6 +473,7 @@ namespace YgoMaster
                 DuelRoomTable table = duelRoom.GetTable(request.Player);
                 if (table == null || !table.IsFull)
                 {
+                    Utils.LogWarning("[Act_RoomBattleReady] table == null || !table.IsFull");
                     request.ResultCode = (int)ResultCodes.RoomCode.ERR_RIVAL_LEAVE_TABLE;
                 }
                 else
@@ -616,10 +627,16 @@ namespace YgoMaster
                 Player player1 = table.Player1;
                 Player player2 = table.Player2;
 
+                DuelRoomTableState state = table.State;
+                if ((request.Player == player1 || request.Player == player2) && state == DuelRoomTableState.Dueling)
+                {
+                    state = DuelRoomTableState.Matched;
+                }
+
                 Dictionary<string, object> tableInfo = new Dictionary<string, object>();
                 tableInfo["player1"] = player1 != null ? player1.Code : 0;
                 tableInfo["player2"] = player2 != null ? player2.Code : 0;
-                tableInfo["stats"] = (int)table.State;
+                tableInfo["stats"] = (int)state;
                 tableInfos.Add(tableInfo);
             }
             roomInfo["table_info"] = tableInfos;
@@ -662,6 +679,7 @@ namespace YgoMaster
             DuelRoom duelRoom = request.Player.DuelRoom;
             if (duelRoom == null)
             {
+                Utils.LogWarning("[Act_DuelMatching] duelRoom == null");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM;
                 return;
             }
@@ -669,6 +687,7 @@ namespace YgoMaster
             DuelRoomTable table = duelRoom.GetTable(request.Player);
             if (table == null)
             {
+                Utils.LogWarning("[Act_DuelMatching] table == null");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM;
                 return;
             }
@@ -682,6 +701,7 @@ namespace YgoMaster
                 Player p2 = table.Player2;
                 if (p1 == null || p2 == null)
                 {
+                    Utils.LogWarning("[Act_DuelMatching] p1 == null || p2 == null");
                     request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                     return;
                 }
@@ -689,6 +709,7 @@ namespace YgoMaster
                 DeckInfo d2 = p2.Duel.GetDeck(GameMode.Room);
                 if (d1 == null || d2 == null)
                 {
+                    Utils.LogWarning("[Act_DuelMatching] d1 == null || d2 == null");
                     request.ResultCode = (int)ResultCodes.PvPCode.INVALID_DECK;
                     return;
                 }
@@ -696,6 +717,7 @@ namespace YgoMaster
                 DuelRoomTableEntry tableEntry = table.GetEntry(request.Player);
                 if (tableEntry == null || !tableEntry.IsMatchingOrInDuel)
                 {
+                    Utils.LogWarning("[Act_DuelMatching] tableEntry == null || !tableEntry.IsMatchingOrInDuel");
                     request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                     return;
                 }
@@ -703,6 +725,7 @@ namespace YgoMaster
                 DuelRoomTableState state = table.State;
                 if (state != DuelRoomTableState.Matching && state != DuelRoomTableState.Matched)
                 {
+                    Utils.LogWarning("[Act_DuelMatching] state != DuelRoomTableState.Matching && state != DuelRoomTableState.Matched");
                     request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                     return;
                 }
@@ -796,6 +819,7 @@ namespace YgoMaster
             DuelRoom duelRoom = request.Player.DuelRoom;
             if (duelRoom == null)
             {
+                Utils.LogWarning("[Act_DuelMatchingCancel] duelRoom == null");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM;
                 return;
             }
@@ -814,6 +838,7 @@ namespace YgoMaster
             DuelRoom duelRoom = request.Player.DuelRoom;
             if (duelRoom == null)
             {
+                Utils.LogWarning("[Act_DuelStartWating] duelRoom == null");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM;
                 return;
             }
@@ -821,6 +846,7 @@ namespace YgoMaster
             DuelRoomTable table = duelRoom.GetTable(request.Player);
             if (table == null)
             {
+                Utils.LogWarning("[Act_DuelStartWating] table == null");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM;
                 return;
             }
@@ -828,6 +854,7 @@ namespace YgoMaster
             DuelRoomTableEntry tableEntry = table.GetEntry(request.Player);
             if (tableEntry == null || !tableEntry.IsMatchingOrInDuel)
             {
+                Utils.LogWarning("[Act_DuelStartWating] tableEntry == null || !tableEntry.IsMatchingOrInDuel");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
             }
@@ -836,6 +863,7 @@ namespace YgoMaster
             Player p2 = table.Player2;
             if (p1 == null || p2 == null)
             {
+                Utils.LogWarning("[Act_DuelStartWating] p1 == null || p2 == null");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
             }
@@ -843,12 +871,14 @@ namespace YgoMaster
             DuelRoomTableState state = table.State;
             if (state != DuelRoomTableState.Matched && state != DuelRoomTableState.Dueling)
             {
+                Utils.LogWarning("[Act_DuelStartWating] state != DuelRoomTableState.Matched && state != DuelRoomTableState.Dueling");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
             }
 
             if (table.MatchedTime < DateTime.UtcNow - TimeSpan.FromSeconds(DuelRoomTableMatchingTimeoutInSeconds))
             {
+                Utils.LogWarning("[Act_DuelStartWating] table.MatchedTime < DateTime.UtcNow - TimeSpan.FromSeconds(DuelRoomTableMatchingTimeoutInSeconds)");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
             }
@@ -871,6 +901,7 @@ namespace YgoMaster
                     state = table.State;
                     if (state != DuelRoomTableState.Matched && state != DuelRoomTableState.Dueling)
                     {
+                        Utils.LogWarning("[Act_DuelStartWating] state != DuelRoomTableState.Matched && state != DuelRoomTableState.Dueling");
                         request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                         return;
                     }
@@ -904,6 +935,7 @@ namespace YgoMaster
             DuelRoom duelRoom = request.Player.DuelRoom;
             if (duelRoom == null)
             {
+                Utils.LogWarning("[Act_DuelStartSelecting] duelRoom == null");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM;
                 return;
             }
@@ -911,6 +943,7 @@ namespace YgoMaster
             DuelRoomTable table = duelRoom.GetTable(request.Player);
             if (table == null)
             {
+                Utils.LogWarning("[Act_DuelStartSelecting] table == null");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM;
                 return;
             }
@@ -918,6 +951,7 @@ namespace YgoMaster
             DuelRoomTableEntry tableEntry = table.GetEntry(request.Player);
             if (tableEntry == null || !tableEntry.IsMatchingOrInDuel)
             {
+                Utils.LogWarning("[Act_DuelStartSelecting] tableEntry == null || !tableEntry.IsMatchingOrInDuel");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
             }
@@ -925,12 +959,14 @@ namespace YgoMaster
             DuelRoomTableState state = table.State;
             if (state != DuelRoomTableState.Matched && state != DuelRoomTableState.Dueling)
             {
+                Utils.LogWarning("[Act_DuelStartSelecting] state != DuelRoomTableState.Matched && state != DuelRoomTableState.Dueling");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
             }
 
             if (table.MatchedTime < DateTime.UtcNow - TimeSpan.FromSeconds(DuelRoomTableMatchingTimeoutInSeconds))
             {
+                Utils.LogWarning("[Act_DuelStartSelecting] table.MatchedTime < DateTime.UtcNow - TimeSpan.FromSeconds(DuelRoomTableMatchingTimeoutInSeconds)");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
             }
@@ -939,6 +975,7 @@ namespace YgoMaster
             Player p2 = table.Player2;
             if (p1 == null || p2 == null)
             {
+                Utils.LogWarning("[Act_DuelStartSelecting] p1 == null || p2 == null");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
             }
@@ -946,13 +983,17 @@ namespace YgoMaster
             int select = Utils.GetValue<int>(request.ActParams, "select");
             if (select >= 0 && select <= 1)
             {
+                if (request.Player != p1)
+                {
+                    select = 1 - select;
+                }
                 table.State = DuelRoomTableState.Dueling;
                 table.FirstPlayer = select;
             }
             else
             {
-                table.Clear();
-                request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM;
+                Utils.LogWarning("[Act_DuelStartSelecting] select >= 0 && select <= 1");
+                request.ResultCode = (int)ResultCodes.PvPCode.INVALID_PARAM;
             }
         }
 
@@ -966,6 +1007,7 @@ namespace YgoMaster
             DuelRoom duelRoom = request.Player.DuelRoom;
             if (duelRoom == null)
             {
+                Utils.LogWarning("[Act_DuelBeginPvp] duelRoom == null");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM;
                 return;
             }
@@ -973,6 +1015,7 @@ namespace YgoMaster
             DuelRoomTable table = duelRoom.GetTable(request.Player);
             if (table == null)
             {
+                Utils.LogWarning("[Act_DuelBeginPvp] table == null");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM;
                 return;
             }
@@ -980,12 +1023,14 @@ namespace YgoMaster
             DuelRoomTableEntry tableEntry = table.GetEntry(request.Player);
             if (tableEntry == null || !tableEntry.IsMatchingOrInDuel)
             {
+                Utils.LogWarning("[Act_DuelBeginPvp] tableEntry == null || !tableEntry.IsMatchingOrInDuel");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
             }
 
             if (table.MatchedTime < DateTime.UtcNow - TimeSpan.FromSeconds(DuelRoomTableMatchingTimeoutInSeconds))
             {
+                Utils.LogWarning("[Act_DuelBeginPvp] table.MatchedTime < DateTime.UtcNow - TimeSpan.FromSeconds(DuelRoomTableMatchingTimeoutInSeconds)");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
             }
@@ -994,6 +1039,7 @@ namespace YgoMaster
             Player p2 = table.Player2;
             if (p1 == null || p2 == null)
             {
+                Utils.LogWarning("[Act_DuelBeginPvp] p1 == null || p2 == null");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
             }
@@ -1002,18 +1048,32 @@ namespace YgoMaster
             DeckInfo d2 = p2.Duel.GetDeck(GameMode.Room);
             if (d1 == null || d2 == null)
             {
+                Utils.LogWarning("[Act_DuelBeginPvp] d1 == null || d2 == null");
                 request.ResultCode = (int)ResultCodes.PvPCode.INVALID_DECK;
                 return;
             }
 
             if (table.State != DuelRoomTableState.Dueling)
             {
+                Utils.LogWarning("[Act_DuelBeginPvp] table.State != DuelRoomTableState.Dueling");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
+                return;
+            }
+
+            if (!sessionServer.HasClientWithToken(request.Player.Token))
+            {
+                Utils.LogWarning("[Act_DuelBeginPvp] Player '" + request.Player.Name + "' can't enter duel as they aren't connected to the session server");
+                request.ResultCode = (int)ResultCodes.RoomCode.ERR_INVALID_DATA;
+                duelRoom.ResetTableStateIfMatchingOrDueling(request.Player);
                 return;
             }
 
             Dictionary<uint, FriendState> p1Friends = GetFriends(p1);
             Dictionary<uint, FriendState> p2Friends = GetFriends(p2);
+
+            Player[] players = { p1, p2 };
+            DeckInfo[] decks = { d1, d2 };
+            Dictionary<uint, FriendState>[] friends = { p1Friends, p2Friends };
 
             request.Player.Duel.Mode = GameMode.Room;
 
@@ -1031,55 +1091,41 @@ namespace YgoMaster
             duelSettings.regulation_id = 0;
             duelSettings.duel_start_timestamp = 0;
             duelSettings.surrender = true;
-            duelSettings.Limit = 0;
-            duelSettings.GameMode = (int)GameMode.Normal;
+            duelSettings.Limit = 16;//0 (16 = no random)
+            duelSettings.GameMode = (int)GameMode.Room;//GameMode.Normal
             duelSettings.cpu = 100;
             duelSettings.cpuflag = null;
-            duelSettings.LeftTimeMax = 300;
-            duelSettings.TurnTimeMax = 300;
-            duelSettings.TotalTimeMax = 300;
+            duelSettings.LeftTimeMax = 300;//0
+            duelSettings.TurnTimeMax = 300;//0
+            duelSettings.TotalTimeMax = 300;//0
             duelSettings.Auto = -1;
             duelSettings.rec = false;
             duelSettings.recf = false;
             duelSettings.did = 0;
             duelSettings.duel = null;
-            duelSettings.is_pvp = false;
+            duelSettings.is_pvp = true;//false
             duelSettings.chapter = 0;
             duelSettings.SetRandomBgm(rand);
-            duelSettings.Deck[0] = d1;
-            duelSettings.Deck[1] = d2;
-            int life = duelRoom.LifePoints == 1 ? 8000 : 4000;
-            duelSettings.life[0] = duelSettings.life[1] = life;
-            duelSettings.level[0] = p1.Level;
-            duelSettings.level[1] = p2.Level;
-            duelSettings.follow_num[0] = p1Friends.Count(x => x.Value.HasFlag(FriendState.Following));
-            duelSettings.follow_num[1] = p2Friends.Count(x => x.Value.HasFlag(FriendState.Following));
-            duelSettings.pcode[0] = (int)p1.Code;
-            duelSettings.pcode[1] = (int)p2.Code;
-            duelSettings.rank[0] = p1.Rank;
-            duelSettings.rank[1] = p2.Rank;
-            duelSettings.DuelistLv[0] = p1.Rate;
-            duelSettings.DuelistLv[1] = p2.Rate;
-            duelSettings.name[0] = p1.Name;
-            duelSettings.name[1] = p2.Name;
-            duelSettings.avatar[0] = p1.AvatarId;
-            duelSettings.avatar[1] = p2.AvatarId;
-            duelSettings.avatar_home[0] = d1.Accessory.AvBase;
-            duelSettings.avatar_home[1] = d2.Accessory.AvBase;
-            duelSettings.icon[0] = p1.IconId;
-            duelSettings.icon[1] = p2.IconId;
-            duelSettings.icon_frame[0] = p1.IconFrameId;
-            duelSettings.icon_frame[1] = p2.IconFrameId;
-            duelSettings.sleeve[0] = d1.Accessory.Sleeve;
-            duelSettings.sleeve[1] = d2.Accessory.Sleeve;
-            duelSettings.mat[0] = d1.Accessory.Field;
-            duelSettings.mat[1] = d2.Accessory.Field;
-            duelSettings.duel_object[0] = d1.Accessory.FieldObj;
-            duelSettings.duel_object[1] = d2.Accessory.FieldObj;
-            duelSettings.wallpaper[0] = p1.Wallpaper;
-            duelSettings.wallpaper[1] = p2.Wallpaper;
-            duelSettings.profile_tag[0] = p1.TitleTags.ToList();
-            duelSettings.profile_tag[1] = p2.TitleTags.ToList();
+            for (int i = 0; i < players.Length; i++)
+            {
+                duelSettings.Deck[i] = decks[i];
+                duelSettings.life[i] = duelRoom.LifePoints == 1 ? 8000 : 4000;
+                duelSettings.level[i] = players[i].Level;
+                duelSettings.follow_num[i] = friends[i].Count(x => x.Value.HasFlag(FriendState.Following));
+                duelSettings.pcode[i] = (int)players[i].Code;
+                duelSettings.rank[i] = players[i].Rank;
+                duelSettings.DuelistLv[i] = players[i].Rate;
+                duelSettings.name[i] = players[i].Name;
+                duelSettings.avatar[i] = players[i].AvatarId;
+                duelSettings.avatar_home[i] = decks[i].Accessory.AvBase;
+                duelSettings.icon[i] = players[i].IconId;
+                duelSettings.icon_frame[i] = players[i].IconFrameId;
+                duelSettings.sleeve[i] = decks[i].Accessory.Sleeve;
+                duelSettings.mat[i] = decks[i].Accessory.Field;
+                duelSettings.duel_object[i] = decks[i].Accessory.FieldObj;
+                duelSettings.wallpaper[i] = players[i].Wallpaper;
+                duelSettings.profile_tag[i] = players[i].TitleTags.ToList();
+            }
             duelSettings.SetRequiredDefaults();
             request.Response["Duel"] = duelSettings.ToDictionary();
 

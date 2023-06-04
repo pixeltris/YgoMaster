@@ -58,7 +58,7 @@ namespace YgoMasterClient
         static ConsoleHelper()
         {
             output = new ConsoleTextWriter();
-            Console.SetOut(output);
+            //Console.SetOut(output);
 
             consoleHandle = GetConsoleWindow();
             if (consoleHandle != IntPtr.Zero)

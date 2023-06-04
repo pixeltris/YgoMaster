@@ -95,6 +95,13 @@
     <Compile Include="YgoMasterServer\Infos\CardCollection.cs" />
     <Compile Include="YgoMasterServer\Lib\MiniJSON.cs" />
     <Compile Include="YgoMasterServer\Infos\DeckInfo.cs" />
+    <Compile Include="YgoMasterServer\Net\Messages\ConnectionRequestMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Messages\ConnectionResponseMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Messages\PingMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Messages\PongMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\NetClient.cs" />
+    <Compile Include="YgoMasterServer\Net\NetMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\NetPacketBuffer.cs" />
     <Compile Include="YgoMasterServer\Utils.cs" />
     <Compile Include="YgoMasterServer\YdkHelper.cs" />
   </ItemGroup>

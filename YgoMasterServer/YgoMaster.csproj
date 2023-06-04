@@ -60,6 +60,14 @@
     <Compile Include="GameServer.Multiplayer.cs" />
     <Compile Include="Infos\DuelRoom.cs" />
     <Compile Include="Lib\LinearCongruentialGenerator.cs" />
+    <Compile Include="Net\Messages\ConnectionRequestMessage.cs" />
+    <Compile Include="Net\Messages\ConnectionResponseMessage.cs" />
+    <Compile Include="Net\Messages\PingMessage.cs" />
+    <Compile Include="Net\Messages\PongMessage.cs" />
+    <Compile Include="Net\NetMessage.cs" />
+    <Compile Include="Net\NetClient.cs" />
+    <Compile Include="Net\NetPacketBuffer.cs" />
+    <Compile Include="Net\NetServer.cs" />
     <Compile Include="Sim\CpuContest.cs" />
     <Compile Include="Updater.cs" />
     <Compile Include="WikiDump\HtmlAgilityPack.Merged.cs" />
@@ -99,6 +107,7 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

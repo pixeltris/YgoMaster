@@ -39,7 +39,7 @@ namespace YgoMaster
         /// <summary>
         /// NOTE: Unused if zero IP release time (MultiplayerReleasePlayerIPInHours)
         /// </summary>
-        Dictionary<string, HashSet<Player>> playersByIP = new Dictionary<string, HashSet<Player>>();
+        Dictionary<string, HashSet<string>> tokensByIP = new Dictionary<string, HashSet<string>>();
 
         object duelRoomsLocker = new object();
         Dictionary<uint, DuelRoom> duelRoomsByRoomId = new Dictionary<uint, DuelRoom>();
@@ -146,17 +146,25 @@ namespace YgoMaster
         /// </summary>
         string MultiplayerTokenPrefixSecret;
         /// <summary>
-        /// A maximum player limit per IP to avoid spamming of different tokens (which would make many player folders)
+        /// A maximum token limit per IP to avoid spamming of different tokens (which would make many player folders)
         /// </summary>
-        int MultiplayerMaxPlayersPerIP;
+        int MultiplayerMaxTokensPerIP;
         /// <summary>
-        /// Specific max player limits per IP
+        /// Specific max token limits per IP
         /// </summary>
-        Dictionary<string, int> MultiplayerMaxPlayersPerIPEx;
+        Dictionary<string, int> MultiplayerMaxTokensPerIPEx;
         /// <summary>
         /// How long to wait until a player is removed from the given IP's player list
         /// </summary>
-        int MultiplayerReleasePlayerIPInHours;
+        int MultiplayerReleaseTokenIPInHours;
+        /// <summary>
+        /// How long with no response until a session is closed
+        /// </summary>
+        int SessionServerPingTimeoutInSeconds;
+        /// <summary>
+        /// How often to ping a session
+        /// </summary>
+        int SessionServerPingInSeconds;
 
         void LoadSettings()
         {
@@ -215,9 +223,9 @@ namespace YgoMaster
             MultiplayerEnabled = Utils.GetValue<bool>(values, "MultiplayerEnabled");
             MultiplayerAllowUserSpecifiedPlayerCode = Utils.GetValue<bool>(values, "MultiplayerAllowUserSpecifiedPlayerCode");
             MultiplayerTokenPrefixSecret = Utils.GetValue<string>(values, "MultiplayerTokenPrefixSecret");
-            MultiplayerMaxPlayersPerIP = Utils.GetValue<int>(values, "MultiplayerMaxPlayersPerIP", 6);
-            MultiplayerMaxPlayersPerIPEx = new Dictionary<string, int>();
-            Dictionary<string, object> maxPlayersPerIPData = Utils.GetDictionary(values, "maxPlayersPerIPData");
+            MultiplayerMaxTokensPerIP = Utils.GetValue<int>(values, "MultiplayerMaxTokensPerIP", 6);
+            MultiplayerMaxTokensPerIPEx = new Dictionary<string, int>();
+            Dictionary<string, object> maxPlayersPerIPData = Utils.GetDictionary(values, "MultiplayerMaxTokensPerIPEx");
             if (maxPlayersPerIPData != null && maxPlayersPerIPData.Count > 0)
             {
                 foreach (KeyValuePair<string, object> ipEntry in maxPlayersPerIPData)
@@ -225,11 +233,13 @@ namespace YgoMaster
                     IPAddress ipAddress;
                     if (IPAddress.TryParse(ipEntry.Key, out ipAddress))
                     {
-                        MultiplayerMaxPlayersPerIPEx[ipEntry.Key] = (int)Convert.ChangeType(ipEntry.Value, typeof(int));
+                        MultiplayerMaxTokensPerIPEx[ipEntry.Key] = (int)Convert.ChangeType(ipEntry.Value, typeof(int));
                     }
                 }
             }
-            MultiplayerReleasePlayerIPInHours = Utils.GetValue<int>(values, "MultiplayerReleasePlayerIPInHours");
+            MultiplayerReleaseTokenIPInHours = Utils.GetValue<int>(values, "MultiplayerReleaseTokenIPInHours");
+            SessionServerPingTimeoutInSeconds = Utils.GetValue<int>(values, "SessionServerPingTimeoutInSeconds");
+            SessionServerPingInSeconds = Utils.GetValue<int>(values, "SessionServerPingInSeconds");
 
             NumDeckSlots = Utils.GetValue<int>(values, "DeckSlots", 20);
             Utils.GetIntHashSet(values, "DefaultItems", DefaultItems = new HashSet<int>(), ignoreZero: true);

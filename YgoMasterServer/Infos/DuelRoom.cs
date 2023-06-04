@@ -172,6 +172,8 @@ namespace YgoMaster
                     {
                         case DuelRoomTableState.Matched:
                         case DuelRoomTableState.Dueling:
+                            Console.WriteLine("ResetTableStateIfMatchingOrDueling (" + table.State + ") on table " + Id +
+                                " requester pcode " + player.Code + " name '" + player.Name + "'");
                             table.State = DuelRoomTableState.Joinable;
                             foreach (DuelRoomTableEntry entry in table.Entries)
                             {
@@ -370,23 +372,6 @@ namespace YgoMaster
         public bool IsMatchingOrInDuel;
         public DateTime CommentTime;
         public int Comment;
-    }
-
-    /// <summary>
-    /// NOTE:
-    /// This isn't quite right...
-    /// 2 = response to clicking "Begin Duel" where opponent hasn't yet clicked it
-    /// 3 = what the opponent sees in response to "room_table_polling" after doing the above
-    /// 4 = when you do "Begin Duel" after your opponent
-    /// 5 = matched? or after coin flip?
-    /// </summary>
-    enum DuelRoomTableState
-    {
-        None,
-        Joinable = 1,
-        Matching = 3,
-        Matched = 4,
-        Dueling = 5
     }
 
     class DuelRoomRecord

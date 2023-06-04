@@ -8,10 +8,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Globalization;
 using System.Security.Cryptography;
-using System.CodeDom;
-using System.Net.Sockets;
-using System.Runtime.Remoting.Contexts;
-using System.Security.Permissions;
+using YgoMaster.Net.Messages;
 
 namespace YgoMaster
 {
@@ -20,6 +17,7 @@ namespace YgoMaster
         Thread thread;
         Thread updateThread;
         HttpListener listener;
+        Net.NetServer sessionServer;
 
         public void Start()
         {
@@ -47,6 +45,19 @@ namespace YgoMaster
                     return;
                 }
 
+                try
+                {
+                    sessionServer = new Net.NetServer(sessionServerIP, sessionServerPort);
+                    sessionServer.GameServer = this;
+                    sessionServer.Listen();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("[ERROR] Failed to bind to " + sessionServerIP + ":" + sessionServerPort + " (ensure the program isn't already running, or try running as admin)");
+                    Console.WriteLine(e);
+                    return;
+                }
+
                 HttpListener tempListener = listener;
 
                 updateThread = new Thread(delegate ()
@@ -54,37 +65,66 @@ namespace YgoMaster
                     DateTime lastReleaseIP = DateTime.UtcNow;
                     TimeSpan releaseIPDelay = TimeSpan.FromMinutes(30);
 
+                    Stopwatch generalUpdateStopwatch = new Stopwatch();
+                    generalUpdateStopwatch.Start();
+
+                    Stopwatch sessionServerPingStopwatch = new Stopwatch();
+                    sessionServerPingStopwatch.Start();
+
                     while (listener != null && tempListener == listener)
                     {
-                        Thread.Sleep(10000);
-                        
-                        lock (duelRoomsLocker)
+                        if (generalUpdateStopwatch.ElapsedMilliseconds >= 10000)
                         {
-                            foreach (DuelRoom duelRoom in GetDuelRoomsByRoomId().Values)
+                            lock (duelRoomsLocker)
                             {
-                                if (duelRoom.TimeExpire < DateTime.UtcNow)
+                                foreach (DuelRoom duelRoom in GetDuelRoomsByRoomId().Values)
                                 {
-                                    DisbandRoom(duelRoom);
+                                    if (duelRoom.TimeExpire < DateTime.UtcNow)
+                                    {
+                                        DisbandRoom(duelRoom);
+                                    }
                                 }
                             }
-                        }
 
-                        if (MultiplayerReleasePlayerIPInHours > 0 && lastReleaseIP < DateTime.UtcNow - releaseIPDelay)
-                        {
-                            lock (playersLock)
+                            if (MultiplayerReleaseTokenIPInHours > 0 && lastReleaseIP < DateTime.UtcNow - releaseIPDelay)
                             {
-                                foreach (KeyValuePair<string, HashSet<Player>> playersOnIP in playersByIP)
+                                lock (playersLock)
                                 {
-                                    foreach (Player player in new HashSet<Player>(playersOnIP.Value))
+                                    foreach (KeyValuePair<string, HashSet<string>> tokensOnIP in tokensByIP)
                                     {
-                                        if (player.LastRequestTime < DateTime.UtcNow - TimeSpan.FromHours(MultiplayerReleasePlayerIPInHours))
+                                        foreach (string token in new HashSet<string>(tokensOnIP.Value))
                                         {
-                                            playersOnIP.Value.Remove(player);
+                                            Player player;
+                                            if (!playersByToken.TryGetValue(token, out player) || player.LastRequestTime < DateTime.UtcNow - TimeSpan.FromHours(MultiplayerReleaseTokenIPInHours))
+                                            {
+                                                tokensOnIP.Value.Remove(token);
+                                            }
                                         }
                                     }
                                 }
                             }
+                            generalUpdateStopwatch.Restart();
                         }
+
+                        if (sessionServerPingStopwatch.Elapsed.TotalSeconds >= SessionServerPingInSeconds)
+                        {
+                            foreach (Net.NetClient client in sessionServer.GetConnections())
+                            {
+                                if (client.LastMessageTime < DateTime.UtcNow - TimeSpan.FromSeconds(SessionServerPingTimeoutInSeconds))
+                                {
+                                    Utils.LogInfo("Ping timeout from " + client.IP);
+                                    client.Close();
+                                }
+                            }
+                            sessionServer.Send(new PingMessage()
+                            {
+                                RequestTime = DateTime.UtcNow
+                            });
+
+                            sessionServerPingStopwatch.Restart();
+                        }
+
+                        Thread.Sleep(1000);
                     }
                 });
                 updateThread.CurrentCulture = CultureInfo.InvariantCulture;
@@ -203,12 +243,12 @@ namespace YgoMaster
                                         }
                                         playersByToken[sessionToken] = playersById[playerId] = gameServerWebRequest.Player = new Player(playerId);
                                         gameServerWebRequest.Player.LastRequestTime = DateTime.UtcNow;
-                                        CheckPlayerLimitForIP(gameServerWebRequest.Player, context.Request.RemoteEndPoint.Address.ToString());
+                                        CheckTokenLimitForIP(gameServerWebRequest.Player, sessionToken, context.Request.RemoteEndPoint.Address.ToString());
                                         LoadPlayer(gameServerWebRequest.Player);
                                         gameServerWebRequest.Player.Token = sessionToken;
                                         SavePlayerNow(gameServerWebRequest.Player);
                                     }
-                                    CheckPlayerLimitForIP(gameServerWebRequest.Player, context.Request.RemoteEndPoint.Address.ToString());
+                                    CheckTokenLimitForIP(gameServerWebRequest.Player, sessionToken, context.Request.RemoteEndPoint.Address.ToString());
                                 }
 
                                 if (!gameServerWebRequest.Player.HasWrittenToken)
@@ -537,7 +577,7 @@ namespace YgoMaster
             //return Encoding.UTF8.GetBytes("@" + value);
         }
 
-        uint GetPlayerIdFromToken(string token)
+        public uint GetPlayerIdFromToken(string token)
         {
             if (string.IsNullOrEmpty(token))
             {
@@ -587,42 +627,51 @@ namespace YgoMaster
             }
         }
 
-        void CheckPlayerLimitForIP(Player player, string remoteIP)
+        public void CheckTokenLimitForIP(Player player, string token, string remoteIP)
         {
-            if (string.IsNullOrEmpty(player.IP))
+            if (player == null || string.IsNullOrEmpty(player.IP))
             {
-                player.IP = remoteIP;
-
-                int playerLimit;
-                if (MultiplayerMaxPlayersPerIPEx.TryGetValue(remoteIP, out playerLimit))
+                if (player != null)
                 {
-                    if (playerLimit == 0)
-                    {
-                        throw new Exception("Request from banned IP " + remoteIP);
-                    }
-                }
-                else
-                {
-                    playerLimit = MultiplayerMaxPlayersPerIP;
+                    player.IP = remoteIP;
                 }
 
-                if (MultiplayerReleasePlayerIPInHours > 0 && playerLimit > 0)
+                int tokenLimit = GetMaxTokensPerIP(remoteIP); ;
+
+                if (MultiplayerReleaseTokenIPInHours > 0 && tokenLimit > 0)
                 {
-                    HashSet<Player> playersOnThisIP;
-                    if (!playersByIP.TryGetValue(remoteIP, out playersOnThisIP))
+                    HashSet<string> tokensOnThisIP;
+                    if (!tokensByIP.TryGetValue(remoteIP, out tokensOnThisIP))
                     {
-                        playersOnThisIP = new HashSet<Player>();
+                        tokensOnThisIP = new HashSet<string>();
                     }
-                    if (!playersOnThisIP.Contains(player))
+                    if (!tokensOnThisIP.Contains(token))
                     {
-                        if (playersOnThisIP.Count >= MultiplayerMaxPlayersPerIP)
+                        if (tokensOnThisIP.Count >= MultiplayerMaxTokensPerIP)
                         {
-                            throw new Exception("Ignore request from " + remoteIP + " due to reaching player IP limit of " + playerLimit);
+                            throw new Exception("Ignore request from " + remoteIP + " due to reaching token IP limit of " + tokenLimit);
                         }
-                        playersOnThisIP.Add(player);
+                        tokensOnThisIP.Add(token);
                     }
                 }
             }
+        }
+
+        private int GetMaxTokensPerIP(string remoteIP)
+        {
+            int tokenLimit;
+            if (MultiplayerMaxTokensPerIPEx.TryGetValue(remoteIP, out tokenLimit))
+            {
+                if (tokenLimit == 0)
+                {
+                    throw new Exception("Request from banned IP " + remoteIP);
+                }
+            }
+            else
+            {
+                tokenLimit = MultiplayerMaxTokensPerIP;
+            }
+            return tokenLimit;
         }
     }
 
