@@ -8,9 +8,6 @@ using System.Windows.Forms;
 using IL2CPP;
 using YgoMasterClient;
 using YgoMaster;
-using System.Reflection;
-using System.Runtime;
-using YgoMaster.Net;
 
 // TODO:
 // Try hooking OpenPlayerActionSheet to modify player buttons to inject "Trade" (or do it on player profile full menu)
@@ -303,24 +300,10 @@ namespace YgomSystem.Network
                         PInvoke.SetTimeMultiplier(ClientSettings.TimeMultiplier);
                         break;
                 }
-                if (!string.IsNullOrEmpty(ClientSettings.MultiplayerToken))
+                if (cmd == "Duel.begin" && !string.IsNullOrEmpty(ClientSettings.MultiplayerToken))
                 {
-                    YgoMaster.GameMode gameMode = (YgoMaster.GameMode)YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Duel.GameMode");
-                    lock (DuelDll.DuelComMessageQueue)
-                    {
-                        DuelDll.DuelComMessageQueue.Clear();
-                    }
-                    lock (DuelDll.ActionsToRunInNextSysAct)
-                    {
-                        DuelDll.ActionsToRunInNextSysAct.Clear();
-                    }
-                    DuelDll.LastIsBusyEffectSyncSeq = 0;
-                    DuelDll.LocalIsBusyEffect.Clear();
-                    DuelDll.RemoteIsBusyEffect.Clear();
-                    DuelDll.LastIsBusyEffectId = -1;
-                    DuelDll.RunEffectSeq = 0;
-                    DuelDll.IsPvpDuel = Program.NetClient != null && gameMode == GameMode.Room;
-                    DuelDll.MyID = YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Duel.MyID");
+                    GameMode gameMode = (GameMode)Utility.ClientWork.GetByJsonPath<int>("Duel.GameMode");
+                    DuelDll.OnDuelBegin(gameMode);
                 }
                 if (YgomGame.Room.RoomCreateViewController.IsHacked)
                 {

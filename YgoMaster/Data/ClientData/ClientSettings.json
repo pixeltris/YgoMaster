@@ -8,6 +8,8 @@
     "MultiplayerToken": "",// [WARNING] Only use this if you know what you're doing
     "SessionServerPingTimeoutInSeconds": 90,
     "SessionServerConnectDelayInSeconds": 10,
+    "DuelDllActiveUserDoCommandOffset": 13440,
+    "DuelDllActiveUserSetIndexOffset": 13340,
     "ShowConsole": false,
     "LogIDs": false,
     "AssetHelperLog": false,

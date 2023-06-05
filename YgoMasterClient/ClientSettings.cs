@@ -16,6 +16,8 @@ namespace YgoMasterClient
         public static string ServerUrl;
         public static string ServerPollUrl;
         public static string MultiplayerToken;
+        public static int DuelDllActiveUserDoCommandOffset;
+        public static int DuelDllActiveUserSetIndexOffset;
         public static bool ShowConsole;
         public static bool LogIDs;
         public static bool AssetHelperLog;
@@ -90,6 +92,8 @@ namespace YgoMasterClient
             MultiplayerToken = Utils.GetValue<string>(data, "MultiplayerToken");
             SessionServerPingTimeoutInSeconds = Utils.GetValue<int>(data, "SessionServerPingTimeoutInSeconds");
             SessionServerConnectDelayInSeconds = Utils.GetValue<int>(data, "SessionServerConnectDelayInSeconds");
+            DuelDllActiveUserDoCommandOffset = Utils.GetValue<int>(data, "DuelDllActiveUserDoCommandOffset");
+            DuelDllActiveUserSetIndexOffset = Utils.GetValue<int>(data, "DuelDllActiveUserSetIndexOffset");
             ShowConsole = Utils.GetValue<bool>(data, "ShowConsole");
             LogIDs = Utils.GetValue<bool>(data, "LogIDs");
             AssetHelperLog = Utils.GetValue<bool>(data, "AssetHelperLog");

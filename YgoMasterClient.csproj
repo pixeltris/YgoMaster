@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="YgoMasterClient\DuelDll.cs" />
     <Compile Include="YgoMasterClient\ActionSheetViewController.cs" />
     <Compile Include="YgoMasterClient\AssetHelper.cs" />
     <Compile Include="YgoMasterClient\AssetHelper.Solo.cs" />
@@ -97,11 +98,14 @@
     <Compile Include="YgoMasterServer\Infos\DeckInfo.cs" />
     <Compile Include="YgoMasterServer\Net\Message\ConnectionRequestMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\ConnectionResponseMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Message\DuelComCancelCommand2Message.cs" />
+    <Compile Include="YgoMasterServer\Net\Message\DuelComCancelCommandMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelComDoCommandMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelComMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelComMovePhaseMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelDlgSetResultMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelErrorMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Message\DuelListInitStringMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelListSetCardExDataMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelListSetIndexMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\PingMessage.cs" />

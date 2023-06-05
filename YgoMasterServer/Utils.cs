@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Net;
+using System.Runtime.InteropServices;
 
 namespace YgoMaster
 {
@@ -651,6 +652,11 @@ namespace YgoMaster
 
                 return false;
             }
+        }
+
+        public static T GetFunc<T>(IntPtr ptr)
+        {
+            return (T)(object)Marshal.GetDelegateForFunctionPointer(ptr, typeof(T));
         }
     }
 }
