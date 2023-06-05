@@ -12,6 +12,7 @@ namespace YgoMaster.Net
         Ping,
         Pong,
         DuelError,
+        UpdateIsBusyEffect,
 
         // Duel com messages
         DuelComMovePhase,
@@ -19,5 +20,6 @@ namespace YgoMaster.Net
         DuelDlgSetResult,
         DuelListSetCardExData,
         DuelListSetIndex
+        //TODO: DuelListInitString
     }
 }

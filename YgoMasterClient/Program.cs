@@ -175,8 +175,9 @@ namespace YgoMasterClient
                                     Console.WriteLine("Failed to connect to " + ClientSettings.SessionServerIP + ":" + ClientSettings.SessionServerPort);
                                 }
                             }
-                            if (NetClient.LastMessageTime < DateTime.UtcNow - TimeSpan.FromSeconds(ClientSettings.SessionServerPingTimeoutInSeconds))
+                            if (NetClient.IsConnected && NetClient.LastMessageTime < DateTime.UtcNow - TimeSpan.FromSeconds(ClientSettings.SessionServerPingTimeoutInSeconds))
                             {
+                                Console.WriteLine("Ping timeout " + ClientSettings.SessionServerIP + ":" + ClientSettings.SessionServerPort);
                                 NetClient.Close();
                             }
                             Thread.Sleep(1000);
@@ -957,6 +958,13 @@ unsafe static class DuelDll
 {
     public static Queue<DuelComMessage> DuelComMessageQueue = new Queue<DuelComMessage>();
 
+    public static int LastIsBusyEffectSyncSeq;
+    public static Dictionary<DuelViewType, int> LocalIsBusyEffect = new Dictionary<DuelViewType, int>();
+    public static Dictionary<ulong, Dictionary<DuelViewType, int>> RemoteIsBusyEffect = new Dictionary<ulong, Dictionary<DuelViewType, int>>();
+
+    public static List<Action> ActionsToRunInNextSysAct = new List<Action>();
+
+    public static int LastIsBusyEffectId = -1;
     public static ulong RunEffectSeq;
     public static bool IsPvpDuel;
     public static int MyID;
@@ -967,6 +975,9 @@ unsafe static class DuelDll
 
     delegate int Del_RunEffect(int id, int param1, int param2, int param3);
     static Hook<Del_RunEffect> hookRunEffect;
+
+    delegate int Del_IsBusyEffect(int id);
+    static Hook<Del_IsBusyEffect> hookIsBusyEffect;
 
     delegate void Del_DLL_DuelComMovePhase(int phase);
     static Hook<Del_DLL_DuelComMovePhase> hookDLL_DuelComMovePhase;
@@ -1034,6 +1045,7 @@ unsafe static class DuelDll
         if (!string.IsNullOrEmpty(ClientSettings.MultiplayerToken))
         {
             hookRunEffect = new Hook<Del_RunEffect>(RunEffect, classInfo.GetMethod("RunEffect"));
+            hookIsBusyEffect = new Hook<Del_IsBusyEffect>(IsBusyEffect, classInfo.GetMethod("IsBusyEffect"));
         }
     }
 
@@ -1053,6 +1065,7 @@ unsafe static class DuelDll
             case NetMessageType.ConnectionResponse: OnConnectionResponse(client, (ConnectionResponseMessage)message); break;
             case NetMessageType.Ping: OnPing(client, (PingMessage)message); break;
             case NetMessageType.DuelError: OnDuelError(client, (DuelErrorMessage)message); break;
+            case NetMessageType.UpdateIsBusyEffect: OnUpdateIsBusyEffect(client, (UpdateIsBusyEffectMessage)message); break;
         }
     }
 
@@ -1083,6 +1096,34 @@ unsafe static class DuelDll
         Console.WriteLine("TODO: OnDuelError");
     }
 
+    static void OnUpdateIsBusyEffect(NetClient client, UpdateIsBusyEffectMessage message)
+    {
+        if (message.Seq < RunEffectSeq)
+        {
+            Console.WriteLine("Ignore recv UpdateIsBusyEffect seq:" + message.Seq + " id:" + (DuelViewType)message.Id + " value:" + message.Value);
+            return;
+        }
+        Action action = () =>
+        {
+            Console.WriteLine("Handle recv UpdateIsBusyEffect seq:" + message.Seq + " id:" + (DuelViewType)message.Id + " value:" + message.Value);
+            if (message.Seq < RunEffectSeq)
+            {
+                return;
+            }
+            Dictionary<DuelViewType, int> remoteIsBusyEffect;
+            if (!RemoteIsBusyEffect.TryGetValue(message.Seq, out remoteIsBusyEffect))
+            {
+                RemoteIsBusyEffect[message.Seq] = remoteIsBusyEffect = new Dictionary<DuelViewType, int>();
+            }
+            remoteIsBusyEffect[message.Id] = message.Value;
+        };
+        lock (ActionsToRunInNextSysAct)
+        {
+            Console.WriteLine("Push recv UpdateIsBusyEffect seq:" + message.Seq + " id:" + (DuelViewType)message.Id + " value:" + message.Value);
+            ActionsToRunInNextSysAct.Add(action);
+        }
+    }
+
     static void HandleDuelComMessage(DuelComMessage message)
     {
         switch (message.Type)
@@ -1097,61 +1138,158 @@ unsafe static class DuelDll
 
     static void OnDuelComMovePhase(DuelComMovePhaseMessage message)
     {
-        Console.WriteLine("OnDuelComMovePhase phase:" + message.Phase + " seq:" + RunEffectSeq);
+        if (!IsPvpDuel)
+        {
+            return;
+        }
+        Console.WriteLine("OnDuelComMovePhase phase:" + message.Phase + " seq:" + RunEffectSeq + " mseq:" + message.RunEffectSeq);
         hookDLL_DuelComMovePhase.Original(message.Phase);
     }
 
     static void OnDuelComDoCommand(DuelComDoCommandMessage message)
     {
-        Console.WriteLine("OnDuelComDoCommand player:" + message.Player + " pos:" + message.Position + " indx:" + message.Index + " cmd:" + message.CommandId + " seq:" + RunEffectSeq);
+        if (!IsPvpDuel)
+        {
+            return;
+        }
+        Console.WriteLine("OnDuelComDoCommand player:" + message.Player + " pos:" + message.Position + " indx:" + message.Index + " cmd:" + message.CommandId + " seq:" + RunEffectSeq + " mseq:" + message.RunEffectSeq);
         hookDLL_DuelComDoCommand.Original(message.Player, message.Position, message.Index, message.CommandId);
     }
 
     static void OnDuelDlgSetResult(DuelDlgSetResultMessage message)
     {
-        Console.WriteLine("OnDuelDlgSetResult result:" + message.Result + " seq:" + RunEffectSeq);
+        if (!IsPvpDuel)
+        {
+            return;
+        }
+        Console.WriteLine("OnDuelDlgSetResult result:" + message.Result + " seq:" + RunEffectSeq + " mseq:" + message.RunEffectSeq);
         hookDLL_DuelDlgSetResult.Original(message.Result);
     }
 
     static void OnDuelListSetCardExData(DuelListSetCardExDataMessage message)
     {
-        Console.WriteLine("OnDuelListSetCardExData index:" + message.Index + " data:" + message.Data + " seq:" + RunEffectSeq);
+        if (!IsPvpDuel)
+        {
+            return;
+        }
+        Console.WriteLine("OnDuelListSetCardExData index:" + message.Index + " data:" + message.Data + " seq:" + RunEffectSeq + " mseq:" + message.RunEffectSeq);
         hookDLL_DuelListSetCardExData.Original(message.Index, message.Data);
     }
 
     static void OnDuelListSetIndex(DuelListSetIndexMessage message)
     {
-        Console.WriteLine("OnDuelListSetIndex index:" + message.Index + " seq:" + RunEffectSeq);
+        if (!IsPvpDuel)
+        {
+            return;
+        }
+        Console.WriteLine("OnDuelListSetIndex index:" + message.Index + " seq:" + RunEffectSeq + " mseq:" + message.RunEffectSeq);
         hookDLL_DuelListSetIndex.Original(message.Index);
+    }
+
+    static int IsBusyEffect(int id)
+    {
+        int result = hookIsBusyEffect.Original(id);
+        //Console.WriteLine("IsBusyEffect id:" + (DuelViewType)id + " result:" + result);
+
+        /*if (LastIsBusyEffectId != id)
+        {
+            LastIsBusyEffectId = id;
+            Console.WriteLine("IsBusyEffect id:" + (DuelViewType)id + " result:" + result);
+        }
+        if (result == 0)
+        {
+            LastIsBusyEffectId = -1;
+        }*/
+
+        if (IsPvpDuel)
+        {
+            int prevResult;
+            if (!LocalIsBusyEffect.TryGetValue((DuelViewType)id, out prevResult) || result != prevResult)
+            {
+                Console.WriteLine("Send UpdateIsBusyEffect seq:" + RunEffectSeq + " id:" + (DuelViewType)id + " value:" + result);
+                LocalIsBusyEffect[(DuelViewType)id] = result;
+                Program.NetClient.Send(new UpdateIsBusyEffectMessage()
+                {
+                    Seq = RunEffectSeq,
+                    Id = (DuelViewType)id,
+                    Value = result
+                });
+            }
+
+            if (result == 0)
+            {
+                Dictionary<DuelViewType, int> remoteIsBusyEffect;
+                if (!RemoteIsBusyEffect.TryGetValue(RunEffectSeq, out remoteIsBusyEffect))
+                {
+                    return 1;
+                }
+
+                int remoteResult;
+                if (!remoteIsBusyEffect.TryGetValue((DuelViewType)id, out remoteResult))
+                {
+                    if (remoteIsBusyEffect.Count > 0)
+                    {
+                        switch ((DuelViewType)id)
+                        {
+                            case DuelViewType.Null:
+                            case DuelViewType.Noop:
+                                foreach (int value in remoteIsBusyEffect.Values)
+                                {
+                                    if (value != 0)
+                                    {
+                                        return 1;
+                                    }
+                                }
+                                break;
+                        }
+                    }
+                    return 1;
+                }
+
+                return remoteResult;
+            }
+        }
+
+        return result;
     }
 
     static int RunEffect(int id, int param1, int param2, int param3)
     {
+        LocalIsBusyEffect.Clear();
+        RemoteIsBusyEffect.Remove(RunEffectSeq);
+        RunEffectSeq++;
+        Console.WriteLine("RunEffect " + (DuelViewType)id + " " + param1 + " " + param2 + " " + param3 + " lp0:" + DLL_DuelGetLP(0) + " lp1:" + DLL_DuelGetLP(1) + " whichTurn:" + DLL_DuelWhichTurnNow() + " myID:" + MyID + " seq:" + RunEffectSeq);
         if (IsPvpDuel)
         {
-            RunEffectSeq++;
-            Console.WriteLine("RunEffect " + (DuelViewType)id + " " + param1 + " " + param2 + " " + param3 + " lp0:" + DLL_DuelGetLP(0) + " lp1:" + DLL_DuelGetLP(1) + " whichTurn:" + DLL_DuelWhichTurnNow() + " myID:" + MyID);
             switch ((DuelViewType)id)
             {
-                case DuelViewType.WaitInput:
+                /*case DuelViewType.WaitInput:
                     switch ((DuelMenuActType)param1)
                     {
                         case DuelMenuActType.DrawPhase:
-                            if (DLL_DuelWhichTurnNow() != MyID)
-                            {
-                                //DuelDll.DLL_DuelComDoCommand(DuelDll.DLL_DuelWhichTurnNow(), 0, 0, (int)DuelCommandType.Draw);
-                                return 0;
-                            }
-                            break;
                         case DuelMenuActType.MainPhase:
                             if (DLL_DuelWhichTurnNow() != MyID)
                             {
                                 return 0;
                             }
                             break;
+                        case DuelMenuActType.CheckTiming:
+                            Console.WriteLine("Allow " + (DuelViewType)id + " - " + (DuelMenuActType)param1);
+                            break;
                         default:
                             Console.WriteLine("WaitInput unhandled " + (DuelMenuActType)param1);
+                            if (DLL_DuelWhichTurnNow() != MyID)
+                            {
+                                return 0;
+                            }
                             break;
+                    }
+                    break;*/
+                case DuelViewType.WaitInput:
+                    if (DLL_DuelWhichTurnNow() != MyID)
+                    {
+                        Console.WriteLine("Ignore " + (DuelViewType)id + " - " + (DuelMenuActType)param1);
+                        return 0;
                     }
                     break;
             }
@@ -1163,6 +1301,20 @@ unsafe static class DuelDll
     {
         if (IsPvpDuel)
         {
+            if (ActionsToRunInNextSysAct.Count > 0)
+            {
+                List<Action> actionsToRun;
+                lock (ActionsToRunInNextSysAct)
+                {
+                    actionsToRun = new List<Action>(ActionsToRunInNextSysAct);
+                    ActionsToRunInNextSysAct.Clear();
+                }
+                foreach (Action action in actionsToRun)
+                {
+                    action();
+                }
+            }
+
             if (DuelComMessageQueue.Count > 0)
             {
                 lock (DuelComMessageQueue)
@@ -1176,10 +1328,12 @@ unsafe static class DuelDll
                             if (RunEffectSeq != duelComMessage.RunEffectSeq)
                             {
                                 // Our run effect sequence is beyond the other client
-                                Console.WriteLine("RunEffectSeq: " + RunEffectSeq + " msgRunEffectSeq: " + duelComMessage.RunEffectSeq);
+                                Console.WriteLine("[IGNORE] " + duelComMessage.Type + " RunEffectSeq: " + RunEffectSeq + " msgRunEffectSeq: " + duelComMessage.RunEffectSeq);
                             }
-
-                            HandleDuelComMessage(duelComMessage);
+                            else
+                            {
+                                HandleDuelComMessage(duelComMessage);
+                            }
 
                             DuelComMessageQueue.Dequeue();
                         }
@@ -1193,11 +1347,14 @@ unsafe static class DuelDll
     static void DLL_DuelComMovePhase(int phase)
     {
         Console.WriteLine("DLL_DuelComMovePhase phase:" + phase + " seq:" + RunEffectSeq);
-        Program.NetClient.Send(new DuelComMovePhaseMessage()
+        if (IsPvpDuel)
         {
-            RunEffectSeq = RunEffectSeq,
-            Phase = phase
-        });
+            Program.NetClient.Send(new DuelComMovePhaseMessage()
+            {
+                RunEffectSeq = RunEffectSeq,
+                Phase = phase
+            });
+        }
 
         hookDLL_DuelComMovePhase.Original(phase);
     }
@@ -1205,14 +1362,17 @@ unsafe static class DuelDll
     public static void DLL_DuelComDoCommand(int player, int position, int index, int commandId)
     {
         Console.WriteLine("DLL_DuelComDoCommand player:" + player + " pos:" + position + " indx:" + index + " cmd:" + commandId + " seq:" + RunEffectSeq);
-        Program.NetClient.Send(new YgoMaster.Net.Message.DuelComDoCommandMessage()
+        if (IsPvpDuel)
         {
-            RunEffectSeq = RunEffectSeq,
-            Player = player,
-            Position = position,
-            Index = index,
-            CommandId = commandId
-        });
+            Program.NetClient.Send(new YgoMaster.Net.Message.DuelComDoCommandMessage()
+            {
+                RunEffectSeq = RunEffectSeq,
+                Player = player,
+                Position = position,
+                Index = index,
+                CommandId = commandId
+            });
+        }
         
         hookDLL_DuelComDoCommand.Original(player, position, index, commandId);
     }
@@ -1220,11 +1380,14 @@ unsafe static class DuelDll
     static void DLL_DuelDlgSetResult(uint result)
     {
         Console.WriteLine("DLL_DuelDlgSetResult result:" + result + " seq:" + RunEffectSeq);
-        Program.NetClient.Send(new YgoMaster.Net.Message.DuelDlgSetResultMessage()
+        if (IsPvpDuel)
         {
-            RunEffectSeq = RunEffectSeq,
-            Result = result
-        });
+            Program.NetClient.Send(new YgoMaster.Net.Message.DuelDlgSetResultMessage()
+            {
+                RunEffectSeq = RunEffectSeq,
+                Result = result
+            });
+        }
 
         hookDLL_DuelDlgSetResult.Original(result);
     }
@@ -1232,12 +1395,15 @@ unsafe static class DuelDll
     static void DLL_DuelListSetCardExData(int index, int data)
     {
         Console.WriteLine("DLL_DuelListSetCardExData index:" + index + " data:" + data + " seq:" + RunEffectSeq);
-        Program.NetClient.Send(new YgoMaster.Net.Message.DuelListSetCardExDataMessage()
+        if (IsPvpDuel)
         {
-            RunEffectSeq = RunEffectSeq,
-            Index = index,
-            Data = data
-        });
+            Program.NetClient.Send(new YgoMaster.Net.Message.DuelListSetCardExDataMessage()
+            {
+                RunEffectSeq = RunEffectSeq,
+                Index = index,
+                Data = data
+            });
+        }
 
         hookDLL_DuelListSetCardExData.Original(index, data);
     }
@@ -1245,11 +1411,14 @@ unsafe static class DuelDll
     static void DLL_DuelListSetIndex(int index)
     {
         Console.WriteLine("DLL_DuelListSetIndex index:" + index + "seq:" + RunEffectSeq);
-        Program.NetClient.Send(new YgoMaster.Net.Message.DuelListSetIndexMessage()
+        if (IsPvpDuel)
         {
-            RunEffectSeq = RunEffectSeq,
-            Index = index
-        });
+            Program.NetClient.Send(new YgoMaster.Net.Message.DuelListSetIndexMessage()
+            {
+                RunEffectSeq = RunEffectSeq,
+                Index = index
+            });
+        }
 
         hookDLL_DuelListSetIndex.Original(index);
     }
@@ -1268,8 +1437,8 @@ unsafe static class DuelDll
 
     static int DLL_GetCardFace(int player, int position, int index)
     {
-        return 1;
-        //return hookDLL_DuelGetCardFace.Original(player, position, index);
+        //return 1;
+        return hookDLL_DuelGetCardFace.Original(player, position, index);
     }
 
     static T GetFunc<T>(IntPtr ptr)

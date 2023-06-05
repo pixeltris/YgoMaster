@@ -490,7 +490,7 @@ namespace YgoMaster
                                 if (table.State == DuelRoomTableState.Joinable)
                                 {
                                     table.State = DuelRoomTableState.Matching;
-                                    table.Seed = (uint)rand.Next();
+                                    table.Seed = 1;//(uint)rand.Next();
                                     table.FirstPlayer = -1;
                                     table.CoinFlipPlayerIndex = rand.Next(2);
                                     table.CoinFlipCounter = 5;

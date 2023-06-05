@@ -135,6 +135,7 @@ namespace YgoMaster.Net
                 socket.Close();
 
             Socket = socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            //Socket.NoDelay = true;
             socket.Connect(ip, port);
             LastMessageTime = DateTime.UtcNow;
             if (Connected != null)
@@ -222,6 +223,7 @@ namespace YgoMaster.Net
                                 Type type;
                                 if (messageTypes.TryGetValue(messageType, out type))
                                 {
+                                    LastMessageTime = DateTime.UtcNow;
                                     if (HandleMessage != null)
                                     {
                                         NetMessage message = (NetMessage)Activator.CreateInstance(type);

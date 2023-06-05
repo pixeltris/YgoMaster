@@ -10,6 +10,7 @@ using YgoMasterClient;
 using YgoMaster;
 using System.Reflection;
 using System.Runtime;
+using YgoMaster.Net;
 
 // TODO:
 // Try hooking OpenPlayerActionSheet to modify player buttons to inject "Trade" (or do it on player profile full menu)
@@ -309,8 +310,16 @@ namespace YgomSystem.Network
                     {
                         DuelDll.DuelComMessageQueue.Clear();
                     }
+                    lock (DuelDll.ActionsToRunInNextSysAct)
+                    {
+                        DuelDll.ActionsToRunInNextSysAct.Clear();
+                    }
+                    DuelDll.LastIsBusyEffectSyncSeq = 0;
+                    DuelDll.LocalIsBusyEffect.Clear();
+                    DuelDll.RemoteIsBusyEffect.Clear();
+                    DuelDll.LastIsBusyEffectId = -1;
                     DuelDll.RunEffectSeq = 0;
-                    DuelDll.IsPvpDuel = gameMode == GameMode.Room;
+                    DuelDll.IsPvpDuel = Program.NetClient != null && gameMode == GameMode.Room;
                     DuelDll.MyID = YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Duel.MyID");
                 }
                 if (YgomGame.Room.RoomCreateViewController.IsHacked)

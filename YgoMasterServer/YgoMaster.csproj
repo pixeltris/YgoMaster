@@ -71,6 +71,7 @@
     <Compile Include="Net\Message\DuelListSetIndexMessage.cs" />
     <Compile Include="Net\Message\PingMessage.cs" />
     <Compile Include="Net\Message\PongMessage.cs" />
+    <Compile Include="Net\Message\UpdateIsBusyEffectMessage.cs" />
     <Compile Include="Net\NetMessage.cs" />
     <Compile Include="Net\NetClient.cs" />
     <Compile Include="Net\NetMessageType.cs" />

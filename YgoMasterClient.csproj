@@ -106,6 +106,7 @@
     <Compile Include="YgoMasterServer\Net\Message\DuelListSetIndexMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\PingMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\PongMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Message\UpdateIsBusyEffectMessage.cs" />
     <Compile Include="YgoMasterServer\Net\NetClient.cs" />
     <Compile Include="YgoMasterServer\Net\NetMessage.cs" />
     <Compile Include="YgoMasterServer\Net\NetMessageType.cs" />

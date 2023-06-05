@@ -59,6 +59,7 @@ namespace YgoMaster.Net
                 Close();
                 Listening = true;
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                //socket.NoDelay = true;
                 socket.Bind(new IPEndPoint(IPAddress.Parse(IP), Port));
                 socket.Listen(100);
                 socket.BeginAccept(new AsyncCallback(ConnectCallback), null);
@@ -178,7 +179,8 @@ namespace YgoMaster.Net
                 case NetMessageType.DuelDlgSetResult:
                 case NetMessageType.DuelListSetCardExData:
                 case NetMessageType.DuelListSetIndex:
-                    OnDuelCom(client, (DuelComMessage)message);
+                case NetMessageType.UpdateIsBusyEffect:// Special case
+                    OnDuelCom(client, message);
                     break;
             }
         }
@@ -213,7 +215,16 @@ namespace YgoMaster.Net
         {
         }
 
-        void OnDuelCom(NetClient client, DuelComMessage message)
+        void OnDuelCom(NetClient client, NetMessage message)
+        {
+            NetClient opponentClient = GetOpponentClient(client);
+            if (opponentClient != null)
+            {
+                opponentClient.Send(message);
+            }
+        }
+
+        private NetClient GetOpponentClient(NetClient client)
         {
             string opponentToken = GameServer.GetDuelingOpponentToken(client.Token);
             NetClient opponentClient;
@@ -221,14 +232,11 @@ namespace YgoMaster.Net
             {
                 connectionByToken.TryGetValue(opponentToken, out opponentClient);
             }
-            if (opponentClient != null)
-            {
-                opponentClient.Send(message);
-            }
-            else
+            if (opponentClient == null)
             {
                 client.Send(new DuelErrorMessage());
             }
+            return opponentClient;
         }
     }
 }
