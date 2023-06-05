@@ -77,6 +77,10 @@ namespace YgoMasterClient
                 str = str.Replace("{BaseIP}", baseIP);
                 str = str.Replace("{BasePort}", basePort.ToString());
                 str = str.Replace("{SessionServerPort}", SessionServerPort.ToString());
+                if (str == "localhost")
+                {
+                    str = "127.0.0.1";
+                }
                 return str;
             };
 
