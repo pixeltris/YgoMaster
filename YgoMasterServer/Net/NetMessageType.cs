@@ -17,9 +17,11 @@ namespace YgoMaster.Net
         // Duel com messages
         DuelComMovePhase,
         DuelComDoCommand,
+        DuelComCancelCommand,
+        DuelComCancelCommand2,
         DuelDlgSetResult,
         DuelListSetCardExData,
-        DuelListSetIndex
-        //TODO: DuelListInitString
+        DuelListSetIndex,
+        DuelListInitString
     }
 }

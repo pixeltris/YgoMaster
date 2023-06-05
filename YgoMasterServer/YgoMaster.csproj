@@ -62,11 +62,14 @@
     <Compile Include="Lib\LinearCongruentialGenerator.cs" />
     <Compile Include="Net\Message\ConnectionRequestMessage.cs" />
     <Compile Include="Net\Message\ConnectionResponseMessage.cs" />
+    <Compile Include="Net\Message\DuelComCancelCommand2Message.cs" />
+    <Compile Include="Net\Message\DuelComCancelCommandMessage.cs" />
     <Compile Include="Net\Message\DuelComDoCommandMessage.cs" />
     <Compile Include="Net\Message\DuelComMessage.cs" />
     <Compile Include="Net\Message\DuelComMovePhaseMessage.cs" />
     <Compile Include="Net\Message\DuelDlgSetResultMessage.cs" />
     <Compile Include="Net\Message\DuelErrorMessage.cs" />
+    <Compile Include="Net\Message\DuelListInitStringMessage.cs" />
     <Compile Include="Net\Message\DuelListSetCardExDataMessage.cs" />
     <Compile Include="Net\Message\DuelListSetIndexMessage.cs" />
     <Compile Include="Net\Message\PingMessage.cs" />

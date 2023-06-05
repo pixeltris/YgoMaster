@@ -176,9 +176,12 @@ namespace YgoMaster.Net
 
                 case NetMessageType.DuelComMovePhase:
                 case NetMessageType.DuelComDoCommand:
+                case NetMessageType.DuelComCancelCommand:
+                case NetMessageType.DuelComCancelCommand2:
                 case NetMessageType.DuelDlgSetResult:
                 case NetMessageType.DuelListSetCardExData:
                 case NetMessageType.DuelListSetIndex:
+                case NetMessageType.DuelListInitString:
                 case NetMessageType.UpdateIsBusyEffect:// Special case
                     OnDuelCom(client, message);
                     break;
