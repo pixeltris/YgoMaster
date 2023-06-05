@@ -956,6 +956,15 @@ unsafe static class Win32Hooks
 
 unsafe static class DuelDll
 {
+    public delegate int Del_RunEffect(int id, int param1, int param2, int param3);
+    public delegate int Del_IsBusyEffect(int id);
+
+    static Del_RunEffect myRunEffect = RunEffect;
+    static Del_IsBusyEffect myIsBusyEffect = IsBusyEffect;
+
+    static Del_RunEffect originalRunEffect;
+    static Del_IsBusyEffect originalIsBusyEffect;
+
     public static Queue<DuelComMessage> DuelComMessageQueue = new Queue<DuelComMessage>();
 
     public static int LastIsBusyEffectSyncSeq;
@@ -973,11 +982,11 @@ unsafe static class DuelDll
         get { return MyID == 0 ? 1 : 0; }
     }
 
-    delegate int Del_RunEffect(int id, int param1, int param2, int param3);
-    static Hook<Del_RunEffect> hookRunEffect;
+    //delegate int Del_RunEffect(int id, int param1, int param2, int param3);
+    //static Hook<Del_RunEffect> hookRunEffect;
 
-    delegate int Del_IsBusyEffect(int id);
-    static Hook<Del_IsBusyEffect> hookIsBusyEffect;
+    //delegate int Del_IsBusyEffect(int id);
+    //static Hook<Del_IsBusyEffect> hookIsBusyEffect;
 
     delegate void Del_DLL_DuelComMovePhase(int phase);
     static Hook<Del_DLL_DuelComMovePhase> hookDLL_DuelComMovePhase;
@@ -1018,6 +1027,9 @@ unsafe static class DuelDll
     public delegate int Del_DLL_DuelGetLP(int player);
     public static Del_DLL_DuelGetLP DLL_DuelGetLP;
 
+    public delegate void Del_DLL_SetEffectDelegate(IntPtr runEffct, IntPtr isBusyEffect);
+    static Hook<Del_DLL_SetEffectDelegate> hookDLL_SetEffectDelegate;
+
     static DuelDll()
     {
         IntPtr lib = PInvoke.LoadLibrary(Path.Combine("masterduel_Data", "Plugins", "x86_64", "duel.dll"));
@@ -1044,9 +1056,19 @@ unsafe static class DuelDll
         IL2Class classInfo = assembly.GetClass("DuelClient", "YgomGame.Duel");
         if (!string.IsNullOrEmpty(ClientSettings.MultiplayerToken))
         {
-            hookRunEffect = new Hook<Del_RunEffect>(RunEffect, classInfo.GetMethod("RunEffect"));
-            hookIsBusyEffect = new Hook<Del_IsBusyEffect>(IsBusyEffect, classInfo.GetMethod("IsBusyEffect"));
+            hookDLL_SetEffectDelegate = new Hook<Del_DLL_SetEffectDelegate>(DLL_SetEffectDelegate, PInvoke.GetProcAddress(lib, "DLL_SetEffectDelegate"));
+
+            //hookRunEffect = new Hook<Del_RunEffect>(RunEffect, classInfo.GetMethod("RunEffect"));
+            //hookIsBusyEffect = new Hook<Del_IsBusyEffect>(IsBusyEffect, classInfo.GetMethod("IsBusyEffect"));
         }
+    }
+
+    static void DLL_SetEffectDelegate(IntPtr runEffct, IntPtr isBusyEffect)
+    {
+        Console.WriteLine("DLL_SetEffectDelegate: " + runEffct + " " + isBusyEffect);
+        originalRunEffect = (Del_RunEffect)Marshal.GetDelegateForFunctionPointer(runEffct, typeof(Del_RunEffect));
+        originalIsBusyEffect = (Del_IsBusyEffect)Marshal.GetDelegateForFunctionPointer(isBusyEffect, typeof(Del_IsBusyEffect));
+        hookDLL_SetEffectDelegate.Original(Marshal.GetFunctionPointerForDelegate(myRunEffect), Marshal.GetFunctionPointerForDelegate(myIsBusyEffect));
     }
 
     public static void HandleNetMessage(NetClient client, NetMessage message)
@@ -1188,7 +1210,9 @@ unsafe static class DuelDll
 
     static int IsBusyEffect(int id)
     {
-        int result = hookIsBusyEffect.Original(id);
+        //int result = hookIsBusyEffect.Original(id);
+        int result = originalIsBusyEffect(id);
+        return result;
         //Console.WriteLine("IsBusyEffect id:" + (DuelViewType)id + " result:" + result);
 
         /*if (LastIsBusyEffectId != id)
@@ -1255,10 +1279,11 @@ unsafe static class DuelDll
 
     static int RunEffect(int id, int param1, int param2, int param3)
     {
+        Console.WriteLine("RunEffect " + (DuelViewType)id + " " + param1 + " " + param2 + " " + param3 + " lp0:" + DLL_DuelGetLP(0) + " lp1:" + DLL_DuelGetLP(1) + " whichTurn:" + DLL_DuelWhichTurnNow() + " myID:" + MyID + " seq:" + RunEffectSeq);
+        File.AppendAllText("aaaa.txt", "RunEffect " + (DuelViewType)id + " " + param1 + " " + param2 + " " + param3 + " lp0:" + DLL_DuelGetLP(0) + " lp1:" + DLL_DuelGetLP(1) + " whichTurn:" + DLL_DuelWhichTurnNow() + " myID:" + MyID + " seq:" + RunEffectSeq);
         LocalIsBusyEffect.Clear();
         RemoteIsBusyEffect.Remove(RunEffectSeq);
         RunEffectSeq++;
-        Console.WriteLine("RunEffect " + (DuelViewType)id + " " + param1 + " " + param2 + " " + param3 + " lp0:" + DLL_DuelGetLP(0) + " lp1:" + DLL_DuelGetLP(1) + " whichTurn:" + DLL_DuelWhichTurnNow() + " myID:" + MyID + " seq:" + RunEffectSeq);
         if (IsPvpDuel)
         {
             switch ((DuelViewType)id)
@@ -1292,9 +1317,15 @@ unsafe static class DuelDll
                         return 0;
                     }
                     break;
+                case DuelViewType.RunList:
+                    if (param1 != MyID)
+                    {
+                        return 0;
+                    }
+                    break;
             }
         }
-        return hookRunEffect.Original(id, param1, param2, param3);
+        return originalRunEffect(id, param1, param2, param3);
     }
 
     public static int DLL_DuelSysAct()

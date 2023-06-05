@@ -69,6 +69,8 @@ namespace YgoMaster
         [DllImport(dllName)]
         private static extern bool DLL_DuelCanIDoSummonMonster(int player);
         [DllImport(dllName)]
+        private static extern int DLL_DuelComCancelCommand(bool decide);
+        [DllImport(dllName)]
         private static extern int DLL_DuelComCancelCommand2(bool decide);
         [DllImport(dllName)]
         private static extern void DLL_DuelComDebugCommand();
