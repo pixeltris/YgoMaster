@@ -170,6 +170,10 @@ namespace YgoMaster
         /// </summary>
         public bool MultiplayerNoDelay;
         /// <summary>
+        /// Disable deck shuffling under multiplayer
+        /// </summary>
+        public bool MultiplayerNoShuffle;
+        /// <summary>
         /// The seed used in multiplayer duels (-1 is random)
         /// </summary>
         public int MultiplayerSeed;
@@ -265,6 +269,7 @@ namespace YgoMaster
             MultiplayerPingTimeoutInSeconds = Utils.GetValue<int>(values, "MultiplayerPingTimeoutInSeconds");
             MultiplayerPingPingInSeconds = Utils.GetValue<int>(values, "MultiplayerPingPingInSeconds");
             MultiplayerNoDelay = Utils.GetValue<bool>(values, "MultiplayerNoDelay");
+            MultiplayerNoShuffle = Utils.GetValue<bool>(values, "MultiplayerNoShuffle");
             MultiplayerSeed = Utils.GetValue<int>(values, "MultiplayerSeed");
             MultiplayerCoinFlipPlayerIndex = Utils.GetValue<int>(values, "MultiplayerCoinFlipPlayerIndex");
             MultiplayerCoinFlipCounter = Utils.GetValue<int>(values, "MultiplayerCoinFlipCounter");

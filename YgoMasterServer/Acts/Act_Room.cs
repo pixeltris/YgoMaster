@@ -1080,7 +1080,7 @@ namespace YgoMaster
             DuelSettings duelSettings = new DuelSettings();
             duelSettings.RandSeed = table.Seed;
             duelSettings.FirstPlayer = table.FirstPlayer;
-            duelSettings.noshuffle = false;
+            duelSettings.noshuffle = MultiplayerNoShuffle;
             duelSettings.tag = false;
             duelSettings.dlginfo = false;
             duelSettings.MyID = request.Player == p1 ? 0 : 1;

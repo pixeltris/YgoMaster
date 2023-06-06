@@ -15,6 +15,7 @@
     "MultiplayerPingTimeoutInSeconds": 90,
     "MultiplayerPingInSeconds": 20,
     "MultiplayerNoDelay": true,
+    "MultiplayerNoShuffle": false,
     "MultiplayerSeed": -1,
     "MultiplayerCoinFlipPlayerIndex": -1,
     "MultiplayerCoinFlipCounter": 5,
