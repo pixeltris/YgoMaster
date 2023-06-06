@@ -8,7 +8,6 @@ using System.Text;
 using YgoMaster.Net.Message;
 using YgoMaster.Net;
 using YgoMaster;
-using System.Windows.Forms;
 
 namespace YgoMasterClient
 {
@@ -25,7 +24,6 @@ namespace YgoMasterClient
         static DateTime LastSysActLogTime;
         static object LogLocker = new object();
 
-        public static int LastIsBusyEffectId = -1;
         public static ulong RunEffectSeq;
         public static bool IsPvpDuel;
         public static int MyID;
@@ -35,6 +33,14 @@ namespace YgoMasterClient
         }
 
         static IntPtr WorkMemory;
+        static int ActiveUserIdForDoCommand
+        {
+            get { return *(int*)(WorkMemory + ClientSettings.DuelDllActiveUserDoCommandOffset); }
+        }
+        static int ActiveUserIdSetIndex
+        {
+            get { return *(int*)(WorkMemory + ClientSettings.DuelDllActiveUserSetIndexOffset); }
+        }
 
         public delegate int Del_RunEffect(int id, int param1, int param2, int param3);
         static Del_RunEffect myRunEffect = RunEffect;
@@ -174,7 +180,6 @@ namespace YgoMasterClient
             LastIsBusyEffectSyncSeq = 0;
             LocalIsBusyEffect.Clear();
             RemoteIsBusyEffect.Clear();
-            LastIsBusyEffectId = -1;
             RunEffectSeq = 0;
             IsPvpDuel = Program.NetClient != null && gameMode == GameMode.Room;
             MyID = YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Duel.MyID");
@@ -207,16 +212,17 @@ namespace YgoMasterClient
                 switch ((DuelViewType)id)
                 {
                     case DuelViewType.WaitInput:
-                        if (*(int*)(WorkMemory + ClientSettings.DuelDllActiveUserDoCommandOffset) != MyID)
+                        if (ActiveUserIdForDoCommand != MyID)
                         {
-                            Log("Ignore " + (DuelViewType)id + " player:" + *(int*)(WorkMemory + ClientSettings.DuelDllActiveUserDoCommandOffset));
+                            originalRunEffect((int)DuelViewType.CpuThinking, 0, 0, 0);
+                            Log("Ignore " + (DuelViewType)id + " player:" + ActiveUserIdForDoCommand);
                             return 0;
                         }
                         break;
                     case DuelViewType.RunDialog:
-                        if (*(int*)(WorkMemory + ClientSettings.DuelDllActiveUserDoCommandOffset) != MyID)
+                        if (ActiveUserIdForDoCommand != MyID)
                         {
-                            Log("Ignore " + (DuelViewType)id + " player:" + *(int*)(WorkMemory + ClientSettings.DuelDllActiveUserDoCommandOffset));
+                            Log("Ignore " + (DuelViewType)id + " player:" + ActiveUserIdForDoCommand);
                             Dictionary<DuelViewType, int> remoteIsBusyEffect;
                             if (!RemoteIsBusyEffect.TryGetValue(RunEffectSeq, out remoteIsBusyEffect))
                             {
@@ -286,16 +292,6 @@ namespace YgoMasterClient
             int result = originalIsBusyEffect(id);
             //Log("IsBusyEffect id:" + (DuelViewType)id + " result:" + result);
 
-            /*if (LastIsBusyEffectId != id)
-            {
-                LastIsBusyEffectId = id;
-                Log("IsBusyEffect id:" + (DuelViewType)id + " result:" + result);
-            }
-            if (result == 0)
-            {
-                LastIsBusyEffectId = -1;
-            }*/
-
             if (IsPvpDuel)
             {
                 int prevResult;
@@ -314,40 +310,17 @@ namespace YgoMasterClient
                 if (result == 0)
                 {
                     Dictionary<DuelViewType, int> remoteIsBusyEffect;
-                    if (!RemoteIsBusyEffect.TryGetValue(RunEffectSeq, out remoteIsBusyEffect))
-                    {
-                        return 1;
-                    }
-
                     int remoteResult;
-                    if (!remoteIsBusyEffect.TryGetValue((DuelViewType)id, out remoteResult))
+                    if (!RemoteIsBusyEffect.TryGetValue(RunEffectSeq, out remoteIsBusyEffect) ||
+                        !remoteIsBusyEffect.TryGetValue((DuelViewType)id, out remoteResult))
                     {
                         if (RemoteIsBusyEffect.ContainsKey(RunEffectSeq + 1))
                         {
-                            // The remote player is already one step ahead. Probably safe to assume 0
+                            // Safe to assume 0 as the remote player is already one step ahead
                             return 0;
                         }
-
-                        /*if (remoteIsBusyEffect.Count > 0)
-                        {
-                            switch ((DuelViewType)id)
-                            {
-                                case DuelViewType.Null:
-                                case DuelViewType.Noop:
-                                    foreach (int value in remoteIsBusyEffect.Values)
-                                    {
-                                        if (value != 0)
-                                        {
-                                            return 1;
-                                        }
-                                    }
-                                    break;
-                            }
-                            return 0;
-                        }*/
                         return 1;
                     }
-
                     return remoteResult;
                 }
             }
