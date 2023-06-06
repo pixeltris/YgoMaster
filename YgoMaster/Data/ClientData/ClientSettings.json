@@ -6,8 +6,9 @@
     "ServerUrl": "http://{BaseIP}:{BasePort}/ygo",
     "ServerPollUrl": "http://{BaseIP}:{BasePort}/ygo/poll",
     "MultiplayerToken": "",// [WARNING] Only use this if you know what you're doing
-    "SessionServerPingTimeoutInSeconds": 90,
-    "SessionServerConnectDelayInSeconds": 10,
+    "MultiplayerPingTimeoutInSeconds": 90,
+    "MultiplayerConnectDelayInSeconds": 10,
+    "MultiplayerNoDelay": true,
     "DuelDllActiveUserDoCommandOffset": 13440,
     "DuelDllActiveUserSetIndexOffset": 13340,
     "ShowConsole": false,

@@ -37,7 +37,9 @@ namespace YgoMaster.Net
         {
             try
             {
-                NetClient client = new NetClient(socket.EndAccept(ar), this);
+                Socket clientSocket = socket.EndAccept(ar);
+                clientSocket.NoDelay = GameServer.MultiplayerNoDelay;
+                NetClient client = new NetClient(clientSocket, this);
                 client.HandleMessage += OnMessage;
                 client.Disconnected += new NetClient.DisconnectedEvent(client_Disconnected);
                 lock (connections)
@@ -59,7 +61,7 @@ namespace YgoMaster.Net
                 Close();
                 Listening = true;
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                //socket.NoDelay = true;
+                socket.NoDelay = GameServer.MultiplayerNoDelay;
                 socket.Bind(new IPEndPoint(IPAddress.Parse(IP), Port));
                 socket.Listen(100);
                 socket.BeginAccept(new AsyncCallback(ConnectCallback), null);

@@ -135,7 +135,9 @@ namespace YgoMaster.Net
                 socket.Close();
 
             Socket = socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            //Socket.NoDelay = true;
+#if YGO_MASTER_CLIENT
+            Socket.NoDelay = YgoMasterClient.ClientSettings.MultiplayerNoDelay;
+#endif
             socket.Connect(ip, port);
             LastMessageTime = DateTime.UtcNow;
             if (Connected != null)

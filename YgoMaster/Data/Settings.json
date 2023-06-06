@@ -12,8 +12,9 @@
     "MultiplayerMaxTokensPerIP": 6,
     "MultiplayerMaxTokensPerIPEx": null,// { "1.1.1.1": 10, "1.1.1.2": 15, }
     "MultiplayerReleaseTokenIPInHours": 200,
-    "SessionServerPingTimeoutInSeconds": 90,
-    "SessionServerPingInSeconds": 20,
+    "MultiplayerPingTimeoutInSeconds": 90,
+    "MultiplayerPingInSeconds": 20,
+    "MultiplayerNoDelay": true,
     "ShowTopics": true,
     "DeckSlots": 999,
     "UnlockAllCards": false,// [WARNING] Enabling this permanently wipes your saved cards (all cards are set to 3x without any shine/royal and any newly obtained cards don't save)

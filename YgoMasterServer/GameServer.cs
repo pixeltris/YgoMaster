@@ -106,11 +106,11 @@ namespace YgoMaster
                             generalUpdateStopwatch.Restart();
                         }
 
-                        if (sessionServerPingStopwatch.Elapsed.TotalSeconds >= SessionServerPingInSeconds)
+                        if (sessionServerPingStopwatch.Elapsed.TotalSeconds >= MultiplayerPingPingInSeconds)
                         {
                             foreach (Net.NetClient client in sessionServer.GetConnections())
                             {
-                                if (client.LastMessageTime < DateTime.UtcNow - TimeSpan.FromSeconds(SessionServerPingTimeoutInSeconds))
+                                if (client.LastMessageTime < DateTime.UtcNow - TimeSpan.FromSeconds(MultiplayerPingTimeoutInSeconds))
                                 {
                                     Utils.LogInfo("Ping timeout from " + client.IP);
                                     client.Close();

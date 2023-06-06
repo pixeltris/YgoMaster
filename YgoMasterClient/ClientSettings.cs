@@ -11,11 +11,12 @@ namespace YgoMasterClient
     {
         public static string SessionServerIP;
         public static int SessionServerPort;
-        public static int SessionServerPingTimeoutInSeconds;
-        public static int SessionServerConnectDelayInSeconds;
         public static string ServerUrl;
         public static string ServerPollUrl;
         public static string MultiplayerToken;
+        public static int MultiplayerPingTimeoutInSeconds;
+        public static int MultiplayerConnectDelayInSeconds;
+        public static bool MultiplayerNoDelay;
         public static int DuelDllActiveUserDoCommandOffset;
         public static int DuelDllActiveUserSetIndexOffset;
         public static bool ShowConsole;
@@ -90,8 +91,9 @@ namespace YgoMasterClient
             ServerUrl = FixupUrl(Utils.GetValue<string>(data, "ServerUrl"));
             ServerPollUrl = FixupUrl(Utils.GetValue<string>(data, "ServerPollUrl"));
             MultiplayerToken = Utils.GetValue<string>(data, "MultiplayerToken");
-            SessionServerPingTimeoutInSeconds = Utils.GetValue<int>(data, "SessionServerPingTimeoutInSeconds");
-            SessionServerConnectDelayInSeconds = Utils.GetValue<int>(data, "SessionServerConnectDelayInSeconds");
+            MultiplayerPingTimeoutInSeconds = Utils.GetValue<int>(data, "MultiplayerPingTimeoutInSeconds");
+            MultiplayerConnectDelayInSeconds = Utils.GetValue<int>(data, "MultiplayerConnectDelayInSeconds");
+            MultiplayerNoDelay = Utils.GetValue<bool>(data, "MultiplayerNoDelay");
             DuelDllActiveUserDoCommandOffset = Utils.GetValue<int>(data, "DuelDllActiveUserDoCommandOffset");
             DuelDllActiveUserSetIndexOffset = Utils.GetValue<int>(data, "DuelDllActiveUserSetIndexOffset");
             ShowConsole = Utils.GetValue<bool>(data, "ShowConsole");

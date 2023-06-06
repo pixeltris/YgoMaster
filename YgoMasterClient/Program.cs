@@ -157,7 +157,7 @@ namespace YgoMasterClient
                     {
                         while (true)
                         {
-                            if (!NetClient.IsConnected && lastConnectAttempt < DateTime.UtcNow - TimeSpan.FromSeconds(ClientSettings.SessionServerConnectDelayInSeconds))
+                            if (!NetClient.IsConnected && lastConnectAttempt < DateTime.UtcNow - TimeSpan.FromSeconds(ClientSettings.MultiplayerConnectDelayInSeconds))
                             {
                                 lastConnectAttempt = DateTime.UtcNow;
                                 try
@@ -174,7 +174,7 @@ namespace YgoMasterClient
                                     Console.WriteLine("Failed to connect to " + ClientSettings.SessionServerIP + ":" + ClientSettings.SessionServerPort);
                                 }
                             }
-                            if (NetClient.IsConnected && NetClient.LastMessageTime < DateTime.UtcNow - TimeSpan.FromSeconds(ClientSettings.SessionServerPingTimeoutInSeconds))
+                            if (NetClient.IsConnected && NetClient.LastMessageTime < DateTime.UtcNow - TimeSpan.FromSeconds(ClientSettings.MultiplayerPingTimeoutInSeconds))
                             {
                                 Console.WriteLine("Ping timeout " + ClientSettings.SessionServerIP + ":" + ClientSettings.SessionServerPort);
                                 NetClient.Close();

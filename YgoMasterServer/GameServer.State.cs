@@ -160,11 +160,15 @@ namespace YgoMaster
         /// <summary>
         /// How long with no response until a session is closed
         /// </summary>
-        int SessionServerPingTimeoutInSeconds;
+        int MultiplayerPingTimeoutInSeconds;
         /// <summary>
         /// How often to ping a session
         /// </summary>
-        int SessionServerPingInSeconds;
+        int MultiplayerPingPingInSeconds;
+        /// <summary>
+        /// Enable NoDelay / don't use the TCP nagle algorithm
+        /// </summary>
+        public bool MultiplayerNoDelay;
 
         void LoadSettings()
         {
@@ -242,8 +246,9 @@ namespace YgoMaster
                 }
             }
             MultiplayerReleaseTokenIPInHours = Utils.GetValue<int>(values, "MultiplayerReleaseTokenIPInHours");
-            SessionServerPingTimeoutInSeconds = Utils.GetValue<int>(values, "SessionServerPingTimeoutInSeconds");
-            SessionServerPingInSeconds = Utils.GetValue<int>(values, "SessionServerPingInSeconds");
+            MultiplayerPingTimeoutInSeconds = Utils.GetValue<int>(values, "MultiplayerPingTimeoutInSeconds");
+            MultiplayerPingPingInSeconds = Utils.GetValue<int>(values, "MultiplayerPingPingInSeconds");
+            MultiplayerNoDelay = Utils.GetValue<bool>(values, "MultiplayerNoDelay");
 
             NumDeckSlots = Utils.GetValue<int>(values, "DeckSlots", 20);
             Utils.GetIntHashSet(values, "DefaultItems", DefaultItems = new HashSet<int>(), ignoreZero: true);
