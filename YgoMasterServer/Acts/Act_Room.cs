@@ -878,6 +878,7 @@ namespace YgoMaster
 
             if (table.MatchedTime < DateTime.UtcNow - TimeSpan.FromSeconds(DuelRoomTableMatchingTimeoutInSeconds))
             {
+                table.ClearMatching();
                 Utils.LogWarning("[Act_DuelStartWating] table.MatchedTime < DateTime.UtcNow - TimeSpan.FromSeconds(DuelRoomTableMatchingTimeoutInSeconds)");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
@@ -966,6 +967,7 @@ namespace YgoMaster
 
             if (table.MatchedTime < DateTime.UtcNow - TimeSpan.FromSeconds(DuelRoomTableMatchingTimeoutInSeconds))
             {
+                table.ClearMatching();
                 Utils.LogWarning("[Act_DuelStartSelecting] table.MatchedTime < DateTime.UtcNow - TimeSpan.FromSeconds(DuelRoomTableMatchingTimeoutInSeconds)");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;
@@ -1030,6 +1032,7 @@ namespace YgoMaster
 
             if (table.MatchedTime < DateTime.UtcNow - TimeSpan.FromSeconds(DuelRoomTableMatchingTimeoutInSeconds))
             {
+                table.ClearMatching();
                 Utils.LogWarning("[Act_DuelBeginPvp] table.MatchedTime < DateTime.UtcNow - TimeSpan.FromSeconds(DuelRoomTableMatchingTimeoutInSeconds)");
                 request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                 return;

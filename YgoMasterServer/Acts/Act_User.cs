@@ -9,6 +9,12 @@ namespace YgoMaster
     {
         void Act_UserEntry(GameServerWebRequest request)
         {
+            DuelRoom duelRoom = request.Player.DuelRoom;
+            if (duelRoom != null && !duelRoom.Disbanded)
+            {
+                duelRoom.ResetTableStateIfMatchingOrDueling(request.Player);
+            }
+
             /*// NOTE: To handle tutorial properly the following needs to be done:
             // - Handle "User.first_name_entry"
             // - Handle "Structure.first"
@@ -139,11 +145,7 @@ namespace YgoMaster
             DuelRoom duelRoom = request.Player.DuelRoom;
             if (duelRoom != null && !duelRoom.Disbanded)
             {
-                DuelRoomTable table = duelRoom.GetTable(request.Player);
-                if (table != null)
-                {
-                    table.RemovePlayer(request.Player);
-                }
+                duelRoom.ResetTableStateIfMatchingOrDueling(request.Player);
             }
 
             // Room / Master.Regulation are required to create decks / view public decks without breaking the client

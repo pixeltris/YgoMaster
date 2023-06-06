@@ -173,12 +173,8 @@ namespace YgoMaster
                         case DuelRoomTableState.Matched:
                         case DuelRoomTableState.Dueling:
                             Console.WriteLine("ResetTableStateIfMatchingOrDueling (" + table.State + ") on table " + Id +
-                                " requester pcode " + player.Code + " name '" + player.Name + "'");
-                            table.State = DuelRoomTableState.Joinable;
-                            foreach (DuelRoomTableEntry entry in table.Entries)
-                            {
-                                entry.IsMatchingOrInDuel = false;
-                            }
+                                " requester pcode " + player.Code + " name '" + player.Name);
+                            table.ClearMatching();
                             break;
                     }
                 }
@@ -350,6 +346,18 @@ namespace YgoMaster
                     entry.IsMatchingOrInDuel = false;
                     entry.Comment = 0;
                     entry.CommentTime = default(DateTime);
+                }
+                State = DuelRoomTableState.Joinable;
+            }
+        }
+
+        public void ClearMatching()
+        {
+            lock (Entries)
+            {
+                foreach (DuelRoomTableEntry entry in Entries)
+                {
+                    entry.IsMatchingOrInDuel = false;
                 }
                 State = DuelRoomTableState.Joinable;
             }
