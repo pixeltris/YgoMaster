@@ -293,6 +293,12 @@ namespace YgoMaster
             }
             else
             {
+                DuelRoomTable table = duelRoom.GetTable(request.Player);
+                if (table != null && table.State == DuelRoomTableState.Dueling && table.HasBeginDuel)
+                {
+                    duelRoom.ResetTableStateIfMatchingOrDueling(request.Player);
+                }
+
                 WriteRoomInfo(request, duelRoom);
             }
             request.Remove("Room.room_info");
@@ -1065,11 +1071,14 @@ namespace YgoMaster
 
             if (!sessionServer.HasClientWithToken(request.Player.Token))
             {
+                table.ClearMatching();
                 Utils.LogWarning("[Act_DuelBeginPvp] Player '" + request.Player.Name + "' can't enter duel as they aren't connected to the session server");
                 request.ResultCode = (int)ResultCodes.RoomCode.ERR_INVALID_DATA;
                 duelRoom.ResetTableStateIfMatchingOrDueling(request.Player);
                 return;
             }
+
+            tableEntry.HasBeginDuel = true;
 
             Dictionary<uint, FriendState> p1Friends = GetFriends(p1);
             Dictionary<uint, FriendState> p2Friends = GetFriends(p2);

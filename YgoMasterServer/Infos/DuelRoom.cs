@@ -249,6 +249,30 @@ namespace YgoMaster
                 return true;
             }
         }
+        public bool HasBeginDuel
+        {
+            get
+            {
+                Player[] players = { Player1, Player2 };
+                foreach (Player player in players)
+                {
+                    if (player == null)
+                    {
+                        return false;
+                    }
+                    DuelRoomTableEntry entry = GetEntry(player);
+                    if (entry == null)
+                    {
+                        return false;
+                    }
+                    if (!entry.HasBeginDuel)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
         public uint Seed;
         public int FirstPlayer;
         public int CoinFlipCounter;
@@ -275,6 +299,7 @@ namespace YgoMaster
                     {
                         Entries[i].Player = player;
                         Entries[i].IsMatchingOrInDuel = false;
+                        Entries[i].HasBeginDuel = false;
                         return true;
                     }
                 }
@@ -292,6 +317,7 @@ namespace YgoMaster
                     {
                         Entries[i].Player = null;
                         Entries[i].IsMatchingOrInDuel = false;
+                        Entries[i].HasBeginDuel = false;
                     }
                 }
             }
@@ -336,21 +362,6 @@ namespace YgoMaster
             return null;
         }
 
-        public void Clear()
-        {
-            lock (Entries)
-            {
-                foreach (DuelRoomTableEntry entry in Entries)
-                {
-                    entry.Player = null;
-                    entry.IsMatchingOrInDuel = false;
-                    entry.Comment = 0;
-                    entry.CommentTime = default(DateTime);
-                }
-                State = DuelRoomTableState.Joinable;
-            }
-        }
-
         public void ClearMatching()
         {
             lock (Entries)
@@ -358,6 +369,7 @@ namespace YgoMaster
                 foreach (DuelRoomTableEntry entry in Entries)
                 {
                     entry.IsMatchingOrInDuel = false;
+                    entry.HasBeginDuel = false;
                 }
                 State = DuelRoomTableState.Joinable;
             }
@@ -378,6 +390,7 @@ namespace YgoMaster
             }
         }
         public bool IsMatchingOrInDuel;
+        public bool HasBeginDuel;
         public DateTime CommentTime;
         public int Comment;
     }
