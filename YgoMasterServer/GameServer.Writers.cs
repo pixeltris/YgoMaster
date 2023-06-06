@@ -202,7 +202,7 @@ namespace YgoMaster
             solo["deck_info"] = new Dictionary<string, object>()
             {
                 { "deck_id", deck != null ? deck.Id : 0 },
-                { "valid", deck != null ? deck.IsValid(request.Player, DeckInfo.DefaultRegulationId, Regulation) : false },
+                { "valid", deck != null ? DisableDeckValidation || deck.IsValid(request.Player, DeckInfo.DefaultRegulationId, Regulation) : false },
                 { "possession", true }//request.Player.Duel.IsMyDeck }
             };
         }

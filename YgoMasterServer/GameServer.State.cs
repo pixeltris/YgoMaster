@@ -169,6 +169,22 @@ namespace YgoMaster
         /// Enable NoDelay / don't use the TCP nagle algorithm
         /// </summary>
         public bool MultiplayerNoDelay;
+        /// <summary>
+        /// The seed used in multiplayer duels (-1 is random)
+        /// </summary>
+        public int MultiplayerSeed;
+        /// <summary>
+        /// Who should win the coin flip 
+        /// </summary>
+        public int MultiplayerCoinFlipPlayerIndex;
+        /// <summary>
+        /// How many times the coin flip counter should count
+        /// </summary>
+        public int MultiplayerCoinFlipCounter;
+        /// <summary>
+        /// Disable deck validation in solo and duel rooms
+        /// </summary>
+        bool DisableDeckValidation;
 
         void LoadSettings()
         {
@@ -249,6 +265,9 @@ namespace YgoMaster
             MultiplayerPingTimeoutInSeconds = Utils.GetValue<int>(values, "MultiplayerPingTimeoutInSeconds");
             MultiplayerPingPingInSeconds = Utils.GetValue<int>(values, "MultiplayerPingPingInSeconds");
             MultiplayerNoDelay = Utils.GetValue<bool>(values, "MultiplayerNoDelay");
+            MultiplayerSeed = Utils.GetValue<int>(values, "MultiplayerSeed");
+            MultiplayerCoinFlipPlayerIndex = Utils.GetValue<int>(values, "MultiplayerCoinFlipPlayerIndex");
+            MultiplayerCoinFlipCounter = Utils.GetValue<int>(values, "MultiplayerCoinFlipCounter");
 
             NumDeckSlots = Utils.GetValue<int>(values, "DeckSlots", 20);
             Utils.GetIntHashSet(values, "DefaultItems", DefaultItems = new HashSet<int>(), ignoreZero: true);
@@ -265,6 +284,7 @@ namespace YgoMaster
             ProgressiveCardRarities = Utils.GetValue<bool>(values, "ProgressiveCardRarities");
             ShowTopics = Utils.GetValue<bool>(values, "ShowTopics");
             DisableNoDismantle = Utils.GetValue<bool>(values, "DisableNoDismantle");
+            DisableDeckValidation = Utils.GetValue<bool>(values, "DisableDeckValidation");
 
             FriendSearchLimit = Utils.GetValue<int>(values, "FriendSearchLimit", 100);
             FriendOfflineInSeconds = Utils.GetValue<int>(values, "FriendOfflineInSeconds", 300);

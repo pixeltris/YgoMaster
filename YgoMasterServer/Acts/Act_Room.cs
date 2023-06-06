@@ -318,7 +318,7 @@ namespace YgoMaster
                 if (tableIndex >= 0 && tableIndex < duelRoom.Tables.Length)
                 {
                     DeckInfo deck = request.Player.Duel.GetDeck(GameMode.Room);
-                    if (deck == null || !deck.IsValid(request.Player, duelRoom.Rule, Regulation))
+                    if (deck == null || (!DisableDeckValidation && !deck.IsValid(request.Player, duelRoom.Rule, Regulation)))
                     {
                         request.ResultCode = (int)ResultCodes.RoomCode.ERR_DECK_REG;
                     }
@@ -490,10 +490,10 @@ namespace YgoMaster
                                 if (table.State == DuelRoomTableState.Joinable)
                                 {
                                     table.State = DuelRoomTableState.Matching;
-                                    table.Seed = 1;//(uint)rand.Next();
+                                    table.Seed = MultiplayerSeed != -1 ? (uint)MultiplayerSeed : (uint)rand.Next();
                                     table.FirstPlayer = -1;
-                                    table.CoinFlipPlayerIndex = rand.Next(2);
-                                    table.CoinFlipCounter = 5;
+                                    table.CoinFlipPlayerIndex = MultiplayerCoinFlipPlayerIndex != -1 ? MultiplayerCoinFlipPlayerIndex : rand.Next(2);
+                                    table.CoinFlipCounter = MultiplayerCoinFlipCounter;
                                     using (SHA1 sha1 = SHA1.Create())
                                     {
                                         table.TableHash = BitConverter.ToString(sha1.ComputeHash(Guid.NewGuid().ToByteArray())).Replace("-", string.Empty);
@@ -551,7 +551,7 @@ namespace YgoMaster
             {
                 deckInfoData["deck_id"] = deck.Id;
                 deckInfoData["deck"] = deck.ToDictionary();
-                deckInfoData["valid"] = deck.IsValid(request.Player, duelRoom.Rule, Regulation);
+                deckInfoData["valid"] = DisableDeckValidation || deck.IsValid(request.Player, duelRoom.Rule, Regulation);
                 deckInfoData["possession"] = true;
                 deckInfoData["regulation"] = deck.RegulationId.ToString();
             }
@@ -1091,7 +1091,7 @@ namespace YgoMaster
             duelSettings.regulation_id = 0;
             duelSettings.duel_start_timestamp = 0;
             duelSettings.surrender = true;
-            duelSettings.Limit = 16;//0 (16 = no random)
+            duelSettings.Limit = 16;//0 (16 = NoRandom)
             duelSettings.GameMode = (int)GameMode.Room;//GameMode.Normal
             duelSettings.cpu = 100;
             duelSettings.cpuflag = null;

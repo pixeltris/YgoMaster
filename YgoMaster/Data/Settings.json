@@ -15,6 +15,10 @@
     "MultiplayerPingTimeoutInSeconds": 90,
     "MultiplayerPingInSeconds": 20,
     "MultiplayerNoDelay": true,
+    "MultiplayerSeed": -1,
+    "MultiplayerCoinFlipPlayerIndex": -1,
+    "MultiplayerCoinFlipCounter": 5,
+    "DisableDeckValidation": false,
     "ShowTopics": true,
     "DeckSlots": 999,
     "UnlockAllCards": false,// [WARNING] Enabling this permanently wipes your saved cards (all cards are set to 3x without any shine/royal and any newly obtained cards don't save)
