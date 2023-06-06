@@ -14,6 +14,7 @@ PvP is a work in progress. It lets you use duel rooms under a low latency enviro
 ## Setting it up on LAN/WAN
 
 - Modify `BaseIP` in both `Data/Setting.json` and `Data/ClientData/ClientSettings.json` to point to the IP of the machine which runs `YgoMaster.exe`
+- Play around with `MultiplayerNoDelay` (`Setting.json` / `ClientSettings.json`) to see which works best for you (it disables nagle's algorithm)
 
 ## Starting duels
 

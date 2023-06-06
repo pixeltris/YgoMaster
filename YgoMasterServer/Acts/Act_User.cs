@@ -169,9 +169,8 @@ namespace YgoMaster
             };
             request.Response["Room"] = new Dictionary<string, object>()
             {
-                { "rule_list", new Dictionary<string, object>() {
-                    { DeckInfo.DefaultRegulationId.ToString(), DeckInfo.DefaultRegulationName },
-                }},
+                { "rule_list", RegulationInfo["rule_list"] },
+                { "holding_rule_list", RegulationInfo["rule_list"] },
                 { "common", DeckInfo.DefaultRegulationId }
             };
             WriteDeck(request);
