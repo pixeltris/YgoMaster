@@ -1,4 +1,4 @@
-## PvP
+## PvP 
 
 PvP is a work in progress. It lets you use duel rooms under a low latency environment (LAN). The friends list also works
 
