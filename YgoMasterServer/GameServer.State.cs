@@ -71,6 +71,7 @@ namespace YgoMaster
         DuelSettings CustomDuelSettings;
         DateTime CustomDuelLastModified;
         DuelRewardInfos DuelRewards;
+        DuelRewardInfos DuelRoomRewards;
         /// <summary>
         /// Cards will only be visible in the trunk if they are obtainable via the shop
         /// </summary>
@@ -164,7 +165,7 @@ namespace YgoMaster
         /// <summary>
         /// How often to ping a session
         /// </summary>
-        int MultiplayerPingPingInSeconds;
+        int MultiplayerPingInSeconds;
         /// <summary>
         /// Enable NoDelay / don't use the TCP nagle algorithm
         /// </summary>
@@ -267,7 +268,7 @@ namespace YgoMaster
             }
             MultiplayerReleaseTokenIPInHours = Utils.GetValue<int>(values, "MultiplayerReleaseTokenIPInHours");
             MultiplayerPingTimeoutInSeconds = Utils.GetValue<int>(values, "MultiplayerPingTimeoutInSeconds");
-            MultiplayerPingPingInSeconds = Utils.GetValue<int>(values, "MultiplayerPingPingInSeconds");
+            MultiplayerPingInSeconds = Utils.GetValue<int>(values, "MultiplayerPingInSeconds");
             MultiplayerNoDelay = Utils.GetValue<bool>(values, "MultiplayerNoDelay");
             MultiplayerNoShuffle = Utils.GetValue<bool>(values, "MultiplayerNoShuffle");
             MultiplayerSeed = Utils.GetValue<int>(values, "MultiplayerSeed");
@@ -395,6 +396,9 @@ namespace YgoMaster
 
             DuelRewards = new DuelRewardInfos();
             DuelRewards.FromDictionary(Utils.GetDictionary(values, "DuelRewards"));
+
+            DuelRoomRewards = new DuelRewardInfos();
+            DuelRoomRewards.FromDictionary(Utils.GetDictionary(values, "DuelRoomRewards"));
 
             if (MultiplayerEnabled)
             {

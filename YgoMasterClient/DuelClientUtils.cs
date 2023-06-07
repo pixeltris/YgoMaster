@@ -72,13 +72,39 @@ namespace YgomGame.Duel
 
     unsafe static class DuelClient
     {
+        static IL2Field fieldInstance;
+        static IL2Field fieldStep;
         static IL2Method methodSetDuelSpeed;
+
+        public static IntPtr Instance
+        {
+            get
+            {
+                IL2Object result = fieldInstance.GetValue();
+                return result != null ? result.ptr : IntPtr.Zero;
+            }
+        }
+        public static DuelClientStep Step
+        {
+            get
+            {
+                IntPtr instance = Instance;
+                if (instance != IntPtr.Zero)
+                {
+                    IL2Object result = fieldStep.GetValue(instance);
+                    return (DuelClientStep)(result != null ? result.GetValueRef<int>() : 0);
+                }
+                return (DuelClientStep)0;
+            }
+        }
 
         static DuelClient()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("DuelClient", "YgomGame.Duel");
             methodSetDuelSpeed = classInfo.GetMethod("SetDuelSpeed");
+            fieldInstance = classInfo.GetField("instance");
+            fieldStep = classInfo.GetField("m_Step");
         }
 
         public static void SetDuelSpeed(DuelSpeed duelSpeed)

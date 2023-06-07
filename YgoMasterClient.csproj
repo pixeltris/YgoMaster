@@ -93,6 +93,7 @@
     <Compile Include="YgoMasterServer\Enums\Duel.cs" />
     <Compile Include="YgoMasterServer\Enums\ItemID.cs" />
     <Compile Include="YgoMasterServer\Enums\Misc.cs" />
+    <Compile Include="YgoMasterServer\Enums\ResultCodes.cs" />
     <Compile Include="YgoMasterServer\Infos\CardCollection.cs" />
     <Compile Include="YgoMasterServer\Lib\MiniJSON.cs" />
     <Compile Include="YgoMasterServer\Infos\DeckInfo.cs" />
@@ -108,6 +109,8 @@
     <Compile Include="YgoMasterServer\Net\Message\DuelListInitStringMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelListSetCardExDataMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelListSetIndexMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Message\OpponentDuelEndedMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Message\OpponentSurrenderedMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\PingMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\PongMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\UpdateIsBusyEffectMessage.cs" />

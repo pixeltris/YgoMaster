@@ -72,6 +72,8 @@
     <Compile Include="Net\Message\DuelListInitStringMessage.cs" />
     <Compile Include="Net\Message\DuelListSetCardExDataMessage.cs" />
     <Compile Include="Net\Message\DuelListSetIndexMessage.cs" />
+    <Compile Include="Net\Message\OpponentDuelEndedMessage.cs" />
+    <Compile Include="Net\Message\OpponentSurrenderedMessage.cs" />
     <Compile Include="Net\Message\PingMessage.cs" />
     <Compile Include="Net\Message\PongMessage.cs" />
     <Compile Include="Net\Message\UpdateIsBusyEffectMessage.cs" />

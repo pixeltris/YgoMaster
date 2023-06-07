@@ -225,7 +225,7 @@ namespace YgoMaster
                 {
                     DuelRewardInfos rewards = new DuelRewardInfos();
                     rewards.FromDictionary(extraRewards);
-                    GiveDuelReward(request, rewards, duelResult, finishType, statusChange);
+                    GiveDuelReward(request, request.Player, rewards, duelResult, finishType, statusChange);
                 }
             }
 
@@ -764,7 +764,7 @@ namespace YgoMaster
             Dictionary<string, object> resultData = Utils.GetOrCreateDictionary(soloData, "Result");
             if (SoloRewardsInDuelResult)
             {
-                GiveDuelReward(request, duelRewards, DuelResultType.Win, DuelFinishType.None, true);
+                GiveDuelReward(request, request.Player, duelRewards, DuelResultType.Win, DuelFinishType.None, true);
             }
             // NOTE: You need the "rewards" entry (even if empty) to get the "COMPLETE" popup banner
             if (!resultData.ContainsKey("rewards"))

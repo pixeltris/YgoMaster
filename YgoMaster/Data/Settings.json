@@ -212,5 +212,94 @@
                 "rate": 10
             },
         ]
+    },
+	"DuelRoomRewards": {
+		"MinimumTurnsForSurrenderRewardsWin": 0,
+        "MinimumTurnsForSurrenderRewardsLose": 0,
+        "MinimumTurnsForSurrenderRewardsDraw": 0,
+        "win": [
+            {
+                "type": "Item",
+                "rate": 0.1,
+                "rare": true,
+            },
+            {
+                "type": "Item",
+                "rate": 0.1,
+                "rare": true,
+            },
+            {
+                "type": "Item",
+                "rate": 0.1,
+                "rare": true,
+            },
+            {
+                "type": "Gem",
+                "value": 200,
+                "rate": 0.01,
+                "rare": true
+            },
+            {
+                "type": "Gem",
+                "min": 70,
+                "max": 120,
+                "rate": 100
+            },
+            {
+                "type": "Gem",
+                "value": 15,
+                "rate": 15
+            },
+            {
+                "type": "Gem",
+                "value": 10,
+                "rate": 10
+            },
+            {
+                "type": "Gem",
+                "value": 5,
+                "rate": 5
+            },
+            {
+                "type": "Gem",
+                "value": 99,
+                "rate": 0.1
+            },
+            {
+                "type": "Card",
+                "cardRate": [90,10],
+                "rate": 50
+            },
+            {
+                "type": "Card",
+                "cardRate": [85,14,0.7,0.1],
+                "cardRare": [false,false,true,true],
+                "rate": 10
+            },
+            {
+                "type": "Card",
+                "cardRate": [60,37,2.5,0.5],
+                "cardRare": [false,false,true,true],
+                "rate": 5
+            },
+        ],
+        "lose": [
+            {
+                "type": "Gem",
+                "min": 5,
+                "max": 20,
+                "rate": 100
+            },
+            {
+                "type": "Gem",
+                "value": 8,
+                "rate": 10
+            },
+            {
+                "type": "Card",
+                "cardRate": [90,9,0.7,0.1],
+                "rate": 10
+            },
+        ]
     }
 }

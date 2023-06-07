@@ -17,6 +17,7 @@ namespace YgoMasterClient
         public static int MultiplayerPingTimeoutInSeconds;
         public static int MultiplayerConnectDelayInSeconds;
         public static bool MultiplayerNoDelay;
+        public static bool MultiplayerLogConnectionState;
         public static int DuelDllActiveUserDoCommandOffset;
         public static int DuelDllActiveUserSetIndexOffset;
         public static bool ShowConsole;
@@ -94,6 +95,7 @@ namespace YgoMasterClient
             MultiplayerPingTimeoutInSeconds = Utils.GetValue<int>(data, "MultiplayerPingTimeoutInSeconds");
             MultiplayerConnectDelayInSeconds = Utils.GetValue<int>(data, "MultiplayerConnectDelayInSeconds");
             MultiplayerNoDelay = Utils.GetValue<bool>(data, "MultiplayerNoDelay");
+            MultiplayerLogConnectionState = Utils.GetValue<bool>(data, "MultiplayerLogConnectionState");
             DuelDllActiveUserDoCommandOffset = Utils.GetValue<int>(data, "DuelDllActiveUserDoCommandOffset");
             DuelDllActiveUserSetIndexOffset = Utils.GetValue<int>(data, "DuelDllActiveUserSetIndexOffset");
             ShowConsole = Utils.GetValue<bool>(data, "ShowConsole");

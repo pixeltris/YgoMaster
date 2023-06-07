@@ -180,15 +180,21 @@ namespace YgomSystem.Network
         delegate IntPtr Del_Duel_end(IntPtr paramPtr);
         static Hook<Del_Duel_end> hookDuel_end;
 
+        static IL2Method methodToggleCrossPlay;
+
         static API()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("API", "YgomSystem.Network");
             hookDuel_begin = new Hook<Del_Duel_begin>(Duel_begin, classInfo.GetMethod("Duel_begin"));
-            if (ClientSettings.AlwaysWin)
-            {
-                hookDuel_end = new Hook<Del_Duel_end>(Duel_end, classInfo.GetMethod("Duel_end"));
-            }
+            hookDuel_end = new Hook<Del_Duel_end>(Duel_end, classInfo.GetMethod("Duel_end"));
+
+            methodToggleCrossPlay = classInfo.GetMethod("System_toggle_crossplay");
+        }
+
+        public static void ToggleCrossPlay()
+        {
+            methodToggleCrossPlay.Invoke();
         }
 
         static IntPtr Duel_begin(IntPtr rulePtr)
@@ -225,8 +231,28 @@ namespace YgomSystem.Network
             {
                 param = new Dictionary<string, object>();
             }
-            param["res"] = 1;
-            param["finish"] = 1;
+            if (DuelDll.IsPvpDuel)
+            {
+                if (DuelDll.HasOpponentSurrendered)
+                {
+                    param["res"] = (int)DuelResultType.Win;
+                    param["finish"] = (int)DuelFinishType.Surrender;
+                }
+                else if (DuelDll.HasNetworkError)
+                {
+                    param["res"] = (int)DuelResultType.Draw;
+                    param["finish"] = (int)DuelFinishType.FinishError;
+                }
+            }
+            else if (ClientSettings.AlwaysWin)
+            {
+                param["res"] = (int)DuelResultType.Win;
+                param["finish"] = (int)DuelFinishType.Normal;
+            }
+            if (!Program.IsLive)
+            {
+                param["turn"] = DuelDll.DLL_DuelGetTurnNum();
+            }
             paramPtr = YgomMiniJSON.Json.Deserialize(MiniJSON.Json.Serialize(param));
             return hookDuel_end.Original(paramPtr);
         }

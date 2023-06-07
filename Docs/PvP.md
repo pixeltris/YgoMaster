@@ -14,9 +14,14 @@ PvP is a work in progress. It lets you use duel rooms under a low latency enviro
 ## Setting it up on LAN/WAN
 
 - Modify `BaseIP` in both `Data/Setting.json` and `Data/ClientData/ClientSettings.json` to point to the IP of the machine which runs `YgoMaster.exe`
+- On WAN you will need to use `*` for `BaseIP` and `0.0.0.0` for `SessionServerIP` in `Settings.json`. In `ClientSettings.json` you will want to set `BaseIP` to the WAN IP
 - Play around with `MultiplayerNoDelay` (`Setting.json` / `ClientSettings.json`) to see which works best for you (it disables nagle's algorithm)
 
 ## Starting duels
 
 - Click `DUEL` in the home menu
 - Click `Duel Room (PvP)` and create a duel room as you would in the normal game
+
+## Bugs
+
+- For some people clicking `OnClickRoomMatchMenuItem` param isn't working which results in any menu item going to create a duel room

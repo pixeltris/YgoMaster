@@ -243,4 +243,39 @@ namespace YgoMaster
         Matched = 4,
         Dueling = 5
     }
+
+    /// <summary>
+    /// YgomGame.Duel.DuelClient.Step
+    /// </summary>
+    enum DuelClientStep
+    {
+        InitLoadRes,
+        WaitLoadRes,
+        InitializeProcess,
+        FinishInitialize,
+        WaitConnecting,
+        InitEngine,
+        InitSound,
+        WaitSound,
+        InitLoadSound ,
+        WaitLoadSound,
+        WaitGameObjectInit,
+        PrepareProcess,
+        FinishPrepare,
+        WaitCameraWork,
+        ShowUpDuel,
+        WaitShowUp,
+        ExecDuel,
+        EndDuel,
+        WaitEndNetwork,
+        DuelEnd,
+        InitTerm,
+        WaitTerm,
+        End,
+        WaitDestroy,
+        ConnectingError,
+        Beginning,
+        InitSequenceStart = 0,
+        InitSequenceEnd = 1
+}
 }

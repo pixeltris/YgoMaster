@@ -18,7 +18,7 @@ namespace YgoMaster.Net
         public int Port { get; private set; }
 
         private List<NetClient> connections = new List<NetClient>();
-        private Dictionary<string, NetClient> connectionByToken = new Dictionary<string, NetClient>();
+        private Dictionary<string, NetClient> connectionsByToken = new Dictionary<string, NetClient>();
 
         public bool Listening { get; private set; }
 
@@ -85,7 +85,7 @@ namespace YgoMaster.Net
                 foreach (NetClient client in new List<NetClient>(connections))
                     client.Close();
                 connections.Clear();
-                connectionByToken.Clear();
+                connectionsByToken.Clear();
             }
         }
 
@@ -97,7 +97,7 @@ namespace YgoMaster.Net
                 string token = client.Token;
                 if (!string.IsNullOrEmpty(token))
                 {
-                    connectionByToken.Remove(token);
+                    connectionsByToken.Remove(token);
                 }
                 client.Close();
             }
@@ -108,6 +108,16 @@ namespace YgoMaster.Net
             lock (connections)
             {
                 return new List<NetClient>(connections);
+            }
+        }
+
+        public NetClient GetConnectionByToken(string token)
+        {
+            lock (connections)
+            {
+                NetClient client;
+                connectionsByToken.TryGetValue(token, out client);
+                return client;
             }
         }
 
@@ -151,7 +161,7 @@ namespace YgoMaster.Net
                 string token = client.Token;
                 if (!string.IsNullOrEmpty(token))
                 {
-                    connectionByToken.Remove(token);
+                    connectionsByToken.Remove(token);
                 }
             }
         }
@@ -185,6 +195,7 @@ namespace YgoMaster.Net
                 case NetMessageType.DuelListSetIndex:
                 case NetMessageType.DuelListInitString:
                 case NetMessageType.UpdateIsBusyEffect:// Special case
+                case NetMessageType.DuelError:// Special case
                     OnDuelCom(client, message);
                     break;
             }
@@ -207,7 +218,7 @@ namespace YgoMaster.Net
                 lock (connections)
                 {
                     client.Token = message.Token;
-                    connectionByToken[client.Token] = client;
+                    connectionsByToken[client.Token] = client;
                 }
             }
             client.Send(new ConnectionResponseMessage()
@@ -218,30 +229,58 @@ namespace YgoMaster.Net
 
         void OnPong(NetClient client, PongMessage message)
         {
+            // TODO: Use the latency values
         }
 
         void OnDuelCom(NetClient client, NetMessage message)
         {
-            NetClient opponentClient = GetOpponentClient(client);
+            NetClient opponentClient = GetDuelingOpponentClient(client);
             if (opponentClient != null)
             {
                 opponentClient.Send(message);
             }
         }
 
-        private NetClient GetOpponentClient(NetClient client)
+        NetClient GetDuelingOpponentClient(NetClient client)
         {
-            string opponentToken = GameServer.GetDuelingOpponentToken(client.Token);
-            NetClient opponentClient;
-            lock (connections)
+            Player opponent = GameServer.GetDuelingOpponent(client.Token);
+            NetClient opponentClient = null;
+            if (opponent != null)
             {
-                connectionByToken.TryGetValue(opponentToken, out opponentClient);
+                lock (connections)
+                {
+                    connectionsByToken.TryGetValue(opponent.Token, out opponentClient);
+                }
             }
             if (opponentClient == null)
             {
                 client.Send(new DuelErrorMessage());
             }
             return opponentClient;
+        }
+
+        public void Ping(NetClient client)
+        {
+            DuelRoomTableState tableState;
+            Player opponent = GameServer.GetDuelingOpponent(client.Token, out tableState);
+            if (opponent != null)
+            {
+                NetClient opponentClient;
+                lock (connections)
+                {
+                    connectionsByToken.TryGetValue(opponent.Token, out opponentClient);
+                }
+                if (opponentClient == null)
+                {
+                    client.Send(new DuelErrorMessage());
+                }
+            }
+
+            client.Send(new PingMessage()
+            {
+                RequestTime = DateTime.UtcNow,
+                DuelingState = tableState
+            });
         }
     }
 }

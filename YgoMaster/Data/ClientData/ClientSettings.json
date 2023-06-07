@@ -9,6 +9,7 @@
     "MultiplayerPingTimeoutInSeconds": 90,
     "MultiplayerConnectDelayInSeconds": 10,
     "MultiplayerNoDelay": true,
+    "MultiplayerLogConnectionState": false,
     "DuelDllActiveUserDoCommandOffset": 13440,
     "DuelDllActiveUserSetIndexOffset": 13340,
     "ShowConsole": false,

@@ -188,7 +188,13 @@ namespace YgoMaster
         public DuelRoomTableState State = DuelRoomTableState.Joinable;
         public DateTime MatchedTime;
 
-        static Random rand = new Random();
+        public uint Seed;
+        public int FirstPlayer;
+        public int CoinFlipCounter;
+        public int CoinFlipPlayerIndex;
+        public string TableHash;
+        public string TableTicket;
+        public DuelRoomTableRewards Rewards = new DuelRoomTableRewards();
 
         public Player Player1
         {
@@ -273,12 +279,6 @@ namespace YgoMaster
                 return true;
             }
         }
-        public uint Seed;
-        public int FirstPlayer;
-        public int CoinFlipCounter;
-        public int CoinFlipPlayerIndex;
-        public string TableHash;
-        public string TableTicket;
 
         public DuelRoomTable()
         {
@@ -362,6 +362,19 @@ namespace YgoMaster
             return null;
         }
 
+        public DuelRoomTableEntry GetOpponentEntry(Player player)
+        {
+            if (Entries[0].Player == player)
+            {
+                return Entries[1];
+            }
+            else if (Entries[1].Player == player)
+            {
+                return Entries[0];
+            }
+            return null;
+        }
+
         public void ClearMatching()
         {
             lock (Entries)
@@ -372,6 +385,25 @@ namespace YgoMaster
                     entry.HasBeginDuel = false;
                 }
                 State = DuelRoomTableState.Joinable;
+            }
+        }
+    }
+
+    class DuelRoomTableRewards
+    {
+        public Player Player1;
+        public Player Player2;
+        public Dictionary<string, object> Player1Rewards;
+        public Dictionary<string, object> Player2Rewards;
+
+        public void Clear()
+        {
+            lock (this)
+            {
+                Player1 = null;
+                Player2 = null;
+                Player1Rewards = null;
+                Player2Rewards = null;
             }
         }
     }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -1079,6 +1078,7 @@ namespace YgoMaster
             }
 
             tableEntry.HasBeginDuel = true;
+            table.Rewards.Clear();
 
             Dictionary<uint, FriendState> p1Friends = GetFriends(p1);
             Dictionary<uint, FriendState> p2Friends = GetFriends(p2);
@@ -1144,8 +1144,16 @@ namespace YgoMaster
             request.Remove("Duel", "DuelResult", "Result");
         }
 
-        public string GetDuelingOpponentToken(string playerToken)
+        public Player GetDuelingOpponent(string playerToken)
         {
+            DuelRoomTableState tableState;
+            return GetDuelingOpponent(playerToken, out tableState);
+        }
+
+        public Player GetDuelingOpponent(string playerToken, out DuelRoomTableState tableState)
+        {
+            tableState = DuelRoomTableState.None;
+
             Player player;
             lock (playersLock)
             {
@@ -1164,13 +1172,29 @@ namespace YgoMaster
             }
 
             DuelRoomTable table = duelRoom.GetTable(player);
-            if (table == null || table.State != DuelRoomTableState.Dueling)
+            if (table == null)
             {
                 return null;
             }
 
-            Player p1 = table.Player1;
-            Player p2 = table.Player2;
+            tableState = table.State;
+
+            if (table.State != DuelRoomTableState.Dueling)
+            {
+                return null;
+            }
+
+            DuelRoomTableEntry p1Entry = table.Entries[0];
+            DuelRoomTableEntry p2Entry = table.Entries[1];
+
+            if (!p1Entry.IsMatchingOrInDuel || !p2Entry.IsMatchingOrInDuel ||
+                !p1Entry.HasBeginDuel || !p2Entry.HasBeginDuel)
+            {
+                return null;
+            }
+
+            Player p1 = p1Entry.Player;
+            Player p2 = p2Entry.Player;
             if (p1 == null || p2 == null)
             {
                 return null;
@@ -1181,7 +1205,7 @@ namespace YgoMaster
                 return null;
             }
 
-            return p1 == player ? p2.Token : p1.Token;
+            return p1 == player ? p2 : p1;
         }
     }
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using YgoMaster.Net;
+using YgoMaster.Net.Message;
 
 namespace YgoMaster
 {
@@ -235,7 +237,6 @@ namespace YgoMaster
                 switch (request.Player.Duel.Mode)
                 {
                     case GameMode.SoloSingle:
-
                         bool chapterStatusChanged = false;
                         if (request.Player.Duel.ChapterId != 0 && res != DuelResultType.None)
                         {
@@ -246,22 +247,127 @@ namespace YgoMaster
                             request.Player.SoloChapters.TryGetValue(request.Player.Duel.ChapterId, out newChapterStatus);
                             chapterStatusChanged = oldChapterStatus != newChapterStatus;
                         }
-                        GiveDuelReward(request, DuelRewards, res, finish, chapterStatusChanged);
+                        GiveDuelReward(request, request.Player, DuelRewards, res, finish, chapterStatusChanged);
                         SavePlayer(request.Player);
                         break;
+
                     case GameMode.Room:
-                        // TODO: Give rewards (or fetch given rewards from session server)
+                        NetClient opponentClient = null;
+                        Player opponentPlayer = GetDuelingOpponent(request.Player.Token);
+                        if (opponentPlayer != null)
+                        {
+                            opponentClient = sessionServer.GetConnectionByToken(opponentPlayer.Token);
+                        }
+                        DuelRoom duelRoom = request.Player.DuelRoom;
+                        if (duelRoom == null)
+                        {
+                            return;
+                        }
+                        DuelRoomTable duelRoomTable = duelRoom.GetTable(request.Player);
+                        if (duelRoomTable == null)
+                        {
+                            return;
+                        }
+
+                        DuelResultType opponentResult;
+                        switch (res)
+                        {
+                            case DuelResultType.Win: opponentResult = DuelResultType.Lose; break;
+                            case DuelResultType.Lose: opponentResult = DuelResultType.Win; break;
+                            case DuelResultType.Draw: opponentResult = DuelResultType.Draw; break;
+                            default: return;
+                        }
+
+                        lock (duelRoomTable.Rewards)
+                        {
+                            if (duelRoomTable.Rewards.Player1Rewards == null && duelRoomTable.Rewards.Player2Rewards == null)
+                            {
+                                GiveDuelReward(request, request.Player, DuelRoomRewards, res, DuelFinishType.None, false);
+                                duelRoomTable.Rewards.Player1 = request.Player;
+                                duelRoomTable.Rewards.Player1Rewards = request.Response;
+                                request.Response = new Dictionary<string, object>();
+
+                                GiveDuelReward(request, opponentPlayer, DuelRoomRewards, opponentResult, DuelFinishType.None, false);
+                                duelRoomTable.Rewards.Player2 = opponentPlayer;
+                                duelRoomTable.Rewards.Player2Rewards = request.Response;
+                                request.Response = new Dictionary<string, object>();
+
+                                SavePlayerNow(request.Player);
+                                SavePlayerNow(opponentPlayer);
+
+                                DuelRoomRecord playerDuelRoomRecords;
+                                if (duelRoom.Members.TryGetValue(request.Player, out playerDuelRoomRecords))
+                                {
+                                    switch (res)
+                                    {
+                                        case DuelResultType.Win: playerDuelRoomRecords.Win++; break;
+                                        case DuelResultType.Lose: playerDuelRoomRecords.Loss++; break;
+                                        case DuelResultType.Draw: playerDuelRoomRecords.Draw++; break;
+                                    }
+                                }
+
+                                DuelRoomRecord opponentDuelRoomRecords;
+                                if (duelRoom.Members.TryGetValue(opponentPlayer, out opponentDuelRoomRecords))
+                                {
+                                    switch (res)
+                                    {
+                                        case DuelResultType.Win: opponentDuelRoomRecords.Loss++; break;
+                                        case DuelResultType.Lose: opponentDuelRoomRecords.Win++; break;
+                                        case DuelResultType.Draw: opponentDuelRoomRecords.Draw++; break;
+                                    }
+                                }
+                            }
+
+                            if (request.Player == duelRoomTable.Rewards.Player1)
+                            {
+                                request.Response = duelRoomTable.Rewards.Player1Rewards;
+                            }
+                            else if (request.Player == duelRoomTable.Rewards.Player2)
+                            {
+                                request.Response = duelRoomTable.Rewards.Player2Rewards;
+                            }
+                        }
+
+                        if (res == DuelResultType.Lose && finish == DuelFinishType.Surrender)
+                        {
+                            if (opponentClient != null)
+                            {
+                                opponentClient.Send(new OpponentSurrenderedMessage());
+                            }
+                        }
+                        else
+                        {
+                            if (opponentClient != null)
+                            {
+                                opponentClient.Send(new OpponentDuelEndedMessage());
+                            }
+                        }
                         break;
                 }
             }
         }
 
-        void GiveDuelReward(GameServerWebRequest request, DuelRewardInfos rewards, DuelResultType result, DuelFinishType finishType, bool chapterStatusChanged)
+        void GiveDuelReward(GameServerWebRequest request, Player player, DuelRewardInfos rewards, DuelResultType result, DuelFinishType finishType, bool chapterStatusChanged)
         {
-            if ((rewards.Win.Count == 0 && rewards.Lose.Count == 0) ||
+            int turn = 0;
+            Dictionary<string, object> endParams;
+            if (Utils.TryGetValue(request.ActParams, "params", out endParams))
+            {
+                turn = Utils.GetValue<int>(endParams, "turn");
+            }
+
+            int minimumTurnsForSurrenderRewards = 0;
+            switch (result)
+            {
+                case DuelResultType.Win: minimumTurnsForSurrenderRewards = rewards.MinimumTurnsForSurrenderRewardsWin; break;
+                case DuelResultType.Lose: minimumTurnsForSurrenderRewards = rewards.MinimumTurnsForSurrenderRewardsLose; break;
+                case DuelResultType.Draw: minimumTurnsForSurrenderRewards = rewards.MinimumTurnsForSurrenderRewardsDraw; break;
+            }
+
+            if ((rewards.Win.Count == 0 && rewards.Lose.Count == 0 && rewards.Draw.Count == 0) ||
                 (rewards.ChapterStatusChangedNoRewards && chapterStatusChanged) ||
                 (rewards.ChapterStatusChangedOnly && !chapterStatusChanged) ||
-                (result == DuelResultType.Lose && finishType == DuelFinishType.Surrender))
+                (turn >= minimumTurnsForSurrenderRewards && finishType == DuelFinishType.Surrender))
             {
                 return;
             }
@@ -284,7 +390,16 @@ namespace YgoMaster
             const int goldBox = 2;
             const int duelScoreRewardValue = 1000;
 
-            foreach (DuelRewardInfo reward in (result == DuelResultType.Win ? rewards.Win : rewards.Lose))
+            List<DuelRewardInfo> rewardInfos;
+            switch (result)
+            {
+                case DuelResultType.Win: rewardInfos = rewards.Win; break;
+                case DuelResultType.Lose: rewardInfos = rewards.Lose; break;
+                case DuelResultType.Draw: rewardInfos = rewards.Draw; break;
+                default: return;
+            }
+
+            foreach (DuelRewardInfo reward in rewardInfos)
             {
                 switch (reward.Type)
                 {
@@ -298,7 +413,7 @@ namespace YgoMaster
                                 {
                                     continue;
                                 }
-                                request.Player.Gems += amount;
+                                player.Gems += amount;
                                 WriteItem(request, (int)ItemID.Value.Gem);
                                 duelScoreTotal += duelScoreRewardValue;
                                 duelRewards.Add(new Dictionary<string, object>()
@@ -322,7 +437,7 @@ namespace YgoMaster
                                 {
                                     foreach (int id in reward.Ids)
                                     {
-                                        if (!request.Player.Items.Contains(id))
+                                        if (!player.Items.Contains(id))
                                         {
                                             unownedIds.Add(id);
                                         }
@@ -347,7 +462,7 @@ namespace YgoMaster
                                     {
                                         foreach (int id in ItemID.Values[category])
                                         {
-                                            if (!request.Player.Items.Contains(id))
+                                            if (!player.Items.Contains(id))
                                             {
                                                 unownedIds.Add(id);
                                             }
@@ -369,11 +484,11 @@ namespace YgoMaster
                                         {
                                             continue;
                                         }
-                                        request.Player.AddItem(id, amount);
+                                        player.AddItem(id, amount);
                                     }
                                     else
                                     {
-                                        request.Player.Items.Add(id);
+                                        player.Items.Add(id);
                                         WriteItem(request, id);
                                     }
                                     duelScoreTotal += duelScoreRewardValue;
@@ -401,7 +516,7 @@ namespace YgoMaster
                                     HashSet<int> cardIds = new HashSet<int>();
                                     foreach (int id in reward.Ids)
                                     {
-                                        if (reward.CardOwnedLimit == 0 || reward.CardOwnedLimit > request.Player.Cards.GetCount(id))
+                                        if (reward.CardOwnedLimit == 0 || reward.CardOwnedLimit > player.Cards.GetCount(id))
                                         {
                                             cardIds.Add(id);
                                         }
@@ -409,7 +524,7 @@ namespace YgoMaster
                                     if (cardIds.Count > 0)
                                     {
                                         int cardId = cardIds.ElementAt(rand.Next(cardIds.Count));
-                                        request.Player.Cards.Add(cardId, numCards, dismantle, CardStyleRarity.Normal);
+                                        player.Cards.Add(cardId, numCards, dismantle, CardStyleRarity.Normal);
                                         WriteCards_have(request, cardId);
                                         duelScoreTotal += duelScoreRewardValue;
                                         duelRewards.Add(new Dictionary<string, object>()
@@ -453,12 +568,12 @@ namespace YgoMaster
                                     }
                                     if (cardRarity != CardRarity.None)
                                     {
-                                        Dictionary<int, int> cardRare = GetCardRarities(request.Player);
+                                        Dictionary<int, int> cardRare = GetCardRarities(player);
                                         List<int> cardIds = new List<int>();
                                         foreach (KeyValuePair<int, int> card in cardRare)
                                         {
                                             if (card.Value == (int)cardRarity && (reward.CardOwnedLimit == 0 ||
-                                                reward.CardOwnedLimit < request.Player.Cards.GetCount(card.Key)))
+                                                reward.CardOwnedLimit < player.Cards.GetCount(card.Key)))
                                             {
                                                 cardIds.Add(card.Key);
                                             }
@@ -466,7 +581,7 @@ namespace YgoMaster
                                         if (cardIds.Count > 0)
                                         {
                                             int cardId = cardIds[rand.Next(cardIds.Count)];
-                                            request.Player.Cards.Add(cardId, numCards, dismantle, CardStyleRarity.Normal);
+                                            player.Cards.Add(cardId, numCards, dismantle, CardStyleRarity.Normal);
                                             WriteCards_have(request, cardId);
                                             duelScoreTotal += duelScoreRewardValue;
                                             duelRewards.Add(new Dictionary<string, object>()

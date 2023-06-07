@@ -20,13 +20,27 @@ namespace YgoMaster
         /// Only give the rewards if the chapter status changed from this duel
         /// </summary>
         public bool ChapterStatusChangedOnly;
+        /// <summary>
+        /// The turn counter must reach this number before giving surrender rewards for wins
+        /// </summary>
+        public int MinimumTurnsForSurrenderRewardsWin;
+        /// <summary>
+        /// The turn counter must reach this number before giving surrender rewards for losses
+        /// </summary>
+        public int MinimumTurnsForSurrenderRewardsLose;
+        /// <summary>
+        /// The turn counter must reach this number before giving surrender rewards for draws
+        /// </summary>
+        public int MinimumTurnsForSurrenderRewardsDraw;
         public List<DuelRewardInfo> Win { get; private set; }
         public List<DuelRewardInfo> Lose { get; private set; }
+        public List<DuelRewardInfo> Draw { get; private set; }
 
         public DuelRewardInfos()
         {
             Win = new List<DuelRewardInfo>();
             Lose = new List<DuelRewardInfo>();
+            Draw = new List<DuelRewardInfo>();
         }
 
         public int GetAmount(Random rand, DuelRewardInfo reward, bool chapterStatusChanged)
@@ -48,9 +62,13 @@ namespace YgoMaster
             }
             Win.Clear();
             Lose.Clear();
+            Draw.Clear();
             ChapterStatusChangedMultiplier = Utils.GetValue<double>(data, "ChapterStatusChangedMultiplier");
             ChapterStatusChangedNoRewards = Utils.GetValue<bool>(data, "ChapterStatusChangedNoRewards");
             ChapterStatusChangedOnly = Utils.GetValue<bool>(data, "ChapterStatusChangedOnly");
+            MinimumTurnsForSurrenderRewardsWin = Utils.GetValue<int>(data, "MinimumTurnsForSurrenderRewardsWin");
+            MinimumTurnsForSurrenderRewardsLose = Utils.GetValue<int>(data, "MinimumTurnsForSurrenderRewardsLose");
+            MinimumTurnsForSurrenderRewardsDraw = Utils.GetValue<int>(data, "MinimumTurnsForSurrenderRewardsDraw");
             List<object> winData = Utils.GetValue(data, "win", default(List<object>));
             if (winData != null)
             {
@@ -60,6 +78,11 @@ namespace YgoMaster
             if (loseData != null)
             {
                 ParseRewards(Lose, loseData);
+            }
+            List<object> drawData = Utils.GetValue(data, "draw", default(List<object>));
+            if (drawData != null)
+            {
+                ParseRewards(Draw, drawData);
             }
         }
 

@@ -106,7 +106,7 @@ namespace YgoMaster
                             generalUpdateStopwatch.Restart();
                         }
 
-                        if (sessionServerPingStopwatch.Elapsed.TotalSeconds >= MultiplayerPingPingInSeconds)
+                        if (sessionServerPingStopwatch.Elapsed.TotalSeconds >= MultiplayerPingInSeconds)
                         {
                             foreach (Net.NetClient client in sessionServer.GetConnections())
                             {
@@ -115,11 +115,11 @@ namespace YgoMaster
                                     Utils.LogInfo("Ping timeout from " + client.IP);
                                     client.Close();
                                 }
+                                else
+                                {
+                                    sessionServer.Ping(client);
+                                }
                             }
-                            sessionServer.Send(new PingMessage()
-                            {
-                                RequestTime = DateTime.UtcNow
-                            });
 
                             sessionServerPingStopwatch.Restart();
                         }
@@ -430,6 +430,10 @@ namespace YgoMaster
                                     case "Duel.start_selecting":
                                         Act_DuelStartSelecting(gameServerWebRequest);
                                         break;
+                                    case "System.toggle_crossplay":
+                                        gameServerWebRequest.ErrorCode = 1;
+                                        gameServerWebRequest.ResultCode = (int)ResultCodes.PvPCode.CRITICAL;
+                                        break;
                                     default:
                                         Utils.LogInfo("Unhandled act " + actsHeader);
                                         Debug.WriteLine("Unhandled act " + actsHeader + " " + MiniJSON.Json.Serialize(vals));
@@ -575,6 +579,16 @@ namespace YgoMaster
                 return ms.ToArray();
             }
             //return Encoding.UTF8.GetBytes("@" + value);
+        }
+
+        public Player GetPlayerFromToken(string token)
+        {
+            lock (playersByToken)
+            {
+                Player player;
+                playersByToken.TryGetValue(token, out player);
+                return player;
+            }
         }
 
         public uint GetPlayerIdFromToken(string token)

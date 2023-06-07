@@ -13,6 +13,8 @@ namespace YgoMaster.Net
         Pong,
         DuelError,
         UpdateIsBusyEffect,
+        OpponentSurrendered,
+        OpponentDuelEnded,
 
         // Duel com messages
         DuelComMovePhase,

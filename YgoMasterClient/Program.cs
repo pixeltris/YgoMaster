@@ -148,7 +148,11 @@ namespace YgoMasterClient
                     NetClient = new NetClient();
                     NetClient.Disconnected += (x) =>
                     {
-                        Console.WriteLine("Disconnected from " + ClientSettings.SessionServerIP + ":" + ClientSettings.SessionServerPort);
+                        if (ClientSettings.MultiplayerLogConnectionState)
+                        {
+                            Console.WriteLine("Disconnected from " + ClientSettings.SessionServerIP + ":" + ClientSettings.SessionServerPort);
+                        }
+                        DuelDll.HasNetworkError = true;
                     };
 
                     DateTime lastConnectAttempt = DateTime.MinValue;
@@ -167,16 +171,25 @@ namespace YgoMasterClient
                                     {
                                         Token = ClientSettings.MultiplayerToken
                                     });
-                                    Console.WriteLine("Connected to " + ClientSettings.SessionServerIP + ":" + ClientSettings.SessionServerPort);
+                                    if (ClientSettings.MultiplayerLogConnectionState)
+                                    {
+                                        Console.WriteLine("Connected to " + ClientSettings.SessionServerIP + ":" + ClientSettings.SessionServerPort);
+                                    }
                                 }
                                 catch
                                 {
-                                    Console.WriteLine("Failed to connect to " + ClientSettings.SessionServerIP + ":" + ClientSettings.SessionServerPort);
+                                    if (ClientSettings.MultiplayerLogConnectionState)
+                                    {
+                                        Console.WriteLine("Failed to connect to " + ClientSettings.SessionServerIP + ":" + ClientSettings.SessionServerPort);
+                                    }
                                 }
                             }
                             if (NetClient.IsConnected && NetClient.LastMessageTime < DateTime.UtcNow - TimeSpan.FromSeconds(ClientSettings.MultiplayerPingTimeoutInSeconds))
                             {
-                                Console.WriteLine("Ping timeout " + ClientSettings.SessionServerIP + ":" + ClientSettings.SessionServerPort);
+                                if (ClientSettings.MultiplayerLogConnectionState)
+                                {
+                                    Console.WriteLine("Ping timeout " + ClientSettings.SessionServerIP + ":" + ClientSettings.SessionServerPort);
+                                }
                                 NetClient.Close();
                             }
                             Thread.Sleep(1000);
@@ -645,6 +658,8 @@ namespace YgoMasterClient
                                                     allEnums["RoomEntryViewController.Mode"] = assembly.GetClass("RoomEntryViewController", "YgomGame.Room").GetNestedType("Mode");
                                                     allEnums["HowToObtainCard"] = null;
                                                     allEnums["DuelResultScore"] = null;
+                                                    //allEnums["DuelRoomTableState"] = null;// TODO: Generate
+                                                    allEnums["DuelClientStep"] = assembly.GetClass("DuelClient", "YgomGame.Duel").GetNestedType("Step");
                                                     allEnums["Category"] = assembly.GetClass("ItemUtil", "YgomGame.Utility").GetNestedType("Category");
                                                     allEnums["Duel.cs"] = null;
                                                     allEnums["DuelResultType"] = engineClass.GetNestedType("ResultType");

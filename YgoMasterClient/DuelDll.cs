@@ -1,13 +1,12 @@
-﻿using IL2CPP;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using YgoMaster.Net.Message;
 using YgoMaster.Net;
 using YgoMaster;
+using System.Runtime.InteropServices;
 
 namespace YgoMasterClient
 {
@@ -24,6 +23,11 @@ namespace YgoMasterClient
         static DateTime LastSysActLogTime;
         static object LogLocker = new object();
 
+        public static bool HasOpponentSurrendered;
+        public static bool HasNetworkError;
+        public static bool HasDuelStart;
+        public static bool HasDuelEnd;
+        public static DateTime BeginDuelTime;
         public static ulong RunEffectSeq;
         public static bool IsPvpDuel;
         public static int MyID;
@@ -37,7 +41,7 @@ namespace YgoMasterClient
         {
             get { return *(int*)(WorkMemory + ClientSettings.DuelDllActiveUserDoCommandOffset); }
         }
-        static int ActiveUserIdSetIndex
+        static int ActiveUserIdForSetIndex
         {
             get { return *(int*)(WorkMemory + ClientSettings.DuelDllActiveUserSetIndexOffset); }
         }
@@ -67,9 +71,6 @@ namespace YgoMasterClient
 
         delegate int Del_DLL_DuelComCancelCommand2(bool decide);
         static Hook<Del_DLL_DuelComCancelCommand2> hookDLL_DuelComCancelCommand2;
-
-        delegate int Del_DLL_DuelGetCardFace(int player, int position, int index);
-        static Hook<Del_DLL_DuelGetCardFace> hookDLL_DuelGetCardFace;
 
         delegate void Del_DLL_DuelDlgSetResult(uint result);
         static Hook<Del_DLL_DuelDlgSetResult> hookDLL_DuelDlgSetResult;
@@ -101,8 +102,8 @@ namespace YgoMasterClient
         public delegate int Del_DLL_DuelWhichTurnNow();
         public static Del_DLL_DuelWhichTurnNow DLL_DuelWhichTurnNow;
 
-        public delegate int Del_DLL_DuelGetLP(int player);
-        public static Del_DLL_DuelGetLP DLL_DuelGetLP;
+        public delegate int Del_DLL_DuelGetTurnNum();
+        public static Del_DLL_DuelGetTurnNum DLL_DuelGetTurnNum;
 
         static DuelDll()
         {
@@ -128,13 +129,12 @@ namespace YgoMasterClient
             hookDLL_DuelListInitString = new Hook<Del_DLL_DuelListInitString>(DLL_DuelListInitString, PInvoke.GetProcAddress(lib, "DLL_DuelListInitString"));
             hookDLL_DuelSysAct = new Hook<Del_DLL_DuelSysAct>(DLL_DuelSysAct, PInvoke.GetProcAddress(lib, "DLL_DuelSysAct"));
             hookDLL_DuelSetPlayerType = new Hook<Del_DLL_DuelSetPlayerType>(DLL_DuelSetPlayerType, PInvoke.GetProcAddress(lib, "DLL_DuelSetPlayerType"));
-            hookDLL_DuelGetCardFace = new Hook<Del_DLL_DuelGetCardFace>(DLL_GetCardFace, PInvoke.GetProcAddress(lib, "DLL_DuelGetCardFace"));
 
             DLL_DuelComCheatCard = Utils.GetFunc<Del_DLL_DuelComCheatCard>(PInvoke.GetProcAddress(lib, "DLL_DuelComCheatCard"));
             DLL_DuelComDoDebugCommand = Utils.GetFunc<Del_DLL_DuelComDoDebugCommand>(PInvoke.GetProcAddress(lib, "DLL_DuelComDoDebugCommand"));
             DLL_DuelComDebugCommand = Utils.GetFunc<Del_DLL_DuelComDebugCommand>(PInvoke.GetProcAddress(lib, "DLL_DuelComDebugCommand"));
             DLL_DuelWhichTurnNow = Utils.GetFunc<Del_DLL_DuelWhichTurnNow>(PInvoke.GetProcAddress(lib, "DLL_DuelWhichTurnNow"));
-            DLL_DuelGetLP = Utils.GetFunc<Del_DLL_DuelGetLP>(PInvoke.GetProcAddress(lib, "DLL_DuelGetLP"));
+            DLL_DuelGetTurnNum = Utils.GetFunc<Del_DLL_DuelGetTurnNum>(PInvoke.GetProcAddress(lib, "DLL_DuelGetTurnNum"));
         }
 
         static void Log(string str)
@@ -180,6 +180,11 @@ namespace YgoMasterClient
             LastIsBusyEffectSyncSeq = 0;
             LocalIsBusyEffect.Clear();
             RemoteIsBusyEffect.Clear();
+            HasOpponentSurrendered = false;
+            HasNetworkError = false;
+            HasDuelStart = false;
+            HasDuelEnd = false;
+            BeginDuelTime = DateTime.UtcNow;
             RunEffectSeq = 0;
             IsPvpDuel = Program.NetClient != null && gameMode == GameMode.Room;
             MyID = YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Duel.MyID");
@@ -201,16 +206,53 @@ namespace YgoMasterClient
             hookDLL_SetEffectDelegate.Original(Marshal.GetFunctionPointerForDelegate(myRunEffect), Marshal.GetFunctionPointerForDelegate(myIsBusyEffect));
         }
 
+        static int InjectDuelEnd()
+        {
+            if (HasOpponentSurrendered)
+            {
+                return originalRunEffect((int)DuelViewType.DuelEnd, (int)DuelResultType.Win, (int)DuelFinishType.Surrender, 0);
+            }
+            else if (HasNetworkError)
+            {
+                return originalRunEffect((int)DuelViewType.DuelEnd, (int)DuelResultType.Draw, (int)DuelFinishType.FinishError, 0);
+            }
+            return 0;
+        }
+
         static int RunEffect(int id, int param1, int param2, int param3)
         {
-            LocalIsBusyEffect.Clear();
-            RemoteIsBusyEffect.Remove(RunEffectSeq);
-            RunEffectSeq++;
-            Log("RunEffect " + (DuelViewType)id + " " + param1 + " " + param2 + " " + param3 + " lp0:" + DLL_DuelGetLP(0) + " lp1:" + DLL_DuelGetLP(1) + " whichTurn:" + DLL_DuelWhichTurnNow() + " myID:" + MyID + " seq:" + RunEffectSeq);
             if (IsPvpDuel)
             {
+                if (HasNetworkError || HasOpponentSurrendered)
+                {
+                    if (HasDuelStart)
+                    {
+                        return InjectDuelEnd();
+                    }
+                    else
+                    {
+                        if ((DuelViewType)id == DuelViewType.DuelStart)
+                        {
+                            HasDuelStart = true;
+                        }
+                        originalRunEffect(id, param1, param2, param3);
+                        return InjectDuelEnd();
+                    }
+                }
+
+                LocalIsBusyEffect.Clear();
+                RemoteIsBusyEffect.Remove(RunEffectSeq);
+                RunEffectSeq++;
+                Log("RunEffect " + (DuelViewType)id + " " + param1 + " " + param2 + " " + param3 + " whichTurn:" + DLL_DuelWhichTurnNow() + " myID:" + MyID + " seq:" + RunEffectSeq);
+
                 switch ((DuelViewType)id)
                 {
+                    case DuelViewType.DuelStart:
+                        HasDuelStart = true;
+                        break;
+                    case DuelViewType.DuelEnd:
+                        HasDuelEnd = true;
+                        break;
                     case DuelViewType.WaitInput:
                         if (ActiveUserIdForDoCommand != MyID)
                         {
@@ -248,6 +290,11 @@ namespace YgoMasterClient
 
         static int IsBusyEffect(int id)
         {
+            if (HasNetworkError || HasOpponentSurrendered)
+            {
+                return originalIsBusyEffect(id);
+            }
+
             int result = IsBusyEffectImpl(id);
 
             /*string remoteStatus = "?";
@@ -330,14 +377,14 @@ namespace YgoMasterClient
 
         public static int DLL_DuelSysAct()
         {
-            if (LastSysActLogTime < DateTime.UtcNow - TimeSpan.FromSeconds(3))
-            {
-                LastSysActLogTime = DateTime.UtcNow;
-                LogToFile("DLL_DuelSysAct");
-            }
-
             if (IsPvpDuel)
             {
+                if (LastSysActLogTime < DateTime.UtcNow - TimeSpan.FromSeconds(3))
+                {
+                    LastSysActLogTime = DateTime.UtcNow;
+                    LogToFile("DLL_DuelSysAct");
+                }
+
                 if (ActionsToRunInNextSysAct.Count > 0)
                 {
                     List<Action> actionsToRun;
@@ -350,6 +397,11 @@ namespace YgoMasterClient
                     {
                         action();
                     }
+                }
+
+                if ((HasNetworkError || HasOpponentSurrendered) && HasDuelStart)
+                {
+                    return 1;
                 }
 
                 if (DuelComMessageQueue.Count > 0)
@@ -515,16 +567,10 @@ namespace YgoMasterClient
             }
         }
 
-        static int DLL_GetCardFace(int player, int position, int index)
-        {
-            //return 1;
-            return hookDLL_DuelGetCardFace.Original(player, position, index);
-        }
-
         public static void HandleNetMessage(NetClient client, NetMessage message)
         {
             DuelComMessage duelComMessage = message as DuelComMessage;
-            if (duelComMessage != null)
+            if (duelComMessage != null && IsPvpDuel)
             {
                 lock (DuelComMessageQueue)
                 {
@@ -538,6 +584,8 @@ namespace YgoMasterClient
                 case NetMessageType.Ping: OnPing(client, (PingMessage)message); break;
                 case NetMessageType.DuelError: OnDuelError(client, (DuelErrorMessage)message); break;
                 case NetMessageType.UpdateIsBusyEffect: OnUpdateIsBusyEffect(client, (UpdateIsBusyEffectMessage)message); break;
+                case NetMessageType.OpponentSurrendered: OnOpponentSurrendered(client, (OpponentSurrenderedMessage)message); break;
+                case NetMessageType.OpponentDuelEnded: OnOpponentDuelEnded(client, (OpponentDuelEndedMessage)message); break;
             }
         }
 
@@ -549,27 +597,102 @@ namespace YgoMasterClient
             }
         }
 
-        static void OnPing(NetClient client, PingMessage message)
+        static void OnNetworkError()
         {
-            if (message.DuelingState != DuelRoomTableState.Dueling)
+            try
             {
-                // TODO: Check if actively dueling and stop the duel (network error)
+                // try/catch as we aren't in the main thread
+                if (HasNetworkError || HasOpponentSurrendered || HasDuelEnd || YgomGame.Duel.DuelClient.Step != DuelClientStep.ExecDuel)
+                {
+                    return;
+                }
+            }
+            catch
+            {
             }
 
+            lock (ActionsToRunInNextSysAct)
+            {
+                ActionsToRunInNextSysAct.Add(() =>
+                {
+                    if (HasNetworkError || HasOpponentSurrendered || HasDuelEnd || YgomGame.Duel.DuelClient.Step != DuelClientStep.ExecDuel)
+                    {
+                        return;
+                    }
+                    HasNetworkError = true;
+                    Log("OnNetworkError");
+                    if (HasDuelStart)
+                    {
+                        InjectDuelEnd();
+                    }
+                    Program.NetClient.Send(new DuelErrorMessage());
+                });
+            }
+        }
+
+        static void OnPing(NetClient client, PingMessage message)
+        {
             client.Send(new PongMessage()
             {
                 ServerToClientLatency = Utils.GetEpochTime() - Utils.GetEpochTime(message.RequestTime),
                 ResponseTime = DateTime.UtcNow
             });
+
+            if (message.DuelingState != DuelRoomTableState.Dueling && IsPvpDuel &&
+                !HasNetworkError && !HasOpponentSurrendered && !HasDuelEnd &&
+                BeginDuelTime < DateTime.UtcNow - TimeSpan.FromSeconds(5) &&
+                YgomGame.Duel.DuelClient.Instance != IntPtr.Zero)
+            {
+                OnNetworkError();
+            }
         }
 
         static void OnDuelError(NetClient client, DuelErrorMessage message)
         {
-            Log("TODO: OnDuelError");
+            if (!IsPvpDuel)
+            {
+                return;
+            }
+            OnNetworkError();
+        }
+
+        static void OnOpponentSurrendered(NetClient client, OpponentSurrenderedMessage message)
+        {
+            if (!IsPvpDuel)
+            {
+                return;
+            }
+            lock (ActionsToRunInNextSysAct)
+            {
+                ActionsToRunInNextSysAct.Add(() =>
+                {
+                    if (!HasOpponentSurrendered && !HasDuelEnd && !HasNetworkError && YgomGame.Duel.DuelClient.Instance != IntPtr.Zero)
+                    {
+                        Log("OnOpponentSurrendered");
+                        HasOpponentSurrendered = true;
+                        InjectDuelEnd();
+                    }
+                });
+            }
+        }
+
+        static void OnOpponentDuelEnded(NetClient client, OpponentDuelEndedMessage message)
+        {
+            if (!IsPvpDuel)
+            {
+                return;
+            }
+            // This is to avoid potentially getting a ping timeout / network error in some situations when the duel ends
+            // NOTE: This might not be needed. Remove this message if it isn't an issue
+            HasDuelEnd = true;
         }
 
         static void OnUpdateIsBusyEffect(NetClient client, UpdateIsBusyEffectMessage message)
         {
+            if (!IsPvpDuel)
+            {
+                return;
+            }
             if (message.Seq < RunEffectSeq)
             {
                 Log("Ignore recv UpdateIsBusyEffect seq:" + message.Seq + " id:" + (DuelViewType)message.Id + " value:" + message.Value);
