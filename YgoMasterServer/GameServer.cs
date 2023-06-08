@@ -430,9 +430,20 @@ namespace YgoMaster
                                     case "Duel.start_selecting":
                                         Act_DuelStartSelecting(gameServerWebRequest);
                                         break;
-                                    case "System.toggle_crossplay":
-                                        gameServerWebRequest.ErrorCode = 1;
-                                        gameServerWebRequest.ResultCode = (int)ResultCodes.PvPCode.CRITICAL;
+                                    case "User.replay_list":
+                                        Act_ReplayList(gameServerWebRequest);
+                                        break;
+                                    case "PvP.get_replay_deck":
+                                        Act_ReplayGetDeck(gameServerWebRequest);
+                                        break;
+                                    case "PvP.set_replay_open":
+                                        Act_ReplaySetOpen(gameServerWebRequest);
+                                        break;
+                                    case "PvP.remove_replay":
+                                        Act_ReplayRemove(gameServerWebRequest);
+                                        break;
+                                    case "PvP.replay_duel":
+                                        Act_ReplayDuel(gameServerWebRequest);
                                         break;
                                     default:
                                         Utils.LogInfo("Unhandled act " + actsHeader);
@@ -583,7 +594,7 @@ namespace YgoMaster
 
         public Player GetPlayerFromToken(string token)
         {
-            lock (playersByToken)
+            lock (playersLock)
             {
                 Player player;
                 playersByToken.TryGetValue(token, out player);

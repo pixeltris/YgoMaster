@@ -43,6 +43,9 @@
     "DuelRoomMaxSpectators": 1000,
     "DuelRoomCommentTimeoutInSeconds": 7,
     "DuelRoomTableMatchingTimeoutInSeconds": 30,
+    "DuelReplaySaveForGameModes": [ "SoloSingle", "Room" ],
+    "DuelReplaySaveFileLimit": 100,
+    "DuelReplayMakePublicByDefault": true,
     "DefaultGems": 2000,
     "DefaultItems": [
         1000001,// Rescue Rabbit (AVATAR)
@@ -214,7 +217,7 @@
         ]
     },
 	"DuelRoomRewards": {
-		"MinimumTurnsForSurrenderRewardsWin": 0,
+        "MinimumTurnsForSurrenderRewardsWin": 0,
         "MinimumTurnsForSurrenderRewardsLose": 0,
         "MinimumTurnsForSurrenderRewardsDraw": 0,
         "win": [

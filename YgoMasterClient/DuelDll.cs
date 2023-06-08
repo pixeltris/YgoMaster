@@ -14,9 +14,10 @@ namespace YgoMasterClient
     {
         public static Queue<DuelComMessage> DuelComMessageQueue = new Queue<DuelComMessage>();
 
-        public static int LastIsBusyEffectSyncSeq;
         public static Dictionary<DuelViewType, int> LocalIsBusyEffect = new Dictionary<DuelViewType, int>();
         public static Dictionary<ulong, Dictionary<DuelViewType, int>> RemoteIsBusyEffect = new Dictionary<ulong, Dictionary<DuelViewType, int>>();
+
+        public static List<byte> ReplayData = new List<byte>();
 
         public static List<Action> ActionsToRunInNextSysAct = new List<Action>();
 
@@ -46,18 +47,18 @@ namespace YgoMasterClient
             get { return *(int*)(WorkMemory + ClientSettings.DuelDllActiveUserSetIndexOffset); }
         }
 
-        public delegate int Del_RunEffect(int id, int param1, int param2, int param3);
+        delegate int Del_RunEffect(int id, int param1, int param2, int param3);
         static Del_RunEffect myRunEffect = RunEffect;
         static Del_RunEffect originalRunEffect;
 
-        public delegate int Del_IsBusyEffect(int id);
+        delegate int Del_IsBusyEffect(int id);
         static Del_IsBusyEffect myIsBusyEffect = IsBusyEffect;
         static Del_IsBusyEffect originalIsBusyEffect;
 
-        public delegate void Del_DLL_SetEffectDelegate(IntPtr runEffct, IntPtr isBusyEffect);
+        delegate void Del_DLL_SetEffectDelegate(IntPtr runEffct, IntPtr isBusyEffect);
         static Hook<Del_DLL_SetEffectDelegate> hookDLL_SetEffectDelegate;
 
-        public delegate int Del_DLL_SetWorkMemory(IntPtr pWork);
+        delegate int Del_DLL_SetWorkMemory(IntPtr pWork);
         static Hook<Del_DLL_SetWorkMemory> hookDLL_SetWorkMemory;
 
         delegate void Del_DLL_DuelComMovePhase(int phase);
@@ -105,6 +106,10 @@ namespace YgoMasterClient
         public delegate int Del_DLL_DuelGetTurnNum();
         public static Del_DLL_DuelGetTurnNum DLL_DuelGetTurnNum;
 
+        delegate void Del_AddRecord(IntPtr ptr, int size);
+        delegate void Del_DLL_SetAddRecordDelegate(Del_AddRecord addRecord);
+        static Del_DLL_SetAddRecordDelegate DLL_SetAddRecordDelegate;
+
         static DuelDll()
         {
             IntPtr lib = PInvoke.LoadLibrary(Path.Combine("masterduel_Data", "Plugins", "x86_64", "duel.dll"));
@@ -135,11 +140,13 @@ namespace YgoMasterClient
             DLL_DuelComDebugCommand = Utils.GetFunc<Del_DLL_DuelComDebugCommand>(PInvoke.GetProcAddress(lib, "DLL_DuelComDebugCommand"));
             DLL_DuelWhichTurnNow = Utils.GetFunc<Del_DLL_DuelWhichTurnNow>(PInvoke.GetProcAddress(lib, "DLL_DuelWhichTurnNow"));
             DLL_DuelGetTurnNum = Utils.GetFunc<Del_DLL_DuelGetTurnNum>(PInvoke.GetProcAddress(lib, "DLL_DuelGetTurnNum"));
+
+            DLL_SetAddRecordDelegate = Utils.GetFunc<Del_DLL_SetAddRecordDelegate>(PInvoke.GetProcAddress(lib, "DLL_SetAddRecordDelegate"));
         }
 
         static void Log(string str)
         {
-            Console.WriteLine(str);
+            //Console.WriteLine(str);
             LogToFile(str);
         }
 
@@ -177,9 +184,9 @@ namespace YgoMasterClient
             {
                 ActionsToRunInNextSysAct.Clear();
             }
-            LastIsBusyEffectSyncSeq = 0;
             LocalIsBusyEffect.Clear();
             RemoteIsBusyEffect.Clear();
+            ReplayData.Clear();
             HasOpponentSurrendered = false;
             HasNetworkError = false;
             HasDuelStart = false;
@@ -188,6 +195,13 @@ namespace YgoMasterClient
             RunEffectSeq = 0;
             IsPvpDuel = Program.NetClient != null && gameMode == GameMode.Room;
             MyID = YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Duel.MyID");
+        }
+
+        public static void OnInitEngineStep()
+        {
+            // NOTE: DuelClient.InitEngineStep is also where ReplayStream is set up. Might be useful
+            Console.WriteLine("OnOnInitEngineStep");
+            DLL_SetAddRecordDelegate(AddRecord);
         }
 
         static int DLL_SetWorkMemory(IntPtr pWork)
@@ -205,6 +219,14 @@ namespace YgoMasterClient
             originalIsBusyEffect = Utils.GetFunc<Del_IsBusyEffect>(isBusyEffect);
             hookDLL_SetEffectDelegate.Original(Marshal.GetFunctionPointerForDelegate(myRunEffect), Marshal.GetFunctionPointerForDelegate(myIsBusyEffect));
         }
+
+        static Del_AddRecord AddRecord = (IntPtr ptr, int size) =>
+        {
+            for (int i = 0; i < size; i++)
+            {
+                ReplayData.Add(*(byte*)(ptr + i));
+            }
+        };
 
         static int InjectDuelEnd()
         {

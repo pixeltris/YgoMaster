@@ -1,3 +1,5 @@
+# :warning: THIS IS PATCHED AND NO LONGER WORKS :warning:
+
 It's possible to add cards to game before they are officially released as packs.
 
 - Edit `Data/ClientData/ClientSettings.json` and change `ShowConsole` from `false` to `true`.

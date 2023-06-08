@@ -84,10 +84,17 @@ namespace MiniMessagePack
             IDictionary asDict;
             string asStr;
             IList asList;
+            byte[] asByteArray;
             if (o == null)
                 PackNull(s);
             else if ((asStr = o as string) != null)
                 Pack(s, asStr);
+            else if ((asByteArray = o as byte[]) != null)
+            {
+                s.WriteByte(0xc6);
+                Write(s, (uint)asByteArray.LongLength);
+                s.Write(asByteArray, 0, asByteArray.Length);
+            }
             else if ((asList = o as IList) != null)
                 Pack(s, asList);
             else if ((asDict = o as IDictionary) != null)

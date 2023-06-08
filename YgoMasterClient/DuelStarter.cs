@@ -251,7 +251,45 @@ namespace YgomSystem.Network
             }
             if (!Program.IsLive)
             {
-                param["turn"] = DuelDll.DLL_DuelGetTurnNum();
+                param["turn"] = DuelDll.DLL_DuelGetTurnNum() + 1;
+
+                DuelFinishType finish = (DuelFinishType)Utils.GetValue<int>(param, "finish");
+
+                if (finish == DuelFinishType.Surrender)
+                {
+                    DuelResultType res = DuelResultType.Lose;
+                    if (param.ContainsKey("res"))
+                    {
+                        res = Utils.GetValue<DuelResultType>(param, "res");
+                    }
+                    if (res == DuelResultType.Win)
+                    {
+                        // Surrender opponent
+                        //DuelDll.ReplayData.AddRange(new byte[] { 0x22, 0x80, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00 });
+                        //DuelDll.ReplayData.AddRange(new byte[] { 0x05, 0x00, 0x01, 0x00, 0x04, 0x00, 0x00, 0x00 });
+                    }
+                    else
+                    {
+                        // Surrender self
+                        //DuelDll.ReplayData.AddRange(new byte[] { 0x22, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00 });
+                        //DuelDll.ReplayData.AddRange(new byte[] { 0x05, 0x00, 0x02, 0x00, 0x00, 0x00, 0x04, 0x00 });
+
+                        //12 80 10 02 15 00 01 00
+                        //05 00 02 00 00 00 01 00
+                        //DuelDll.ReplayData.AddRange(new byte[] { 0x05, 0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 0x00 });
+                        DuelDll.ReplayData.AddRange(new byte[] { 0x05, 0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 0x00 });
+                    }
+                }
+
+                int[] fin = new int[]
+                {
+                    (int)finish,
+                    (int)finish
+                };
+                Dictionary<string, object> replayData = new Dictionary<string, object>();
+                replayData["b"] = Utils.ZLibCompress(DuelDll.ReplayData.ToArray());
+                replayData["f"] = fin;
+                param["replayData"] = Convert.ToBase64String(MessagePack.Pack(replayData));
             }
             paramPtr = YgomMiniJSON.Json.Deserialize(MiniJSON.Json.Serialize(param));
             return hookDuel_end.Original(paramPtr);

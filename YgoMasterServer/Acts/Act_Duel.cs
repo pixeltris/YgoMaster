@@ -172,10 +172,14 @@ namespace YgoMaster
                 duel.Mode = (GameMode)Utils.GetValue<int>(rule, "GameMode");
                 duel.ChapterId = Utils.GetValue<int>(rule, "chapter");
 
-                if (duel.Mode == GameMode.Room)
+                switch (duel.Mode)
                 {
-                    Act_DuelBeginPvp(request);
-                    return;
+                    case GameMode.Room:
+                        Act_DuelBeginPvp(request);
+                        return;
+                    case GameMode.Replay:
+                        Act_DuelBeginReplay(request);
+                        return;
                 }
 
                 DuelSettings duelSettings = null;
@@ -219,6 +223,17 @@ namespace YgoMaster
                     {
                         duelSettings.SetRandomBgm(rand);
                     }
+                    
+                    duelSettings.pcode[0] = (int)request.Player.Code;
+                    duelSettings.follow_num[0] = request.Player.Friends.Count(x => x.Value.HasFlag(FriendState.Following));
+                    duelSettings.follower_num[0] = request.Player.Friends.Count(x => x.Value.HasFlag(FriendState.Follower));
+                    duelSettings.level[0] = request.Player.Level;
+                    duelSettings.rank[0] = request.Player.Rank;
+                    duelSettings.rate[0] = request.Player.Rate;
+
+                    request.Player.ActiveDuelSettings.CopyFrom(duelSettings);
+                    request.Player.ActiveDuelSettings.HasSavedReplay = false;
+                    request.Player.ActiveDuelSettings.DuelBeginTime = Utils.GetEpochTime();
                     request.Response["Duel"] = duelSettings.ToDictionary();
                 }
             }
@@ -227,6 +242,13 @@ namespace YgoMaster
 
         void Act_DuelEnd(GameServerWebRequest request)
         {
+            request.Remove("Duel", "User.review", "Solo.Result", "Achievement");
+
+            if (request.Player.Duel.Mode == GameMode.Replay)
+            {
+                return;
+            }
+
             DuelResultType res;
             DuelFinishType finish;
             Dictionary<string, object> endParams;
@@ -234,7 +256,62 @@ namespace YgoMaster
                 Utils.TryGetValue(endParams, "res", out res) &&
                 Utils.TryGetValue(endParams, "finish", out finish))
             {
-                switch (request.Player.Duel.Mode)
+                request.Player.ActiveDuelSettings.DuelEndTime = Utils.GetEpochTime();
+                request.Player.ActiveDuelSettings.res = (int)res;
+                request.Player.ActiveDuelSettings.finish = (int)finish;
+                request.Player.ActiveDuelSettings.turn = Utils.GetValue<int>(endParams, "turn");
+                string replayData = Utils.GetValue<string>(endParams, "replayData");
+                GameMode gameMode = request.Player.Duel.Mode;
+
+                if (!string.IsNullOrEmpty(replayData) && !request.Player.ActiveDuelSettings.HasSavedReplay &&
+                    DuelReplaySaveForGameModes.Contains(gameMode) && DuelReplaySaveFileLimit > 0)
+                {
+                    request.Player.ActiveDuelSettings.replaym = replayData;
+                    request.Player.ActiveDuelSettings.HasSavedReplay = true;
+                    request.Player.ActiveDuelSettings.open = DuelReplayMakePublicByDefault;
+                    string replaysDir = GetReplaysDirectory(request.Player);
+                    try
+                    {
+                        Directory.CreateDirectory(replaysDir);
+                    }
+                    catch
+                    {
+                    }
+                    try
+                    {
+                        string replayPath = Path.Combine(replaysDir, request.Player.ActiveDuelSettings.DuelBeginTime + ".json");
+                        if (!File.Exists(replayPath))
+                        {
+                            List<string> replays = Directory.GetFiles(replaysDir, "*.json", SearchOption.TopDirectoryOnly).ToList();
+                            if (replays.Count >= DuelReplaySaveFileLimit)
+                            {
+                                int deletedReplays = 0;
+                                foreach (FileInfo replayFileInfo in replays.Select(x => new FileInfo(x)).OrderByDescending(x => x.CreationTimeUtc))
+                                {
+                                    try
+                                    {
+                                        replayFileInfo.Delete();
+                                        deletedReplays++;
+                                        if (replays.Count - deletedReplays < DuelReplaySaveFileLimit)
+                                        {
+                                            break;
+                                        }
+                                    }
+                                    catch
+                                    {
+                                    }
+                                }
+                            }
+                        }
+                        File.WriteAllText(replayPath, MiniJSON.Json.Serialize(request.Player.ActiveDuelSettings.ToDictionary()));
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Failed to save replay data. Error: " + e);
+                    }
+                }
+
+                switch (gameMode)
                 {
                     case GameMode.SoloSingle:
                         bool chapterStatusChanged = false;

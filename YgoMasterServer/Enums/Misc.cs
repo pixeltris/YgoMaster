@@ -257,7 +257,7 @@ namespace YgoMaster
         InitEngine,
         InitSound,
         WaitSound,
-        InitLoadSound ,
+        InitLoadSound,
         WaitLoadSound,
         WaitGameObjectInit,
         PrepareProcess,
@@ -277,5 +277,15 @@ namespace YgoMaster
         Beginning,
         InitSequenceStart = 0,
         InitSequenceEnd = 1
-}
+    }
+
+    /// <summary>
+    /// YgomGame.Duel.Util.PublicLevel
+    /// </summary>
+    enum DuelReplayCardVisibility
+    {
+        AllClose,
+        FrontOpen,
+        AllOpen
+    }
 }

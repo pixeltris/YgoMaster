@@ -660,6 +660,7 @@ namespace YgoMasterClient
                                                     allEnums["DuelResultScore"] = null;
                                                     //allEnums["DuelRoomTableState"] = null;// TODO: Generate
                                                     allEnums["DuelClientStep"] = assembly.GetClass("DuelClient", "YgomGame.Duel").GetNestedType("Step");
+                                                    allEnums["DuelReplayCardVisibility"] = assembly.GetClass("Util", "YgomGame.Duel").GetNestedType("PublicLevel");
                                                     allEnums["Category"] = assembly.GetClass("ItemUtil", "YgomGame.Utility").GetNestedType("Category");
                                                     allEnums["Duel.cs"] = null;
                                                     allEnums["DuelResultType"] = engineClass.GetNestedType("ResultType");

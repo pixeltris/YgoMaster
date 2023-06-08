@@ -1,6 +1,6 @@
 ## PvP
 
-PvP is a work in progress. It lets you use duel rooms under a low latency environment (LAN). The friends list also works
+PvP is a work in progress. It lets you use duel rooms under a low latency environment (LAN). The friends list also works.
 
 ## Setting it up on a single PC
 
@@ -11,16 +11,29 @@ PvP is a work in progress. It lets you use duel rooms under a low latency enviro
 - Run `YgoMaster.exe` in the `YgoMaster` folder
 - Run `YgoMasterClient.exe` in both folders
 
-## Setting it up on LAN/WAN
+## Setting it up on LAN
 
+- Open `Data/Setting.json` and set `MultiplayerEnabled` to `true`
+- Open `Data/ClientData/ClientSettings.json` and set `MultiplayerToken` to some random text value
 - Modify `BaseIP` in both `Data/Setting.json` and `Data/ClientData/ClientSettings.json` to point to the IP of the machine which runs `YgoMaster.exe`
-- On WAN you will need to use `*` for `BaseIP` and `0.0.0.0` for `SessionServerIP` in `Settings.json`. In `ClientSettings.json` you will want to set `BaseIP` to the WAN IP
+
+## Setting it up on WAN
+
+- Open `Data/Setting.json` and set `MultiplayerEnabled` to `true`
+- Open `Data/ClientData/ClientSettings.json` and set `MultiplayerToken` to some random text value
+- In `Settings.json` set `BaseIP` to `*` and `SessionServerIP` to `0.0.0.0`
+- In `ClientSettings.json` set `BaseIP` to the WAN IP
 - Play around with `MultiplayerNoDelay` (`Setting.json` / `ClientSettings.json`) to see which works best for you (it disables nagle's algorithm)
 
 ## Starting duels
 
 - Click `DUEL` in the home menu
 - Click `Duel Room (PvP)` and create a duel room as you would in the normal game
+
+## Notes
+
+- Every PC (and every seperate YgoMaster folder) must have a different `MultiplayerToken` as otherwise they will share the same session which will break things
+- Due to requiring very low latency PvP is unlikely to perform well over WAN / Hamachi / ZeroTier / Tailscale / etc
 
 ## Bugs
 

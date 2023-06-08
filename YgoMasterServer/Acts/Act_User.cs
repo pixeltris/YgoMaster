@@ -396,6 +396,7 @@ namespace YgoMaster
 
         void Act_UserRecord(GameServerWebRequest request)
         {
+            // User data / stats page. We just create an empty dictionary as otherwise the client bugs out
             Dictionary<string, object> userData = request.GetOrCreateDictionary("User");
             Utils.GetOrCreateDictionary(userData, "record");
         }

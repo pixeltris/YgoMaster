@@ -2,7 +2,7 @@
 
 Offline Yu-Gi-Oh! Master Duel (PC)
 
-*Online (PvP) functionality is not implemented. Progress is not shared with the live game.*
+*Progress is not shared with the live game.*
 
 ## Features
 
@@ -12,8 +12,10 @@ Offline Yu-Gi-Oh! Master Duel (PC)
 - Custom duels
 - YDK / YDKe support
 - Card collection stats / deck editor sub menu improvements
+- Duel replays
+- [PvP duels (LAN)](Docs/PvP.md)
 
-[Some features can be modded into the live game (at your own risk).](Docs/LiveMods.md)
+[Some features can be modded into the live game (at your own risk)](Docs/LiveMods.md)
 
 ## Requirements
 
@@ -32,11 +34,11 @@ Offline Yu-Gi-Oh! Master Duel (PC)
 
 Additionally...
 
-- *If you see errors, infinite loading screens, corrupt screens, etc [follow these instructions](Docs/FileLoadError.md).*
-- [It's recommended that you tailor the server settings to your preferences.](Docs/Settings.md)
-- Download [VG.TCG.Decks.7z](https://github.com/pixeltris/YgoMaster/releases/download/v1.4/VG.TCG.Decks.7z) for ~6000 decks from the YGO video games.
-- The custom duel starter UI can be accessed via the DUEL button on the home screen.
-- When updating copy your `/YgoMaster/Data/Player.json` and `/YgoMaster/Data/Decks/`.
+- *If you see errors, infinite loading screens, corrupt screens, etc [follow these instructions](Docs/FileLoadError.md)*
+- [It's recommended that you tailor the server settings to your preferences](Docs/Settings.md)
+- Download [VG.TCG.Decks.7z](https://github.com/pixeltris/YgoMaster/releases/download/v1.4/VG.TCG.Decks.7z) for ~6000 decks from the YGO video games
+- The custom duel starter UI can be accessed via the DUEL button on the home screen
+- When updating copy your `/YgoMaster/Data/Player.json` and `/YgoMaster/Data/Decks/`
 
 ## Compiling from source
 

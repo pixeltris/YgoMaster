@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.IO.Compression;
 
 namespace YgoMaster
 {
@@ -170,7 +171,14 @@ namespace YgoMaster
             {
                 foreach (object item in items)
                 {
-                    result.Add((T)Convert.ChangeType(item, typeof(T)));
+                    if (typeof(T).IsEnum)
+                    {
+                        result.Add((T)Enum.Parse(typeof(T), (string)Convert.ChangeType(item, typeof(string))));
+                    }
+                    else
+                    {
+                        result.Add((T)Convert.ChangeType(item, typeof(T)));
+                    }
                 }
             }
         }
@@ -657,6 +665,45 @@ namespace YgoMaster
         public static T GetFunc<T>(IntPtr ptr)
         {
             return (T)(object)Marshal.GetDelegateForFunctionPointer(ptr, typeof(T));
+        }
+
+        public static byte[] ZLibDecompress(byte[] buffer)
+        {
+            using (MemoryStream outputStream = new MemoryStream())
+            using (BinaryWriter writer = new BinaryWriter(outputStream))
+            using (MemoryStream inputStream = new MemoryStream(buffer))
+            using (DeflateStream deflateStream = new DeflateStream(inputStream, CompressionMode.Decompress))
+            {
+                int totalRead = 0;
+                int read = 0;
+                deflateStream.BaseStream.Position += 2;
+                byte[] temp = new byte[65535];
+                while ((read = deflateStream.Read(temp, 0, 1000)) > 0)
+                {
+                    totalRead += read;
+                    writer.Write(temp, 0, read);
+                }
+                return outputStream.ToArray();
+            }
+        }
+
+        public static byte[] ZLibCompress(byte[] buffer)
+        {
+            using (MemoryStream compressStream = new MemoryStream())
+            using (MemoryStream inputStream = new MemoryStream(buffer))
+            {
+                using (DeflateStream deflateStream = new DeflateStream(compressStream, CompressionMode.Compress, true))
+                {
+                    inputStream.CopyTo(deflateStream);
+                }
+                compressStream.Flush();
+                byte[] compressed = compressStream.ToArray();
+                byte[] result = new byte[compressed.Length + 2];
+                result[0] = 0x78;
+                result[1] = 0x9C;
+                Buffer.BlockCopy(compressed, 0, result, 2, compressed.Length);
+                return result;
+            }
         }
     }
 }

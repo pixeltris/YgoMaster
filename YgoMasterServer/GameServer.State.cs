@@ -135,6 +135,18 @@ namespace YgoMaster
         /// </summary>
         int DuelRoomTableMatchingTimeoutInSeconds;
         /// <summary>
+        /// Game modes where replays will save
+        /// </summary>
+        List<GameMode> DuelReplaySaveForGameModes;
+        /// <summary>
+        /// How many replay save files there can be. If another save is made it'll auto delete the oldest file (based on created date)
+        /// </summary>
+        int DuelReplaySaveFileLimit;
+        /// <summary>
+        /// Should should replays be flagged as public by default
+        /// </summary>
+        bool DuelReplayMakePublicByDefault;
+        /// <summary>
         /// Allows mulitple connections
         /// </summary>
         bool MultiplayerEnabled;
@@ -310,6 +322,10 @@ namespace YgoMaster
             DuelRoomMaxSpectators = Utils.GetValue<int>(values, "DuelRoomMaxSpectators", 100);
             DuelRoomCommentTimeoutInSeconds = Utils.GetValue<int>(values, "DuelRoomCommentTimeoutInSeconds", 7);
             DuelRoomTableMatchingTimeoutInSeconds = Utils.GetValue<int>(values, "DuelRoomTableMatchingTimeoutInSeconds", 30);
+
+            DuelReplaySaveForGameModes = Utils.GetValueTypeList<GameMode>(values, "DuelReplaySaveForGameModes");
+            DuelReplaySaveFileLimit = Utils.GetValue<int>(values, "DuelReplaySaveFileLimit");
+            DuelReplayMakePublicByDefault = Utils.GetValue<bool>(values, "DuelReplayMakePublicByDefault");
 
             CardRare = new Dictionary<int, int>();
             string cardListFile = Path.Combine(dataDirectory, "CardList.json");
@@ -936,6 +952,11 @@ namespace YgoMaster
         string GetDecksDirectory(Player player)
         {
             return Path.Combine(GetPlayerDirectory(player), "Decks");
+        }
+
+        string GetReplaysDirectory(Player player)
+        {
+            return Path.Combine(GetPlayerDirectory(player), "Replays");
         }
 
         void LoadPlayer(Player player)

@@ -21,8 +21,10 @@ namespace YgoMaster
 
         public bool IsCustomDuel;
 
-        static string[] ignoreZero = { "life", "hnum" };
-        
+        public bool HasSavedReplay;
+        public long DuelBeginTime;// Time of Duel.begin
+        public long DuelEndTime;// Time of Duel.end
+
         // Custom (used for custom duels) - these are 1/2 instead of 0/1 so that 0 can denote defauling to CPU (which is actually 1)
         public int OpponentType;
         public int OpponentPartnerType;
@@ -30,6 +32,8 @@ namespace YgoMaster
         // Used for injecting duel commands
         [DuelSettingsCustomArray]
         public List<int>[] cmds { get; private set; }
+
+        static string[] ignoreZero = { "life", "hnum" };
 
         // Use the same names as in the packet (using reflection here to reduce the amount of manual work)
         public uint RandSeed;
@@ -59,6 +63,7 @@ namespace YgoMaster
         public string duel;
         public bool is_pvp;
         public int chapter;
+        public string replaym;
         public List<string> bgms { get; private set; }
         public DeckInfo[] Deck { get; private set; }
         public int[] life { get; private set; }
@@ -66,8 +71,10 @@ namespace YgoMaster
         public int[] reg { get; private set; }// ?
         public int[] level { get; private set; }
         public int[] follow_num { get; private set; }
+        public int[] follower_num { get; private set; }
         public int[] pcode { get; private set; }
         public int[] rank { get; private set; }
+        public int[] rate { get; private set; }
         public int[] DuelistLv { get; private set; }
         public string[] name { get; private set; }
         public int[] avatar { get; private set; }
@@ -80,6 +87,15 @@ namespace YgoMaster
         public int[] wallpaper { get; private set; }
         public List<int>[] profile_tag { get; private set; }
         public int[] story_deck_id { get; private set; }
+
+        // Replay settings
+        public int res;
+        public int finish;
+        public int turn;
+        /// <summary>
+        /// IsPublicReplay
+        /// </summary>
+        public bool open;
 #pragma warning restore 0169
 #pragma warning restore 0649
 
@@ -527,6 +543,106 @@ namespace YgoMaster
                 { "avatar_home", avatar_home }
             };
             return result;
+        }
+
+#if YGO_MASTER_CLIENT
+        public Dictionary<string, object> ToDictionaryForReplayList()
+#else
+        public Dictionary<string, object> ToDictionaryForReplayList(Player[] players)
+#endif
+        {
+            Dictionary<string, object> replayData = new Dictionary<string, object>();
+            replayData["mode"] = GameMode;
+            replayData["did"] = did;
+            replayData["time"] = DuelBeginTime;
+            replayData["myid"] = MyID;
+            replayData["deck"] = new object[]
+            {
+                Deck[0].ToDictionary(),
+                Deck[1].ToDictionary()
+            };
+            replayData["icon"] = icon;
+            replayData["icon_frame"] = icon_frame;
+            replayData["avatar"] = avatar;
+            replayData["res"] = res;
+            replayData["turn"] = turn;
+            replayData["finish"] = finish;
+
+            List<Dictionary<string, object>> allPlayerProfileData = new List<Dictionary<string, object>>();
+            replayData["players"] = allPlayerProfileData;
+            for (int i = 0; i < 2; i++)
+            {
+                Dictionary<string, object> playerProfileData = new Dictionary<string, object>();
+                allPlayerProfileData.Add(playerProfileData);
+#if !YGO_MASTER_CLIENT
+                Player player = players.Length < i ? players[i] : null;
+                if (player != null)
+                {
+                    playerProfileData["pcode"] = player.Code;
+                    playerProfileData["name"] = player.Name;
+                    playerProfileData["cid"] = 0;//?
+                    playerProfileData["mat"] = mat[i];
+                    playerProfileData["sleeve"] = sleeve[i];
+                    playerProfileData["avatar_home"] = avatar_home[i];
+                    playerProfileData["duel_object"] = duel_object[i];
+                    playerProfileData["level"] = player.Level;
+                    playerProfileData["wallpaper"] = player.Wallpaper;
+                    playerProfileData["profile_tag"] = player.TitleTags.ToArray();
+                    playerProfileData["follow_num"] = player.Friends.Count(x => x.Value.HasFlag(FriendState.Following));
+                    playerProfileData["follower_num"] = player.Friends.Count(x => x.Value.HasFlag(FriendState.Follower));
+                    playerProfileData["country"] = 0;
+                    playerProfileData["rank_str"] = null;//?
+                    playerProfileData["rank_sub"] = 0;//?
+                    playerProfileData["rank_id"] = 0;//?
+                    playerProfileData["rank"] = player.Rank;
+                    playerProfileData["lv"] = null;//?
+                    playerProfileData["os"] = (int)PlatformID.Steam;
+                    playerProfileData["is_same_os"] = null;
+                    playerProfileData["online_id"] = null;
+                    playerProfileData["icon"] = player.IconId;
+                    playerProfileData["icon_frame"] = player.IconFrameId;
+                    playerProfileData["avatar"] = player.AvatarId;
+                }
+                else
+                {
+#endif
+                    playerProfileData["pcode"] = pcode[i];
+                    playerProfileData["name"] = name[i];
+                    playerProfileData["cid"] = 0;//?
+                    playerProfileData["mat"] = mat[i];
+                    playerProfileData["sleeve"] = sleeve[i];
+                    playerProfileData["avatar_home"] = avatar_home[i];
+                    playerProfileData["duel_object"] = duel_object[i];
+                    playerProfileData["level"] = level[i];
+                    playerProfileData["wallpaper"] = wallpaper[i];
+                    playerProfileData["profile_tag"] = profile_tag[i];
+                    playerProfileData["follow_num"] = follow_num[i];
+                    playerProfileData["follower_num"] = follower_num[i];
+                    playerProfileData["country"] = 0;
+                    playerProfileData["rank_str"] = null;//?
+                    playerProfileData["rank_sub"] = 0;//?
+                    playerProfileData["rank_id"] = 0;//?
+                    playerProfileData["rank"] = rank[i];
+                    playerProfileData["lv"] = null;//?
+                    playerProfileData["os"] = (int)PlatformID.Steam;
+                    playerProfileData["is_same_os"] = null;
+                    playerProfileData["online_id"] = null;
+                    playerProfileData["icon"] = icon[i];
+                    playerProfileData["icon"] = icon[i];
+                    playerProfileData["icon_frame"] = icon_frame[i];
+                    playerProfileData["avatar"] = avatar[i];
+#if !YGO_MASTER_CLIENT
+                }
+#endif
+            }
+
+            replayData["room_id"] = 0;
+            replayData["invalid"] = false;
+            replayData["open"] = open;
+            replayData["season_id"] = 1;
+            replayData["date"] = Utils.ConvertEpochTime(DuelBeginTime).ToString("yyyy/MM/dd HH:mm:ss") + " (UTC)";
+
+            return replayData;
         }
 
         public bool AreAllEqual(int[] values)

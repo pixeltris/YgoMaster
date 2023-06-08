@@ -1124,6 +1124,7 @@ namespace YgoMaster
                 duelSettings.life[i] = duelRoom.LifePoints == 1 ? 8000 : 4000;
                 duelSettings.level[i] = players[i].Level;
                 duelSettings.follow_num[i] = friends[i].Count(x => x.Value.HasFlag(FriendState.Following));
+                duelSettings.follower_num[i] = friends[i].Count(x => x.Value.HasFlag(FriendState.Follower));
                 duelSettings.pcode[i] = (int)players[i].Code;
                 duelSettings.rank[i] = players[i].Rank;
                 duelSettings.DuelistLv[i] = players[i].Rate;
@@ -1139,6 +1140,9 @@ namespace YgoMaster
                 duelSettings.profile_tag[i] = players[i].TitleTags.ToList();
             }
             duelSettings.SetRequiredDefaults();
+            request.Player.ActiveDuelSettings.CopyFrom(duelSettings);
+            request.Player.ActiveDuelSettings.HasSavedReplay = false;
+            request.Player.ActiveDuelSettings.DuelBeginTime = Utils.GetEpochTime();
             request.Response["Duel"] = duelSettings.ToDictionary();
 
             request.Remove("Duel", "DuelResult", "Result");

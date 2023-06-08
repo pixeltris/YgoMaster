@@ -38,6 +38,8 @@ namespace YgoMaster
         public Dictionary<uint, FriendState> Friends { get; private set; }
         public Dictionary<uint, uint> DuelRoomInvitesByFriendId { get; private set; }
         public DuelRoom DuelRoom;
+        public DuelSettings ActiveDuelSettings { get; private set; }
+        public Dictionary<long, string> RecentlyListedReplayFilesByDid { get; private set; }
 
         public bool IsDuelingPVP
         {
@@ -62,6 +64,8 @@ namespace YgoMaster
             Duel = new PlayerDuelState(this);
             Friends = new Dictionary<uint, FriendState>();
             DuelRoomInvitesByFriendId = new Dictionary<uint, uint>();
+            ActiveDuelSettings = new DuelSettings();
+            RecentlyListedReplayFilesByDid = new Dictionary<long, string>();
         }
 
         public Dictionary<string, object> SoloChaptersToDictionary()

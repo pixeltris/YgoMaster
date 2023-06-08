@@ -76,6 +76,9 @@ namespace YgomGame.Duel
         static IL2Field fieldStep;
         static IL2Method methodSetDuelSpeed;
 
+        delegate void Del_InitEngineStep(IntPtr thisPtr);
+        static Hook<Del_InitEngineStep> hookInitEngineStep;
+
         public static IntPtr Instance
         {
             get
@@ -105,6 +108,13 @@ namespace YgomGame.Duel
             methodSetDuelSpeed = classInfo.GetMethod("SetDuelSpeed");
             fieldInstance = classInfo.GetField("instance");
             fieldStep = classInfo.GetField("m_Step");
+            hookInitEngineStep = new Hook<Del_InitEngineStep>(InitEngineStep, classInfo.GetMethod("InitEngineStep"));
+        }
+
+        static void InitEngineStep(IntPtr thisPtr)
+        {
+            hookInitEngineStep.Original(thisPtr);
+            DuelDll.OnInitEngineStep();
         }
 
         public static void SetDuelSpeed(DuelSpeed duelSpeed)
