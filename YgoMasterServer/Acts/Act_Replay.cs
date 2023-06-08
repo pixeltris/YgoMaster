@@ -132,7 +132,7 @@ namespace YgoMaster
                             DuelSettings duelSettings = new DuelSettings();
                             duelSettings.FromDictionary(data);
 
-                            DeckInfo deckInfo = duelSettings.Deck[duelSettings.MyID == 0 ? 0 : 1];
+                            DeckInfo deckInfo = duelSettings.Deck[duelSettings.MyID == 0 ? 1 : 0];
                             if (deckInfo != null)
                             {
                                 Dictionary<string, object> allDeckListData = request.GetOrCreateDictionary("RDeckList");

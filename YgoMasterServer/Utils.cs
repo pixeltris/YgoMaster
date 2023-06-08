@@ -667,6 +667,7 @@ namespace YgoMaster
             return (T)(object)Marshal.GetDelegateForFunctionPointer(ptr, typeof(T));
         }
 
+        // NOTE: Do not use these functions for working with MD ZLib data. They work sometimes but no always (corrupt data)
         public static byte[] ZLibDecompress(byte[] buffer)
         {
             using (MemoryStream outputStream = new MemoryStream())
@@ -686,7 +687,6 @@ namespace YgoMaster
                 return outputStream.ToArray();
             }
         }
-
         public static byte[] ZLibCompress(byte[] buffer)
         {
             using (MemoryStream compressStream = new MemoryStream())

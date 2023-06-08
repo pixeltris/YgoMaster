@@ -175,12 +175,12 @@ namespace YgomSystem.Network
 {
     static unsafe class API
     {
+        static IL2Method methodCompress;
+
         delegate IntPtr Del_Duel_begin(IntPtr rulePtr);
         static Hook<Del_Duel_begin> hookDuel_begin;
         delegate IntPtr Del_Duel_end(IntPtr paramPtr);
         static Hook<Del_Duel_end> hookDuel_end;
-
-        static IL2Method methodToggleCrossPlay;
 
         static API()
         {
@@ -189,12 +189,8 @@ namespace YgomSystem.Network
             hookDuel_begin = new Hook<Del_Duel_begin>(Duel_begin, classInfo.GetMethod("Duel_begin"));
             hookDuel_end = new Hook<Del_Duel_end>(Duel_end, classInfo.GetMethod("Duel_end"));
 
-            methodToggleCrossPlay = classInfo.GetMethod("System_toggle_crossplay");
-        }
-
-        public static void ToggleCrossPlay()
-        {
-            methodToggleCrossPlay.Invoke();
+            IL2Class zlibClassInfo = assembly.GetClass("Zlib");
+            methodCompress = zlibClassInfo.GetMethod("Compress");
         }
 
         static IntPtr Duel_begin(IntPtr rulePtr)
@@ -265,20 +261,27 @@ namespace YgomSystem.Network
                     if (res == DuelResultType.Win)
                     {
                         // Surrender opponent
-                        //DuelDll.ReplayData.AddRange(new byte[] { 0x22, 0x80, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00 });
-                        //DuelDll.ReplayData.AddRange(new byte[] { 0x05, 0x00, 0x01, 0x00, 0x04, 0x00, 0x00, 0x00 });
+                        DuelDll.ReplayData.AddRange(new byte[] { 0x22, 0x80, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00 });
+                        DuelDll.ReplayData.AddRange(new byte[] { 0x05, 0x00, 0x01, 0x00, 0x04, 0x00, 0x00, 0x00 });
                     }
                     else
                     {
                         // Surrender self
-                        //DuelDll.ReplayData.AddRange(new byte[] { 0x22, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00 });
-                        //DuelDll.ReplayData.AddRange(new byte[] { 0x05, 0x00, 0x02, 0x00, 0x00, 0x00, 0x04, 0x00 });
-
-                        //12 80 10 02 15 00 01 00
-                        //05 00 02 00 00 00 01 00
-                        //DuelDll.ReplayData.AddRange(new byte[] { 0x05, 0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 0x00 });
-                        DuelDll.ReplayData.AddRange(new byte[] { 0x05, 0x00, 0x02, 0x00, 0x00, 0x00, 0x01, 0x00 });
+                        DuelDll.ReplayData.AddRange(new byte[] { 0x22, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00 });
+                        DuelDll.ReplayData.AddRange(new byte[] { 0x05, 0x00, 0x02, 0x00, 0x00, 0x00, 0x04, 0x00 });
                     }
+                }
+
+                byte[] compressedBuffer = null;
+
+                byte[] replayBuffer = DuelDll.ReplayData.ToArray();
+                IL2Array<byte> nativeReplayBuffer = new IL2Array<byte>(replayBuffer.Length, IL2SystemClass.Byte);
+                nativeReplayBuffer.CopyFrom(replayBuffer);
+                IL2Object nativeCompressedBufferObj = methodCompress.Invoke(new IntPtr[] { nativeReplayBuffer.ptr });
+                if (nativeCompressedBufferObj != null)
+                {
+                    IL2Array<byte> nativeCompressedBuffer = new IL2Array<byte>(nativeCompressedBufferObj.ptr);
+                    compressedBuffer = nativeCompressedBuffer.ToByteArray();
                 }
 
                 int[] fin = new int[]
@@ -287,7 +290,7 @@ namespace YgomSystem.Network
                     (int)finish
                 };
                 Dictionary<string, object> replayData = new Dictionary<string, object>();
-                replayData["b"] = Utils.ZLibCompress(DuelDll.ReplayData.ToArray());
+                replayData["b"] = compressedBuffer;
                 replayData["f"] = fin;
                 param["replayData"] = Convert.ToBase64String(MessagePack.Pack(replayData));
             }

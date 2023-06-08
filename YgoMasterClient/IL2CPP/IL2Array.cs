@@ -74,6 +74,16 @@ namespace IL2CPP
             byte[] result = new byte[Length * Marshal.SizeOf(typeof(T))];
             Marshal.Copy((IntPtr)((long*)ptr + 4), result, 0, result.Length);
             return result;
+		}
+		
+		// Assumes typeof(T) is a type of byte but doesn't have to be if you know what your buffer is filling
+		public unsafe void CopyFrom(byte[] buffer)
+		{
+			if (buffer.Length > Length * Marshal.SizeOf(typeof(T)))
+			{
+				return;
+			}
+			Marshal.Copy(buffer, 0, (IntPtr)((long*)ptr + 4), buffer.Length);
         }
 	}
 }
