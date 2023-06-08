@@ -283,10 +283,20 @@ namespace YgoMaster
                         if (!File.Exists(replayPath))
                         {
                             List<string> replays = Directory.GetFiles(replaysDir, "*.json", SearchOption.TopDirectoryOnly).ToList();
-                            if (replays.Count >= DuelReplaySaveFileLimit)
+
+                            // Auto saved replays are files where their name is number
+                            long temp;
+                            FileInfo[] autoSavedReplaysByCreationDate = replays
+                                .Select(filePath => new FileInfo(filePath))
+                                .Where(fileInfo => long.TryParse(Path.GetFileNameWithoutExtension(fileInfo.Name), out temp))
+                                .OrderByDescending(x => x.CreationTimeUtc)
+                                .ToArray();
+
+                            // Delete auto saved replays when we reach the save limit for auto saved replays
+                            if (autoSavedReplaysByCreationDate.Length >= DuelReplaySaveFileLimit)
                             {
                                 int deletedReplays = 0;
-                                foreach (FileInfo replayFileInfo in replays.Select(x => new FileInfo(x)).OrderByDescending(x => x.CreationTimeUtc))
+                                foreach (FileInfo replayFileInfo in autoSavedReplaysByCreationDate)
                                 {
                                     try
                                     {

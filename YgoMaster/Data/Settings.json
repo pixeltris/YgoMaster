@@ -1,12 +1,12 @@
 {
-    "BaseIP": "192.168.1.67",
+    "BaseIP": "localhost",
     "BasePort": 4989,
     "SessionServerPort": 4988,
     "SessionServerIP": "{BaseIP}",
     "ServerUrl": "http://{BaseIP}:{BasePort}/ygo",
     "ServerPollUrl": "http://{BaseIP}:{BasePort}/ygo/poll",
     "BindIP": "http://{BaseIP}:{BasePort}/",
-    "MultiplayerEnabled": true,// [WARNING] Only use if you know what you're doing
+    "MultiplayerEnabled": false,// [WARNING] Only use if you know what you're doing
     "MultiplayerAllowUserSpecifiedPlayerCode": true,
     "MultiplayerTokenPrefixSecret": "",
     "MultiplayerMaxTokensPerIP": 6,
@@ -19,11 +19,11 @@
     "MultiplayerSeed": -1,
     "MultiplayerCoinFlipPlayerIndex": -1,
     "MultiplayerCoinFlipCounter": 5,
-    "DisableDeckValidation": true,
+    "DisableDeckValidation": false,
     "ShowTopics": true,
     "DeckSlots": 999,
-    "UnlockAllCards": true,// [WARNING] Enabling this permanently wipes your saved cards (all cards are set to 3x without any shine/royal and any newly obtained cards don't save)
-    "UnlockAllItems": true,// [WARNING] Enabling this permanently wipes your saved items
+    "UnlockAllCards": false,// [WARNING] Enabling this permanently wipes your saved cards (all cards are set to 3x without any shine/royal and any newly obtained cards don't save)
+    "UnlockAllItems": false,// [WARNING] Enabling this permanently wipes your saved items
     "UnlockAllSoloChapters": true,// [WARNING] Enabling this permanently wipes your saved solo progress
     "SoloRemoveDuelTutorials": false,
     "SoloDisableNoShuffle": false,
@@ -44,8 +44,8 @@
     "DuelRoomCommentTimeoutInSeconds": 7,
     "DuelRoomTableMatchingTimeoutInSeconds": 30,
     "DuelReplaySaveForGameModes": [ "SoloSingle", "Room" ],
-    "DuelReplaySaveFileLimit": 100,
-    "DuelReplayMakePublicByDefault": true,
+    "DuelReplaySaveFileLimit": 50,
+    "DuelReplayMakePublicByDefault": false,
     "DefaultGems": 2000,
     "DefaultItems": [
         1000001,// Rescue Rabbit (AVATAR)
