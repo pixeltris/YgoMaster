@@ -18,6 +18,7 @@ namespace YgoMaster
         public const int PlayerIndex = 0;
         public const int CpuIndex = 1;
         public const int MaxPlayers = 4;
+        public const string ExpectedDuelDataKey = "icon";
 
         public bool IsCustomDuel;
 
@@ -92,10 +93,11 @@ namespace YgoMaster
         public int res;
         public int finish;
         public int turn;
-        /// <summary>
-        /// IsPublicReplay
-        /// </summary>
-        public bool open;
+        public int MaxTurn;
+        public bool open;// Is public / private duel replay
+        public int[] xuid { get; private set; }
+        public string[] online_id { get; private set; }
+        public bool[] is_same_os { get; private set; }
 #pragma warning restore 0169
 #pragma warning restore 0649
 
@@ -404,6 +406,10 @@ namespace YgoMaster
                     {
                         Type elementType = property.PropertyType.GetElementType();
                         Array dstArray = property.GetValue(this, null) as Array;
+                        if (objList.Count > 0 && objList[0] is Dictionary<string, object> && property.Name == "rank")
+                        {
+                            continue;
+                        }
                         for (int i = 0; i < objList.Count && i < dstArray.Length; i++)
                         {
                             dstArray.SetValue(Convert.ChangeType(objList[i], elementType), i);
@@ -427,6 +433,23 @@ namespace YgoMaster
             if (Utils.TryGetValue(data, "FirstPlayer", out firstPlayer))
             {
                 FirstPlayer = firstPlayer;
+            }
+
+            if (DuelBeginTime == 0 && duel_start_timestamp != 0)
+            {
+                DuelBeginTime = duel_start_timestamp;
+            }
+            if (duel_start_timestamp == 0)
+            {
+                duel_start_timestamp = DuelBeginTime;
+            }
+            if (turn != 0)
+            {
+                MaxTurn = turn;
+            }
+            else if (MaxTurn != 0)
+            {
+                turn = MaxTurn;
             }
         }
 
@@ -554,7 +577,7 @@ namespace YgoMaster
             Dictionary<string, object> replayData = new Dictionary<string, object>();
             replayData["mode"] = GameMode;
             replayData["did"] = did;
-            replayData["time"] = DuelBeginTime;
+            replayData["time"] = DuelBeginTime > 0 ? DuelBeginTime : duel_start_timestamp;
             replayData["myid"] = MyID;
             replayData["deck"] = new object[]
             {
@@ -569,7 +592,7 @@ namespace YgoMaster
             replayData["finish"] = finish;
 
             List<Dictionary<string, object>> allPlayerProfileData = new List<Dictionary<string, object>>();
-            replayData["players"] = allPlayerProfileData;
+            replayData["player"] = allPlayerProfileData;
             for (int i = 0; i < 2; i++)
             {
                 Dictionary<string, object> playerProfileData = new Dictionary<string, object>();
@@ -596,6 +619,7 @@ namespace YgoMaster
                     playerProfileData["rank_id"] = 0;//?
                     playerProfileData["rank"] = player.Rank;
                     playerProfileData["lv"] = null;//?
+                    playerProfileData["rate"] = player.Rate;
                     playerProfileData["os"] = (int)PlatformID.Steam;
                     playerProfileData["is_same_os"] = null;
                     playerProfileData["online_id"] = null;
@@ -624,6 +648,7 @@ namespace YgoMaster
                     playerProfileData["rank_id"] = 0;//?
                     playerProfileData["rank"] = rank[i];
                     playerProfileData["lv"] = null;//?
+                    playerProfileData["rate"] = rate[i];
                     playerProfileData["os"] = (int)PlatformID.Steam;
                     playerProfileData["is_same_os"] = null;
                     playerProfileData["online_id"] = null;
@@ -643,6 +668,27 @@ namespace YgoMaster
             replayData["date"] = Utils.ConvertEpochTime(DuelBeginTime).ToString("yyyy/MM/dd HH:mm:ss") + " (UTC)";
 
             return replayData;
+        }
+
+        public static Dictionary<string, object> FixupReplayRequirements(DuelSettings duelSettings, Dictionary<string, object> data)
+        {
+            data["rank"] = new List<object>()
+            {
+                new Dictionary<string, object>()
+                {
+                    { "rank", duelSettings.rank[0] },
+                    { "rate", duelSettings.rate[0] }
+                },
+                new Dictionary<string, object>()
+                {
+                    { "rank", duelSettings.rank[1] },
+                    { "rate", duelSettings.rate[1] }
+                }
+            };
+            if (!data.ContainsKey("xuid")) data["xuid"] = new int[2];
+            if (!data.ContainsKey("online_id")) data["online_id"] = new int[2];
+            if (!data.ContainsKey("is_same_os")) data["is_same_os"] = new bool[2];
+            return data;
         }
 
         public bool AreAllEqual(int[] values)

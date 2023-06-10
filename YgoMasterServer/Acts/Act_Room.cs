@@ -1079,6 +1079,10 @@ namespace YgoMaster
 
             tableEntry.HasBeginDuel = true;
             table.Rewards.Clear();
+            lock (duelRoom.Replays)
+            {
+                table.Replay = null;
+            }
 
             Dictionary<uint, FriendState> p1Friends = GetFriends(p1);
             Dictionary<uint, FriendState> p2Friends = GetFriends(p2);
@@ -1146,6 +1150,134 @@ namespace YgoMaster
             request.Response["Duel"] = duelSettings.ToDictionary();
 
             request.Remove("Duel", "DuelResult", "Result");
+        }
+
+        void Act_RoomGetResultList(GameServerWebRequest request)
+        {
+            if (!MultiplayerEnabled)
+            {
+                return;
+            }
+
+            DuelRoom duelRoom = request.Player.DuelRoom;
+            if (duelRoom == null)
+            {
+                Utils.LogWarning("[Act_RoomGetResultList] duelRoom == null");
+                request.ResultCode = (int)ResultCodes.PvPCode.NOT_EXIST_ROOM;
+                return;
+            }
+
+            Dictionary<string, object> roomData = request.GetOrCreateDictionary("Room");
+            Dictionary<string, object> roomInfoData = Utils.GetOrCreateDictionary(roomData, "room_info");
+            List<object> battleResultList = new List<object>();
+            roomInfoData["battle_result_list"] = battleResultList;
+
+            List<DuelRoomReplay> replays;
+            lock (duelRoom.Replays)
+            {
+                replays = new List<DuelRoomReplay>(duelRoom.Replays);
+            }
+
+            foreach (DuelRoomReplay replay in replays)
+            {
+                Dictionary<string, object> battleResultData = new Dictionary<string, object>();
+                battleResultList.Add(battleResultData);
+
+                battleResultData["player1"] = replay.Player1.pcode == null || replay.Player1.pcode.Length <= replay.Player1.MyID ?
+                    0 : replay.Player1.pcode[replay.Player1.MyID];
+
+                battleResultData["player2"] = replay.Player2.pcode == null || replay.Player2.pcode.Length <= replay.Player2.MyID ?
+                    0 : replay.Player2.pcode[replay.Player2.MyID];
+
+                int win = 0;
+                switch ((DuelResultType)replay.Player1.res)
+                {
+                    case DuelResultType.Win:
+                        win = 1;
+                        break;
+                    case DuelResultType.Lose:
+                        win = 2;
+                        break;
+                    case DuelResultType.Draw:
+                        win = 0;
+                        break;
+                }
+                battleResultData["win"] = win;
+
+                battleResultData["did"] = replay.Did;
+            }
+        }
+
+        void Act_RoomReplayDuel(GameServerWebRequest request)
+        {
+            if (!MultiplayerEnabled)
+            {
+                return;
+            }
+
+            uint pcode = Utils.GetValue<uint>(request.ActParams, "pcode");
+            long did = Utils.GetValue<long>(request.ActParams, "did");
+
+            DuelRoom duelRoom = request.Player.DuelRoom;
+            if (duelRoom == null)
+            {
+                Utils.LogWarning("[Act_RoomGetResultList] duelRoom == null");
+                request.ResultCode = (int)ResultCodes.PvPCode.NO_REPLAY_DATA;
+                return;
+            }
+
+            DuelRoomReplay replay;
+            lock (duelRoom.Replays)
+            {
+                if (!duelRoom.ReplaysByDid.TryGetValue(did, out replay))
+                {
+                    request.ResultCode = (int)ResultCodes.PvPCode.NO_REPLAY_DATA;
+                    return;
+                }
+            }
+
+            DuelSettings duelSettings = null;
+            if (pcode == replay.Player1Code)
+            {
+                duelSettings = replay.Player1;
+            }
+            else if (pcode == replay.Player2Code)
+            {
+                duelSettings = replay.Player2;
+            }
+
+            if (duelSettings == null)
+            {
+                request.ResultCode = (int)ResultCodes.PvPCode.NO_REPLAY_DATA;
+                return;
+            }
+
+            Dictionary<string, object> responseData = request.GetOrCreateDictionary("Response");
+            responseData["UrlScheme"] = "duel:push?GameMode=" + (int)GameMode.Replay + "&did=" + replay.Did + "&roomReplayDid=" + duelSettings.did;
+        }
+
+        void Act_RoomSaveReplay(GameServerWebRequest request)
+        {
+            if (!MultiplayerEnabled)
+            {
+                return;
+            }
+
+            // Not handling this as we already auto save replays no matter what
+
+            //GameMode gameMode = Utils.GetValue<GameMode>(request.ActParams, "mode");
+            //long did = Utils.GetValue<long>(request.ActParams, "mode");
+            //int eid = Utils.GetValue<int>(request.ActParams, "eid");//?
+
+            // Response: {"code":0,"res":[[166,[],0,0]]}
+        }
+
+        void Act_RoomPlayReplay(GameServerWebRequest request)
+        {
+            if (!MultiplayerEnabled)
+            {
+                return;
+            }
         }
 
         public Player GetDuelingOpponent(string playerToken)

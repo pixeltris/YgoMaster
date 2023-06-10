@@ -415,6 +415,15 @@ namespace YgoMaster
                                     case "Room.is_room_battle_ready":
                                         Act_RoomBattleReady(gameServerWebRequest);
                                         break;
+                                    case "Room.get_result_list":
+                                        Act_RoomGetResultList(gameServerWebRequest);
+                                        break;
+                                    case "PvP.replay_duel_history_with_room":
+                                        Act_RoomReplayDuel(gameServerWebRequest);
+                                        break;
+                                    case "PvP.save_replay":
+                                        Act_RoomSaveReplay(gameServerWebRequest);
+                                        break;
                                     case "DuelMenu.deck_check":
                                         Act_DuelMenuDeckCheck(gameServerWebRequest);
                                         break;

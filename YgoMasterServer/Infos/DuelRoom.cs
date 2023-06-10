@@ -42,6 +42,10 @@ namespace YgoMaster
         public HashSet<Player> Spectators { get; private set; }
         public object MembersLocker = new object();
 
+        public List<DuelRoomReplay> Replays { get; private set; }
+        public Dictionary<long, DuelRoomReplay> ReplaysByDid { get; private set; }
+        long nextReplayDid = 1;
+
         public DuelRoomTable[] Tables { get; private set; }
 
         public int Comment;
@@ -81,6 +85,8 @@ namespace YgoMaster
         {
             Members = new Dictionary<Player, DuelRoomRecord>();
             Spectators = new HashSet<Player>();
+            Replays = new List<DuelRoomReplay>();
+            ReplaysByDid = new Dictionary<long, DuelRoomReplay>();
         }
 
         public bool IsSpectator(Player player)
@@ -180,6 +186,51 @@ namespace YgoMaster
                 }
             }
         }
+
+        public void AddReplay(DuelRoomReplay replay)
+        {
+            lock (Replays)
+            {
+                if (replay.Player1 == null || replay.Player2 == null)
+                {
+                    return;
+                }
+                replay.Did = nextReplayDid++;
+                replay.Player1.did = nextReplayDid++;
+                replay.Player2.did = nextReplayDid++;
+                Replays.Add(replay);
+                ReplaysByDid[replay.Did] = replay;
+            }
+        }
+    }
+
+    class DuelRoomReplay
+    {
+        public long Did;
+        public DuelSettings Player1;
+        public DuelSettings Player2;
+        public uint Player1Code;
+        public uint Player2Code;
+        public bool IsComplete
+        {
+            get { return Player1 != null && Player2 != null; }
+        }
+
+        public void AddReplay(Player player)
+        {
+            if (player.ActiveDuelSettings.MyID == 0)
+            {
+                Player1 = new DuelSettings();
+                Player1.CopyFrom(player.ActiveDuelSettings);
+                Player1Code = player.Code;
+            }
+            else
+            {
+                Player2 = new DuelSettings();
+                Player2.CopyFrom(player.ActiveDuelSettings);
+                Player2Code = player.Code;
+            }
+        }
     }
 
     class DuelRoomTable
@@ -188,6 +239,7 @@ namespace YgoMaster
         public DuelRoomTableState State = DuelRoomTableState.Joinable;
         public DateTime MatchedTime;
 
+        public DuelRoomReplay Replay;
         public uint Seed;
         public int FirstPlayer;
         public int CoinFlipCounter;
@@ -360,6 +412,18 @@ namespace YgoMaster
                 }
             }
             return null;
+        }
+
+        public int GetEntryIndex(Player player)
+        {
+            for (int i = 0; i < Entries.Length; i++)
+            {
+                if (Entries[i].Player == player)
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         public DuelRoomTableEntry GetOpponentEntry(Player player)

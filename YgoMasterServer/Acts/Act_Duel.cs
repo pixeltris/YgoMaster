@@ -365,6 +365,25 @@ namespace YgoMaster
                             default: return;
                         }
 
+                        if (duelRoom.ViewReplays)
+                        {
+                            lock (duelRoom.Replays)
+                            {
+                                if (duelRoomTable.Replay == null)
+                                {
+                                    duelRoomTable.Replay = new DuelRoomReplay();
+                                }
+                                if (!duelRoomTable.Replay.IsComplete)
+                                {
+                                    duelRoomTable.Replay.AddReplay(request.Player);
+                                    if (duelRoomTable.Replay.IsComplete)
+                                    {
+                                        duelRoom.AddReplay(duelRoomTable.Replay);
+                                    }
+                                }
+                            }
+                        }
+
                         lock (duelRoomTable.Rewards)
                         {
                             if (duelRoomTable.Rewards.Player1Rewards == null && duelRoomTable.Rewards.Player2Rewards == null)

@@ -9,14 +9,13 @@ namespace YgoMaster
 {
     partial class GameServer
     {
-        const string expectedDuelDataKey = "DuelBeginTime";
-
         void Act_ReplayList(GameServerWebRequest request)
         {
             request.Player.RecentlyListedReplayFilesByDid.Clear();
 
             uint pcode = Utils.GetValue<uint>(request.ActParams, "pcode");
-            if (pcode == 0)
+            bool isSelf = pcode == 0 || pcode == request.Player.Code;
+            if (isSelf)
             {
                 pcode = request.Player.Code;
             }
@@ -30,9 +29,16 @@ namespace YgoMaster
                 }
             }
 
-            request.Remove("User.replay");
+            if (isSelf)
+            {
+                request.Remove("User.replay");
+            }
+            else
+            {
+                request.Remove("Friend.replay");
+            }
 
-            Dictionary<string, object> userData = request.GetOrCreateDictionary("User");
+            Dictionary<string, object> userData = request.GetOrCreateDictionary(isSelf ? "User" : "Friend");
             Dictionary<string, object> allReplayData = Utils.GetOrCreateDictionary(userData, "replay");
 
             string replaysDir = GetReplaysDirectory(player);
@@ -46,7 +52,7 @@ namespace YgoMaster
                 try
                 {
                     Dictionary<string, object> data = MiniJSON.Json.Deserialize(File.ReadAllText(file)) as Dictionary<string, object>;
-                    if (data != null && data.ContainsKey(expectedDuelDataKey))
+                    if (data != null && data.ContainsKey(DuelSettings.ExpectedDuelDataKey))
                     {
                         DuelSettings duelSettings = new DuelSettings();
                         duelSettings.FromDictionary(data);
@@ -93,7 +99,7 @@ namespace YgoMaster
                     if (File.Exists(replayPath))
                     {
                         Dictionary<string, object> data = MiniJSON.Json.Deserialize(File.ReadAllText(replayPath)) as Dictionary<string, object>;
-                        if (data != null && data.ContainsKey(expectedDuelDataKey))
+                        if (data != null && data.ContainsKey(DuelSettings.ExpectedDuelDataKey))
                         {
                             DuelSettings duelSettings = new DuelSettings();
                             duelSettings.FromDictionary(data);
@@ -127,7 +133,7 @@ namespace YgoMaster
                     if (File.Exists(replayPath))
                     {
                         Dictionary<string, object> data = MiniJSON.Json.Deserialize(File.ReadAllText(replayPath)) as Dictionary<string, object>;
-                        if (data != null && data.ContainsKey(expectedDuelDataKey))
+                        if (data != null && data.ContainsKey(DuelSettings.ExpectedDuelDataKey))
                         {
                             DuelSettings duelSettings = new DuelSettings();
                             duelSettings.FromDictionary(data);
@@ -187,7 +193,7 @@ namespace YgoMaster
                     if (File.Exists(replayPath))
                     {
                         Dictionary<string, object> data = MiniJSON.Json.Deserialize(File.ReadAllText(replayPath)) as Dictionary<string, object>;
-                        if (data != null && data.ContainsKey(expectedDuelDataKey))
+                        if (data != null && data.ContainsKey(DuelSettings.ExpectedDuelDataKey))
                         {
                             //duel:push?GameMode=7&did=___DID___&pl_info={"___PCODE1___":{"is_same_os":false,"online_id":""},"___PCODE2___":{"is_same_os":false,"online_id":""}}&r_myid=1&is_db=1
                             Dictionary<string, object> responseData = request.GetOrCreateDictionary("Response");
@@ -213,63 +219,72 @@ namespace YgoMaster
         {
             Dictionary<string, object> rule = Utils.GetDictionary(request.ActParams, "rule");
             long did = Utils.GetValue<long>(rule, "did");
+            long roomReplayDid = Utils.GetValue<long>(rule, "roomReplayDid");// Custom
 
             request.Remove("Duel", "DuelResult", "Result");
-            bool loaded = false;
 
-            string replayPath;
-            if (request.Player.RecentlyListedReplayFilesByDid.TryGetValue(did, out replayPath))
+            DuelSettings duelSettings = null;
+
+            if (roomReplayDid > 0)
             {
-                try
+                DuelRoom duelRoom = request.Player.DuelRoom;
+                if (duelRoom != null)
                 {
-                    if (File.Exists(replayPath))
+                    DuelRoomReplay replay;
+                    lock (duelRoom.Replays)
                     {
-                        Dictionary<string, object> data = MiniJSON.Json.Deserialize(File.ReadAllText(replayPath)) as Dictionary<string, object>;
-                        if (data != null && data.ContainsKey(expectedDuelDataKey))
+                        duelRoom.ReplaysByDid.TryGetValue(did, out replay);
+                    }
+                    if (replay != null)
+                    {
+                        if (replay.Player1.did == roomReplayDid)
                         {
-                            DuelSettings duelSettings = new DuelSettings();
-                            duelSettings.FromDictionary(data);
-
-                            duelSettings.MyType = (int)DuelPlayerType.Replay;
-                            duelSettings.chapter = 0;
-                            duelSettings.GameMode = (int)GameMode.Replay;
-                            request.Response["Duel"] = duelSettings.ToDictionary();
-                            
-                            // Fix up some things which are required by replays (duel hangs at end without these)
-                            var dict = (request.Response["Duel"] as Dictionary<string, object>);
-                            dict["rank"] = new List<object>()
-                            {
-                                new Dictionary<string, object>()
-                                {
-                                    { "rank", duelSettings.rank[0] },
-                                    { "rate", duelSettings.rate[0] }
-                                },
-                                new Dictionary<string, object>()
-                                {
-                                    { "rank", duelSettings.rank[1] },
-                                    { "rate", duelSettings.rate[1] }
-                                }
-                            };
-                            dict["xuid"] = new int[2];
-                            dict["online_id"] = new int[2];
-                            dict["is_same_os"] = new bool[2];
-
-                            dict["MaxTurn"] = duelSettings.turn;
-                            dict["publicLevel"] = (int)DuelReplayCardVisibility.AllOpen;
-                            //dict["hand_open"] = true;
-                            //dict["blockRelativeCard"] = false;
-
-                            loaded = true;
+                            duelSettings = replay.Player1;
+                        }
+                        else if (replay.Player2.did == roomReplayDid)
+                        {
+                            duelSettings = replay.Player2;
                         }
                     }
                 }
-                catch (Exception e)
+            }
+            else
+            {
+                string replayPath;
+                if (request.Player.RecentlyListedReplayFilesByDid.TryGetValue(did, out replayPath))
                 {
-                    Utils.LogWarning("Failed play replay " + did + " '" + replayPath + "'. Error: " + e);
+                    try
+                    {
+                        if (File.Exists(replayPath))
+                        {
+                            Dictionary<string, object> data = MiniJSON.Json.Deserialize(File.ReadAllText(replayPath)) as Dictionary<string, object>;
+                            if (data != null && data.ContainsKey(DuelSettings.ExpectedDuelDataKey))
+                            {
+                                duelSettings = new DuelSettings();
+                                duelSettings.FromDictionary(data);
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Utils.LogWarning("Failed play replay " + did + " '" + replayPath + "'. Error: " + e);
+                    }
                 }
             }
 
-            if (!loaded)
+            if (duelSettings != null)
+            {
+                duelSettings.MyType = (int)DuelPlayerType.Replay;
+                duelSettings.chapter = 0;
+                duelSettings.GameMode = (int)GameMode.Replay;
+
+                Dictionary<string, object> dict = DuelSettings.FixupReplayRequirements(duelSettings, duelSettings.ToDictionary());
+                dict["publicLevel"] = (int)DuelReplayCardVisibility;
+                //dict["hand_open"] = true;
+                //dict["blockRelativeCard"] = false;
+                request.Response["Duel"] = dict;
+            }
+            else
             {
                 request.ResultCode = (int)ResultCodes.PvPCode.NO_REPLAY_DATA;
             }

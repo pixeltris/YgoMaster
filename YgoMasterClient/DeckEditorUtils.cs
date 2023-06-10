@@ -1125,6 +1125,8 @@ namespace YgomGame.SubMenu
 
     unsafe static class SubMenuViewController
     {
+        static IL2Method methodSetTitleText;
+        static IL2Method methodAddTitleItem;
         static IL2Method methodAddMenuItem;
 
         public enum Badge
@@ -1137,7 +1139,19 @@ namespace YgomGame.SubMenu
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("SubMenuViewController", "YgomGame.SubMenu");
+            methodSetTitleText = classInfo.GetMethod("SetTitleText");
+            methodAddTitleItem = classInfo.GetMethod("AddTitleItem");
             methodAddMenuItem = classInfo.GetMethod("AddMenuItem");
+        }
+
+        public static void SetTitleText(IntPtr thisPtr, string str)
+        {
+            methodSetTitleText.Invoke(thisPtr, new IntPtr[] { new IL2String(str).ptr });
+        }
+
+        public static void AddTitleItem(IntPtr thisPtr, string text)
+        {
+            methodAddTitleItem.Invoke(thisPtr, new IntPtr[] { new IL2String(text).ptr });
         }
 
         public static void AddMenuItem(IntPtr thisPtr, string text, Action clickCallback, string onClickSL = null, Badge badge = Badge.DEFAULT)

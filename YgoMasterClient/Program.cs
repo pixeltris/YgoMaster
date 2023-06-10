@@ -238,6 +238,9 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomGame.DeckEditViewController2));
                 nativeTypes.Add(typeof(YgomGame.SubMenu.DeckEditSubMenuViewController));
                 nativeTypes.Add(typeof(YgomGame.SubMenu.SubMenuViewController));
+                // DuelReplayUtils
+                nativeTypes.Add(typeof(YgomGame.SubMenu.HomeSubMenuViewController));
+                nativeTypes.Add(typeof(YgomGame.Menu.ProfileReplayViewController));
                 // Misc
                 nativeTypes.Add(typeof(YgomGame.Menu.CommonDialogViewController));
                 nativeTypes.Add(typeof(YgomGame.Menu.ActionSheetViewController));

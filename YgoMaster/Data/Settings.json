@@ -43,9 +43,11 @@
     "DuelRoomMaxSpectators": 1000,
     "DuelRoomCommentTimeoutInSeconds": 7,
     "DuelRoomTableMatchingTimeoutInSeconds": 30,
+    "DuelRoomSpectatorCardVisibility": "AllClose",// AllClose, FrontOpen, AllOpen
     "DuelReplaySaveForGameModes": [ "SoloSingle", "Room" ],
     "DuelReplaySaveFileLimit": 50,
     "DuelReplayMakePublicByDefault": false,
+    "DuelReplayCardVisibility": "FrontOpen",
     "DefaultGems": 2000,
     "DefaultItems": [
         1000001,// Rescue Rabbit (AVATAR)

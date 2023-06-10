@@ -106,6 +106,9 @@ namespace YgoMasterClient
         public delegate int Del_DLL_DuelGetTurnNum();
         public static Del_DLL_DuelGetTurnNum DLL_DuelGetTurnNum;
 
+        public delegate int Del_DLL_DuelMyself();
+        public static Del_DLL_DuelMyself DLL_DuelMyself;
+
         delegate void Del_AddRecord(IntPtr ptr, int size);
         delegate void Del_DLL_SetAddRecordDelegate(Del_AddRecord addRecord);
         static Del_DLL_SetAddRecordDelegate DLL_SetAddRecordDelegate;
@@ -140,13 +143,14 @@ namespace YgoMasterClient
             DLL_DuelComDebugCommand = Utils.GetFunc<Del_DLL_DuelComDebugCommand>(PInvoke.GetProcAddress(lib, "DLL_DuelComDebugCommand"));
             DLL_DuelWhichTurnNow = Utils.GetFunc<Del_DLL_DuelWhichTurnNow>(PInvoke.GetProcAddress(lib, "DLL_DuelWhichTurnNow"));
             DLL_DuelGetTurnNum = Utils.GetFunc<Del_DLL_DuelGetTurnNum>(PInvoke.GetProcAddress(lib, "DLL_DuelGetTurnNum"));
+            DLL_DuelMyself = Utils.GetFunc<Del_DLL_DuelMyself>(PInvoke.GetProcAddress(lib, "DLL_DuelMyself"));
 
             DLL_SetAddRecordDelegate = Utils.GetFunc<Del_DLL_SetAddRecordDelegate>(PInvoke.GetProcAddress(lib, "DLL_SetAddRecordDelegate"));
         }
 
         static void Log(string str)
         {
-            //Console.WriteLine(str);
+            Console.WriteLine(str);
             LogToFile(str);
         }
 
@@ -704,8 +708,6 @@ namespace YgoMasterClient
             {
                 return;
             }
-            // This is to avoid potentially getting a ping timeout / network error in some situations when the duel ends
-            // NOTE: This might not be needed. Remove this message if it isn't an issue
             HasDuelEnd = true;
         }
 

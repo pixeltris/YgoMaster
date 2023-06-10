@@ -227,6 +227,7 @@ namespace YgomSystem.Network
             {
                 param = new Dictionary<string, object>();
             }
+
             if (DuelDll.IsPvpDuel)
             {
                 if (DuelDll.HasOpponentSurrendered)
@@ -245,63 +246,73 @@ namespace YgomSystem.Network
                 param["res"] = (int)DuelResultType.Win;
                 param["finish"] = (int)DuelFinishType.Normal;
             }
+
             if (!Program.IsLive)
             {
                 param["turn"] = DuelDll.DLL_DuelGetTurnNum() + 1;
-
-                DuelFinishType finish = (DuelFinishType)Utils.GetValue<int>(param, "finish");
-
-                if (finish == DuelFinishType.Surrender)
-                {
-                    DuelResultType res = DuelResultType.Lose;
-                    if (param.ContainsKey("res"))
-                    {
-                        res = Utils.GetValue<DuelResultType>(param, "res");
-                    }
-                    if (res == DuelResultType.Win)
-                    {
-                        // Surrender opponent
-                        DuelDll.ReplayData.AddRange(new byte[] { 0x22, 0x80, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00 });
-                        DuelDll.ReplayData.AddRange(new byte[] { 0x05, 0x00, 0x01, 0x00, 0x04, 0x00, 0x00, 0x00 });
-                    }
-                    else
-                    {
-                        // Surrender self
-                        DuelDll.ReplayData.AddRange(new byte[] { 0x22, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00 });
-                        DuelDll.ReplayData.AddRange(new byte[] { 0x05, 0x00, 0x02, 0x00, 0x00, 0x00, 0x04, 0x00 });
-                    }
-                }
-
-                byte[] compressedBuffer = null;
-
-                byte[] replayBuffer = DuelDll.ReplayData.ToArray();
-                IL2Array<byte> nativeReplayBuffer = new IL2Array<byte>(replayBuffer.Length, IL2SystemClass.Byte);
-                nativeReplayBuffer.CopyFrom(replayBuffer);
-                IL2Object nativeCompressedBufferObj = methodCompress.Invoke(new IntPtr[] { nativeReplayBuffer.ptr });
-                if (nativeCompressedBufferObj != null)
-                {
-                    IL2Array<byte> nativeCompressedBuffer = new IL2Array<byte>(nativeCompressedBufferObj.ptr);
-                    compressedBuffer = nativeCompressedBuffer.ToByteArray();
-                }
-
-                int[] fin = new int[]
-                {
-                    (int)finish,
-                    (int)finish
-                };
-                Dictionary<string, object> replayData = new Dictionary<string, object>();
-                replayData["b"] = compressedBuffer;
-                replayData["f"] = fin;
-                param["replayData"] = Convert.ToBase64String(MessagePack.Pack(replayData));
+                param["replayData"] = GetReplayDataString(param);
             }
             paramPtr = YgomMiniJSON.Json.Deserialize(MiniJSON.Json.Serialize(param));
             return hookDuel_end.Original(paramPtr);
+        }
+
+        public static string GetReplayDataString(Dictionary<string, object> param)
+        {
+            DuelFinishType finish = (DuelFinishType)Utils.GetValue<int>(param, "finish");
+
+            List<byte> replayData = new List<byte>(DuelDll.ReplayData);
+
+            if (finish == DuelFinishType.Surrender)
+            {
+                DuelResultType res = DuelResultType.Lose;
+                if (param.ContainsKey("res"))
+                {
+                    res = Utils.GetValue<DuelResultType>(param, "res");
+                }
+                int myId = DuelDll.DLL_DuelMyself();
+                if ((res == DuelResultType.Win && myId == 0) ||
+                    (res == DuelResultType.Lose && myId == 1))
+                {
+                    // Surrender opponent
+                    replayData.AddRange(new byte[] { 0x22, 0x80, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00 });
+                    replayData.AddRange(new byte[] { 0x05, 0x00, 0x01, 0x00, 0x04, 0x00, 0x00, 0x00 });
+                }
+                else
+                {
+                    // Surrender self
+                    replayData.AddRange(new byte[] { 0x22, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00 });
+                    replayData.AddRange(new byte[] { 0x05, 0x00, 0x02, 0x00, 0x00, 0x00, 0x04, 0x00 });
+                }
+            }
+
+            byte[] compressedBuffer = null;
+
+            byte[] replayBuffer = replayData.ToArray();
+            IL2Array<byte> nativeReplayBuffer = new IL2Array<byte>(replayBuffer.Length, IL2SystemClass.Byte);
+            nativeReplayBuffer.CopyFrom(replayBuffer);
+            IL2Object nativeCompressedBufferObj = methodCompress.Invoke(new IntPtr[] { nativeReplayBuffer.ptr });
+            if (nativeCompressedBufferObj != null)
+            {
+                IL2Array<byte> nativeCompressedBuffer = new IL2Array<byte>(nativeCompressedBufferObj.ptr);
+                compressedBuffer = nativeCompressedBuffer.ToByteArray();
+            }
+
+            int[] fin = new int[]
+            {
+                (int)finish,
+                (int)finish
+            };
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+            dict["b"] = compressedBuffer;
+            dict["f"] = fin;
+            return Convert.ToBase64String(MessagePack.Pack(dict));
         }
     }
 
     static unsafe class RequestStructure
     {
         static IL2Method methodGetCommand;
+        static IL2Field fieldCode;
 
         delegate void Del_Complete(IntPtr thisPtr);
         static Hook<Del_Complete> hookComplete;
@@ -311,6 +322,7 @@ namespace YgomSystem.Network
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("NetworkMain").GetNestedType("RequestStructure");
             methodGetCommand = classInfo.GetProperty("Command").GetGetMethod();
+            fieldCode = classInfo.GetField("code");
             hookComplete = new Hook<Del_Complete>(Complete, classInfo.GetMethod("Complete"));
         }
 
@@ -347,6 +359,11 @@ namespace YgomSystem.Network
             settings.SetRequiredDefaults();
         }
 
+        public static void SetCode(IntPtr thisPtr, int code)
+        {
+            fieldCode.SetValue(thisPtr, new IntPtr(&code));
+        }
+
         static void Complete(IntPtr thisPtr)
         {
             IL2Object cmdObj = methodGetCommand.Invoke(thisPtr);
@@ -360,6 +377,12 @@ namespace YgomSystem.Network
                 switch (cmd)
                 {
                     case "Duel.begin":
+                        if (Program.IsLive)
+                        {
+                            YgomGame.Menu.ProfileReplayViewController.LiveDuelBeginData =
+                                MiniJSON.Json.Deserialize(YgomSystem.Utility.ClientWork.SerializePath("Duel")) as Dictionary<string, object>;
+                        }
+
                         PInvoke.SetTimeMultiplier(ClientSettings.DuelClientTimeMultiplier != 0 ?
                             ClientSettings.DuelClientTimeMultiplier : ClientSettings.TimeMultiplier);
                         break;
@@ -367,11 +390,13 @@ namespace YgomSystem.Network
                         PInvoke.SetTimeMultiplier(ClientSettings.TimeMultiplier);
                         break;
                 }
-                if (cmd == "Duel.begin" && !string.IsNullOrEmpty(ClientSettings.MultiplayerToken))
+                if (cmd == "Duel.begin")
                 {
-                    GameMode gameMode = (GameMode)Utility.ClientWork.GetByJsonPath<int>("Duel.GameMode");
-                    DuelDll.OnDuelBegin(gameMode);
+                    DuelDll.OnDuelBegin((GameMode)YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Duel.GameMode"));
                 }
+
+                YgomGame.Menu.ProfileReplayViewController.OnNetworkComplete(thisPtr, cmd);
+
                 if (YgomGame.Room.RoomCreateViewController.IsHacked)
                 {
                     switch (cmd)
@@ -431,19 +456,26 @@ namespace YgomSystem.Network
 
     static unsafe class Request
     {
-        static IL2Method methodEntry;
+        delegate IntPtr Del_Entry(IntPtr commandPtr, IntPtr paramPtr, float timeOut);
+        static Hook<Del_Entry> hookEntry;
 
         static Request()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class requestClassInfo = assembly.GetClass("Request", "YgomSystem.Network");
-            methodEntry = requestClassInfo.GetMethod("Entry");
+            hookEntry = new Hook<Del_Entry>(Entry, requestClassInfo.GetMethod("Entry"));
+        }
+
+        static IntPtr Entry(IntPtr commandPtr, IntPtr paramPtr, float timeOut)
+        {
+            YgomGame.Menu.ProfileReplayViewController.OnNetworkEntry(ref commandPtr, ref paramPtr, ref timeOut);
+
+            return hookEntry.Original(commandPtr, paramPtr, timeOut);
         }
 
         public static IntPtr Entry(string command, string param, float timeout = 30)
         {
-            IL2Object result = methodEntry.Invoke(new IntPtr[] { new IL2String(command).ptr, YgomMiniJSON.Json.Deserialize(param), new IntPtr(&timeout) });
-            return result != null ? result.ptr : IntPtr.Zero;
+            return hookEntry.Original(new IL2String(command).ptr, YgomMiniJSON.Json.Deserialize(param), timeout);
         }
     }
 }
@@ -1718,6 +1750,7 @@ namespace YgomSystem.UI
         {
             hookPopChildViewController2.Original(thisPtr, popTarget);
             YgomGame.Room.RoomCreateViewController.OnPopChildViewController(thisPtr);
+            YgomGame.Menu.ProfileReplayViewController.OnPopChildViewController(thisPtr, popTarget);
         }
 
         public static IntPtr LoadViewControllerPrefab(IntPtr thisPtr, string prefabpath)

@@ -221,6 +221,7 @@ namespace YgomGame.Duel
         static IL2Method methodGetCardNum;
         static IL2Method methodGetCardID;
         static IL2Method methodGetCardUniqueID;
+        static IL2Method methodGetTurnNum;
 
         static Engine()
         {
@@ -229,6 +230,7 @@ namespace YgomGame.Duel
             methodGetCardNum = classInfo.GetMethod("GetCardNum");
             methodGetCardID = classInfo.GetMethod("GetCardID");
             methodGetCardUniqueID = classInfo.GetMethod("GetCardUniqueID");
+            methodGetTurnNum = classInfo.GetMethod("GetTurnNum");
         }
 
         public static int GetCardNum(int player, int locate)
@@ -244,6 +246,11 @@ namespace YgomGame.Duel
         public static int GetCardUniqueID(int player, int position, int index)
         {
             return methodGetCardUniqueID.Invoke(new IntPtr[] { new IntPtr(&player), new IntPtr(&position), new IntPtr(&index) }).GetValueRef<int>();
+        }
+
+        public static int GetTurnNum()
+        {
+            return methodGetTurnNum.Invoke().GetValueRef<int>();
         }
     }
 

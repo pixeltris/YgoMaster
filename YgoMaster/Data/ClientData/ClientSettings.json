@@ -35,4 +35,7 @@
     "ChangeWindowTitleOnLiveMod": true,
     "RandomDecksNonRecursive": false,
     "RandomDecksDontSetCpuName": false,
+    "DuelReplayCardVisibility": "FrontOpen",// "AllClose", "FrontOpen", "AllOpen"
+    "DuelReplayLiveAutoSave": false,
+    "DuelReplayLiveAutoSaveUseSubFolders": true,
 }

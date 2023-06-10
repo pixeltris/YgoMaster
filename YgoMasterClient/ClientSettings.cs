@@ -47,6 +47,9 @@ namespace YgoMasterClient
         public static bool CustomDuelCmdLog;
         public static bool RandomDecksNonRecursive;
         public static bool RandomDecksDontSetCpuName;
+        public static DuelReplayCardVisibility DuelReplayCardVisibility;
+        public static bool DuelReplayLiveAutoSave;
+        public static bool DuelReplayLiveAutoSaveUseSubFolders;
 
         public static string FilePath
         {
@@ -125,6 +128,9 @@ namespace YgoMasterClient
             CustomDuelCmdLog = Utils.GetValue<bool>(data, "CustomDuelCmdLog");
             RandomDecksNonRecursive = Utils.GetValue<bool>(data, "RandomDecksNonRecursive");
             RandomDecksDontSetCpuName = Utils.GetValue<bool>(data, "RandomDecksDontSetCpuName");
+            DuelReplayCardVisibility = Utils.GetValue<DuelReplayCardVisibility>(data, "DuelReplayCardVisibility");
+            DuelReplayLiveAutoSave = Utils.GetValue<bool>(data, "DuelReplayLiveAutoSave");
+            DuelReplayLiveAutoSaveUseSubFolders = Utils.GetValue<bool>(data, "DuelReplayLiveAutoSaveUseSubFolders");
             return true;
         }
 
