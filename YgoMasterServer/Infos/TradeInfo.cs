@@ -9,8 +9,8 @@ namespace YgoMaster
     {
         public Player Player1;
         public Player Player2;
-        public bool Player1HasPressedTrade;
-        public bool Player2HasPressedTrade;
+        public bool Player1HasPressedTrade { get; private set; }
+        public bool Player2HasPressedTrade { get; private set; }
         public bool HaveBothPressedTrade
         {
             get { return Player1 != null && Player2 != null && Player1HasPressedTrade && Player2HasPressedTrade; }
@@ -42,14 +42,14 @@ namespace YgoMaster
             if (Player1 == null)
             {
                 Player1 = player;
-                Player1HasPressedTrade = false;
+                ClearHasPressedTrade();
                 player.ActiveTrade = this;
                 return true;
             }
             if (Player2 == null)
             {
                 Player2 = player;
-                Player2HasPressedTrade = false;
+                ClearHasPressedTrade();
                 player.ActiveTrade = this;
                 return true;
             }
@@ -61,14 +61,14 @@ namespace YgoMaster
             if (player == Player1)
             {
                 Player1 = null;
-                Player1HasPressedTrade = false;
+                ClearHasPressedTrade();
                 player.ActiveTrade = null;
                 return true;
             }
             else if (player == Player2)
             {
                 Player2 = null;
-                Player2HasPressedTrade = false;
+                ClearHasPressedTrade();
                 player.ActiveTrade = null;
                 return true;
             }
@@ -104,6 +104,12 @@ namespace YgoMaster
             {
                 Player2HasPressedTrade = value;
             }
+        }
+
+        void ClearHasPressedTrade()
+        {
+            Player1HasPressedTrade = false;
+            Player2HasPressedTrade = false;
         }
     }
 }

@@ -49,7 +49,7 @@
     "DuelReplayMakePublicByDefault": false,
     "DuelReplayCardVisibility": "FrontOpen",
     "TradeAllowOtherPlayerToAddYourCards": true,
-    "TradeAllowOtherPlayerToRemoveYourCards": false,
+    "TradeAllowOtherPlayerToRemoveYourCards": true,
     "DefaultGems": 2000,
     "DefaultItems": [
         1000001,// Rescue Rabbit (AVATAR)
