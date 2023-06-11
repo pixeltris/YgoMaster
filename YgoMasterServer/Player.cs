@@ -42,6 +42,7 @@ namespace YgoMaster
         public DuelSettings ActiveDuelSettings { get; private set; }
         public Dictionary<long, string> RecentlyListedReplayFilesByDid { get; private set; }
         public TradeInfo ActiveTrade;
+        public DateTime LastEnterTradeRoomRequest;
 
         public bool IsDuelingPVP
         {

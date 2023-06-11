@@ -543,16 +543,6 @@ namespace YgomGame.Menu
             methodOpenWithBlock.Invoke(new IntPtr[] { new IL2String(message).ptr, IntPtr.Zero });
         }
 
-        static IL2Array<IntPtr> GetArray(string[] messages)
-        {
-            IL2Array<IntPtr> stringPtrs = new IL2Array<IntPtr>(messages.Length, IL2SystemClass.String);
-            for (int i = 0; i < stringPtrs.Length; i++)
-            {
-                stringPtrs[i] = new IL2String(messages[i]).ptr;
-            }
-            return stringPtrs;
-        }
-
         public enum IconType
         {
             None,

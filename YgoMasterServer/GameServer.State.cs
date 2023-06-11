@@ -218,6 +218,10 @@ namespace YgoMaster
         /// Allows the other player to remove your cards from the trade
         /// </summary>
         public bool TradeAllowOtherPlayerToRemoveYourCards;
+        /// <summary>
+        /// A delay between each enter trade room request to avoid state desync if spamming the button
+        /// </summary>
+        public float TradeEnterRoomRequestDelayInSeconds;
 
         void LoadSettings()
         {
@@ -321,6 +325,7 @@ namespace YgoMaster
             DisableDeckValidation = Utils.GetValue<bool>(values, "DisableDeckValidation");
             TradeAllowOtherPlayerToAddYourCards = Utils.GetValue<bool>(values, "TradeAllowOtherPlayerToAddYourCards");
             TradeAllowOtherPlayerToRemoveYourCards = Utils.GetValue<bool>(values, "TradeAllowOtherPlayerToRemoveYourCards");
+            TradeEnterRoomRequestDelayInSeconds = Utils.GetValue<float>(values, "TradeEnterRoomRequestDelayInSeconds");
 
             FriendSearchLimit = Utils.GetValue<int>(values, "FriendSearchLimit", 100);
             FriendOfflineInSeconds = Utils.GetValue<int>(values, "FriendOfflineInSeconds", 300);

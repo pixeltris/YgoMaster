@@ -324,6 +324,13 @@ namespace YgoMaster.Net
 
             lock (tradeLocker)
             {
+                if (player.LastEnterTradeRoomRequest > DateTime.UtcNow - TimeSpan.FromSeconds(GameServer.TradeEnterRoomRequestDelayInSeconds))
+                {
+                    // This is to avoid spamming of the trade button causing a potential desync between the client/server
+                    return;
+                }
+                player.LastEnterTradeRoomRequest = DateTime.UtcNow;
+
                 if (player.ActiveTrade != null)
                 {
                     player.ActiveTrade.Remove(player);
