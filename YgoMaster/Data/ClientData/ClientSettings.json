@@ -12,6 +12,7 @@
     "MultiplayerLogConnectionState": false,
     "DuelDllActiveUserDoCommandOffset": 13440,
     "DuelDllActiveUserSetIndexOffset": 13340,
+    "ClientSettingsTextFile": "Text/ClientSettings.en.json",
     "ShowConsole": false,
     "LogIDs": false,
     "AssetHelperLog": false,
