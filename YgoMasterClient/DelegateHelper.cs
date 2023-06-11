@@ -36,7 +36,7 @@ namespace UnityEngine.Events
         public unsafe static IntPtr CreateAction<T>(Delegate function)
         {
             IL2Class actionClass = typeof(Action<>).GetClass().MakeGenericType(new Type[] { typeof(T) });
-            return UnityEngine.Events._UnityAction.CreateDelegate(function, IntPtr.Zero, actionClass);
+            return UnityEngine.Events._UnityAction.CreateDelegate<T>(function, default(T), actionClass);
         }
 
         public unsafe static IntPtr CreateDelegate<T>(Delegate function, T instance, IL2Class klass = null)
@@ -62,7 +62,7 @@ namespace UnityEngine.Events
             }
 
             IL2Method ctor = klass.GetMethod(".ctor");
-            GCHandle handle1 = GCHandle.Alloc(instance);
+            //GCHandle handle1 = GCHandle.Alloc(instance);
             var runtimeMethod = Marshal.AllocHGlobal(80);
             Marshal.Copy(new byte[80], 0, runtimeMethod, 80);
             //methodPtr
@@ -83,7 +83,7 @@ namespace UnityEngine.Events
             *((IntPtr*)obj + 2) = function.Method.MethodHandle.GetFunctionPointer();
             *((IntPtr*)obj + 4) = obj;
             *((IntPtr*)obj + 5) = runtimeMethod;
-            *((IntPtr*)obj + 7) = GCHandle.ToIntPtr(handle1);
+            //*((IntPtr*)obj + 7) = GCHandle.ToIntPtr(handle1);
 
             return obj;
         }
