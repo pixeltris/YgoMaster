@@ -1,0 +1,31 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+
+namespace YgoMaster.Net.Message
+{
+    class TradeLeaveRoomMessage : NetMessage
+    {
+        public override NetMessageType Type
+        {
+            get { return NetMessageType.TradeLeaveRoom; }
+        }
+
+        public uint PlayerCode;
+        public string Name;
+
+        public override void Read(BinaryReader reader)
+        {
+            PlayerCode = reader.ReadUInt32();
+            Name = reader.ReadString();
+        }
+
+        public override void Write(BinaryWriter writer)
+        {
+            writer.Write(PlayerCode);
+            writer.Write(Name != null ? Name : string.Empty);
+        }
+    }
+}

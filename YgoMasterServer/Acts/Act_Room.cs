@@ -6,6 +6,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Xml.Linq;
+using YgoMaster.Net;
+using YgoMaster.Net.Message;
 
 namespace YgoMaster
 {
@@ -439,6 +441,16 @@ namespace YgoMaster
                     lock (friend.DuelRoomInvitesByFriendId)
                     {
                         friend.DuelRoomInvitesByFriendId[request.Player.Code] = duelRoom.Id;
+                    }
+
+                    NetClient friendClient = sessionServer.GetConnectionByToken(friend.Token);
+                    if (friendClient != null)
+                    {
+                        friendClient.Send(new FriendDuelInviteMessage()
+                        {
+                            PlayerCode = request.Player.Code,
+                            Name = request.Player.Name
+                        });
                     }
                 }
             }

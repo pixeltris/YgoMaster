@@ -150,7 +150,7 @@ namespace YgoMasterClient
 
         static void Log(string str)
         {
-            Console.WriteLine(str);
+            //Console.WriteLine(str);
             LogToFile(str);
         }
 
@@ -290,6 +290,7 @@ namespace YgoMasterClient
                     case DuelViewType.RunDialog:
                         if (ActiveUserIdForDoCommand != MyID)
                         {
+                            originalRunEffect((int)DuelViewType.CpuThinking, 0, 0, 0);
                             Log("Ignore " + (DuelViewType)id + " player:" + ActiveUserIdForDoCommand);
                             Dictionary<DuelViewType, int> remoteIsBusyEffect;
                             if (!RemoteIsBusyEffect.TryGetValue(RunEffectSeq, out remoteIsBusyEffect))
@@ -306,6 +307,7 @@ namespace YgoMasterClient
                     case DuelViewType.RunList:
                         if (param1 != MyID)
                         {
+                            originalRunEffect((int)DuelViewType.CpuThinking, 0, 0, 0);
                             return 0;
                         }
                         break;

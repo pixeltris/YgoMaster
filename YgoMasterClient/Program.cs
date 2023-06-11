@@ -238,9 +238,14 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomGame.DeckEditViewController2));
                 nativeTypes.Add(typeof(YgomGame.SubMenu.DeckEditSubMenuViewController));
                 nativeTypes.Add(typeof(YgomGame.SubMenu.SubMenuViewController));
+                nativeTypes.Add(typeof(YgomSystem.Sound));
                 // DuelReplayUtils
                 nativeTypes.Add(typeof(YgomGame.SubMenu.HomeSubMenuViewController));
                 nativeTypes.Add(typeof(YgomGame.Menu.ProfileReplayViewController));
+                // TradeUtils
+                nativeTypes.Add(typeof(YgomGame.Menu.ProfileViewController));
+                nativeTypes.Add(typeof(YgomGame.Menu.ToastMessageInform));
+                nativeTypes.Add(typeof(TradeUtils));
                 // Misc
                 nativeTypes.Add(typeof(YgomGame.Menu.CommonDialogViewController));
                 nativeTypes.Add(typeof(YgomGame.Menu.ActionSheetViewController));
@@ -271,6 +276,8 @@ namespace YgoMasterClient
                 if (NetClient != null)
                 {
                     NetClient.HandleMessage += DuelDll.HandleNetMessage;
+                    NetClient.HandleMessage += TradeUtils.HandleNetMessage;
+                    NetClient.Disconnected += TradeUtils.Disconnected;
                 }
 
                 if (ClientSettings.DisableVSync)

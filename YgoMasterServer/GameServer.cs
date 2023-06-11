@@ -382,6 +382,9 @@ namespace YgoMaster
                                     case "Friend.id_search":
                                         Act_FriendIdSearch(gameServerWebRequest);
                                         break;
+                                    case "Friend.tag_search":
+                                        Act_FriendTagSearch(gameServerWebRequest);
+                                        break;
                                     case "Friend.set_pin":
                                         Act_FriendSetPin(gameServerWebRequest);
                                         break;
@@ -599,6 +602,16 @@ namespace YgoMaster
                 return ms.ToArray();
             }
             //return Encoding.UTF8.GetBytes("@" + value);
+        }
+
+        public Player GetPlayerFromId(uint playerId)
+        {
+            lock (playersLock)
+            {
+                Player player;
+                playersById.TryGetValue(playerId, out player);
+                return player;
+            }
         }
 
         public Player GetPlayerFromToken(string token)

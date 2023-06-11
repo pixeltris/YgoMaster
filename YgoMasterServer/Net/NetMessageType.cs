@@ -24,6 +24,15 @@ namespace YgoMaster.Net
         DuelDlgSetResult,
         DuelListSetCardExData,
         DuelListSetIndex,
-        DuelListInitString
+        DuelListInitString,
+
+        // Trade messages
+        TradeEnterRoom,
+        TradeLeaveRoom,
+        TradeMoveCard,
+        TradeStateChange,
+
+        // Friend messages
+        FriendDuelInvite
     }
 }

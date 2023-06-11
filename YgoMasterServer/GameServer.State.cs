@@ -210,6 +210,14 @@ namespace YgoMaster
         /// Disable deck validation in solo and duel rooms
         /// </summary>
         bool DisableDeckValidation;
+        /// <summary>
+        /// Allows the other player in the trade to add your cards to the trade
+        /// </summary>
+        public bool TradeAllowOtherPlayerToAddYourCards;
+        /// <summary>
+        /// Allows the other player to remove your cards from the trade
+        /// </summary>
+        public bool TradeAllowOtherPlayerToRemoveYourCards;
 
         void LoadSettings()
         {
@@ -311,6 +319,8 @@ namespace YgoMaster
             ShowTopics = Utils.GetValue<bool>(values, "ShowTopics");
             DisableNoDismantle = Utils.GetValue<bool>(values, "DisableNoDismantle");
             DisableDeckValidation = Utils.GetValue<bool>(values, "DisableDeckValidation");
+            TradeAllowOtherPlayerToAddYourCards = Utils.GetValue<bool>(values, "TradeAllowOtherPlayerToAddYourCards");
+            TradeAllowOtherPlayerToRemoveYourCards = Utils.GetValue<bool>(values, "TradeAllowOtherPlayerToRemoveYourCards");
 
             FriendSearchLimit = Utils.GetValue<int>(values, "FriendSearchLimit", 100);
             FriendOfflineInSeconds = Utils.GetValue<int>(values, "FriendOfflineInSeconds", 300);
@@ -448,10 +458,14 @@ namespace YgoMaster
                                 uint playerCodeInData;
                                 string token;
                                 if (playerData != null && Utils.TryGetValue(playerData, "Code", out playerCodeInData) && playerCodeInData == playerCode &&
-                                    Utils.TryGetValue(playerData, "Token", out token) && !string.IsNullOrEmpty(token))
+                                    Utils.TryGetValue(playerData, "Token", out token) && !string.IsNullOrEmpty(token) && GetPlayerIdFromToken(token) == playerCode)
                                 {
                                     Player player = playersByToken[token] = playersById[playerCode] = new Player(playerCode);
                                     LoadPlayer(player);
+                                }
+                                else
+                                {
+                                    Utils.LogWarning("Failed to load player " + Utils.FormatPlayerCode(playerCode) + " as the token is invalid or the player code in the file doesn't match");
                                 }
                             }
                         }
@@ -887,7 +901,7 @@ namespace YgoMaster
             player.RequiresSaving = true;
         }
 
-        void SavePlayerNow(Player player)
+        public void SavePlayerNow(Player player)
         {
             lock (player)
             {

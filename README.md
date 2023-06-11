@@ -38,7 +38,7 @@ Additionally...
 - [It's recommended that you tailor the server settings to your preferences](Docs/Settings.md)
 - Download [VG.TCG.Decks.7z](https://github.com/pixeltris/YgoMaster/releases/download/v1.4/VG.TCG.Decks.7z) for ~6000 decks from the YGO video games
 - The custom duel starter UI can be accessed via the DUEL button on the home screen
-- When updating copy your `/YgoMaster/Data/Player.json`, `/YgoMaster/Data/Decks/`, and `/YgoMaster/Data/Replays/`
+- When updating copy `/YgoMaster/Data/Player.json`, `/YgoMaster/Data/Decks/`, `/YgoMaster/Data/Replays/`
 
 ## Compiling from source
 

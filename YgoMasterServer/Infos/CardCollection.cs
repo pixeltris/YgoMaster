@@ -33,6 +33,32 @@ namespace YgoMaster
             collection.Add(new KeyValuePair<int, CardStyleRarity>(cardId, styleRarity));
         }
 
+        public bool Remove(int cardId, CardStyleRarity styleRarity)
+        {
+            for (int i = 0; i < collection.Count; i++)
+            {
+                if (collection[i].Key == cardId && collection[i].Value == styleRarity)
+                {
+                    collection.RemoveAt(i);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public int GetCount(int cardId, CardStyleRarity styleRarity)
+        {
+            int count = 0;
+            for (int i = 0; i < collection.Count; i++)
+            {
+                if (collection[i].Key == cardId && collection[i].Value == styleRarity)
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
         public void RemoveAll(int cardId)
         {
             for (int i = collection.Count - 1; i >= 0; i--)
@@ -61,6 +87,29 @@ namespace YgoMaster
             {
                 collection.Add(item);
             }
+        }
+
+        public Dictionary<int, Dictionary<CardStyleRarity, int>> ToDictionaryCount()
+        {
+            Dictionary<int, Dictionary<CardStyleRarity, int>> result = new Dictionary<int, Dictionary<CardStyleRarity, int>>();
+            foreach (KeyValuePair<int, CardStyleRarity> item in collection)
+            {
+                Dictionary<CardStyleRarity, int> raritiesCounts;
+                if (!result.TryGetValue(item.Key, out raritiesCounts))
+                {
+                    result[item.Key] = raritiesCounts = new Dictionary<CardStyleRarity, int>();
+                }
+                int count;
+                if (!raritiesCounts.TryGetValue(item.Value, out count))
+                {
+                    raritiesCounts[item.Value] = 1;
+                }
+                else
+                {
+                    raritiesCounts[item.Value]++;
+                }
+            }
+            return result;
         }
 
         public Dictionary<string, object> ToIndexDictionary(bool longKeys = false)

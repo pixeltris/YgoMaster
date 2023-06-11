@@ -11,6 +11,12 @@ namespace YgoMaster
 
         void Act_CraftExchangeMulti(GameServerWebRequest request, bool isCraft = false)
         {
+            if (request.Player.ActiveTrade != null)
+            {
+                Utils.LogWarning("TODO: Handle craft / dismantle while trading");
+                return;
+            }
+
             Dictionary<string, object> cardList = Utils.GetDictionary(request.ActParams, "card_list");
             if (cardList != null)
             {

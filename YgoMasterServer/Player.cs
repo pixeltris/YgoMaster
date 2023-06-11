@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Collections.Concurrent;
 
 namespace YgoMaster
 {
@@ -40,6 +41,7 @@ namespace YgoMaster
         public DuelRoom DuelRoom;
         public DuelSettings ActiveDuelSettings { get; private set; }
         public Dictionary<long, string> RecentlyListedReplayFilesByDid { get; private set; }
+        public TradeInfo ActiveTrade;
 
         public bool IsDuelingPVP
         {
@@ -280,7 +282,7 @@ namespace YgoMaster
 
     class PlayerCards
     {
-        Dictionary<int, State> cards = new Dictionary<int, State>();
+        ConcurrentDictionary<int, State> cards = new ConcurrentDictionary<int, State>();
 
         public int Count
         {
@@ -468,6 +470,39 @@ namespace YgoMaster
                     cards[cardId] = state;
                 }
             }
+        }
+
+        public string CreateCardHaveJson(bool onlyTradableCards)
+        {
+            Dictionary<string, object> rootData = new Dictionary<string, object>();
+            Dictionary<string, object> cardsData = Utils.GetOrCreateDictionary(rootData, "Cards");
+            Dictionary<string, object> ownedCardsData = Utils.GetOrCreateDictionary(cardsData, "have");
+            foreach (KeyValuePair<int, State> card in cards)
+            {
+                if (onlyTradableCards)
+                {
+                    if (card.Value.Get(PlayerCardKind.Dismantle) > 0)
+                    {
+                        ownedCardsData[card.Key.ToString()] = new Dictionary<string, object>()
+                        {
+                            { "st", card.Value.Time },
+                            { "r", 1 },
+                            { "n", card.Value.Get(PlayerCardKind.Dismantle, CardStyleRarity.Normal) },
+                            { "p1n", card.Value.Get(PlayerCardKind.Dismantle, CardStyleRarity.Shine) },
+                            { "p2n", card.Value.Get(PlayerCardKind.Dismantle, CardStyleRarity.Royal) },
+                            { "p_n", 0 },
+                            { "p_p1n", 0 },
+                            { "p_p2n", 0 },
+                            { "tn", card.Value.Get(PlayerCardKind.Dismantle) }
+                        };
+                    }
+                }
+                else
+                {
+                    ownedCardsData[card.Key.ToString()] = CardToDictionary(card.Key);
+                }
+            }
+            return MiniJSON.Json.Serialize(rootData);
         }
 
         struct State

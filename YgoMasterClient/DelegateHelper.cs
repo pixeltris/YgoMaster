@@ -64,6 +64,7 @@ namespace UnityEngine.Events
             IL2Method ctor = klass.GetMethod(".ctor");
             GCHandle handle1 = GCHandle.Alloc(instance);
             var runtimeMethod = Marshal.AllocHGlobal(80);
+            Marshal.Copy(new byte[80], 0, runtimeMethod, 80);
             //methodPtr
             *((IntPtr*)runtimeMethod) = function.Method.MethodHandle.GetFunctionPointer();
             byte paramCount = 0;

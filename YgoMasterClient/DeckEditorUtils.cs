@@ -6,9 +6,10 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.IO;
 using System.Runtime.InteropServices;
-using YgoMaster;
-using YgoMasterClient;
 using IL2CPP;
+using YgoMaster;
+using YgoMaster.Net.Message;
+using YgoMasterClient;
 
 namespace TMPro
 {
@@ -84,17 +85,6 @@ namespace YgomGame.Deck
         }
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct CardBaseData
-    {
-        public int CardID;
-        public int PremiumID;
-        public bool IsOwned;
-        public int Obtained;
-        public int Inventory;
-        public int Rarity;
-    }
-
     unsafe static class DeckView
     {
         static IL2Class deckCardClassInfo;
@@ -107,6 +97,7 @@ namespace YgomGame.Deck
         static IL2Method methodAddToMainDeckByID;
         static IL2Method methodAddToExtraDeckByID;
         static IL2Method methodRemoveCardFromMainOrExtra;
+        static IL2Method methodRemoveCard;
         static IL2Method methodSortMainDeckCards;
         static IL2Method methodSortExtraDeckCards;
 
@@ -122,6 +113,7 @@ namespace YgomGame.Deck
             methodAddToMainDeckByID = classInfo.GetMethod("AddToMainDeckByID");
             methodAddToExtraDeckByID = classInfo.GetMethod("AddToExtraDeckByID");
             methodRemoveCardFromMainOrExtra = classInfo.GetMethod("RemoveCardFromMainOrExtra");
+            methodRemoveCard = classInfo.GetMethod("RemoveCard");
             methodSortMainDeckCards = classInfo.GetMethod("sortMainDeckCards");
             methodSortExtraDeckCards = classInfo.GetMethod("sortExtraDeckCards");
 
@@ -145,7 +137,54 @@ namespace YgomGame.Deck
             }
         }
 
-        public static void SetCards(IntPtr thisPtr, CardCollection mainDeck, CardCollection extraDeck)
+        public static void AddCardWithSound(IntPtr thisPtr, int cardId, CardStyleRarity styleRarity, bool owned, bool mainDeck)
+        {
+            bool b = false;
+            methodSetDismantleMode.Invoke(thisPtr, new IntPtr[] { new IntPtr(&b) });
+
+            IL2Method method = mainDeck ? methodAddToMainDeckByID : methodAddToExtraDeckByID;
+            int reg = 0;//?
+            int prem = (int)styleRarity;
+            bool sort = false;
+            bool isRental = false;//?
+            bool isIni = false;//? isInitializeSelect?
+            bool noAdd = false;//?
+            method.Invoke(thisPtr, new IntPtr[]
+            {
+                new IntPtr(&cardId), new IntPtr(&prem), new IntPtr(&owned), new IntPtr(&isRental), new IntPtr(&reg), new IntPtr(&sort),
+                new IntPtr(&isIni), new IntPtr(&noAdd)
+            });
+            YgomSystem.Sound.Play("SE_DECK_PLUS");
+        }
+
+        public static void RemoveCardWithSound(IntPtr thisPtr, int cardId, CardStyleRarity styleRarity, bool owned, bool mainDeck)
+        {
+            bool b = false;
+            methodSetDismantleMode.Invoke(thisPtr, new IntPtr[] { new IntPtr(&b) });
+
+            CardBaseData cbd = new CardBaseData();
+            cbd.CardID = cardId;
+            cbd.PremiumID = (int)styleRarity;
+            cbd.IsOwned = owned;
+            cbd.Obtained = 0;
+            cbd.Inventory = 0;
+            cbd.Rarity = 0;
+            cbd.IsRental = false;
+
+            // YgomGame.Deck.DeckCard.LocationInDeck
+            int locationInDeck = mainDeck ? 1 : 2;
+
+            bool sort = false;
+
+            methodRemoveCard.Invoke(thisPtr, new IntPtr[]
+            {
+                new IntPtr(&cbd), new IntPtr(&locationInDeck), new IntPtr(&sort)
+            });
+
+            YgomSystem.Sound.Play("SE_DECK_MINUS");
+        }
+
+        public static void SetCards(IntPtr thisPtr, CardCollection mainDeck, CardCollection extraDeck, bool isTradeInit = false)
         {
             // TODO: Look into ways of improving the performance of this
 
@@ -170,8 +209,11 @@ namespace YgomGame.Deck
                 }
             }
 
-            // Possibly not required? But GetRemainPremiumCard does stuff with CardCollectionInfo (possibly detached from the view)
-            DeckEditViewController2.UpdateCollectionView(true, false);
+            if (!isTradeInit)
+            {
+                // Possibly not required? But GetRemainPremiumCard does stuff with CardCollectionInfo (possibly detached from the view)
+                DeckEditViewController2.UpdateCollectionView(true, false);
+            }
 
             if (mainDeck != null && extraDeck != null)
             {
@@ -185,6 +227,10 @@ namespace YgomGame.Deck
                 for (int i = 0; i < 2; i++)
                 {
                     IL2Method method = i == 0 ? methodAddToMainDeckByID : methodAddToExtraDeckByID;
+                    if (isTradeInit && !TradeUtils.OwnsMainDeck)
+                    {
+                        method = i == 0 ? methodAddToExtraDeckByID : methodAddToMainDeckByID;
+                    }
                     List<KeyValuePair<int, CardStyleRarity>> collection = i == 0 ? mainDeck.GetCollection() : extraDeck.GetCollection();
                     foreach (KeyValuePair<int, CardStyleRarity> card in collection)
                     {
@@ -197,24 +243,31 @@ namespace YgomGame.Deck
                         int prem = (int)card.Value;
                         bool owned = false;
 
-                        if (ClientSettings.DeckEditorConvertStyleRarity)
+                        if (isTradeInit)
                         {
-                            // Convert the style rarity (prem) based on owned cards
-                            prem = (int)CardStyleRarity.Normal;
-                            owned = false;
-                            for (int j = (int)CardStyleRarity.Royal; j >= (int)CardStyleRarity.Normal; j--)
-                            {
-                                if (DeckEditViewController2.GetRemainPremiumCard(id, j) > 0)
-                                {
-                                    prem = j;
-                                    owned = true;
-                                    break;
-                                }
-                            }
+                            owned = i == 0 && TradeUtils.OwnsMainDeck || i == 1 && !TradeUtils.OwnsMainDeck;
                         }
                         else
                         {
-                            owned = DeckEditViewController2.GetRemainPremiumCard(id, prem) > 0;
+                            if (ClientSettings.DeckEditorConvertStyleRarity)
+                            {
+                                // Convert the style rarity (prem) based on owned cards
+                                prem = (int)CardStyleRarity.Normal;
+                                owned = false;
+                                for (int j = (int)CardStyleRarity.Royal; j >= (int)CardStyleRarity.Normal; j--)
+                                {
+                                    if (DeckEditViewController2.GetRemainPremiumCard(id, j) > 0)
+                                    {
+                                        prem = j;
+                                        owned = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                owned = DeckEditViewController2.GetRemainPremiumCard(id, prem) > 0;
+                            }
                         }
 
                         int reg = 0;//?
@@ -229,12 +282,18 @@ namespace YgomGame.Deck
                         });
                     }
                 }
-                methodSortMainDeckCards.Invoke(thisPtr);
-                methodSortExtraDeckCards.Invoke(thisPtr);
+                if (!isTradeInit)
+                {
+                    methodSortMainDeckCards.Invoke(thisPtr);
+                    methodSortExtraDeckCards.Invoke(thisPtr);
+                }
             }
 
-            // Updates the used card counters in the card collection view
-            DeckEditViewController2.UpdateCollectionView(true, false);
+            if (!isTradeInit)
+            {
+                // Updates the used card counters in the card collection view
+                DeckEditViewController2.UpdateCollectionView(true, false);
+            }
         }
 
         public static DeckInfo GetDeckInfo(IntPtr thisPtr)
@@ -256,6 +315,41 @@ namespace YgomGame.Deck
             return result;
         }
     }
+
+    unsafe static class CardBase
+    {
+        static IL2Method methodGetBaseData;
+
+        static CardBase()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            IL2Class classInfo = assembly.GetClass("CardBase", "YgomGame.Deck");
+            methodGetBaseData = classInfo.GetProperty("m_BaseData").GetGetMethod();
+        }
+
+        public static CardBaseData GetBaseData(IntPtr thisPtr)
+        {
+            return methodGetBaseData.Invoke(thisPtr).GetValueRef<CardBaseData>();
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    struct CardBaseData
+    {
+        public int CardID;
+        public int PremiumID;
+        public bool IsOwned;
+        public int Obtained;
+        public int Inventory;
+        public int Rarity;
+        public bool IsRental;
+
+        public override string ToString()
+        {
+            return "cid:" + CardID + " pid:" + PremiumID + " owned:" + IsOwned + " obtained:" + Obtained + " inv:" + Inventory +
+                " rarity:" + Rarity + " rental:" + IsRental;
+        }
+    }
 }
 
 namespace YgomGame
@@ -268,12 +362,15 @@ namespace YgomGame
         public static int NumFilteredCards;
 
         static IntPtr currentInstance;
+        static IL2Class classInfo;
         static IL2Field fieldDeckView;
         static IL2Field fieldCollectionView;
+        static IL2Field fieldSaveButton;
         static IL2Method methodGetRemainPremiumCard;
         static IL2Method methodGetDeckName;
         static IL2Method methodGetDeckID;
 
+        static IntPtr saveButtonTextComponent;
         static IntPtr extraTextComponent;
         static IntPtr imageType;// UnityEngine.UI.Image
         static IntPtr textMeshType;// YgomSystem.YGomTMPro.ExtendedTextMeshProUGUI
@@ -283,22 +380,56 @@ namespace YgomGame
         static IL2Method rectTransformSetSizeDelta;
         static IL2Method tmTextSetEnableWordWrapping;
 
+        static bool skipNextAsyncFilterAndSort;
+        static IL2Method methodToggleShowAllCards;
+
         delegate void Del_NotificationStackRemove(IntPtr thisPtr);
         static Hook<Del_NotificationStackRemove> hookNotificationStackRemove;
+
         delegate void Del_InitializeView(IntPtr thisPtr);
         static Hook<Del_InitializeView> hookInitializeView;
+
+        delegate void Del_SortDeckViewCards(IntPtr thisPtr);
+        static Hook<Del_SortDeckViewCards> hookSortDeckViewCards;
+
+        delegate bool Del_NeedSave(IntPtr thisPtr);
+        static Hook<Del_NeedSave> hookNeedSave;
+
+        delegate void Del_OnClickSaveButton(IntPtr thisPtr);
+        static Hook<Del_OnClickSaveButton> hookOnClickSaveButton;
+
+        delegate IntPtr Del_AddToMainOrExtraDeck(IntPtr thisPtr, ref YgomGame.Deck.CardBaseData baseData);
+        static Hook<Del_AddToMainOrExtraDeck> hookAddToMainOrExtraDeck;
+
+        delegate IntPtr Del_RemoveFromDeck1(IntPtr thisPtr, ref YgomGame.Deck.CardBaseData baseData);
+        static Hook<Del_RemoveFromDeck1> hookRemoveFromDeck1;
+
+        delegate IntPtr Del_RemoveFromDeck2(IntPtr thisPtr, IntPtr card, bool isDrag, IntPtr pos);
+        static Hook<Del_RemoveFromDeck2> hookRemoveFromDeck2;
+
+        delegate IntPtr Del_AsyncFilterAndSort(IntPtr thisPtr, IntPtr onFinish, bool setAll, IntPtr targetSorter, bool filter);
+        static Hook<Del_AsyncFilterAndSort> hookAsyncFilterAndSort;
 
         static DeckEditViewController2()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
-            IL2Class classInfo = assembly.GetClass("DeckEditViewController2", "YgomGame");
+            classInfo = assembly.GetClass("DeckEditViewController2", "YgomGame");
             fieldDeckView = classInfo.GetField("m_DeckView");
             fieldCollectionView = classInfo.GetField("m_CollectionView");
+            fieldSaveButton = classInfo.GetField("m_SaveButton");
             methodGetRemainPremiumCard = classInfo.GetMethod("getRemainPremiumCard");
             methodGetDeckName = classInfo.GetProperty("m_DeckName").GetGetMethod();
             methodGetDeckID = classInfo.GetProperty("m_DeckID").GetGetMethod();
             hookInitializeView = new Hook<Del_InitializeView>(InitializeView, classInfo.GetMethod("InitializeView"));
+            hookSortDeckViewCards = new Hook<Del_SortDeckViewCards>(SortDeckViewCards, classInfo.GetMethod("SortDeckViewCards"));
             hookNotificationStackRemove = new Hook<Del_NotificationStackRemove>(NotificationStackRemove, classInfo.GetMethod("NotificationStackRemove"));
+            hookNeedSave = new Hook<Del_NeedSave>(NeedSave, classInfo.GetMethod("NeedSave"));
+            hookOnClickSaveButton = new Hook<Del_OnClickSaveButton>(OnClickSaveButton, classInfo.GetMethod("OnClickSaveButton"));
+            hookAddToMainOrExtraDeck = new Hook<Del_AddToMainOrExtraDeck>(AddToMainOrExtraDeck, classInfo.GetMethod("AddToMainOrExtraDeck", x => x.GetParameters().Length == 1));
+            hookRemoveFromDeck1 = new Hook<Del_RemoveFromDeck1>(RemoveFromDeck1, classInfo.GetMethod("RemoveFromDeck", x => x.GetParameters().Length == 1));
+            hookRemoveFromDeck2 = new Hook<Del_RemoveFromDeck2>(RemoveFromDeck2, classInfo.GetMethod("RemoveFromDeck", x => x.GetParameters().Length == 3));
+            hookAsyncFilterAndSort = new Hook<Del_AsyncFilterAndSort>(AsyncFilterAndSort, classInfo.GetMethod("AsyncFilterAndSort"));
+            methodToggleShowAllCards = classInfo.GetMethod("ToggleShowAllCards");
 
             imageType = CastUtils.IL2Typeof("Image", "UnityEngine.UI", "UnityEngine.UI");
             textMeshType = CastUtils.IL2Typeof("ExtendedTextMeshProUGUI", "YgomSystem.YGomTMPro", "Assembly-CSharp");
@@ -319,18 +450,46 @@ namespace YgomGame
         {
             hookInitializeView.Original(thisPtr);
             currentInstance = thisPtr;
-            InitExtraTextComponent();
-            //System.IO.File.WriteAllText("deck-dump.txt", UnityEngine.GameObject.Dump(UnityEngine.Component.GetGameObject(thisPtr)));
+            InitExtraTextComponent(thisPtr);
+            CacheSaveButtonTextComponent(thisPtr);
         }
 
-        static void InitExtraTextComponent()
+        static void SortDeckViewCards(IntPtr thisPtr)
+        {
+            if (TradeUtils.IsTrading)
+            {
+                // We add the cards already in the trade here as this is the earliest point it seems to work without breaking things
+                if (TradeUtils.IsLoading)
+                {
+                    IntPtr deckView = fieldDeckView.GetValue(thisPtr).ptr;
+                    if (TradeUtils.InitialDeckState != null)
+                    {
+                        YgomGame.Deck.DeckView.SetCards(deckView, TradeUtils.InitialDeckState.MainDeckCards, TradeUtils.InitialDeckState.ExtraDeckCards, true);
+                        while (TradeUtils.MoveCardQueue.Count > 0)
+                        {
+                            TradeUtils.OnTradeMoveCard(TradeUtils.MoveCardQueue.Dequeue(), true);
+                        }
+                    }
+                    TradeUtils.IsLoading = false;
+                    TradeUtils.MoveCardQueue.Clear();
+                    TradeUtils.UpdateTradeButtonText();
+                }
+                if (!TradeUtils.SortCards)
+                {
+                    return;
+                }
+            }
+            hookSortDeckViewCards.Original(thisPtr);
+        }
+
+        static void InitExtraTextComponent(IntPtr thisPtr)
         {
             if (!ClientSettings.DeckEditorShowStats)
             {
                 return;
             }
             // TODO: Add error handling in the case that some of the details of this change after a patch
-            IntPtr craftPointGroupObj = UnityEngine.GameObject.FindGameObjectByName(UnityEngine.Component.GetGameObject(currentInstance), "CraftPointGroup");
+            IntPtr craftPointGroupObj = UnityEngine.GameObject.FindGameObjectByName(UnityEngine.Component.GetGameObject(thisPtr), "CraftPointGroup");
             IntPtr windowObj = UnityEngine.Component.GetGameObject(UnityEngine.Transform.GetParent(UnityEngine.GameObject.GetTranform(craftPointGroupObj)));
 
             IntPtr craftPointGroupObj2 = UnityEngine.UnityObject.Instantiate(craftPointGroupObj, UnityEngine.GameObject.GetTranform(windowObj));
@@ -373,11 +532,111 @@ namespace YgomGame
             SetExtraText();
         }
 
+        static void CacheSaveButtonTextComponent(IntPtr thisPtr)
+        {
+            IntPtr saveButtonComponent = fieldSaveButton.GetValue(thisPtr).ptr;
+            IntPtr saveButtonObj = UnityEngine.Component.GetGameObject(saveButtonComponent);
+            IntPtr textObj = UnityEngine.GameObject.FindGameObjectByName(saveButtonObj, "TextSaveTMP");
+            saveButtonTextComponent = UnityEngine.GameObject.GetComponent(textObj, textMeshType);
+            TradeUtils.UpdateTradeButtonText();
+        }
+
         static void NotificationStackRemove(IntPtr thisPtr)
         {
+            TradeUtils.OnTradeClosed();
             currentInstance = IntPtr.Zero;
             extraTextComponent = IntPtr.Zero;
+            saveButtonTextComponent = IntPtr.Zero;
             hookNotificationStackRemove.Original(thisPtr);
+        }
+
+        static bool NeedSave(IntPtr thisPtr)
+        {
+            if (TradeUtils.IsTrading)
+            {
+                return false;
+            }
+            else
+            {
+                return hookNeedSave.Original(thisPtr);
+            }
+        }
+
+        static void OnClickSaveButton(IntPtr thisPtr)
+        {
+            if (TradeUtils.IsTrading)
+            {
+                TradeUtils.OnClickTrade();
+            }
+            else
+            {
+                hookOnClickSaveButton.Original(thisPtr);
+            }
+        }
+
+        public static void SetSaveButtonText(string text)
+        {
+            if (saveButtonTextComponent != IntPtr.Zero)
+            {
+                TMPro.TMP_Text.SetText(saveButtonTextComponent, text);
+            }
+        }
+
+        static IntPtr AddToMainOrExtraDeck(IntPtr thisPtr, ref YgomGame.Deck.CardBaseData cardData)
+        {
+            if (TradeUtils.IsTrading)
+            {
+                Program.NetClient.Send(new TradeMoveCardMessage()
+                {
+                    CardId = cardData.CardID,
+                    StyleRarity = (CardStyleRarity)cardData.PremiumID,
+                    OtherPlayerCode = TradeUtils.IsActiveCollectionTheirs ? TradeUtils.TradingPlayerCode : 0,
+                });
+                return IntPtr.Zero;
+            }
+            else
+            {
+                return hookAddToMainOrExtraDeck.Original(thisPtr, ref cardData);
+            }
+        }
+
+        static IntPtr RemoveFromDeck1(IntPtr thisPtr, ref YgomGame.Deck.CardBaseData cardData)
+        {
+            if (TradeUtils.IsTrading)
+            {
+                Program.NetClient.Send(new TradeMoveCardMessage()
+                {
+                    RemoveCard = true,
+                    CardId = cardData.CardID,
+                    StyleRarity = (CardStyleRarity)cardData.PremiumID,
+                    OtherPlayerCode = !cardData.IsOwned ? TradeUtils.TradingPlayerCode : 0
+                });
+                return IntPtr.Zero;
+            }
+            else
+            {
+                return hookRemoveFromDeck1.Original(thisPtr, ref cardData);
+            }
+        }
+
+        static IntPtr RemoveFromDeck2(IntPtr thisPtr, IntPtr card, bool isDrag, IntPtr pos)
+        {
+            if (TradeUtils.IsTrading)
+            {
+                YgomGame.Deck.CardBaseData cardData = YgomGame.Deck.CardBase.GetBaseData(card);
+                Program.NetClient.Send(new TradeMoveCardMessage()
+                {
+                    RemoveCard = true,
+                    CardId = cardData.CardID,
+                    StyleRarity = (CardStyleRarity)cardData.PremiumID,
+                    OtherPlayerCode = !cardData.IsOwned ? TradeUtils.TradingPlayerCode : 0
+                });
+                return IntPtr.Zero;
+            }
+            else
+            {
+                return hookRemoveFromDeck2.Original(thisPtr, card, isDrag, pos);
+            }
         }
 
         public static void SetExtraText()
@@ -428,25 +687,62 @@ namespace YgomGame
             {
                 NumOwnedCards = 0;
             }
-            SetExtraText(NumOwnedCards + " / " + NumCards + " owned (" + NumFilteredCards + " filtered)");
+            if (TradeUtils.IsTrading)
+            {
+                SetExtraText(ClientSettings.CustomTextDeckEditBannerTrading);
+            }
+            else
+            {
+                SetExtraText(ClientSettings.CustomTextDeckEditBanner);
+            }
         }
 
         public static void SetExtraText(string text)
         {
+            text = text.Replace("{NumOwnedCards}", NumOwnedCards.ToString());
+            text = text.Replace("{NumCards}", NumCards.ToString());
+            text = text.Replace("{NumFilteredCards}", NumFilteredCards.ToString());
+            text = text.Replace("{ActiveCollection}", TradeUtils.GetActiveCollectionString());
             if (ClientSettings.DeckEditorShowStats && currentInstance != IntPtr.Zero && extraTextComponent != IntPtr.Zero)
             {
                 TMPro.TMP_Text.SetText(extraTextComponent, text);
             }
         }
 
-        public static void SetCards(CardCollection mainDeck, CardCollection extraDeck)
+        public static void AddCardWithSound(int cardId, CardStyleRarity styleRarity, bool owned, bool mainDeck)
         {
             if (currentInstance == IntPtr.Zero)
             {
                 return;
             }
             IntPtr deckView = fieldDeckView.GetValue(currentInstance).ptr;
-            Deck.DeckView.SetCards(deckView, mainDeck, extraDeck);
+            Deck.DeckView.AddCardWithSound(deckView, cardId, styleRarity, owned, mainDeck);
+            UpdateCollectionView(true, false);
+            if (TradeUtils.SortCards)
+            {
+                hookSortDeckViewCards.Original(currentInstance);
+            }
+        }
+
+        public static void RemoveCardWithSound(int cardId, CardStyleRarity styleRarity, bool owned, bool mainDeck)
+        {
+            if (currentInstance == IntPtr.Zero)
+            {
+                return;
+            }
+            IntPtr deckView = fieldDeckView.GetValue(currentInstance).ptr;
+            Deck.DeckView.RemoveCardWithSound(deckView, cardId, styleRarity, owned, mainDeck);
+            UpdateCollectionView(true, false);
+        }
+
+        public static void SetCards(CardCollection mainDeck, CardCollection extraDeck, bool isTradeInit = false)
+        {
+            if (currentInstance == IntPtr.Zero)
+            {
+                return;
+            }
+            IntPtr deckView = fieldDeckView.GetValue(currentInstance).ptr;
+            Deck.DeckView.SetCards(deckView, mainDeck, extraDeck, isTradeInit);
         }
 
         public static DeckInfo GetDeckInfo()
@@ -478,6 +774,25 @@ namespace YgomGame
             Deck.CardCollectionView.UpdateView(collectionView, updateDataCount, select);
         }
 
+        static IntPtr AsyncFilterAndSort(IntPtr thisPtr, IntPtr onFinish, bool setAll, IntPtr targetSorter, bool filter)
+        {
+            if (skipNextAsyncFilterAndSort)
+            {
+                skipNextAsyncFilterAndSort = false;
+                return IntPtr.Zero;
+            }
+            return hookAsyncFilterAndSort.Original(thisPtr, onFinish, setAll, targetSorter, filter);
+        }
+
+        public static void ReapplyFilter()
+        {
+            skipNextAsyncFilterAndSort = true;
+            methodToggleShowAllCards.Invoke(currentInstance);
+            skipNextAsyncFilterAndSort = false;
+            methodToggleShowAllCards.Invoke(currentInstance);
+            skipNextAsyncFilterAndSort = false;
+        }
+
         public static string GetDeckName()
         {
             if (currentInstance == IntPtr.Zero)
@@ -496,6 +811,16 @@ namespace YgomGame
             }
             IL2Object result = methodGetDeckName.Invoke(currentInstance);
             return result != null ? result.GetValueRef<int>() : 0;
+        }
+
+        public static void PopViewController()
+        {
+            IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
+            IntPtr view = YgomSystem.UI.ViewControllerManager.GetViewController(manager, classInfo.IL2Typeof());
+            if (view != IntPtr.Zero)
+            {
+                YgomSystem.UI.ViewControllerManager.PopChildViewController(manager, view);
+            }
         }
     }
 }
@@ -570,13 +895,55 @@ namespace YgomGame.SubMenu
         static void OnCreatedView(IntPtr thisPtr)
         {
             hookOnCreatedView.Original(thisPtr);
-            SubMenuViewController.AddMenuItem(thisPtr, "From clipboard (YDKe / YDK / JSON / TXT)", OnLoadFromClipboard);
-            SubMenuViewController.AddMenuItem(thisPtr, "To clipboard (YDKe)", OnSaveToClipboardYDKe);
-            SubMenuViewController.AddMenuItem(thisPtr, "Load file", OnLoad);
-            SubMenuViewController.AddMenuItem(thisPtr, "Save file", OnSave);
-            //SubMenuViewController.AddMenuItem(thisPtr, "Open decks folder", OnOpenDecksFolder);
-            SubMenuViewController.AddMenuItem(thisPtr, "Clear deck", OnClear);
-            SubMenuViewController.AddMenuItem(thisPtr, "Card collection stats", OnCardCollectionStats);
+            if (TradeUtils.IsTrading)
+            {
+                SubMenuViewController.AddMenuItem(thisPtr, ClientSettings.CustomtextTradeMyEntireCollection, OnSetCollectionMyEntire);
+                SubMenuViewController.AddMenuItem(thisPtr, ClientSettings.CustomtextTradeMyTradableCollection, OnSetCollectionMyTradable);
+                SubMenuViewController.AddMenuItem(thisPtr, ClientSettings.CustomtextTradeTheirEntireCollection, OnSetCollectionTheirEntire);
+                SubMenuViewController.AddMenuItem(thisPtr, ClientSettings.CustomtextTradeTheirTradableCollection, OnSetCollectionTheirTradable);
+            }
+            else
+            {
+                SubMenuViewController.AddMenuItem(thisPtr, ClientSettings.CustomTextDeckEditLoadFromClipboard, OnLoadFromClipboard);
+                SubMenuViewController.AddMenuItem(thisPtr, ClientSettings.CustomTextDeckEditToClipboard, OnSaveToClipboardYDKe);
+                SubMenuViewController.AddMenuItem(thisPtr, ClientSettings.CustomTextDeckEditLoadFile, OnLoad);
+                SubMenuViewController.AddMenuItem(thisPtr, ClientSettings.CustomTextDeckEditSaveFile, OnSave);
+                //SubMenuViewController.AddMenuItem(thisPtr, ClientSettings.CustomTextDeckEditOpenDecksFolder, OnOpenDecksFolder);
+                SubMenuViewController.AddMenuItem(thisPtr, ClientSettings.CustomTextDeckEditClearDeck, OnClear);
+                SubMenuViewController.AddMenuItem(thisPtr, ClientSettings.CustomTextDeckEditCardCollectionStats, OnCardCollectionStats);
+            }
+        }
+
+        static Action OnSetCollectionMyEntire = () =>
+        {
+            SetCardCollectionJson(TradeUtils.CollectionType.MyEntire, TradeUtils.MyEntireCollectionJson);
+        };
+
+        static Action OnSetCollectionMyTradable = () =>
+        {
+            SetCardCollectionJson(TradeUtils.CollectionType.MyTradable, TradeUtils.MyTradableCollectionJson);
+        };
+
+        static Action OnSetCollectionTheirEntire = () =>
+        {
+            SetCardCollectionJson(TradeUtils.CollectionType.TheirEntire, TradeUtils.TheirEntireCollectionJson);
+        };
+
+        static Action OnSetCollectionTheirTradable = () =>
+        {
+            SetCardCollectionJson(TradeUtils.CollectionType.TheirTradable, TradeUtils.TheirTradableCollectionJson);
+        };
+
+        static void SetCardCollectionJson(TradeUtils.CollectionType type, string collectionJson)
+        {
+            if (TradeUtils.IsTrading && !string.IsNullOrEmpty(collectionJson))
+            {
+                TradeUtils.ActiveCollectionType = type;
+                YgomSystem.Utility.ClientWork.DeleteByJsonPath("Cards.have");
+                YgomSystem.Utility.ClientWork.UpdateJson(collectionJson);
+                DeckEditViewController2.ReapplyFilter();
+            }
+            PopViewController();
         }
 
         static void LoadDeckFromFile(string path)
@@ -647,7 +1014,7 @@ namespace YgomGame.SubMenu
                             string[] tableEntries = Utils.FindAllContentBetween(table, 0, table.Length, "<tr", "</tr>");
                             if (tableEntries.Length == 0)
                             {
-                                failedSb.AppendLine("Failed to rows");
+                                failedSb.AppendLine(ClientSettings.CustomTextDeckEditTextParseBadRows);
                                 numFailed++;
                                 continue;
                             }
@@ -711,27 +1078,31 @@ namespace YgomGame.SubMenu
                                     }
                                     else if (!tableEntry.Contains("<th"))
                                     {
-                                        failedSb.AppendLine("Failed to find name / quantity for row");
+                                        failedSb.AppendLine(ClientSettings.CustomTextDeckEditTextParseBadRow);
                                         numFailed++;
                                     }
                                 }
                             }
                             else
                             {
-                                failedSb.AppendLine("Failed to find name / quantity columns");
+                                failedSb.AppendLine(ClientSettings.CustomTextDeckEditTextParseBadColumns);
                                 numFailed++;
                             }
                         }
                         if (numFailed > 0)
                         {
+                            string fullErrorMsg = ClientSettings.CustomTextDeckEditTextParseFailed;
+                            fullErrorMsg = fullErrorMsg.Replace("{numFailed}", numFailed.ToString());
+                            fullErrorMsg = fullErrorMsg.Replace("{failedSb}", failedSb.ToString());
                             Clipboard.SetText(failedSb.ToString());
-                            YgomGame.Menu.CommonDialogViewController.OpenConfirmationDialogScroll("Info", "Failed to copy " + numFailed +
-                                " rows. Text has been copied to the clipboard.\n\n" + failedSb.ToString(), "OK", null, null, true, 500);
+                            YgomGame.Menu.CommonDialogViewController.OpenConfirmationDialogScroll(ClientSettings.CustomTextInfo,
+                                fullErrorMsg, ClientSettings.CustomTextOK, null, null, true, 500);
                         }
                     }
                     else
                     {
-                        YgomGame.Menu.CommonDialogViewController.OpenErrorDialog("Error", "Failed to load card data", "OK", null);
+                        YgomGame.Menu.CommonDialogViewController.OpenErrorDialog(ClientSettings.CustomTextError,
+                            ClientSettings.CustomTextDeckEditLoadCardDataFailed, ClientSettings.CustomTextOK, null);
                         return;
                     }
                 }
@@ -776,14 +1147,18 @@ namespace YgomGame.SubMenu
                         }
                         if (numFailed > 0)
                         {
+                            string fullErrorMsg = ClientSettings.CustomTextDeckEditTextParseFailed;
+                            fullErrorMsg = fullErrorMsg.Replace("{numFailed}", numFailed.ToString());
+                            fullErrorMsg = fullErrorMsg.Replace("{failedSb}", failedSb.ToString());
                             Clipboard.SetText(failedSb.ToString());
-                            YgomGame.Menu.CommonDialogViewController.OpenConfirmationDialogScroll("Info", "Failed to copy " + numFailed +
-                                " rows. Text has been copied to the clipboard.\n\n" + failedSb.ToString(), "OK", null, null, true, 500);
+                            YgomGame.Menu.CommonDialogViewController.OpenConfirmationDialogScroll(ClientSettings.CustomTextInfo,
+                                fullErrorMsg, ClientSettings.CustomTextOK, null, null, true, 500);
                         }
                     }
                     else
                     {
-                        YgomGame.Menu.CommonDialogViewController.OpenErrorDialog("Error", "Failed to load card data", "OK", null);
+                        YgomGame.Menu.CommonDialogViewController.OpenErrorDialog(ClientSettings.CustomTextError,
+                            ClientSettings.CustomTextDeckEditLoadCardDataFailed, ClientSettings.CustomTextOK, null);
                         return;
                     }
                 }
@@ -795,7 +1170,9 @@ namespace YgomGame.SubMenu
             }
             catch (Exception e)
             {
-                YgomGame.Menu.CommonDialogViewController.OpenConfirmationDialogScroll("Error", "An exception occurred\n" + e, "OK", null, null, true, 500);
+                string fullErrorMsg = ClientSettings.CustomTextExceptionOccurred.Replace("{exception}", e.ToString());
+                YgomGame.Menu.CommonDialogViewController.OpenConfirmationDialogScroll(ClientSettings.CustomTextError,
+                    fullErrorMsg, ClientSettings.CustomTextOK, null, null, true, 500);
             }
         }
 
@@ -906,13 +1283,16 @@ namespace YgomGame.SubMenu
             }
             catch (Exception e)
             {
-                YgomGame.Menu.CommonDialogViewController.OpenConfirmationDialogScroll("Error", "An exception occurred\n" + e, "OK", null, null, true, 500);
+                string fullErrorMsg = ClientSettings.CustomTextExceptionOccurred.Replace("{exception}", e.ToString());
+                YgomGame.Menu.CommonDialogViewController.OpenConfirmationDialogScroll(ClientSettings.CustomTextError,
+                    fullErrorMsg, ClientSettings.CustomTextOK, null, null, true, 500);
             }
         };
 
         static Action OnClear = () =>
         {
-            YgomGame.Menu.CommonDialogViewController.OpenYesNoConfirmationDialog("Confirmation", "Are you sure you want to clear the deck?", OnClearConfirm);
+            YgomGame.Menu.CommonDialogViewController.OpenYesNoConfirmationDialog(ClientSettings.CustomTextConfirmation,
+                ClientSettings.CustomTextDeckEditClearDeckConfirm, OnClearConfirm);
         };
         static Action OnClearConfirm = () =>
         {
@@ -939,7 +1319,8 @@ namespace YgomGame.SubMenu
             }
             else
             {
-                YgomGame.Menu.CommonDialogViewController.OpenErrorDialog("Error", "Failed to find / create decks folder", "OK", null);
+                YgomGame.Menu.CommonDialogViewController.OpenErrorDialog(ClientSettings.CustomTextError,
+                    ClientSettings.CustomTextDeckEditFolderNotFound, ClientSettings.CustomTextOK, null);
             }
         };
 
@@ -1056,60 +1437,54 @@ namespace YgomGame.SubMenu
 
             // NOTE: Removed percentages on the card pool. It's nice to have, but confusing relative to the other percentages.
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Owned total: " + numOwnedTotal);
+            sb.AppendLine(ClientSettings.CustomTextCardStatsOwnedTotal + numOwnedTotal);
             sb.AppendLine();
-            sb.AppendLine("[Card pool]");
-            sb.AppendLine("Total: " + numCards[CardRarity.None]);
-            sb.AppendLine("N: " + numCards[CardRarity.Normal]);// + GetPercentStr(numCards[CardRarity.None], numCards[CardRarity.Normal]));
-            sb.AppendLine("R: " + numCards[CardRarity.Rare]);// + GetPercentStr(numCards[CardRarity.None], numCards[CardRarity.Rare]));
-            sb.AppendLine("SR: " + numCards[CardRarity.SuperRare]);// + GetPercentStr(numCards[CardRarity.None], numCards[CardRarity.SuperRare]));
-            sb.AppendLine("UR: " + numCards[CardRarity.UltraRare]);// + GetPercentStr(numCards[CardRarity.None], numCards[CardRarity.UltraRare]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsCardPool);
+            sb.AppendLine(ClientSettings.CustomTextCardStatsTotal + numCards[CardRarity.None]);
+            sb.AppendLine(ClientSettings.CustomTextCardStatsN + numCards[CardRarity.Normal]);// + GetPercentStr(numCards[CardRarity.None], numCards[CardRarity.Normal]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsR + numCards[CardRarity.Rare]);// + GetPercentStr(numCards[CardRarity.None], numCards[CardRarity.Rare]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsSR + numCards[CardRarity.SuperRare]);// + GetPercentStr(numCards[CardRarity.None], numCards[CardRarity.SuperRare]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsUR + numCards[CardRarity.UltraRare]);// + GetPercentStr(numCards[CardRarity.None], numCards[CardRarity.UltraRare]));
             sb.AppendLine();
-            sb.AppendLine("[Owned cards (1x)]");
-            sb.AppendLine("Total: " + numOwned[CardRarity.None] + GetPercentStr(numCards[CardRarity.None], numOwned[CardRarity.None]));
-            sb.AppendLine("N: " + numOwned[CardRarity.Normal] + GetPercentStr(numCards[CardRarity.Normal], numOwned[CardRarity.Normal]));
-            sb.AppendLine("R: " + numOwned[CardRarity.Rare] + GetPercentStr(numCards[CardRarity.Rare], numOwned[CardRarity.Rare]));
-            sb.AppendLine("SR: " + numOwned[CardRarity.SuperRare] + GetPercentStr(numCards[CardRarity.SuperRare], numOwned[CardRarity.SuperRare]));
-            sb.AppendLine("UR: " + numOwned[CardRarity.UltraRare] + GetPercentStr(numCards[CardRarity.UltraRare], numOwned[CardRarity.UltraRare]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsOwned1x);
+            sb.AppendLine(ClientSettings.CustomTextCardStatsTotal + numOwned[CardRarity.None] + GetPercentStr(numCards[CardRarity.None], numOwned[CardRarity.None]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsN + numOwned[CardRarity.Normal] + GetPercentStr(numCards[CardRarity.Normal], numOwned[CardRarity.Normal]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsR + numOwned[CardRarity.Rare] + GetPercentStr(numCards[CardRarity.Rare], numOwned[CardRarity.Rare]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsSR + numOwned[CardRarity.SuperRare] + GetPercentStr(numCards[CardRarity.SuperRare], numOwned[CardRarity.SuperRare]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsUR + numOwned[CardRarity.UltraRare] + GetPercentStr(numCards[CardRarity.UltraRare], numOwned[CardRarity.UltraRare]));
             sb.AppendLine();
-            sb.AppendLine("[Owned cards (up to 3x)]");
-            sb.AppendLine("Total: " + numOwnedDup[CardRarity.None] + GetPercentStr(numCards[CardRarity.None] * 3, numOwnedDup[CardRarity.None]));
-            sb.AppendLine("N: " + numOwnedDup[CardRarity.Normal] + GetPercentStr(numCards[CardRarity.Normal] * 3, numOwnedDup[CardRarity.Normal]));
-            sb.AppendLine("R: " + numOwnedDup[CardRarity.Rare] + GetPercentStr(numCards[CardRarity.Rare] * 3, numOwnedDup[CardRarity.Rare]));
-            sb.AppendLine("SR: " + numOwnedDup[CardRarity.SuperRare] + GetPercentStr(numCards[CardRarity.SuperRare] * 3, numOwnedDup[CardRarity.SuperRare]));
-            sb.AppendLine("UR: " + numOwnedDup[CardRarity.UltraRare] + GetPercentStr(numCards[CardRarity.UltraRare] * 3, numOwnedDup[CardRarity.UltraRare]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsOwned3x);
+            sb.AppendLine(ClientSettings.CustomTextCardStatsTotal + numOwnedDup[CardRarity.None] + GetPercentStr(numCards[CardRarity.None] * 3, numOwnedDup[CardRarity.None]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsN + numOwnedDup[CardRarity.Normal] + GetPercentStr(numCards[CardRarity.Normal] * 3, numOwnedDup[CardRarity.Normal]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsR + numOwnedDup[CardRarity.Rare] + GetPercentStr(numCards[CardRarity.Rare] * 3, numOwnedDup[CardRarity.Rare]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsSR + numOwnedDup[CardRarity.SuperRare] + GetPercentStr(numCards[CardRarity.SuperRare] * 3, numOwnedDup[CardRarity.SuperRare]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsUR + numOwnedDup[CardRarity.UltraRare] + GetPercentStr(numCards[CardRarity.UltraRare] * 3, numOwnedDup[CardRarity.UltraRare]));
             sb.AppendLine();
-            sb.AppendLine("[Extra cards (over 3x)]");
-            sb.AppendLine("Total: " + numOwnedExtra[CardRarity.None]);
-            sb.AppendLine("N: " + numOwnedExtra[CardRarity.Normal]);
-            sb.AppendLine("R: " + numOwnedExtra[CardRarity.Rare]);
-            sb.AppendLine("SR: " + numOwnedExtra[CardRarity.SuperRare]);
-            sb.AppendLine("UR: " + numOwnedExtra[CardRarity.UltraRare]);
+            sb.AppendLine(ClientSettings.CustomTextCardStatsOwned3xEx);
+            sb.AppendLine(ClientSettings.CustomTextCardStatsTotal + numOwnedExtra[CardRarity.None]);
+            sb.AppendLine(ClientSettings.CustomTextCardStatsN + numOwnedExtra[CardRarity.Normal]);
+            sb.AppendLine(ClientSettings.CustomTextCardStatsR + numOwnedExtra[CardRarity.Rare]);
+            sb.AppendLine(ClientSettings.CustomTextCardStatsSR + numOwnedExtra[CardRarity.SuperRare]);
+            sb.AppendLine(ClientSettings.CustomTextCardStatsUR + numOwnedExtra[CardRarity.UltraRare]);
             sb.AppendLine();
-            sb.AppendLine("[Rarity (1x)]");
-            sb.AppendLine("Normal: " + numOwnedStyle[CardStyleRarity.Normal] + GetPercentStr(numCards[CardRarity.None], numOwnedStyle[CardStyleRarity.Normal]));
-            sb.AppendLine("Shine: " + numOwnedStyle[CardStyleRarity.Shine] + GetPercentStr(numCards[CardRarity.None], numOwnedStyle[CardStyleRarity.Shine]));
-            sb.AppendLine("Royal: " + numOwnedStyle[CardStyleRarity.Royal] + GetPercentStr(numCards[CardRarity.SuperRare] + numCards[CardRarity.UltraRare], numOwnedStyle[CardStyleRarity.Royal]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsRarity1x);
+            sb.AppendLine(ClientSettings.CustomTextCardStatsNormal + numOwnedStyle[CardStyleRarity.Normal] + GetPercentStr(numCards[CardRarity.None], numOwnedStyle[CardStyleRarity.Normal]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsShine + numOwnedStyle[CardStyleRarity.Shine] + GetPercentStr(numCards[CardRarity.None], numOwnedStyle[CardStyleRarity.Shine]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsRoyal + numOwnedStyle[CardStyleRarity.Royal] + GetPercentStr(numCards[CardRarity.SuperRare] + numCards[CardRarity.UltraRare], numOwnedStyle[CardStyleRarity.Royal]));
             sb.AppendLine();
-            sb.AppendLine("[Rarity (up to 3x)]");
-            sb.AppendLine("Normal: " + numOwnedDupStyle[CardStyleRarity.Normal] + GetPercentStr(numCards[CardRarity.None] * 3, numOwnedDupStyle[CardStyleRarity.Normal]));
-            sb.AppendLine("Shine: " + numOwnedDupStyle[CardStyleRarity.Shine] + GetPercentStr(numCards[CardRarity.None] * 3, numOwnedDupStyle[CardStyleRarity.Shine]));
-            sb.AppendLine("Royal: " + numOwnedDupStyle[CardStyleRarity.Royal] + GetPercentStr((numCards[CardRarity.SuperRare] + numCards[CardRarity.UltraRare]) * 3, numOwnedDupStyle[CardStyleRarity.Royal]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsRarity3x);
+            sb.AppendLine(ClientSettings.CustomTextCardStatsNormal + numOwnedDupStyle[CardStyleRarity.Normal] + GetPercentStr(numCards[CardRarity.None] * 3, numOwnedDupStyle[CardStyleRarity.Normal]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsShine + numOwnedDupStyle[CardStyleRarity.Shine] + GetPercentStr(numCards[CardRarity.None] * 3, numOwnedDupStyle[CardStyleRarity.Shine]));
+            sb.AppendLine(ClientSettings.CustomTextCardStatsRoyal + numOwnedDupStyle[CardStyleRarity.Royal] + GetPercentStr((numCards[CardRarity.SuperRare] + numCards[CardRarity.UltraRare]) * 3, numOwnedDupStyle[CardStyleRarity.Royal]));
             sb.AppendLine();
-            sb.AppendLine("[Rarity (over 3x)]");
-            sb.AppendLine("Normal: " + numOwnedExtraStyle[CardStyleRarity.Normal]);
-            sb.AppendLine("Shine: " + numOwnedExtraStyle[CardStyleRarity.Shine]);
-            sb.AppendLine("Royal: " + numOwnedExtraStyle[CardStyleRarity.Royal]);
+            sb.AppendLine(ClientSettings.CustomTextCardStatsRarity3xEx);
+            sb.AppendLine(ClientSettings.CustomTextCardStatsNormal + numOwnedExtraStyle[CardStyleRarity.Normal]);
+            sb.AppendLine(ClientSettings.CustomTextCardStatsShine + numOwnedExtraStyle[CardStyleRarity.Shine]);
+            sb.AppendLine(ClientSettings.CustomTextCardStatsRoyal + numOwnedExtraStyle[CardStyleRarity.Royal]);
             sb.AppendLine();
-            sb.AppendLine("======== Index ========");
-            sb.AppendLine("- \"Card pool\" is all cards in the game");
-            sb.AppendLine("- \"Owned cards (1x)\" is all cards you own capped to 1x per card");
-            sb.AppendLine("- \"Owned cards (up to 3x)\" is all cards you own capped to 3x per card");
-            sb.AppendLine("- \"Extra cards (over 3x)\" is all cards you own over 3x (excludes the first 3x)");
-            sb.AppendLine("- \"Rarity (1x)\" is all rarities you own capped to 1x per card");
-            sb.AppendLine("- \"Rarity (up to 3x)\" is all rarities you own capped to 3x per card");
-            sb.AppendLine("- \"Rarity (over 3x)\" is all rarities you own over 3x (excludes the first 3x)");
-            YgomGame.Menu.CommonDialogViewController.OpenConfirmationDialogScroll("Card collection info", sb.ToString(), "OK", null, null, true, 720);
+            sb.AppendLine(ClientSettings.CustomTextCardStatsIndex);
+            YgomGame.Menu.CommonDialogViewController.OpenConfirmationDialogScroll(ClientSettings.CustomTextCardStatsTitle,
+                sb.ToString(), ClientSettings.CustomTextOK, null, null, true, 720);
         };
 
         static void PopViewController()
@@ -1159,6 +1534,28 @@ namespace YgomGame.SubMenu
             //IntPtr callback = DelegateHelper.DelegateIl2cppDelegate(clickCallback, clickCallback.GetType().GetClass());
             IntPtr callback = UnityEngine.Events._UnityAction.CreateUnityAction(clickCallback);
             methodAddMenuItem.Invoke(thisPtr, new IntPtr[] { new IL2String(text).ptr, callback, new IL2String(onClickSL).ptr, new IntPtr(&badge) });
+        }
+    }
+}
+
+namespace YgomSystem
+{
+    unsafe static class Sound
+    {
+        static IL2Field fieldInstance;
+        static IL2Method methodPlay;
+
+        static Sound()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            IL2Class classInfo = assembly.GetClass("Sound", "YgomSystem");
+            fieldInstance = classInfo.GetField("s_instance");
+            methodPlay = classInfo.GetMethod("Play");
+        }
+
+        public static void Play(string label)
+        {
+            methodPlay.Invoke(fieldInstance.GetValue().ptr, new IntPtr[] { new IL2String(label).ptr });
         }
     }
 }

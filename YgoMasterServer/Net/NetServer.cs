@@ -12,6 +12,7 @@ namespace YgoMaster.Net
     class NetServer
     {
         public GameServer GameServer;
+        object tradeLocker = new object();
 
         private Socket socket;
         public string IP { get; private set; }
@@ -155,6 +156,31 @@ namespace YgoMaster.Net
 
         void client_Disconnected(NetClient client)
         {
+            Player player = GameServer.GetPlayerFromToken(client.Token);
+            if (player != null)
+            {
+                lock (tradeLocker)
+                {
+                    if (player.ActiveTrade != null)
+                    {
+                        Player otherPlayer = player.ActiveTrade.GetOtherPlayer(player);
+                        player.ActiveTrade.Remove(player);
+                        if (otherPlayer != null && otherPlayer != player)
+                        {
+                            NetClient otherClient = GetConnectionByToken(otherPlayer.Token);
+                            if (otherClient != null && otherClient != client)
+                            {
+                                otherClient.Send(new TradeLeaveRoomMessage()
+                                {
+                                    PlayerCode = player.Code,
+                                    Name = player.Name
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+
             lock (connections)
             {
                 connections.Remove(client);
@@ -198,6 +224,11 @@ namespace YgoMaster.Net
                 case NetMessageType.DuelError:// Special case
                     OnDuelCom(client, message);
                     break;
+
+                case NetMessageType.TradeEnterRoom: OnTradeEnterRoom(client, (TradeEnterRoomMessage)message);  break;
+                case NetMessageType.TradeLeaveRoom: OnTradeLeaveRoom(client, (TradeLeaveRoomMessage)message); break;
+                case NetMessageType.TradeMoveCard: OnTradeMoveCard(client, (TradeMoveCardMessage)message); break;
+                case NetMessageType.TradeStateChange: OnTradeStateChange(client, (TradeStateChangeMessage)message); break;
             }
         }
 
@@ -281,6 +312,350 @@ namespace YgoMaster.Net
                 RequestTime = DateTime.UtcNow,
                 DuelingState = tableState
             });
+        }
+
+        void OnTradeEnterRoom(NetClient client, TradeEnterRoomMessage message)
+        {
+            Player player = GameServer.GetPlayerFromToken(client.Token);
+            if (player == null)
+            {
+                return;
+            }
+
+            lock (tradeLocker)
+            {
+                if (player.ActiveTrade != null)
+                {
+                    player.ActiveTrade.Remove(player);
+                    player.ActiveTrade = null;
+                }
+                Player otherPlayer = GameServer.GetPlayerFromId(message.PlayerCode);
+                if (otherPlayer == null || otherPlayer == player)
+                {
+                    return;
+                }
+                NetClient otherClient = GetConnectionByToken(otherPlayer.Token);
+                if (otherClient == client)
+                {
+                    return;
+                }
+
+                if (otherPlayer.ActiveTrade != null)
+                {
+                    if (!otherPlayer.ActiveTrade.Add(player))
+                    {
+                        otherClient.Send(new TradeEnterRoomMessage()
+                        {
+                            IsRemotePlayerAlreadyTrading = true,
+                            PlayerCode = otherPlayer.Code,
+                            Name = otherPlayer.Name
+                        });
+                        return;
+                    }
+                }
+                else
+                {
+                    player.ActiveTrade = new TradeInfo();
+                    if (!player.ActiveTrade.Add(player))
+                    {
+                        player.ActiveTrade = null;
+                        return;
+                    }
+                }
+
+                string myEntireCollectionJson = player.Cards.CreateCardHaveJson(false);
+                string myTradableCollectionJson = player.Cards.CreateCardHaveJson(true);
+                string theirEntireCollectionJson = otherPlayer.Cards.CreateCardHaveJson(false);
+                string theirTradableCollectionJson = otherPlayer.Cards.CreateCardHaveJson(true);
+
+                client.Send(new TradeEnterRoomMessage()
+                {
+                    PlayerCode = message.PlayerCode,
+                    OwnsMainDeck = player == player.ActiveTrade.Player1,
+                    IsRemotePlayerAlreadyHere = player.ActiveTrade.GetOtherPlayer(player) != null,
+                    DeckJson = MiniJSON.Json.Serialize(player.ActiveTrade.State.ToDictionaryEx()),
+                    MyEntireCollectionJson = myEntireCollectionJson,
+                    MyTradableCollectionJson = myTradableCollectionJson,
+                    TheirEntireCollectionJson = theirEntireCollectionJson,
+                    TheirTradableCollectionJson = theirTradableCollectionJson,
+                });
+                if (otherClient != null)
+                {
+                    otherClient.Send(new TradeEnterRoomMessage()
+                    {
+                        PlayerCode = player.Code,
+                        Name = player.Name,
+                        MyEntireCollectionJson = theirEntireCollectionJson,
+                        MyTradableCollectionJson = theirTradableCollectionJson,
+                        TheirEntireCollectionJson = myEntireCollectionJson,
+                        TheirTradableCollectionJson = myTradableCollectionJson,
+                    });
+                }
+            }
+        }
+
+        void OnTradeLeaveRoom(NetClient client, TradeLeaveRoomMessage message)
+        {
+            Player player = GameServer.GetPlayerFromToken(client.Token);
+            if (player == null)
+            {
+                return;
+            }
+
+            lock (tradeLocker)
+            {
+                if (player.ActiveTrade == null)
+                {
+                    return;
+                }
+
+                if (!player.ActiveTrade.Remove(player))
+                {
+                    player.ActiveTrade = null;
+                    return;
+                }
+
+                Player otherPlayer = GameServer.GetPlayerFromId(message.PlayerCode);
+                if (otherPlayer != null && otherPlayer != player)
+                {
+                    NetClient otherClient = GetConnectionByToken(otherPlayer.Token);
+                    if (otherClient != null && otherClient != client)
+                    {
+                        otherClient.Send(new TradeLeaveRoomMessage()
+                        {
+                            PlayerCode = player.Code,
+                            Name = player.Name
+                        });
+                    }
+                }
+            }
+        }
+
+        void OnTradeMoveCard(NetClient client, TradeMoveCardMessage message)
+        {
+            Player player = GameServer.GetPlayerFromToken(client.Token);
+            if (player == null)
+            {
+                return;
+            }
+
+            lock (tradeLocker)
+            {
+                TradeInfo trade = player.ActiveTrade;
+
+                if (trade == null)
+                {
+                    return;
+                }
+
+                Player targetPlayer = player;
+                bool targetIsOtherPlayer = false;
+
+                if (message.OtherPlayerCode != 0)
+                {
+                    targetIsOtherPlayer = true;
+
+                    targetPlayer = GameServer.GetPlayerFromId(message.OtherPlayerCode);
+                    if (targetPlayer == null || targetPlayer == player)
+                    {
+                        return;
+                    }
+
+                    if (trade.Player1 != null && trade.Player2 != null &&
+                        trade.Player1 != targetPlayer && trade.Player2 != targetPlayer)
+                    {
+                        return;
+                    }
+
+                    if (message.RemoveCard && !GameServer.TradeAllowOtherPlayerToRemoveYourCards)
+                    {
+                        return;
+                    }
+
+                    if (!message.RemoveCard && !GameServer.TradeAllowOtherPlayerToAddYourCards)
+                    {
+                        return;
+                    }
+                }
+
+                CardCollection targetCollection;
+                if ((player == trade.Player1 && !targetIsOtherPlayer) ||
+                    (player == trade.Player2 && targetIsOtherPlayer))
+                {
+                    targetCollection = trade.State.MainDeckCards;
+                }
+                else if ((player == trade.Player2 && !targetIsOtherPlayer) ||
+                         (player == trade.Player1 && targetIsOtherPlayer))
+                {
+                    targetCollection = trade.State.ExtraDeckCards;
+                }
+                else
+                {
+                    return;
+                }
+
+                bool success = false;
+
+                if (message.RemoveCard)
+                {
+                    success = targetCollection.Remove(message.CardId, message.StyleRarity);
+                }
+                else
+                {
+                    int count = targetPlayer.Cards.GetCount(message.CardId, PlayerCardKind.Dismantle, message.StyleRarity);
+                    count -= targetCollection.GetCount(message.CardId, message.StyleRarity);
+                    if (count > 0)
+                    {
+                        targetCollection.Add(message.CardId, message.StyleRarity);
+                        success = true;
+                    }
+                }
+
+                if (success)
+                {
+                    client.Send(new TradeMoveCardMessage()
+                    {
+                        RemoveCard = message.RemoveCard,
+                        CardId = message.CardId,
+                        StyleRarity = message.StyleRarity,
+                        OtherPlayer = targetIsOtherPlayer
+                    });
+
+                    Player otherPlayer = trade.GetOtherPlayer(player);
+                    if (otherPlayer != null && otherPlayer != player)
+                    {
+                        NetClient otherClient = GetConnectionByToken(otherPlayer.Token);
+                        if (otherClient != null && otherClient != client)
+                        {
+                            otherClient.Send(new TradeMoveCardMessage()
+                            {
+                                RemoveCard = message.RemoveCard,
+                                CardId = message.CardId,
+                                StyleRarity = message.StyleRarity,
+                                OtherPlayer = !targetIsOtherPlayer
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        void OnTradeStateChange(NetClient client, TradeStateChangeMessage message)
+        {
+            Player player = GameServer.GetPlayerFromToken(client.Token);
+            if (player == null)
+            {
+                client.Send(new TradeStateChangeMessage(TradeStateChange.Error));
+                return;
+            }
+
+            lock (tradeLocker)
+            {
+                TradeInfo trade = player.ActiveTrade;
+
+                if (trade == null)
+                {
+                    client.Send(new TradeStateChangeMessage(TradeStateChange.Error));
+                    return;
+                }
+
+                if (message.State == TradeStateChange.PressedCancel)
+                {
+                    trade.SetHasPressedTrade(player, false);
+                }
+
+                Player otherPlayer = trade.GetOtherPlayer(player);
+                if (otherPlayer == null || otherPlayer == player)
+                {
+                    client.Send(new TradeStateChangeMessage(TradeStateChange.Wait));
+                    return;
+                }
+
+                NetClient otherClient = GetConnectionByToken(otherPlayer.Token);
+                if (otherClient == null || otherClient == client)
+                {
+                    client.Send(new TradeStateChangeMessage(TradeStateChange.Wait));
+                    return;
+                }
+
+                if (message.State != TradeStateChange.PressedTrade && message.State != TradeStateChange.PressedCancel)
+                {
+                    client.Send(new TradeStateChangeMessage(TradeStateChange.Error));
+                    return;
+                }
+
+                if (message.State == TradeStateChange.PressedCancel)
+                {
+                    otherClient.Send(new TradeStateChangeMessage(TradeStateChange.PressedCancel));
+                }
+                else if (message.State == TradeStateChange.PressedTrade)
+                {
+                    trade.SetHasPressedTrade(player, true);
+                    if (!trade.HaveBothPressedTrade)
+                    {
+                        otherClient.Send(new TradeStateChangeMessage(TradeStateChange.PressedTrade));
+                    }
+                    else
+                    {
+                        // NOTE: Player card collections could potentially be modified by the game server handler mid-loop
+
+                        bool valid = true;
+
+                        for (int i = 0; i < 2; i++)
+                        {
+                            Player targetPlayer = i == 0 ? trade.Player1 : trade.Player2;
+                            CardCollection targetCollection = i == 0 ? trade.State.MainDeckCards : trade.State.ExtraDeckCards;
+                            foreach (KeyValuePair<int, Dictionary<CardStyleRarity, int>> card in targetCollection.ToDictionaryCount())
+                            {
+                                foreach (KeyValuePair<CardStyleRarity, int> rarityCount in card.Value)
+                                {
+                                    if (targetPlayer.Cards.GetCount(card.Key, PlayerCardKind.Dismantle, rarityCount.Key) < rarityCount.Value)
+                                    {
+                                        valid = false;
+                                        break;
+                                    }
+                                }
+                                if (!valid)
+                                {
+                                    break;
+                                }
+                            }
+                            if (!valid)
+                            {
+                                break;
+                            }
+                        }
+
+                        if (valid)
+                        {
+                            foreach (KeyValuePair<int, CardStyleRarity> card in trade.State.MainDeckCards.GetCollection())
+                            {
+                                trade.Player1.Cards.Subtract(card.Key, 1, PlayerCardKind.Dismantle, card.Value);
+                                trade.Player2.Cards.Add(card.Key, 1, PlayerCardKind.Dismantle, card.Value);
+                            }
+                            foreach (KeyValuePair<int, CardStyleRarity> card in trade.State.ExtraDeckCards.GetCollection())
+                            {
+                                trade.Player1.Cards.Add(card.Key, 1, PlayerCardKind.Dismantle, card.Value);
+                                trade.Player2.Cards.Subtract(card.Key, 1, PlayerCardKind.Dismantle, card.Value);
+                            }
+
+                            GameServer.SavePlayerNow(trade.Player1);
+                            GameServer.SavePlayerNow(trade.Player2);
+
+                            client.Send(new TradeStateChangeMessage(TradeStateChange.Complete, player.Cards.CreateCardHaveJson(false)));
+                            otherClient.Send(new TradeStateChangeMessage(TradeStateChange.Complete, otherPlayer.Cards.CreateCardHaveJson(false)));
+                        }
+                        else
+                        {
+                            client.Send(new TradeStateChangeMessage(TradeStateChange.Error));
+                            otherClient.Send(new TradeStateChangeMessage(TradeStateChange.Error));
+                        }
+
+                        trade.Remove(player);
+                        trade.Remove(otherPlayer);
+                    }
+                }
+            }
         }
     }
 }

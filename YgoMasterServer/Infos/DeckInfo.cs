@@ -84,12 +84,17 @@ namespace YgoMaster
                     if (!count.ContainsKey(idRarity.Key))
                     {
                         count[idRarity.Key] = new Dictionary<CardStyleRarity, int>();
-                        for (CardStyleRarity i = CardStyleRarity.Normal; i <= CardStyleRarity.Shine; i++)
+                        for (CardStyleRarity i = CardStyleRarity.Normal; i <= CardStyleRarity.Royal; i++)
                         {
                             count[idRarity.Key][i] = player.Cards.GetCount(idRarity.Key, PlayerCardKind.All, i);
                         }
                     }
-                    if (--count[idRarity.Key][idRarity.Value] < 0)
+                    CardStyleRarity styleRarity = idRarity.Value;
+                    if (styleRarity < CardStyleRarity.Normal || styleRarity > CardStyleRarity.Royal)
+                    {
+                        styleRarity = CardStyleRarity.Normal;
+                    }
+                    if (--count[idRarity.Key][styleRarity] < 0)
                     {
                         return false;
                     }

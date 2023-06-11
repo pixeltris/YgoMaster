@@ -60,6 +60,7 @@
     <Compile Include="Enums\Duel.cs" />
     <Compile Include="GameServer.Multiplayer.cs" />
     <Compile Include="Infos\DuelRoom.cs" />
+    <Compile Include="Infos\TradeInfo.cs" />
     <Compile Include="Lib\LinearCongruentialGenerator.cs" />
     <Compile Include="Net\Message\ConnectionRequestMessage.cs" />
     <Compile Include="Net\Message\ConnectionResponseMessage.cs" />
@@ -73,10 +74,15 @@
     <Compile Include="Net\Message\DuelListInitStringMessage.cs" />
     <Compile Include="Net\Message\DuelListSetCardExDataMessage.cs" />
     <Compile Include="Net\Message\DuelListSetIndexMessage.cs" />
+    <Compile Include="Net\Message\FriendDuelInviteMessage.cs" />
+    <Compile Include="Net\Message\TradeMoveCardMessage.cs" />
+    <Compile Include="Net\Message\TradeEnterRoomMessage.cs" />
+    <Compile Include="Net\Message\TradeLeaveRoomMessage.cs" />
     <Compile Include="Net\Message\OpponentDuelEndedMessage.cs" />
     <Compile Include="Net\Message\OpponentSurrenderedMessage.cs" />
     <Compile Include="Net\Message\PingMessage.cs" />
     <Compile Include="Net\Message\PongMessage.cs" />
+    <Compile Include="Net\Message\TradeStateChangedMessage.cs" />
     <Compile Include="Net\Message\UpdateIsBusyEffectMessage.cs" />
     <Compile Include="Net\NetMessage.cs" />
     <Compile Include="Net\NetClient.cs" />

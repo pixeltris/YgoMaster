@@ -50,6 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="YgoMasterClient\TradeUtils.cs" />
+    <Compile Include="YgoMasterClient\ClientSettings.Text.cs" />
     <Compile Include="YgoMasterClient\DuelDll.cs" />
     <Compile Include="YgoMasterClient\ActionSheetViewController.cs" />
     <Compile Include="YgoMasterClient\AssetHelper.cs" />
@@ -111,10 +113,15 @@
     <Compile Include="YgoMasterServer\Net\Message\DuelListInitStringMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelListSetCardExDataMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelListSetIndexMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Message\FriendDuelInviteMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\OpponentDuelEndedMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\OpponentSurrenderedMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\PingMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\PongMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Message\TradeEnterRoomMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Message\TradeLeaveRoomMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Message\TradeMoveCardMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Message\TradeStateChangedMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\UpdateIsBusyEffectMessage.cs" />
     <Compile Include="YgoMasterServer\Net\NetClient.cs" />
     <Compile Include="YgoMasterServer\Net\NetMessage.cs" />

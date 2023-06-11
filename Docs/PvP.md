@@ -1,6 +1,6 @@
 ## PvP
 
-PvP is a work in progress. It lets you use duel rooms under a low latency environment (LAN). The friends list also works.
+PvP is a work in progress. It lets you use duel rooms under a low latency environment (LAN). The friends list works. There is a custom trading implementation which you can access by going to a players profile.
 
 ## Setting it up on a single PC
 
@@ -34,7 +34,19 @@ PvP is a work in progress. It lets you use duel rooms under a low latency enviro
 
 - Every PC (and every seperate YgoMaster folder) must have a different `MultiplayerToken` as otherwise they will share the same session which will break things
 - Due to requiring very low latency PvP is unlikely to perform well over WAN / Hamachi / ZeroTier / Tailscale / etc
+- Do not modify `YgoMaster/Data/Players/` or any sub folders while `YgoMaster.exe` is running
 
 ## Bugs
 
-- For some people clicking `OnClickRoomMatchMenuItem` param isn't working which results in any menu item going to create a duel room
+- For some people clicking `OnClickRoomMatchMenuItem` param isn't working which results in any menu item going to create a duel room. A workaround is to create a duel room then use the friends system to invite your friend to the duel room
+
+## Trading
+
+You can trade cards with other players by going to their profile and clicking "Trade"
+
+- Both players need to click "Trade" to enter the trade
+- Your cards go to the "main deck" and their cards go to the "extra deck"
+- Use the button on the top right where "SAVE" normally is to complete your trade. There's a cooldown of a few seconds on the button when moving cards to avoid accidental trading. You will need to press the trade button again if either player modifies the cards. If the button says "Trade!!!" it means the other player has pressed the trade button
+- Use the sub menu of the trade menu to view their cards
+- You can add their cards / remove their cards from the trade
+- You cannot craft / dismantle while trading

@@ -109,7 +109,14 @@ namespace YgoMaster
             allFollowerData["is_terminal"] = true;//?
 
             friendData["block"] = new uint[0];
-            friendData["tag"] = new uint[0];
+
+            int[] tag;
+            if (!ItemID.Values.TryGetValue(ItemID.Category.PROFILE_TAG, out tag) || tag == null)
+            {
+                tag = new int[0];
+            }
+            friendData["tag"] = tag;
+            
             friendData["refresh_sec"] = FriendsRefreshInSeconds;
 
             if (isAll)
@@ -232,7 +239,7 @@ namespace YgoMaster
             List<object> searchDataList = new List<object>();
 
             Dictionary<uint, FriendState> friends = GetFriends(request.Player);
-            List<Player> players = new List<Player>();
+            List<Player> foundPlayers = new List<Player>();
 
             lock (playersLock)
             {
@@ -240,21 +247,22 @@ namespace YgoMaster
                 {
                     if (player.TitleTags.Intersect(tags).Count() == tags.Count && player != request.Player)
                     {
-                        players.Add(player);
+                        foundPlayers.Add(player);
                     }
                 }
             }
 
-            for (int i = 0; i < players.Count && i < FriendSearchLimit; i++)
+            for (int i = 0; i < foundPlayers.Count && i < FriendSearchLimit; i++)
             {
-                Player player = players[i];
+                Player player = foundPlayers[i];
 
                 FriendState friendState;
                 friends.TryGetValue(player.Code, out friendState);
                 searchDataList.Add(GetSearchFriendData(player, friendState));
             }
 
-            searchData["excess"] = players.Count > FriendSearchLimit;
+            searchData["list"] = searchDataList;
+            searchData["excess"] = foundPlayers.Count > FriendSearchLimit;
         }
 
         Dictionary<string, object> GetSearchFriendData(Player friend, FriendState friendState)

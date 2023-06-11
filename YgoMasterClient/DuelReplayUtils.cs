@@ -7,10 +7,6 @@ using System.Windows.Forms;
 using YgoMasterClient;
 using IL2CPP;
 using YgoMaster;
-using System.Runtime.InteropServices;
-using System.Xml.Linq;
-using YgomSystem.Network;
-using System.Diagnostics;
 
 namespace YgomGame.SubMenu
 {
@@ -28,9 +24,12 @@ namespace YgomGame.SubMenu
 
         static void OnCreatedView(IntPtr thisPtr)
         {
-            SubMenuViewController.SetTitleText(thisPtr, "YgoMaster");
-            SubMenuViewController.AddMenuItem(thisPtr, "Load replays", OnLoadReplaysFolderAsSelf);
-            SubMenuViewController.AddMenuItem(thisPtr, "Load replays (as opponent)", OnLoadReplaysFolderAsOpponent);
+            if (ClientSettings.DuelReplayAddHomeSubMenuButtons)
+            {
+                SubMenuViewController.SetTitleText(thisPtr, ClientSettings.CustomTextYgoMaster);
+                SubMenuViewController.AddMenuItem(thisPtr, ClientSettings.CustomTextHomeSubMenuLoadReplays, OnLoadReplaysFolderAsSelf);
+                SubMenuViewController.AddMenuItem(thisPtr, ClientSettings.CustomTextHomeSubMenuLoadReplaysAsOpponent, OnLoadReplaysFolderAsOpponent);
+            }
             hookOnCreatedView.Original(thisPtr);
         }
 

@@ -7,7 +7,7 @@ using YgoMaster;
 
 namespace YgoMasterClient
 {
-    static class ClientSettings
+    static partial class ClientSettings
     {
         public static string SessionServerIP;
         public static int SessionServerPort;
@@ -20,6 +20,7 @@ namespace YgoMasterClient
         public static bool MultiplayerLogConnectionState;
         public static int DuelDllActiveUserDoCommandOffset;
         public static int DuelDllActiveUserSetIndexOffset;
+        public static string ClientSettingsTextFile;
         public static bool ShowConsole;
         public static bool LogIDs;
         public static bool AssetHelperLog;
@@ -50,6 +51,10 @@ namespace YgoMasterClient
         public static DuelReplayCardVisibility DuelReplayCardVisibility;
         public static bool DuelReplayLiveAutoSave;
         public static bool DuelReplayLiveAutoSaveUseSubFolders;
+        public static bool DuelReplayAddHomeSubMenuButtons;
+        public static float TradeBannerVisibleTimeInSeconds;
+        public static int TradeBannerOffsetY;
+        public static float TradeActionDelayInSeconds;
 
         public static string FilePath
         {
@@ -101,6 +106,7 @@ namespace YgoMasterClient
             MultiplayerLogConnectionState = Utils.GetValue<bool>(data, "MultiplayerLogConnectionState");
             DuelDllActiveUserDoCommandOffset = Utils.GetValue<int>(data, "DuelDllActiveUserDoCommandOffset");
             DuelDllActiveUserSetIndexOffset = Utils.GetValue<int>(data, "DuelDllActiveUserSetIndexOffset");
+            ClientSettingsTextFile = Utils.GetValue<string>(data, "ClientSettingsTextFile");
             ShowConsole = Utils.GetValue<bool>(data, "ShowConsole");
             LogIDs = Utils.GetValue<bool>(data, "LogIDs");
             AssetHelperLog = Utils.GetValue<bool>(data, "AssetHelperLog");
@@ -131,7 +137,12 @@ namespace YgoMasterClient
             DuelReplayCardVisibility = Utils.GetValue<DuelReplayCardVisibility>(data, "DuelReplayCardVisibility");
             DuelReplayLiveAutoSave = Utils.GetValue<bool>(data, "DuelReplayLiveAutoSave");
             DuelReplayLiveAutoSaveUseSubFolders = Utils.GetValue<bool>(data, "DuelReplayLiveAutoSaveUseSubFolders");
-            return true;
+            DuelReplayAddHomeSubMenuButtons = Utils.GetValue<bool>(data, "DuelReplayAddHomeSubMenuButtons");
+            TradeBannerVisibleTimeInSeconds = Utils.GetValue<float>(data, "TradeBannerVisibleTimeInSeconds");
+            TradeBannerOffsetY = Utils.GetValue<int>(data, "TradeBannerOffsetY");
+            TradeActionDelayInSeconds = Utils.GetValue<float>(data, "TradeActionDelayInSeconds");
+
+            return LoadText();
         }
 
         public static void LoadTimeMultipliers()

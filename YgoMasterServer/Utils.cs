@@ -6,6 +6,7 @@ using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.IO.Compression;
+using System.Collections.Concurrent;
 
 namespace YgoMaster
 {
@@ -704,6 +705,17 @@ namespace YgoMaster
                 Buffer.BlockCopy(compressed, 0, result, 2, compressed.Length);
                 return result;
             }
+        }
+
+        public static string FormatPlayerCode(uint playerCode)
+        {
+            return string.Format("{0:000-000-000}", playerCode);
+        }
+
+        public static void Remove<Key, Value>(this ConcurrentDictionary<Key, Value> instance, Key key)
+        {
+            Value value;
+            instance.TryRemove(key, out value);
         }
     }
 }

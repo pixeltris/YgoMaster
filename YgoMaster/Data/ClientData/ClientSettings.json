@@ -38,4 +38,8 @@
     "DuelReplayCardVisibility": "FrontOpen",// "AllClose", "FrontOpen", "AllOpen"
     "DuelReplayLiveAutoSave": false,
     "DuelReplayLiveAutoSaveUseSubFolders": true,
+    "DuelReplayAddHomeSubMenuButtons": false,
+    "TradeBannerVisibleTimeInSeconds": 5.0,
+    "TradeBannerOffsetY": -500,
+    "TradeActionDelayInSeconds": 3.0
 }
