@@ -18,7 +18,7 @@ namespace YgomGame.Menu
             methodOpen = classInfo.GetMethod("Open", x => x.GetParameters().Length == 3);
         }
 
-        public static void Open(string title, string[] entries, Action<int> callback)
+        public static void Open(string title, string[] entries, Action<IntPtr, int> callback)
         {
             IL2Class stringClass = typeof(string).GetClass();
             IL2ListExplicit entriesList = new IL2ListExplicit(IntPtr.Zero, stringClass, true);

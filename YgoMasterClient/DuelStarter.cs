@@ -1816,7 +1816,8 @@ namespace YgomSystem.UI
             }
         };
 
-        static Action<int> OnClickRoomMatchMenuItem = (int index) =>
+        static Action<IntPtr, int> OnClickRoomMatchMenuItem = OnClickRoomMatchMenuItemImpl;
+        static void OnClickRoomMatchMenuItemImpl(IntPtr ctx, int index)
         {
             IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
             if (manager != IntPtr.Zero)
@@ -1840,7 +1841,7 @@ namespace YgomSystem.UI
                         break;
                 }
             }
-        };
+        }
 
         static Action OpenDuelStarterMenu = () =>
         {

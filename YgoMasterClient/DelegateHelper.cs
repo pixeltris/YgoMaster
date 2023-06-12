@@ -33,6 +33,11 @@ namespace UnityEngine.Events
             return UnityEngine.Events._UnityAction.CreateDelegate(function, IntPtr.Zero, UnityEngine.Events._UnityAction.ActionClass);
         }
 
+        /// <summary>
+        /// When using this the callsite always needs a IntPtr first arg as il2cpp will put a pointer into RCX and the param in RDX
+        /// Do not use "static Action myaction = (IntPtr ctx, int arg) => { };" as on some versions of .NET this will generate
+        /// A class with a non-static callsite which will add an additional hidden arg
+        /// </summary>
         public unsafe static IntPtr CreateAction<T>(Delegate function)
         {
             IL2Class actionClass = typeof(Action<>).GetClass().MakeGenericType(new Type[] { typeof(T) });
