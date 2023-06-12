@@ -36,10 +36,6 @@ PvP is a work in progress. It lets you use duel rooms under a low latency enviro
 - Due to requiring very low latency PvP is unlikely to perform well over WAN / Hamachi / ZeroTier / Tailscale / etc
 - Do not modify `YgoMaster/Data/Players/` or any sub folders while `YgoMaster.exe` is running
 
-## Bugs
-
-- For some people clicking `OnClickRoomMatchMenuItem` param isn't working which results in any menu item going to create a duel room. A workaround is to create a duel room then use the friends system to invite your friend to the duel room
-
 ## Trading
 
 You can trade cards with other players by going to their profile and clicking "Trade"
