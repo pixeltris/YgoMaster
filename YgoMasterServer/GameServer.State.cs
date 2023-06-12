@@ -448,10 +448,9 @@ namespace YgoMaster
 
                 Console.WriteLine("Loading players...");
 
-                string playersDir = Path.Combine(dataDirectory, "Players");
-                if (Directory.Exists(playersDir))
+                if (Directory.Exists(playersDirectory))
                 {
-                    foreach (string dir in Directory.GetDirectories(Path.Combine(playersDir)))
+                    foreach (string dir in Directory.GetDirectories(Path.Combine(playersDirectory)))
                     {
                         uint playerCode;
                         if (uint.TryParse(new DirectoryInfo(dir).Name, out playerCode) && playerCode > 0)
@@ -951,10 +950,7 @@ namespace YgoMaster
                 }
                 string jsonFormatted = MiniJSON.Json.Format(MiniJSON.Json.Serialize(data));
                 string dir = GetPlayerDirectory(player);
-                if (MultiplayerEnabled)
-                {
-                    Utils.TryCreateDirectory(dir);
-                }
+                Utils.TryCreateDirectory(dir);
                 try
                 {
                     File.WriteAllText(Path.Combine(dir, "Player.json"), jsonFormatted);
@@ -966,15 +962,20 @@ namespace YgoMaster
             }
         }
 
+        string GetLocalPlayerSaveDataDir()
+        {
+            return Path.Combine(playersDirectory, "Local");
+        }
+
         string GetPlayerDirectory(Player player)
         {
             if (MultiplayerEnabled)
             {
-                return Path.Combine(dataDirectory, "Players", player.Code.ToString());
+                return Path.Combine(playersDirectory, player.Code.ToString());
             }
             else
             {
-                return dataDirectory;
+                return GetLocalPlayerSaveDataDir();
             }
         }
 

@@ -270,13 +270,7 @@ namespace YgoMaster
                     request.Player.ActiveDuelSettings.HasSavedReplay = true;
                     request.Player.ActiveDuelSettings.open = DuelReplayMakePublicByDefault;
                     string replaysDir = GetReplaysDirectory(request.Player);
-                    try
-                    {
-                        Directory.CreateDirectory(replaysDir);
-                    }
-                    catch
-                    {
-                    }
+                    Utils.TryCreateDirectory(replaysDir);
                     try
                     {
                         string replayPath = Path.Combine(replaysDir, request.Player.ActiveDuelSettings.DuelBeginTime + ".json");

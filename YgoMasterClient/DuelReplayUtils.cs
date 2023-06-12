@@ -47,17 +47,11 @@ namespace YgomGame.SubMenu
 
         static void OnLoadReplaysFolder()
         {
-            string decksDir = Path.Combine(Program.DataDir, "Replays");
-            try
-            {
-                Directory.CreateDirectory(decksDir);
-            }
-            catch
-            {
-            }
+            string replaysDir = Path.Combine(Program.LocalPlayerSaveDataDir, "Replays");
+            Utils.TryCreateDirectory(replaysDir);
 
             FolderBrowserDialog fbd = new FolderBrowserDialog();
-            fbd.SelectedPath = decksDir;
+            fbd.SelectedPath = replaysDir;
             if (fbd.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(fbd.SelectedPath) && Directory.Exists(fbd.SelectedPath))
             {
                 IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
@@ -266,7 +260,7 @@ namespace YgomGame.Menu
                         }
                     }
 
-                    string dir = Path.Combine(Program.DataDir, "Replays");
+                    string dir = Path.Combine(Program.LocalPlayerSaveDataDir, "Replays");
                     if (ClientSettings.DuelReplayLiveAutoSaveUseSubFolders)
                     {
                         if (gameMode == GameMode.Replay)

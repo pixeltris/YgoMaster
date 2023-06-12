@@ -1454,14 +1454,8 @@ namespace YgomGame.Room
                                     break;
                                 case 2:// Folder (random deck)
                                     {
-                                        string decksDir = Path.Combine(Program.DataDir, "Decks");
-                                        try
-                                        {
-                                            Directory.CreateDirectory(decksDir);
-                                        }
-                                        catch
-                                        {
-                                        }
+                                        string decksDir = Path.Combine(Program.LocalPlayerSaveDataDir, "Decks");
+                                        Utils.TryCreateDirectory(decksDir);
 
                                         FolderBrowserDialog fbd = new FolderBrowserDialog();
                                         fbd.SelectedPath = decksDir;

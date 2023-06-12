@@ -24,6 +24,7 @@ namespace YgoMasterClient
         public static bool IsLive;
         public static string CurrentDir;// Path of where the current assembly is (YgoMasterClient.exe)
         public static string DataDir;// Path of misc data
+        public static string LocalPlayerSaveDataDir;// Path of where local player save data
         public static string ClientDataDir;// Path of the custom client content
         public static string ClientDataDumpDir;// Path to dump client content when dumping is enabled
         public static NetClient NetClient;
@@ -123,6 +124,7 @@ namespace YgoMasterClient
 
                 CurrentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 DataDir = Utils.GetDataDirectory(false, CurrentDir);
+                LocalPlayerSaveDataDir = Path.Combine(DataDir, "Players", "Local");
                 ClientDataDir = Path.Combine(DataDir, "ClientData");
                 ClientDataDumpDir = Path.Combine(DataDir, "ClientDataDump");
                 ItemID.Load(DataDir);

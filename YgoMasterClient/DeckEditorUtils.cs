@@ -1302,7 +1302,7 @@ namespace YgomGame.SubMenu
 
         static Action OnOpenDecksFolder = () =>
         {
-            string path = Path.GetFullPath(Path.Combine(Program.DataDir, "Decks"));
+            string path = Path.GetFullPath(Path.Combine(Program.LocalPlayerSaveDataDir, "Decks"));
             try
             {
                 if (!Directory.Exists(path))

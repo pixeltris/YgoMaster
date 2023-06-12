@@ -10,13 +10,15 @@ If you edit any json file you should reopen `YgoMaster.exe` (and in some cases t
 
 These settings are probably important to the average user.
 
-### /Data/Decks/\*.json;\*.ydk
+### /Data/Players/Local/Decks/\*.json;\*.ydk
 
-The player decks.
+The local player decks.
 
 You can copy/paste/move/rename (but not modify the contents of) files in this folder and they will automatically update in the game without having to reopen `YgoMaster.exe`. If you're already in the deck selection screen you will need to go to the home screen and re-enter the deck selection screen to see the updated decks.
 
-### /Data/Player.json
+### /Data/Players/Local/Player.json
+
+*This file is only created after a save action occurs (e.g. changing name / spending gems)*
 
 - `Gems` - the number of gems owned.
 
