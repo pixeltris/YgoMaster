@@ -177,6 +177,9 @@ namespace YgoMaster
                     case GameMode.Room:
                         Act_DuelBeginPvp(request);
                         return;
+                    case GameMode.Audience:
+                        Act_RoomWatchDuel(request, true);
+                        break;
                     case GameMode.Replay:
                         Act_DuelBeginReplay(request);
                         return;
@@ -244,9 +247,12 @@ namespace YgoMaster
         {
             request.Remove("Duel", "User.review", "Solo.Result", "Achievement");
 
-            if (request.Player.Duel.Mode == GameMode.Replay)
+            GameMode gameMode = request.Player.Duel.Mode;
+            switch (gameMode)
             {
-                return;
+                case GameMode.Replay:
+                case GameMode.Audience:
+                    return;
             }
 
             DuelResultType res;
@@ -261,10 +267,10 @@ namespace YgoMaster
                 request.Player.ActiveDuelSettings.finish = (int)finish;
                 request.Player.ActiveDuelSettings.turn = Utils.GetValue<int>(endParams, "turn");
                 string replayData = Utils.GetValue<string>(endParams, "replayData");
-                GameMode gameMode = request.Player.Duel.Mode;
 
                 if (!string.IsNullOrEmpty(replayData) && !request.Player.ActiveDuelSettings.HasSavedReplay &&
-                    DuelReplaySaveForGameModes.Contains(gameMode) && DuelReplaySaveFileLimit > 0)
+                    DuelReplaySaveForGameModes.Contains(gameMode) && DuelReplaySaveFileLimit > 0 &&
+                    gameMode != GameMode.Audience)
                 {
                     request.Player.ActiveDuelSettings.replaym = replayData;
                     request.Player.ActiveDuelSettings.HasSavedReplay = true;
@@ -334,10 +340,10 @@ namespace YgoMaster
 
                     case GameMode.Room:
                         NetClient opponentClient = null;
-                        Player opponentPlayer = GetDuelingOpponent(request.Player.Token);
+                        Player opponentPlayer = GetDuelingOpponent(request.Player);
                         if (opponentPlayer != null)
                         {
-                            opponentClient = sessionServer.GetConnectionByToken(opponentPlayer.Token);
+                            opponentClient = opponentPlayer.NetClient;
                         }
                         DuelRoom duelRoom = request.Player.DuelRoom;
                         if (duelRoom == null)
@@ -433,6 +439,43 @@ namespace YgoMaster
                             if (opponentClient != null)
                             {
                                 opponentClient.Send(new OpponentSurrenderedMessage());
+                            }
+
+                            // TODO: Make sure this hasn't already been done
+                            lock (duelRoomTable.Spectators)
+                            {
+                                DuelSpectatorDataMessage message = new DuelSpectatorDataMessage();
+                                if (request.Player == duelRoomTable.Player1)
+                                {
+                                    message.Buffer = new byte[]
+                                    {
+                                        0x22, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                        0x05, 0x00, 0x02, 0x00, 0x00, 0x00, 0x04, 0x00
+                                    };
+                                }
+                                else
+                                {
+                                    message.Buffer = new byte[]
+                                    {
+                                        0x22, 0x80, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                        0x05, 0x00, 0x01, 0x00, 0x04, 0x00, 0x00, 0x00
+                                    };
+                                }
+
+                                Player p1 = duelRoomTable.Player1;
+                                uint p1Code = p1 == null ? 0 : p1.Code;
+                                if (p1Code != 0)
+                                {
+                                    duelRoomTable.SpectatorData.AddRange(message.Buffer);
+                                    foreach (Player spectator in new HashSet<Player>(duelRoomTable.Spectators))
+                                    {
+                                        NetClient spectatorClient = spectator.NetClient;
+                                        if (spectatorClient != null && spectator.SpectatingPlayerCode == p1Code)
+                                        {
+                                            spectatorClient.Send(message);
+                                        }
+                                    }
+                                }
                             }
                         }
                         else

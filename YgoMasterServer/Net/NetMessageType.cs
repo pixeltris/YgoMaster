@@ -16,6 +16,12 @@ namespace YgoMaster.Net
         OpponentSurrendered,
         OpponentDuelEnded,
 
+        // Duel spectator messages
+        DuelSpectatorEnter,
+        DuelSpectatorLeave,
+        DuelSpectatorData,
+        DuelSpectatorFieldGuide,
+
         // Duel com messages
         DuelComMovePhase,
         DuelComDoCommand,

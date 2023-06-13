@@ -38,6 +38,9 @@ namespace YgoMaster
             WriteItem(request);
             request.Response["Craft"] = Craft.ToDictionary();
 
+            // This is required to get duel room spectator watching options (live / not live)
+            request.GetOrCreateDictionary("Server")["rapidwatch"] = true;
+
             WriteRoomInfo(request, request.Player.DuelRoom);
             Dictionary<string, object> roomData = request.GetOrCreateDictionary("Room");
             Dictionary<string, object> roomSettingDefData = Utils.GetOrCreateDictionary(roomData, "setting_def");

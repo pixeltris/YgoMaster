@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 
 namespace YgoMaster.Net
 {
@@ -13,9 +14,10 @@ namespace YgoMaster.Net
     {
         public DateTime LastMessageTime;
 #if !YGO_MASTER_CLIENT
-        public string Token;
+        public Player Player;
 #endif
 
+        private int bCalledDisconnected = 0;
         private object sendLocker = new object();
         public object Owner { get; private set; }
         public Socket Socket { get; private set; }
@@ -140,6 +142,7 @@ namespace YgoMaster.Net
 #endif
             socket.Connect(ip, port);
             LastMessageTime = DateTime.UtcNow;
+            bCalledDisconnected = 0;
             if (Connected != null)
             {
                 Connected(this);
@@ -189,8 +192,10 @@ namespace YgoMaster.Net
                 {
                 }
 
-                if (Disconnected != null)
+                if (Interlocked.Exchange(ref bCalledDisconnected, 1) == 0 && Disconnected != null)
+                {
                     Disconnected(this);
+                }
             }
             catch
             {

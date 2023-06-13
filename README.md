@@ -10,7 +10,7 @@ Offline Yu-Gi-Oh! Master Duel (PC)
 - Open packs
 - Solo content
 - Custom duels
-- [PvP duels (LAN)](Docs/PvP.md)
+- [PvP duels (LAN) / friends / trading](Docs/PvP.md)
 - Duel replays
 - YDK / YDKe support
 - Card collection stats / deck editor sub menu improvements

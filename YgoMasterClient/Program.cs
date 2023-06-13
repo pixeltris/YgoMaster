@@ -705,6 +705,7 @@ namespace YgoMasterClient
                                                     allEnums["DuelMenuParamType"] = engineClass.GetNestedType("MenuParamType");
                                                     allEnums["DuelPhase"] = engineClass.GetNestedType("Phase");
                                                     allEnums["DuelPlayerType"] = engineClass.GetNestedType("PlayerType");
+                                                    allEnums["DuelPvpCommand"] = assembly.GetClass("PvP", "YgomSystem.Network").GetNestedType("Command");
                                                     allEnums["DuelPvpCommandType"] = engineClass.GetNestedType("PvpCommandType");
                                                     allEnums["DuelPvpFieldType"] = engineClass.GetNestedType("PvpFieldType");
                                                     allEnums["DuelRunCommandType"] = engineClass.GetNestedType("RunCommandType");

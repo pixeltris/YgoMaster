@@ -382,14 +382,13 @@ namespace YgomSystem.Network
 
                         PInvoke.SetTimeMultiplier(ClientSettings.DuelClientTimeMultiplier != 0 ?
                             ClientSettings.DuelClientTimeMultiplier : ClientSettings.TimeMultiplier);
+
+                        DuelDll.OnDuelBegin((GameMode)YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Duel.GameMode"));
                         break;
                     case "Duel.end":
+                        DuelDll.OnDuelEnd();
                         PInvoke.SetTimeMultiplier(ClientSettings.TimeMultiplier);
                         break;
-                }
-                if (cmd == "Duel.begin")
-                {
-                    DuelDll.OnDuelBegin((GameMode)YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Duel.GameMode"));
                 }
 
                 YgomGame.Menu.ProfileReplayViewController.OnNetworkComplete(thisPtr, cmd);

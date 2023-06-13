@@ -38,6 +38,7 @@ namespace YgoMasterClient
         public static bool DuelClientDisableCutinAnimations;
         public static bool DuelClientDisableCutinAnimationsForCardsWithCustomImages;
         public static bool DuelClientDisableChains;
+        public static double DuelClientSpectatorRapidTimeMultiplayer;
         public static double DuelClientTimeMultiplier;
         public static bool ReplayControlsAlwaysEnabled;
         public static double ReplayControlsTimeMultiplier;
@@ -55,6 +56,8 @@ namespace YgoMasterClient
         public static float TradeBannerVisibleTimeInSeconds;
         public static int TradeBannerOffsetY;
         public static float TradeActionDelayInSeconds;
+        public static bool PvpLogToConsole;
+        public static bool PvpLogToFile;
 
         public static string FilePath
         {
@@ -124,6 +127,7 @@ namespace YgoMasterClient
             DuelClientDisableCutinAnimations = Utils.GetValue<bool>(data, "DuelClientDisableCutinAnimations");
             DuelClientDisableCutinAnimationsForCardsWithCustomImages = Utils.GetValue<bool>(data, "DuelClientDisableCutinAnimationsForCardsWithCustomImages");
             DuelClientDisableChains = Utils.GetValue<bool>(data, "DuelClientDisableChains");
+            DuelClientSpectatorRapidTimeMultiplayer = Utils.GetValue<double>(data, "DuelClientSpectatorRapidTimeMultiplayer");
             DuelClientTimeMultiplier = Utils.GetValue<double>(data, "DuelClientTimeMultiplier");
             ReplayControlsAlwaysEnabled = Utils.GetValue<bool>(data, "ReplayControlsAlwaysEnabled");
             ReplayControlsTimeMultiplier = Utils.GetValue<double>(data, "ReplayControlsTimeMultiplier");
@@ -141,6 +145,8 @@ namespace YgoMasterClient
             TradeBannerVisibleTimeInSeconds = Utils.GetValue<float>(data, "TradeBannerVisibleTimeInSeconds");
             TradeBannerOffsetY = Utils.GetValue<int>(data, "TradeBannerOffsetY");
             TradeActionDelayInSeconds = Utils.GetValue<float>(data, "TradeActionDelayInSeconds");
+            PvpLogToConsole = Utils.GetValue<bool>(data, "PvpLogToConsole");
+            PvpLogToFile = Utils.GetValue<bool>(data, "PvpLogToFile");
 
             return LoadText();
         }

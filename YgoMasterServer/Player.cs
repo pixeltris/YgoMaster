@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Collections.Concurrent;
+using YgoMaster.Net;
 
 namespace YgoMaster
 {
@@ -39,10 +40,12 @@ namespace YgoMaster
         public Dictionary<uint, FriendState> Friends { get; private set; }
         public Dictionary<uint, uint> DuelRoomInvitesByFriendId { get; private set; }
         public DuelRoom DuelRoom;
+        public uint SpectatingPlayerCode;
         public DuelSettings ActiveDuelSettings { get; private set; }
         public Dictionary<long, string> RecentlyListedReplayFilesByDid { get; private set; }
         public TradeInfo ActiveTrade;
         public DateTime LastEnterTradeRoomRequest;
+        public NetClient NetClient;
 
         public bool IsDuelingPVP
         {
@@ -149,6 +152,23 @@ namespace YgoMaster
                     Items.Add(itemId);
                     break;
             }
+        }
+
+        public void ClearSpectatingDuel()
+        {
+            DuelRoom duelRoom = DuelRoom;
+            if (duelRoom != null)
+            {
+                DuelRoomTable table = duelRoom.GetTableAsSpectator(this);
+                if (table != null)
+                {
+                    lock (table.Spectators)
+                    {
+                        table.Spectators.Remove(this);
+                    }
+                }
+            }
+            SpectatingPlayerCode = 0;
         }
     }
 

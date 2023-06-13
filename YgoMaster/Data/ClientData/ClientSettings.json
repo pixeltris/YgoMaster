@@ -28,11 +28,12 @@
     "DuelClientDisableCameraShake": false,
     "DuelClientDisableCutinAnimations": false,
     "DuelClientDisableCutinAnimationsForCardsWithCustomImages": true,
+    "DuelClientSpectatorRapidTimeMultiplayer": 10,// Time multiplier applied when spectating duels "From now" as opposed to "From the Beginning" (used until the first time LIVE is displayed)
     "DuelClientTimeMultiplier": 0,// Time multiplier applied during duels (a value of 0 means no change)
     "ReplayControlsAlwaysEnabled": false,
     "ReplayControlsTimeMultiplier": 0,// Time multiplier applied when pressing fast forward on the replay controls (a value of 0 means no change)
     "TimeMultiplier": 0,// Time multiplier applied at all times (a value of 0 means no change)
-    "DisableVSync": false,// Disables vsync. Might be required to use the time multipliers on some systems
+    "DisableVSync": false,// Disables vsync. Might be required to use the time multipliers on some systems (NOTE: Disabling vsync in your GPU control panel is required regardless of this setting)
     "ChangeWindowTitleOnLiveMod": true,
     "RandomDecksNonRecursive": false,
     "RandomDecksDontSetCpuName": false,
@@ -42,5 +43,7 @@
     "DuelReplayAddHomeSubMenuButtons": false,
     "TradeBannerVisibleTimeInSeconds": 5.0,
     "TradeBannerOffsetY": -500,
-    "TradeActionDelayInSeconds": 3.0
+    "TradeActionDelayInSeconds": 3.0,
+    "PvpLogToConsole": false,
+    "PvpLogToFile": false,
 }

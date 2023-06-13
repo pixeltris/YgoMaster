@@ -590,6 +590,54 @@ namespace YgoMaster
     }
 
     /// <summary>
+    /// YgomSystem.Network.PvP.Command
+    /// </summary>
+    enum DuelPvpCommand
+    {
+        ENTRY,
+        INIT,
+        WAIT,
+        READY,
+        COMMAND,
+        EFFECT,
+        CANCEL,
+        RESULT,
+        DBGCMD,
+        CHEATCARD,
+        CHAT,
+        LIST,
+        PHASE,
+        SKILL,
+        LEAVE,
+        EXIT,
+        RECOVERY,
+        WATCH,
+        SURRENDER,
+        LATENCY,
+        SEND,
+        RECV,
+        TIME,
+        TURN,
+        DATA = 50,
+        REPLAY = 60,
+        TIMEUP = 97,
+        FINISH = 98,
+        POLL = 99,
+        ERROR = 100,
+        FATAL = 900,
+        CONNECT = 1000,
+        RECONNECT = 1001,
+        CLOSE = 1003,
+        PING = 1004,
+        PONG = 1005,
+        MATCH = 1006,
+        DROP = 1007,
+        MATCH_UPDATE = 1010,
+        MATCH_LIST = 1011,
+        INFO = 1012
+}
+
+    /// <summary>
     /// YgomGame.Duel.Engine.PvpCommandType
     /// </summary>
     enum DuelPvpCommandType

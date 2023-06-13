@@ -19,7 +19,6 @@ namespace YgoMaster.Net
         public int Port { get; private set; }
 
         private List<NetClient> connections = new List<NetClient>();
-        private Dictionary<string, NetClient> connectionsByToken = new Dictionary<string, NetClient>();
 
         public bool Listening { get; private set; }
 
@@ -86,7 +85,6 @@ namespace YgoMaster.Net
                 foreach (NetClient client in new List<NetClient>(connections))
                     client.Close();
                 connections.Clear();
-                connectionsByToken.Clear();
             }
         }
 
@@ -95,11 +93,6 @@ namespace YgoMaster.Net
             lock (connections)
             {
                 connections.Remove(client);
-                string token = client.Token;
-                if (!string.IsNullOrEmpty(token))
-                {
-                    connectionsByToken.Remove(token);
-                }
                 client.Close();
             }
         }
@@ -109,16 +102,6 @@ namespace YgoMaster.Net
             lock (connections)
             {
                 return new List<NetClient>(connections);
-            }
-        }
-
-        public NetClient GetConnectionByToken(string token)
-        {
-            lock (connections)
-            {
-                NetClient client;
-                connectionsByToken.TryGetValue(token, out client);
-                return client;
             }
         }
 
@@ -156,9 +139,11 @@ namespace YgoMaster.Net
 
         void client_Disconnected(NetClient client)
         {
-            Player player = GameServer.GetPlayerFromToken(client.Token);
-            if (player != null)
+            Player player = client.Player;
+            if (player != null && player.NetClient == client)
             {
+                player.NetClient = null;
+
                 lock (tradeLocker)
                 {
                     if (player.ActiveTrade != null)
@@ -167,8 +152,8 @@ namespace YgoMaster.Net
                         player.ActiveTrade.Remove(player);
                         if (otherPlayer != null && otherPlayer != player)
                         {
-                            NetClient otherClient = GetConnectionByToken(otherPlayer.Token);
-                            if (otherClient != null && otherClient != client)
+                            NetClient otherClient = otherPlayer.NetClient;
+                            if (otherClient != null)
                             {
                                 otherClient.Send(new TradeLeaveRoomMessage()
                                 {
@@ -179,29 +164,71 @@ namespace YgoMaster.Net
                         }
                     }
                 }
+
+                DuelRoom duelRoom = player.DuelRoom;
+                if (duelRoom != null)
+                {
+                    DuelRoomTable table = duelRoom.GetTable(player);
+                    if (table != null && table.State == DuelRoomTableState.Dueling)
+                    {
+                        SendDuelErrorMessageToTable(table, player);
+                    }
+                }
             }
 
             lock (connections)
             {
                 connections.Remove(client);
-                string token = client.Token;
-                if (!string.IsNullOrEmpty(token))
+            }
+        }
+
+        void SendDuelErrorMessageToTable(Player player, Player excludePlayer = null)
+        {
+            DuelRoom duelRoom = player.DuelRoom;
+            DuelRoomTable table = duelRoom == null ? null : duelRoom.GetTable(player);
+            if (table != null)
+            {
+                SendDuelErrorMessageToTable(table, excludePlayer);
+            }
+            else if (player != excludePlayer)
+            {
+                NetClient client = player.NetClient;
+                if (client != null)
                 {
-                    connectionsByToken.Remove(token);
+                    client.Send(new DuelErrorMessage());
                 }
             }
         }
 
-        public bool HasClientWithToken(string token)
+        void SendDuelErrorMessageToTable(DuelRoomTable table, Player excludePlayer = null)
         {
-            return FindClient(token) != null;
-        }
-
-        public NetClient FindClient(string token)
-        {
-            lock (connections)
+            Player[] players = { table.Player1, table.Player2 };
+            foreach (Player player in players)
             {
-                return connections.OrderByDescending(x => x.LastMessageTime).FirstOrDefault(x => x.Token == token);
+                if (player != null && player != excludePlayer)
+                {
+                    NetClient client = player.NetClient;
+                    if (client != null)
+                    {
+                        client.Send(new DuelErrorMessage());
+                    }
+                }
+            }
+
+            lock (table.Spectators)
+            {
+                foreach (Player spectator in new HashSet<Player>(table.Spectators))
+                {
+                    if (spectator.SpectatingPlayerCode > 0)
+                    {
+                        NetClient spectatorClient = spectator.NetClient;
+                        if (spectatorClient != null)
+                        {
+                            spectatorClient.Send(new DuelErrorMessage());
+                        }
+                    }
+                }
+                table.ClearSpectators();
             }
         }
 
@@ -211,6 +238,11 @@ namespace YgoMaster.Net
             {
                 case NetMessageType.ConnectionRequest: OnConnectionRequest(client, (ConnectionRequestMessage)message); break;
                 case NetMessageType.Pong: OnPong(client, (PongMessage)message); break;
+
+                case NetMessageType.DuelSpectatorEnter: OnDuelSpectatorEnter(client, (DuelSpectatorEnterMessage)message); break;
+                //case NetMessageType.DuelSpectatorLeave: OnDuelSpectatorLeave(client, (DuelSpectatorLeaveMessage)message); break;
+                case NetMessageType.DuelSpectatorData: OnDuelSpectatorData(client, (DuelSpectatorDataMessage)message); break;
+                case NetMessageType.DuelSpectatorFieldGuide: OnDuelSpectatorFieldGuide(client, (DuelSpectatorFieldGuideMessage)message); break;
 
                 case NetMessageType.DuelComMovePhase:
                 case NetMessageType.DuelComDoCommand:
@@ -234,7 +266,11 @@ namespace YgoMaster.Net
 
         void OnConnectionRequest(NetClient client, ConnectionRequestMessage message)
         {
-            uint playerId = GameServer.GetPlayerIdFromToken(message.Token);
+            if (client.Player != null)
+            {
+                return;
+            }
+            Player player = GameServer.GetPlayerFromToken(message.Token);
             try
             {
                 GameServer.CheckTokenLimitForIP(null, message.Token, client.IP);
@@ -242,69 +278,184 @@ namespace YgoMaster.Net
             catch (Exception e)
             {
                 Utils.LogWarning(e.ToString());
-                playerId = 0;
+                player = null;
             }
-            if (playerId != 0)
+            if (player != null)
             {
                 lock (connections)
                 {
-                    client.Token = message.Token;
-                    connectionsByToken[client.Token] = client;
+                    client.Player = player;
+                    player.NetClient = client;
                 }
             }
             client.Send(new ConnectionResponseMessage()
             {
-                Success = playerId != 0
+                Success = player != null
             });
         }
 
         void OnPong(NetClient client, PongMessage message)
         {
             // TODO: Use the latency values
+            Player player = client.Player;
+            if (player == null)
+            {
+                return;
+            }
+
+            // TODO: Check if the client thinks it's ina duel before re-enabling the below code
+            /*DuelRoom duelRoom = player.DuelRoom;
+            DuelRoomTable table = duelRoom.GetTable(player);
+            if (table == null && (player.SpectatingPlayerCode == 0 || duelRoom.GetTableAsSpectator(player) == null))
+            {
+                client.Send(new DuelErrorMessage());
+            }*/
+        }
+
+        void OnDuelSpectatorEnter(NetClient client, DuelSpectatorEnterMessage message)
+        {
+            Player player = client.Player;
+            if (player == null)
+            {
+                return;
+            }
+
+            Player duelingPlayer = GameServer.GetPlayerFromId(player.SpectatingPlayerCode);
+            if (duelingPlayer == null)
+            {
+                Utils.LogWarning("TODO: Send error");
+                return;
+            }
+
+            DuelRoom duelRoom = duelingPlayer.DuelRoom;
+            if (duelRoom == null || duelRoom != player.DuelRoom)
+            {
+                Utils.LogWarning("TODO: Send error");
+                return;
+            }
+
+            DuelRoomTable table = duelRoom.GetTable(duelingPlayer);
+            if (table == null || table.State != DuelRoomTableState.Dueling)
+            {
+                Utils.LogWarning("TODO: Send error");
+                return;
+            }
+
+            lock (table.Spectators)
+            {
+                table.Spectators.Add(player);
+                client.Send(new DuelSpectatorDataMessage()
+                {
+                    Buffer = table.SpectatorData.ToArray()
+                });
+                client.Send(new DuelSpectatorFieldGuideMessage()
+                {
+                    Near = table.SpectatorData.Count == 0 ? table.FirstPlayer == 0 : table.SpectatorFieldGuideNear
+                });
+
+                DuelSpectatorEnterMessage enterMessage = new DuelSpectatorEnterMessage()
+                {
+                    PlayerCode = player.Code,
+                    SpectatorCount = table.Spectators.Count
+                };
+                foreach (Player spectator in new HashSet<Player>(table.Spectators))
+                {
+                    NetClient spectatorClient = spectator.NetClient;
+                    if (spectatorClient != null)
+                    {
+                        spectatorClient.Send(enterMessage);
+                    }
+                }
+            }
+        }
+
+        void OnDuelSpectatorData(NetClient client, DuelSpectatorDataMessage message)
+        {
+            BroadcastDuelSpectatorMessage(client, message, (DuelRoomTable table) =>
+            {
+                if (message.Buffer != null && message.Buffer.Length > 0)
+                {
+                    table.SpectatorData.AddRange(message.Buffer);
+                }
+            });
+        }
+
+        void OnDuelSpectatorFieldGuide(NetClient client, DuelSpectatorFieldGuideMessage message)
+        {
+            BroadcastDuelSpectatorMessage(client, message, (DuelRoomTable table) =>
+            {
+                table.SpectatorFieldGuideNear = message.Near;
+            });
+        }
+
+        void BroadcastDuelSpectatorMessage(NetClient client, NetMessage message, Action<DuelRoomTable> actionBeforeBroadcasting)
+        {
+            Player player = client.Player;
+            if (player == null)
+            {
+                return;
+            }
+
+            DuelRoom duelRoom = player.DuelRoom;
+            if (duelRoom == null)
+            {
+                return;
+            }
+
+            DuelRoomTable table = duelRoom.GetTable(player);
+            if (table == null)
+            {
+                return;
+            }
+
+            lock (table.Spectators)
+            {
+                if (table.Player1 != player || table.State != DuelRoomTableState.Dueling)
+                {
+                    return;
+                }
+
+                if (actionBeforeBroadcasting != null)
+                {
+                    actionBeforeBroadcasting(table);
+                }
+
+                foreach (Player spectatorPlayer in new HashSet<Player>(table.Spectators))
+                {
+                    NetClient spectatorClient = spectatorPlayer.NetClient;
+                    if (spectatorClient != null && spectatorPlayer.SpectatingPlayerCode == player.Code)
+                    {
+                        spectatorClient.Send(message);
+                    }
+                    else
+                    {
+                        spectatorPlayer.ClearSpectatingDuel();
+                    }
+                }
+            }
         }
 
         void OnDuelCom(NetClient client, NetMessage message)
         {
-            NetClient opponentClient = GetDuelingOpponentClient(client);
+            Player opponent = GameServer.GetDuelingOpponent(client.Player);
+            NetClient opponentClient = opponent == null ? null : opponent.NetClient;
             if (opponentClient != null)
             {
                 opponentClient.Send(message);
             }
-        }
-
-        NetClient GetDuelingOpponentClient(NetClient client)
-        {
-            Player opponent = GameServer.GetDuelingOpponent(client.Token);
-            NetClient opponentClient = null;
-            if (opponent != null)
+            else
             {
-                lock (connections)
-                {
-                    connectionsByToken.TryGetValue(opponent.Token, out opponentClient);
-                }
+                SendDuelErrorMessageToTable(client.Player);
             }
-            if (opponentClient == null)
-            {
-                client.Send(new DuelErrorMessage());
-            }
-            return opponentClient;
         }
 
         public void Ping(NetClient client)
         {
             DuelRoomTableState tableState;
-            Player opponent = GameServer.GetDuelingOpponent(client.Token, out tableState);
-            if (opponent != null)
+            Player opponent = GameServer.GetDuelingOpponent(client.Player, out tableState);
+            if (opponent != null && opponent.NetClient == null)
             {
-                NetClient opponentClient;
-                lock (connections)
-                {
-                    connectionsByToken.TryGetValue(opponent.Token, out opponentClient);
-                }
-                if (opponentClient == null)
-                {
-                    client.Send(new DuelErrorMessage());
-                }
+                SendDuelErrorMessageToTable(client.Player);
             }
 
             client.Send(new PingMessage()
@@ -316,7 +467,7 @@ namespace YgoMaster.Net
 
         void OnTradeEnterRoom(NetClient client, TradeEnterRoomMessage message)
         {
-            Player player = GameServer.GetPlayerFromToken(client.Token);
+            Player player = client.Player;
             if (player == null)
             {
                 return;
@@ -326,7 +477,7 @@ namespace YgoMaster.Net
             {
                 if (player.LastEnterTradeRoomRequest > DateTime.UtcNow - TimeSpan.FromSeconds(GameServer.TradeEnterRoomRequestDelayInSeconds))
                 {
-                    // This is to avoid spamming of the trade button causing a potential desync between the client/server
+                    // This is to avoid spamming of the trade button causing a potential state desync between the client/server
                     return;
                 }
                 player.LastEnterTradeRoomRequest = DateTime.UtcNow;
@@ -341,15 +492,10 @@ namespace YgoMaster.Net
                 {
                     return;
                 }
-                NetClient otherClient = GetConnectionByToken(otherPlayer.Token);
-                if (otherClient == client)
-                {
-                    return;
-                }
-
+                NetClient otherClient = otherPlayer.NetClient;
                 if (otherPlayer.ActiveTrade != null)
                 {
-                    if (!otherPlayer.ActiveTrade.Add(player))
+                    if (!otherPlayer.ActiveTrade.Add(player) && otherClient != null)
                     {
                         otherClient.Send(new TradeEnterRoomMessage()
                         {
@@ -403,7 +549,7 @@ namespace YgoMaster.Net
 
         void OnTradeLeaveRoom(NetClient client, TradeLeaveRoomMessage message)
         {
-            Player player = GameServer.GetPlayerFromToken(client.Token);
+            Player player = client.Player;
             if (player == null)
             {
                 return;
@@ -425,8 +571,8 @@ namespace YgoMaster.Net
                 Player otherPlayer = GameServer.GetPlayerFromId(message.PlayerCode);
                 if (otherPlayer != null && otherPlayer != player)
                 {
-                    NetClient otherClient = GetConnectionByToken(otherPlayer.Token);
-                    if (otherClient != null && otherClient != client)
+                    NetClient otherClient = otherPlayer.NetClient;
+                    if (otherClient != null)
                     {
                         otherClient.Send(new TradeLeaveRoomMessage()
                         {
@@ -440,7 +586,7 @@ namespace YgoMaster.Net
 
         void OnTradeMoveCard(NetClient client, TradeMoveCardMessage message)
         {
-            Player player = GameServer.GetPlayerFromToken(client.Token);
+            Player player = client.Player;
             if (player == null)
             {
                 return;
@@ -531,8 +677,8 @@ namespace YgoMaster.Net
                     Player otherPlayer = trade.GetOtherPlayer(player);
                     if (otherPlayer != null && otherPlayer != player)
                     {
-                        NetClient otherClient = GetConnectionByToken(otherPlayer.Token);
-                        if (otherClient != null && otherClient != client)
+                        NetClient otherClient = otherPlayer.NetClient;
+                        if (otherClient != null)
                         {
                             otherClient.Send(new TradeMoveCardMessage()
                             {
@@ -549,7 +695,7 @@ namespace YgoMaster.Net
 
         void OnTradeStateChange(NetClient client, TradeStateChangeMessage message)
         {
-            Player player = GameServer.GetPlayerFromToken(client.Token);
+            Player player = client.Player;
             if (player == null)
             {
                 client.Send(new TradeStateChangeMessage(TradeStateChange.Error));
@@ -578,8 +724,8 @@ namespace YgoMaster.Net
                     return;
                 }
 
-                NetClient otherClient = GetConnectionByToken(otherPlayer.Token);
-                if (otherClient == null || otherClient == client)
+                NetClient otherClient = otherPlayer.NetClient;
+                if (otherClient == null)
                 {
                     client.Send(new TradeStateChangeMessage(TradeStateChange.Wait));
                     return;

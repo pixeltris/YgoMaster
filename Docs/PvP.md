@@ -1,6 +1,6 @@
 ## PvP
 
-PvP is a work in progress. It lets you use duel rooms under a low latency environment (LAN). The friends list works. There is a custom trading implementation which you can access by going to a players profile.
+(WIP) The PvP functionality lets you use duel rooms under a low latency environment (LAN). The friends list works. There is also a custom trading implementation.
 
 ## Setting it up on a single PC
 

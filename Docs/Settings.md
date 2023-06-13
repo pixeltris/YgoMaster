@@ -59,7 +59,6 @@ You can copy/paste/move/rename (but not modify the contents of) files in this fo
 - `CardCraftableList.json` - a list of all craftable cards in the game.
 - `CardList.json` - a list of all available cards in the game (and their rarities).
 - `CustomDuel.json` - used to start custom duels (duel settings which replaces the tutorial duel).
-- `Player.json` - the player settings (created when the player is first saved).
 - `Settings.json` - the server settings.
 - `Shop.json` - the shop settings / all shop items.
 - `ShopPackOdds.json` - the pull rates of packs.
@@ -67,7 +66,10 @@ You can copy/paste/move/rename (but not modify the contents of) files in this fo
 - `Solo.json` - all solo gates / chapters and their rewards (textual information is stored in client data).
 - `YdkIds.txt` - ydk ids <-> card ids.
 - `/ClientData/ClientSettings.json` - settings specific to `YgoMasterClient.exe`.
+- `/ClientData/Text/ClientSettings.en.json` - text used by `YgoMasterClient.exe`.
 - `/ClientData/IDS/*.txt` - custom text settings.
-- `/Decks/*.json;*.ydk` - all decks owned by the player.
+- `/Players/Local/Player.json` - the player settings (created when the player is first saved).
+- `/Players/Local/Decks/*.json;*.ydk` - all decks owned by the player.
+- `/Players/Local/Replays/*.json` - all replays that blong to the player.
 - `/SoloDuels/*.json` - duel settings for solo content.
 - `/StructureDecks/*.json` - all structure decks in the game.

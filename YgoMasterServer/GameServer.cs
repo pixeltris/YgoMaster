@@ -119,6 +119,14 @@ namespace YgoMaster
                                 {
                                     sessionServer.Ping(client);
                                 }
+
+                                Player player = client.Player;
+                                if (player != null && player.NetClient != client)
+                                {
+                                    Utils.LogInfo("Bad netclient state. Player thinks NetClient is null but NetClient has a player. " +
+                                        " Player:'" + player.Name + " pcode:" + Utils.FormatPlayerCode(player.Code) + " NetClientIP:" + client.IP);
+                                    client.Close();
+                                }
                             }
 
                             sessionServerPingStopwatch.Restart();
@@ -426,6 +434,9 @@ namespace YgoMaster
                                         break;
                                     case "PvP.save_replay":
                                         Act_RoomSaveReplay(gameServerWebRequest);
+                                        break;
+                                    case "PvP.watch_duel":
+                                        Act_RoomWatchDuel(gameServerWebRequest, false);
                                         break;
                                     case "DuelMenu.deck_check":
                                         Act_DuelMenuDeckCheck(gameServerWebRequest);

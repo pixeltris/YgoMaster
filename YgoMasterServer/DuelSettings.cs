@@ -665,7 +665,7 @@ namespace YgoMaster
             replayData["invalid"] = false;
             replayData["open"] = open;
             replayData["season_id"] = 1;
-            replayData["date"] = Utils.ConvertEpochTime(DuelBeginTime).ToString("yyyy/MM/dd HH:mm:ss") + " (UTC)";
+            replayData["date"] = Utils.FormatDateTime(Utils.ConvertEpochTime(DuelBeginTime));
 
             return replayData;
         }

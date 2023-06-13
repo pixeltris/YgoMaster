@@ -166,6 +166,21 @@ namespace YgoMaster
             return null;
         }
 
+        public DuelRoomTable GetTableAsSpectator(Player player)
+        {
+            foreach (DuelRoomTable table in Tables)
+            {
+                lock (table.Spectators)
+                {
+                    if (table.Spectators.Contains(player))
+                    {
+                        return table;
+                    }
+                }
+            }
+            return null;
+        }
+
         public void ResetTableStateIfMatchingOrDueling(Player player)
         {
             DuelRoomTable table = GetTable(player);
@@ -237,6 +252,10 @@ namespace YgoMaster
     {
         public DuelRoomTableEntry[] Entries;
         public DuelRoomTableState State = DuelRoomTableState.Joinable;
+        public bool IsDuelComplete
+        {
+            get { return State == DuelRoomTableState.Dueling && (Rewards.Player1Rewards != null || Rewards.Player2Rewards != null); }
+        }
         public DateTime MatchedTime;
 
         public DuelRoomReplay Replay;
@@ -247,6 +266,10 @@ namespace YgoMaster
         public string TableHash;
         public string TableTicket;
         public DuelRoomTableRewards Rewards = new DuelRoomTableRewards();
+
+        public HashSet<Player> Spectators = new HashSet<Player>();
+        public List<byte> SpectatorData = new List<byte>();
+        public bool SpectatorFieldGuideNear;
 
         public Player Player1
         {
@@ -426,6 +449,12 @@ namespace YgoMaster
             return -1;
         }
 
+        public Player GetOpponent(Player player)
+        {
+            DuelRoomTableEntry opponent = GetOpponentEntry(player);
+            return opponent != null ? opponent.Player : null;
+        }
+
         public DuelRoomTableEntry GetOpponentEntry(Player player)
         {
             if (Entries[0].Player == player)
@@ -449,6 +478,39 @@ namespace YgoMaster
                     entry.HasBeginDuel = false;
                 }
                 State = DuelRoomTableState.Joinable;
+            }
+            ClearSpectators();
+        }
+
+        public bool InitDuel(int firstPlayer)
+        {
+            ClearSpectators();
+            lock (Entries)
+            {
+                Player p1 = Player1;
+                Player p2 = Player2;
+                if (p1 == null || p2 == null || p1 == p2)
+                {
+                    ClearMatching();
+                    return false;
+                }
+
+                State = DuelRoomTableState.Dueling;
+                FirstPlayer = firstPlayer;
+                return true;
+            }
+        }
+
+        public void ClearSpectators()
+        {
+            lock (Spectators)
+            {
+                foreach (Player spectator in Spectators)
+                {
+                    spectator.SpectatingPlayerCode = 0;
+                }
+                SpectatorData.Clear();
+                Spectators.Clear();
             }
         }
     }

@@ -67,6 +67,7 @@ namespace YgomGame.Duel
                 PInvoke.SetTimeMultiplier(ClientSettings.DuelClientTimeMultiplier != 0 ?
                     ClientSettings.DuelClientTimeMultiplier : ClientSettings.TimeMultiplier);
             }
+            DuelDll.PvpSpectatorRapidState = PvpSpectatorRapidState.Finished;
         }
     }
 
@@ -74,6 +75,7 @@ namespace YgomGame.Duel
     {
         static IL2Field fieldInstance;
         static IL2Field fieldStep;
+        static IL2Field fieldReplayRealtime;
         static IL2Method methodSetDuelSpeed;
 
         delegate void Del_InitEngineStep(IntPtr thisPtr);
@@ -99,6 +101,28 @@ namespace YgomGame.Duel
                 }
                 return (DuelClientStep)0;
             }
+            set
+            {
+                IntPtr instance = Instance;
+                if (instance != IntPtr.Zero)
+                {
+                    fieldStep.SetValue(instance, new IntPtr(&value));
+                }
+            }
+        }
+
+        public static bool ReplayRealtime
+        {
+            get
+            {
+                IntPtr instance = Instance;
+                if (instance != IntPtr.Zero)
+                {
+                    IL2Object result = fieldReplayRealtime.GetValue(instance);
+                    return (csbool)(result != null ? result.GetValueRef<csbool>() : (csbool)false);
+                }
+                return false;
+            }
         }
 
         static DuelClient()
@@ -108,6 +132,7 @@ namespace YgomGame.Duel
             methodSetDuelSpeed = classInfo.GetMethod("SetDuelSpeed");
             fieldInstance = classInfo.GetField("instance");
             fieldStep = classInfo.GetField("m_Step");
+            fieldReplayRealtime = classInfo.GetField("replayRealtime");
             hookInitEngineStep = new Hook<Del_InitEngineStep>(InitEngineStep, classInfo.GetMethod("InitEngineStep"));
         }
 

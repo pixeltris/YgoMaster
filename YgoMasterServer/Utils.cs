@@ -712,6 +712,11 @@ namespace YgoMaster
             return string.Format("{0:000-000-000}", playerCode);
         }
 
+        public static string FormatDateTime(DateTime dateTime)
+        {
+            return dateTime.ToString("yyyy/MM/dd HH:mm:ss") + " (UTC)";
+        }
+
         public static void Remove<Key, Value>(this ConcurrentDictionary<Key, Value> instance, Key key)
         {
             Value value;
