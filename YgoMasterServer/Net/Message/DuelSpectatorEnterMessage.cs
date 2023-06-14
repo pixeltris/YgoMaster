@@ -12,20 +12,5 @@ namespace YgoMaster.Net.Message
         {
             get { return NetMessageType.DuelSpectatorEnter; }
         }
-
-        public uint PlayerCode;
-        public int SpectatorCount;
-
-        public override void Read(BinaryReader reader)
-        {
-            PlayerCode = reader.ReadUInt32();
-            SpectatorCount = reader.ReadInt32();
-        }
-
-        public override void Write(BinaryWriter writer)
-        {
-            writer.Write(PlayerCode);
-            writer.Write(SpectatorCount);
-        }
     }
 }

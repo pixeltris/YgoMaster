@@ -13,12 +13,11 @@ namespace YgoMaster.Net
         Pong,
         DuelError,
         UpdateIsBusyEffect,
-        OpponentSurrendered,
         OpponentDuelEnded,
 
         // Duel spectator messages
         DuelSpectatorEnter,
-        DuelSpectatorLeave,
+        DuelSpectatorCount,
         DuelSpectatorData,
         DuelSpectatorFieldGuide,
 

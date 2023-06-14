@@ -19,7 +19,7 @@ namespace YgoMaster
                 return;
             }
 
-            request.Player.ClearSpectatingDuel();
+            ClearSpectatingDuel(request.Player);
 
             Dictionary<string, object> searchOptions = Utils.GetDictionary(request.ActParams, "search_options");
             if (searchOptions == null)
@@ -92,7 +92,7 @@ namespace YgoMaster
                 return;
             }
 
-            request.Player.ClearSpectatingDuel();
+            ClearSpectatingDuel(request.Player);
 
             request.Remove("Room.room_info");
 
@@ -196,7 +196,7 @@ namespace YgoMaster
                 return;
             }
 
-            request.Player.ClearSpectatingDuel();
+            ClearSpectatingDuel(request.Player);
 
             DuelRoom currentDuelRoom = request.Player.DuelRoom;
             if (currentDuelRoom != null)
@@ -230,7 +230,7 @@ namespace YgoMaster
                 return;
             }
 
-            request.Player.ClearSpectatingDuel();
+            ClearSpectatingDuel(request.Player);
 
             Dictionary<string, object> roomSettings = Utils.GetDictionary(request.ActParams, "room_settings");
 
@@ -322,7 +322,7 @@ namespace YgoMaster
                 return;
             }
 
-            request.Player.ClearSpectatingDuel();
+            ClearSpectatingDuel(request.Player);
 
             DuelRoom duelRoom = request.Player.DuelRoom;
             if (duelRoom == null)
@@ -366,7 +366,7 @@ namespace YgoMaster
                 return;
             }
 
-            request.Player.ClearSpectatingDuel();
+            ClearSpectatingDuel(request.Player);
 
             DuelRoom duelRoom = request.Player.DuelRoom;
             if (duelRoom == null)
@@ -395,7 +395,7 @@ namespace YgoMaster
                 return;
             }
 
-            request.Player.ClearSpectatingDuel();
+            ClearSpectatingDuel(request.Player);
 
             int comment = Utils.GetValue<int>(request.ActParams, "comment_id");
 
@@ -424,7 +424,7 @@ namespace YgoMaster
                 return;
             }
 
-            request.Player.ClearSpectatingDuel();
+            ClearSpectatingDuel(request.Player);
 
             DuelRoom duelRoom = request.Player.DuelRoom;
 
@@ -484,7 +484,7 @@ namespace YgoMaster
                 return;
             }
 
-            request.Player.ClearSpectatingDuel();
+            ClearSpectatingDuel(request.Player);
 
             bool isBattleReady = Utils.GetValue<bool>(request.ActParams, "isBattleReady");
             //int opponentCode = Utils.GetValue<int>(request.ActParams, "opp_code");
@@ -565,7 +565,7 @@ namespace YgoMaster
                 return;
             }
 
-            request.Player.ClearSpectatingDuel();
+            ClearSpectatingDuel(request.Player);
 
             PlayMode playMode = Utils.GetValue<PlayMode>(request.ActParams, "kind");
             //int tid = Utils.GetValue<int>(request.ActParams, "tid");//?
@@ -716,7 +716,7 @@ namespace YgoMaster
                 return;
             }
 
-            request.Player.ClearSpectatingDuel();
+            ClearSpectatingDuel(request.Player);
 
             //Dictionary<string, object> rule = Utils.GetDictionary(request.ActParams, "rule");
             //Utils.GetValue<int>(rule, "mode");// 5 for room duel?
@@ -861,7 +861,7 @@ namespace YgoMaster
                 return;
             }
 
-            request.Player.ClearSpectatingDuel();
+            ClearSpectatingDuel(request.Player);
 
             DuelRoom duelRoom = request.Player.DuelRoom;
             if (duelRoom == null)
@@ -882,7 +882,7 @@ namespace YgoMaster
                 return;
             }
 
-            request.Player.ClearSpectatingDuel();
+            ClearSpectatingDuel(request.Player);
 
             DuelRoom duelRoom = request.Player.DuelRoom;
             if (duelRoom == null)
@@ -987,7 +987,7 @@ namespace YgoMaster
                 return;
             }
 
-            request.Player.ClearSpectatingDuel();
+            ClearSpectatingDuel(request.Player);
 
             DuelRoom duelRoom = request.Player.DuelRoom;
             if (duelRoom == null)
@@ -1065,7 +1065,7 @@ namespace YgoMaster
                 return;
             }
 
-            request.Player.ClearSpectatingDuel();
+            ClearSpectatingDuel(request.Player);
 
             DuelRoom duelRoom = request.Player.DuelRoom;
             if (duelRoom == null)
@@ -1149,6 +1149,12 @@ namespace YgoMaster
 
             request.Player.Duel.Mode = GameMode.Room;
 
+            int duelTime = 0;
+            if (duelRoom.DuelTime <= DuelRoomTimes.Count && duelRoom.DuelTime > 0)
+            {
+                duelTime = DuelRoomTimes[duelRoom.DuelTime - 1].Value;
+            }
+
             DuelSettings duelSettings = new DuelSettings();
             duelSettings.RandSeed = table.Seed;
             duelSettings.FirstPlayer = table.FirstPlayer;
@@ -1167,9 +1173,9 @@ namespace YgoMaster
             duelSettings.GameMode = (int)GameMode.Room;//GameMode.Normal
             duelSettings.cpu = 100;
             duelSettings.cpuflag = null;
-            duelSettings.LeftTimeMax = 300;//0
-            duelSettings.TurnTimeMax = 300;//0
-            duelSettings.TotalTimeMax = 300;//0
+            duelSettings.LeftTimeMax = duelTime;
+            duelSettings.TurnTimeMax = duelTime;
+            duelSettings.TotalTimeMax = duelTime;
             duelSettings.Auto = -1;
             duelSettings.rec = false;
             duelSettings.recf = false;
@@ -1181,7 +1187,7 @@ namespace YgoMaster
             for (int i = 0; i < players.Length; i++)
             {
                 duelSettings.Deck[i] = decks[i];
-                duelSettings.life[i] = duelRoom.LifePoints == 1 ? 1 : 2;
+                duelSettings.life[i] = duelRoom.LifePoints == 1 ? 8000 : 4000;
                 duelSettings.level[i] = players[i].Level;
                 duelSettings.follow_num[i] = friends[i].Count(x => x.Value.HasFlag(FriendState.Following));
                 duelSettings.follower_num[i] = friends[i].Count(x => x.Value.HasFlag(FriendState.Follower));
@@ -1218,7 +1224,7 @@ namespace YgoMaster
                 return;
             }
 
-            request.Player.ClearSpectatingDuel();
+            ClearSpectatingDuel(request.Player);
 
             DuelRoom duelRoom = request.Player.DuelRoom;
             if (duelRoom == null)
@@ -1276,7 +1282,7 @@ namespace YgoMaster
                 return;
             }
 
-            request.Player.ClearSpectatingDuel();
+            ClearSpectatingDuel(request.Player);
 
             uint pcode = Utils.GetValue<uint>(request.ActParams, "pcode");
             long did = Utils.GetValue<long>(request.ActParams, "did");
@@ -1413,7 +1419,7 @@ namespace YgoMaster
             }
             else
             {
-                request.Player.ClearSpectatingDuel();
+                ClearSpectatingDuel(request.Player);
                 Dictionary<string, object> responseData = request.GetOrCreateDictionary("Response");
                 responseData["UrlScheme"] = "duel:push?GameMode=" + (int)GameMode.Audience + "&pcode=" + pcode + "&rapid=" + rapid;
             }
@@ -1475,6 +1481,29 @@ namespace YgoMaster
             }
 
             return p1 == player ? p2 : p1;
+        }
+
+        public void ClearSpectatingDuel(Player player)
+        {
+            DuelRoom duelRoom = player.DuelRoom;
+            if (duelRoom != null)
+            {
+                DuelRoomTable table = duelRoom.GetTableAsSpectator(player);
+                if (table != null)
+                {
+                    lock (table.Spectators)
+                    {
+                        if (table.Spectators.Remove(player))
+                        {
+                            sessionServer.BroadcastMessageToTable(table, new DuelSpectatorCountMessage()
+                            {
+                                Count = table.Spectators.Count
+                            });
+                        }
+                    }
+                }
+            }
+            player.SpectatingPlayerCode = 0;
         }
     }
 }

@@ -44,6 +44,14 @@
     "DuelRoomCommentTimeoutInSeconds": 7,
     "DuelRoomTableMatchingTimeoutInSeconds": 30,
     "DuelRoomSpectatorCardVisibility": "AllClose",// AllClose, FrontOpen, AllOpen
+    "DuelRoomDefaultTimeIndex": 0,
+    "DuelRoomTimes": [
+        { "Name": "IDS_SYS_IDHACK:∞ ", "Time": 0 },
+        { "Name": "IDS_ROOM_TIME_SHORT", "Time": 150 },
+        { "Name": "IDS_ROOM_TIME_NORMAL", "Time": 300 },
+        { "Name": "IDS_ROOM_TIME_LONG", "Time": 600 },
+        { "Name": "IDS_ROOM_TIME_VERY_LONG", "Time": 900 },
+    ],
     "DuelReplaySaveForGameModes": [ "SoloSingle", "Room" ],
     "DuelReplaySaveFileLimit": 50,
     "DuelReplayMakePublicByDefault": false,

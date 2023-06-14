@@ -76,6 +76,7 @@ namespace YgomGame.Duel
         static IL2Field fieldInstance;
         static IL2Field fieldStep;
         static IL2Field fieldReplayRealtime;
+        static IL2Method methodGetDuelHUD;
         static IL2Method methodSetDuelSpeed;
 
         delegate void Del_InitEngineStep(IntPtr thisPtr);
@@ -110,7 +111,6 @@ namespace YgomGame.Duel
                 }
             }
         }
-
         public static bool ReplayRealtime
         {
             get
@@ -124,6 +124,19 @@ namespace YgomGame.Duel
                 return false;
             }
         }
+        public static IntPtr HUD
+        {
+            get
+            {
+                IntPtr instance = Instance;
+                if (instance != IntPtr.Zero)
+                {
+                    IL2Object result = methodGetDuelHUD.Invoke(instance);
+                    return result != null ? result.ptr : IntPtr.Zero;
+                }
+                return IntPtr.Zero;
+            }
+        }
 
         static DuelClient()
         {
@@ -133,6 +146,7 @@ namespace YgomGame.Duel
             fieldInstance = classInfo.GetField("instance");
             fieldStep = classInfo.GetField("m_Step");
             fieldReplayRealtime = classInfo.GetField("replayRealtime");
+            methodGetDuelHUD = classInfo.GetProperty("duelHUD").GetGetMethod();
             hookInitEngineStep = new Hook<Del_InitEngineStep>(InitEngineStep, classInfo.GetMethod("InitEngineStep"));
         }
 
@@ -151,6 +165,33 @@ namespace YgomGame.Duel
         {
             Normal,
             Fastest
+        }
+    }
+
+    unsafe static class DuelHUD
+    {
+        static IL2Method methodOnChangeWatcherNum;
+
+        public static IntPtr Instance
+        {
+            get { return DuelClient.HUD; }
+        }
+
+        static DuelHUD()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            IL2Class classInfo = assembly.GetClass("DuelHUD", "YgomGame.Duel");
+            methodOnChangeWatcherNum = classInfo.GetMethod("OnChangeWatcherNum");
+        }
+
+        public static void OnChangeWatcherNum(int num)
+        {
+            IntPtr instance = Instance;
+            if (instance == IntPtr.Zero)
+            {
+                return;
+            }
+            methodOnChangeWatcherNum.Invoke(instance, new IntPtr[] { new IntPtr(&num) });
         }
     }
 
@@ -221,14 +262,19 @@ namespace YgomGame.Duel
 
     unsafe static class Util
     {
-        delegate csbool Del_IsReplay();
-        static Hook<Del_IsReplay> hookIsReplay;
+        delegate csbool Del_CheckDuelMode();
+
+        static Hook<Del_CheckDuelMode> hookIsReplay;
+        static Hook<Del_CheckDuelMode> hookIsOnlineMode;
+        static Hook<Del_CheckDuelMode> hookIsAudience;
 
         static Util()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("Util", "YgomGame.Duel");
-            hookIsReplay = new Hook<Del_IsReplay>(IsReplay, classInfo.GetMethod("IsReplay"));
+            hookIsReplay = new Hook<Del_CheckDuelMode>(IsReplay, classInfo.GetMethod("IsReplay"));
+            hookIsOnlineMode = new Hook<Del_CheckDuelMode>(IsOnlineMode, classInfo.GetMethod("IsOnlineMode"));
+            hookIsAudience = new Hook<Del_CheckDuelMode>(IsAudience, classInfo.GetMethod("IsAudience"));
         }
 
         static csbool IsReplay()
@@ -237,7 +283,59 @@ namespace YgomGame.Duel
             {
                 return true;
             }
+            if (DuelDll.IsInsideDuelTimerPrepareToDuel && DuelDll.IsTimerEnabled)
+            {
+                return false;
+            }
             return hookIsReplay.Original();
+        }
+
+        static csbool IsOnlineMode()
+        {
+            if (DuelDll.IsInsideDuelTimerPrepareToDuel && DuelDll.IsTimerEnabled)
+            {
+                return true;
+            }
+            return hookIsOnlineMode.Original();
+        }
+
+        static csbool IsAudience()
+        {
+            if (DuelDll.IsInsideDuelTimerPrepareToDuel && DuelDll.IsTimerEnabled)
+            {
+                return false;
+            }
+            return hookIsAudience.Original();
+        }
+    }
+
+    unsafe static class DuelTimer3D
+    {
+        static IntPtr instance;
+        static IL2Method methodGetIsPlayerTimeOver;
+
+        delegate void Del_PrepareToDuel(IntPtr thisPtr);
+        static Hook<Del_PrepareToDuel> hookPrepareToDuel;
+
+        public static bool IsPlayerTimeOver
+        {
+            get { return methodGetIsPlayerTimeOver.Invoke(instance).GetValueRef<csbool>(); }
+        }
+
+        static DuelTimer3D()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            IL2Class classInfo = assembly.GetClass("DuelTimer3D", "YgomGame.Duel");
+            hookPrepareToDuel = new Hook<Del_PrepareToDuel>(PrepareToDuel, classInfo.GetMethod("PrepareToDuel"));
+            methodGetIsPlayerTimeOver = classInfo.GetProperty("IsPlayerTimeOver").GetGetMethod();
+        }
+
+        static void PrepareToDuel(IntPtr thisPtr)
+        {
+            instance = thisPtr;
+            DuelDll.IsInsideDuelTimerPrepareToDuel = true;
+            hookPrepareToDuel.Original(thisPtr);
+            DuelDll.IsInsideDuelTimerPrepareToDuel = false;
         }
     }
 
@@ -248,6 +346,9 @@ namespace YgomGame.Duel
         static IL2Method methodGetCardUniqueID;
         static IL2Method methodGetTurnNum;
 
+        delegate void Del_SendPvpTime(IntPtr thisPtr);
+        static Hook<Del_SendPvpTime> hookSendPvpTime;
+
         static Engine()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
@@ -256,6 +357,8 @@ namespace YgomGame.Duel
             methodGetCardID = classInfo.GetMethod("GetCardID");
             methodGetCardUniqueID = classInfo.GetMethod("GetCardUniqueID");
             methodGetTurnNum = classInfo.GetMethod("GetTurnNum");
+
+            hookSendPvpTime = new Hook<Del_SendPvpTime>(SendPvpTime, classInfo.GetMethod("SendPvpTime"));
         }
 
         public static int GetCardNum(int player, int locate)
@@ -276,6 +379,12 @@ namespace YgomGame.Duel
         public static int GetTurnNum()
         {
             return methodGetTurnNum.Invoke().GetValueRef<int>();
+        }
+
+        static void SendPvpTime(IntPtr thisPtr)
+        {
+            Console.WriteLine("SendPvpTime");
+            hookSendPvpTime.Original(thisPtr);
         }
     }
 

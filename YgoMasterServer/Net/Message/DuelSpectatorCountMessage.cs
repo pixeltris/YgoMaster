@@ -6,26 +6,23 @@ using System.Text;
 
 namespace YgoMaster.Net.Message
 {
-    class DuelSpectatorLeaveMessage : NetMessage
+    class DuelSpectatorCountMessage : NetMessage
     {
         public override NetMessageType Type
         {
-            get { return NetMessageType.DuelSpectatorLeave; }
+            get { return NetMessageType.DuelSpectatorCount; }
         }
 
-        public uint PlayerCode;
-        public int SpectatorCount;
+        public int Count;
 
         public override void Read(BinaryReader reader)
         {
-            PlayerCode = reader.ReadUInt32();
-            SpectatorCount = reader.ReadInt32();
+            Count = reader.ReadInt32();
         }
 
         public override void Write(BinaryWriter writer)
         {
-            writer.Write(PlayerCode);
-            writer.Write(SpectatorCount);
+            writer.Write(Count);
         }
     }
 }

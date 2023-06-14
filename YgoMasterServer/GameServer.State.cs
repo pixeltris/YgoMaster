@@ -139,6 +139,14 @@ namespace YgoMaster
         /// </summary>
         DuelReplayCardVisibility DuelRoomSpectatorCardVisibility;
         /// <summary>
+        /// Default duel room time index to use from the duel room times list
+        /// </summary>
+        int DuelRoomDefaultTimeIndex;
+        /// <summary>
+        /// Duel room times (name / time in seconds)
+        /// </summary>
+        List<KeyValuePair<string, int>> DuelRoomTimes;
+        /// <summary>
         /// Game modes where replays will save
         /// </summary>
         List<GameMode> DuelReplaySaveForGameModes;
@@ -346,6 +354,16 @@ namespace YgoMaster
             DuelRoomCommentTimeoutInSeconds = Utils.GetValue<int>(values, "DuelRoomCommentTimeoutInSeconds", 7);
             DuelRoomTableMatchingTimeoutInSeconds = Utils.GetValue<int>(values, "DuelRoomTableMatchingTimeoutInSeconds", 30);
             DuelRoomSpectatorCardVisibility = Utils.GetValue<DuelReplayCardVisibility>(values, "DuelRoomSpectatorCardVisibility");
+            DuelRoomDefaultTimeIndex = Utils.GetValue<int>(values, "DuelRoomDefaultTimeIndex");
+            DuelRoomTimes = new List<KeyValuePair<string, int>>();
+            List<object> roomTimes = Utils.GetValue<List<object>>(values, "DuelRoomTimes");
+            foreach (object roomTimeObj in roomTimes)
+            {
+                Dictionary<string, object> roomTimeData = roomTimeObj as Dictionary<string, object>;
+                string roomTimeName = Utils.GetValue<string>(roomTimeData, "Name");
+                int roomTimeValue = Utils.GetValue<int>(roomTimeData, "Time");
+                DuelRoomTimes.Add(new KeyValuePair<string, int>(roomTimeName, roomTimeValue));
+            }
 
             DuelReplaySaveForGameModes = Utils.GetValueTypeList<GameMode>(values, "DuelReplaySaveForGameModes");
             DuelReplaySaveFileLimit = Utils.GetValue<int>(values, "DuelReplaySaveFileLimit");

@@ -52,6 +52,15 @@ namespace YgoMasterClient
             IL2Class classInfo = assembly.GetClass("NetworkMain", "YgomSystem.Network");
             hookUpdate = new Hook<Del_Update>(Update, classInfo.GetMethod("Update"));
         }
+        
+        public static void AddAction(Action action)
+        {
+            lock (actionsToRunNextUpdate)
+            {
+                actionsToRunNextUpdate.Add(action);
+                hasActionToRun = true;
+            }
+        }
 
         static void Update(IntPtr thisPtr)
         {
@@ -489,6 +498,8 @@ namespace YgomGame.Menu
 
 //YgomGame.Menu.ToastMessageInform = banner in middle of screen (entire width of screen)
 //YgomGame.Menu.EventNotifyViewController = popup (blocks input)
+//YgomGame.Duel.CardReportTelopManager/CardReportTelopController/YgomGame.Stats.CardStats = card stats popup that shows in game (win rate / usage rate)
+//YgomGame.PopUpText/YgomGame.PopUpTextManager = the popup text that appears when you hover your mouse over your deck/graveyard (not the one where you hold down your middle mouse)
 namespace YgomGame.Menu
 {
     unsafe static class ToastMessageInform
@@ -501,6 +512,12 @@ namespace YgomGame.Menu
         delegate IntPtr Del_Start(IntPtr thisPtr);
         static Hook<Del_Start> hookStart;
 
+        /*delegate void Del_ShowText(IntPtr thisPtr, IntPtr text, ref worldpos worldPos, bool isforui);
+        static Hook<Del_ShowText> hookShowText;
+
+        delegate void Del_UpdateText(IntPtr thisPtr, IntPtr text);
+        static Hook<Del_UpdateText> hookUpdateText;*/
+
         static bool isNextMessageCustom;
 
         static ToastMessageInform()
@@ -512,7 +529,45 @@ namespace YgomGame.Menu
             methodOpenEx = classInfo.GetMethod("Open", x => x.GetParameters().Length == 3);
             methodOpenWithBlock = classInfo.GetMethod("OpenWithBlock");
             hookStart = new Hook<Del_Start>(Start, classInfo.GetMethod("Start"));
+
+            /*IL2Class classInfo2 = assembly.GetClass("PopUpText", "YgomGame");
+            hookShowText = new Hook<Del_ShowText>(ShowText, classInfo2.GetMethod("ShowText"));
+            hookUpdateText = new Hook<Del_UpdateText>(UpdateText, classInfo2.GetMethod("UpdateText"));*/
         }
+
+        /*struct worldpos
+        {
+            public float x;
+            public float y;
+            public float z;
+        }
+
+        static void ShowText(IntPtr thisPtr, IntPtr text, ref worldpos worldPos, bool isforui)
+        {
+            Console.WriteLine("ShowText " + new IL2String(text).ToString() + " x:" + worldPos.x + " y:" + worldPos.y + " z:" + worldPos.z);
+
+            // TODO: Hook YgomGame.PopUpTextManager.OnEnterPopUpArea / OnExitPopUpArea / RegistPopUpCallback / RemovePopUpCallback
+
+            string str = "";
+            try
+            {
+                str = System.IO.File.ReadAllText("C:/showtext.txt");
+            }
+            catch
+            {
+            }
+            if (!string.IsNullOrEmpty(str))
+            {
+                text = new IL2String(str).ptr;
+            }
+            hookShowText.Original(thisPtr, text, ref worldPos, isforui);
+        }
+
+        static void UpdateText(IntPtr thisPtr, IntPtr text)
+        {
+            Console.WriteLine("UpdateText " + new IL2String(text).ToString());
+            hookUpdateText.Original(thisPtr, text);
+        }*/
 
         static IntPtr Start(IntPtr thisPtr)
         {

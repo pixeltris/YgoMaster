@@ -173,6 +173,15 @@ namespace YgoMaster.Net
                     {
                         SendDuelErrorMessageToTable(table, player);
                     }
+
+                    if (table == null)
+                    {
+                        DuelRoomTable tableAsSpec = duelRoom.GetTableAsSpectator(player);
+                        if (tableAsSpec != null)
+                        {
+                            GameServer.ClearSpectatingDuel(player);
+                        }
+                    }
                 }
             }
 
@@ -240,7 +249,6 @@ namespace YgoMaster.Net
                 case NetMessageType.Pong: OnPong(client, (PongMessage)message); break;
 
                 case NetMessageType.DuelSpectatorEnter: OnDuelSpectatorEnter(client, (DuelSpectatorEnterMessage)message); break;
-                //case NetMessageType.DuelSpectatorLeave: OnDuelSpectatorLeave(client, (DuelSpectatorLeaveMessage)message); break;
                 case NetMessageType.DuelSpectatorData: OnDuelSpectatorData(client, (DuelSpectatorDataMessage)message); break;
                 case NetMessageType.DuelSpectatorFieldGuide: OnDuelSpectatorFieldGuide(client, (DuelSpectatorFieldGuideMessage)message); break;
 
@@ -352,20 +360,10 @@ namespace YgoMaster.Net
                 {
                     Near = table.SpectatorData.Count == 0 ? table.FirstPlayer == 0 : table.SpectatorFieldGuideNear
                 });
-
-                DuelSpectatorEnterMessage enterMessage = new DuelSpectatorEnterMessage()
+                BroadcastMessageToTable(table, new DuelSpectatorCountMessage()
                 {
-                    PlayerCode = player.Code,
-                    SpectatorCount = table.Spectators.Count
-                };
-                foreach (Player spectator in new HashSet<Player>(table.Spectators))
-                {
-                    NetClient spectatorClient = spectator.NetClient;
-                    if (spectatorClient != null)
-                    {
-                        spectatorClient.Send(enterMessage);
-                    }
-                }
+                    Count = table.Spectators.Count
+                });
             }
         }
 
@@ -386,6 +384,44 @@ namespace YgoMaster.Net
             {
                 table.SpectatorFieldGuideNear = message.Near;
             });
+        }
+
+        public void BroadcastMessageToTable(DuelRoomTable table, NetMessage message)
+        {
+            lock (table.Spectators)
+            {
+                Player p1 = table.Player1;
+                uint p1Code = p1 != null ? p1.Code : 0;
+                foreach (Player spectator in new HashSet<Player>(table.Spectators))
+                {
+                    NetClient spectatorClient = spectator.NetClient;
+                    if (spectator.SpectatingPlayerCode != 0 && spectator.SpectatingPlayerCode == p1Code && spectatorClient != null &&
+                        table.State == DuelRoomTableState.Dueling)
+                    {
+                        spectatorClient.Send(message);
+                    }
+                    else
+                    {
+                        GameServer.ClearSpectatingDuel(spectator);
+                    }
+                }
+            }
+            if (table.State != DuelRoomTableState.Dueling)
+            {
+                return;
+            }
+            Player[] players = { table.Player1, table.Player2 };
+            foreach (Player player in players)
+            {
+                if (player != null)
+                {
+                    NetClient client = player.NetClient;
+                    if (client != null)
+                    {
+                        client.Send(message);
+                    }
+                }
+            }
         }
 
         void BroadcastDuelSpectatorMessage(NetClient client, NetMessage message, Action<DuelRoomTable> actionBeforeBroadcasting)
@@ -429,7 +465,7 @@ namespace YgoMaster.Net
                     }
                     else
                     {
-                        spectatorPlayer.ClearSpectatingDuel();
+                        GameServer.ClearSpectatingDuel(spectatorPlayer);
                     }
                 }
             }

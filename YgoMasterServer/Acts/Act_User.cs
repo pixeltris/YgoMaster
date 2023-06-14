@@ -44,38 +44,18 @@ namespace YgoMaster
             WriteRoomInfo(request, request.Player.DuelRoom);
             Dictionary<string, object> roomData = request.GetOrCreateDictionary("Room");
             Dictionary<string, object> roomSettingDefData = Utils.GetOrCreateDictionary(roomData, "setting_def");
-            roomSettingDefData["default_time_id"] = 1;
-            roomSettingDefData["time"] = new Dictionary<string, object>()
+            roomSettingDefData["default_time_id"] = DuelRoomDefaultTimeIndex + 1;
+            Dictionary<string, object> times = Utils.GetOrCreateDictionary(roomSettingDefData, "time");
+            for (int i = 0; i < DuelRoomTimes.Count; i++)
             {
-                { "1", new Dictionary<string, object>() {
-                    { "name", "IDS_ROOM_TIME_NORMAL" },
-                    { "add_time", 60 },
-                    { "add_time_after", 30 },
-                    { "rest_time", 300 },
-                    { "sort", 2 }
-                }},
-                { "2", new Dictionary<string, object>() {
-                    { "name", "IDS_ROOM_TIME_LONG" },
-                    { "add_time", 120 },
-                    { "add_time_after", 60 },
-                    { "rest_time", 600 },
-                    { "sort", 3 }
-                }},
-                { "3", new Dictionary<string, object>() {
-                    { "name", "IDS_ROOM_TIME_SHORT" },
-                    { "add_time", 30 },
-                    { "add_time_after", 15 },
-                    { "rest_time", 150 },
-                    { "sort", 1 }
-                }},
-                { "4", new Dictionary<string, object>() {
-                    { "name", "IDS_ROOM_TIME_VERY_LONG" },
-                    { "add_time", 600 },
-                    { "add_time_after", 300 },
-                    { "rest_time", 900 },
-                    { "sort", 4 }
-                }},
-            };
+                Dictionary<string, object> timeData = new Dictionary<string, object>();
+                timeData["name"] = DuelRoomTimes[i].Key;
+                timeData["add_time"] = DuelRoomTimes[i].Value;
+                timeData["add_time_after"] = DuelRoomTimes[i].Value;
+                timeData["rest_time"] = DuelRoomTimes[i].Value;// This is the value which shows in-game
+                timeData["sort"] = i + 1;
+                times[(i + 1).ToString()] = timeData;
+            }
 
             request.Remove(
                 "Room.room_info",

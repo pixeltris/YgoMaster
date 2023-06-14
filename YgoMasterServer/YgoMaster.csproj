@@ -74,16 +74,15 @@
     <Compile Include="Net\Message\DuelListInitStringMessage.cs" />
     <Compile Include="Net\Message\DuelListSetCardExDataMessage.cs" />
     <Compile Include="Net\Message\DuelListSetIndexMessage.cs" />
+    <Compile Include="Net\Message\DuelSpectatorCountMessage.cs" />
     <Compile Include="Net\Message\DuelSpectatorDataMessage.cs" />
     <Compile Include="Net\Message\DuelSpectatorEnterMessage.cs" />
     <Compile Include="Net\Message\DuelSpectatorFieldGuideMessage.cs" />
-    <Compile Include="Net\Message\DuelSpectatorLeaveMessage.cs" />
     <Compile Include="Net\Message\FriendDuelInviteMessage.cs" />
     <Compile Include="Net\Message\TradeMoveCardMessage.cs" />
     <Compile Include="Net\Message\TradeEnterRoomMessage.cs" />
     <Compile Include="Net\Message\TradeLeaveRoomMessage.cs" />
     <Compile Include="Net\Message\OpponentDuelEndedMessage.cs" />
-    <Compile Include="Net\Message\OpponentSurrenderedMessage.cs" />
     <Compile Include="Net\Message\PingMessage.cs" />
     <Compile Include="Net\Message\PongMessage.cs" />
     <Compile Include="Net\Message\TradeStateChangedMessage.cs" />

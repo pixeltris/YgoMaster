@@ -113,13 +113,12 @@
     <Compile Include="YgoMasterServer\Net\Message\DuelListInitStringMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelListSetCardExDataMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelListSetIndexMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Message\DuelSpectatorCountMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelSpectatorDataMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelSpectatorEnterMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelSpectatorFieldGuideMessage.cs" />
-    <Compile Include="YgoMasterServer\Net\Message\DuelSpectatorLeaveMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\FriendDuelInviteMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\OpponentDuelEndedMessage.cs" />
-    <Compile Include="YgoMasterServer\Net\Message\OpponentSurrenderedMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\PingMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\PongMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\TradeEnterRoomMessage.cs" />

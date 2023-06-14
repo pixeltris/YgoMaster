@@ -227,10 +227,10 @@ namespace YgomSystem.Network
 
             if (DuelDll.IsPvpDuel)
             {
-                if (DuelDll.HasOpponentSurrendered)
+                if (DuelDll.SpecialResultType != DuelResultType.None)
                 {
-                    param["res"] = (int)DuelResultType.Win;
-                    param["finish"] = (int)DuelFinishType.Surrender;
+                    param["res"] = (int)DuelDll.SpecialResultType;
+                    param["finish"] = (int)DuelDll.SpecialFinishType;
                 }
                 else if (DuelDll.HasNetworkError)
                 {

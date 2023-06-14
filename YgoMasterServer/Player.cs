@@ -153,23 +153,6 @@ namespace YgoMaster
                     break;
             }
         }
-
-        public void ClearSpectatingDuel()
-        {
-            DuelRoom duelRoom = DuelRoom;
-            if (duelRoom != null)
-            {
-                DuelRoomTable table = duelRoom.GetTableAsSpectator(this);
-                if (table != null)
-                {
-                    lock (table.Spectators)
-                    {
-                        table.Spectators.Remove(this);
-                    }
-                }
-            }
-            SpectatingPlayerCode = 0;
-        }
     }
 
     class PlayerCraftPoints : PlayerPoints<CardRarity>

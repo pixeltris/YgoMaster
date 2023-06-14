@@ -35,6 +35,7 @@
 - Every PC (and every seperate YgoMaster folder) must have a different `MultiplayerToken` as otherwise they will share the same session which will break things
 - Due to requiring very low latency PvP is unlikely to perform well over WAN / Hamachi / ZeroTier / Tailscale / etc
 - Do not modify `YgoMaster/Data/Players/` or any sub folders while `YgoMaster.exe` is running
+- Time limits work but currently you don't get any additional time each turn
 
 ## Trading
 

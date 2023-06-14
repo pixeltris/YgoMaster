@@ -251,7 +251,9 @@ namespace YgoMaster
             switch (gameMode)
             {
                 case GameMode.Replay:
+                    return;
                 case GameMode.Audience:
+                    ClearSpectatingDuel(request.Player);
                     return;
             }
 
@@ -432,58 +434,55 @@ namespace YgoMaster
                             {
                                 request.Response = duelRoomTable.Rewards.Player2Rewards;
                             }
-                        }
 
-                        if (res == DuelResultType.Lose && finish == DuelFinishType.Surrender)
-                        {
-                            if (opponentClient != null)
+                            if (res == DuelResultType.Lose && (finish == DuelFinishType.Surrender || finish == DuelFinishType.TimeOut))
                             {
-                                opponentClient.Send(new OpponentSurrenderedMessage());
-                            }
+                                lock (duelRoomTable.Spectators)
+                                {
+                                    byte finn = (byte)finish;
 
-                            // TODO: Make sure this hasn't already been done
-                            lock (duelRoomTable.Spectators)
-                            {
-                                DuelSpectatorDataMessage message = new DuelSpectatorDataMessage();
-                                if (request.Player == duelRoomTable.Player1)
-                                {
-                                    message.Buffer = new byte[]
+                                    DuelSpectatorDataMessage message = new DuelSpectatorDataMessage();
+                                    if (request.Player == duelRoomTable.Player1)
                                     {
-                                        0x22, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00,
-                                        0x05, 0x00, 0x02, 0x00, 0x00, 0x00, 0x04, 0x00
-                                    };
-                                }
-                                else
-                                {
-                                    message.Buffer = new byte[]
-                                    {
-                                        0x22, 0x80, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00,
-                                        0x05, 0x00, 0x01, 0x00, 0x04, 0x00, 0x00, 0x00
-                                    };
-                                }
-
-                                Player p1 = duelRoomTable.Player1;
-                                uint p1Code = p1 == null ? 0 : p1.Code;
-                                if (p1Code != 0)
-                                {
-                                    duelRoomTable.SpectatorData.AddRange(message.Buffer);
-                                    foreach (Player spectator in new HashSet<Player>(duelRoomTable.Spectators))
-                                    {
-                                        NetClient spectatorClient = spectator.NetClient;
-                                        if (spectatorClient != null && spectator.SpectatingPlayerCode == p1Code)
+                                        message.Buffer = new byte[]
                                         {
-                                            spectatorClient.Send(message);
+                                            0x22, 0x00, finn, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                            0x05, 0x00, 0x02, 0x00, 0x00, 0x00, finn, 0x00
+                                        };
+                                    }
+                                    else
+                                    {
+                                        message.Buffer = new byte[]
+                                        {
+                                            0x22, 0x80, finn, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                            0x05, 0x00, 0x01, 0x00, finn, 0x00, 0x00, 0x00
+                                        };
+                                    }
+
+                                    Player p1 = duelRoomTable.Player1;
+                                    uint p1Code = p1 == null ? 0 : p1.Code;
+                                    if (p1Code != 0)
+                                    {
+                                        duelRoomTable.SpectatorData.AddRange(message.Buffer);
+                                        foreach (Player spectator in new HashSet<Player>(duelRoomTable.Spectators))
+                                        {
+                                            NetClient spectatorClient = spectator.NetClient;
+                                            if (spectatorClient != null && spectator.SpectatingPlayerCode == p1Code)
+                                            {
+                                                spectatorClient.Send(message);
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                        else
+                        if (opponentClient != null)
                         {
-                            if (opponentClient != null)
+                            opponentClient.Send(new OpponentDuelEndedMessage()
                             {
-                                opponentClient.Send(new OpponentDuelEndedMessage());
-                            }
+                                Result = res,
+                                Finish = finish
+                            });
                         }
                         break;
                 }
