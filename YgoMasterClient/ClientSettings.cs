@@ -58,6 +58,7 @@ namespace YgoMasterClient
         public static float TradeActionDelayInSeconds;
         public static bool PvpLogToConsole;
         public static bool PvpLogToFile;
+        public static bool PvpDuelTapSyncEnabled;
 
         public static string FilePath
         {
@@ -147,6 +148,7 @@ namespace YgoMasterClient
             TradeActionDelayInSeconds = Utils.GetValue<float>(data, "TradeActionDelayInSeconds");
             PvpLogToConsole = Utils.GetValue<bool>(data, "PvpLogToConsole");
             PvpLogToFile = Utils.GetValue<bool>(data, "PvpLogToFile");
+            PvpDuelTapSyncEnabled = Utils.GetValue<bool>(data, "PvpDuelTapSyncEnabled");
 
             return LoadText();
         }

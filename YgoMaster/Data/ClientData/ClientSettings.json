@@ -46,4 +46,5 @@
     "TradeActionDelayInSeconds": 3.0,
     "PvpLogToConsole": false,
     "PvpLogToFile": false,
+    "PvpDuelTapSyncEnabled": true
 }

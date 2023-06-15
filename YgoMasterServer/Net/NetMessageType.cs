@@ -11,9 +11,11 @@ namespace YgoMaster.Net
         ConnectionResponse,
         Ping,
         Pong,
+
         DuelError,
         UpdateIsBusyEffect,
         OpponentDuelEnded,
+        DuelTapSync,
 
         // Duel spectator messages
         DuelSpectatorEnter,

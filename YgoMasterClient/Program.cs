@@ -234,7 +234,6 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomSystem.Network.API));
                 nativeTypes.Add(typeof(YgomSystem.Network.Request));
                 nativeTypes.Add(typeof(YgomSystem.Network.RequestStructure));
-                nativeTypes.Add(typeof(DuelDll));
                 // DeckEditorUtils
                 nativeTypes.Add(typeof(TMPro.TMP_Text));
                 nativeTypes.Add(typeof(YgomGame.Deck.DeckView));
@@ -251,6 +250,8 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomGame.Menu.ToastMessageInform));
                 nativeTypes.Add(typeof(TradeUtils));
                 // Misc
+                nativeTypes.Add(typeof(DuelDll));
+                nativeTypes.Add(typeof(DuelTapSync));
                 nativeTypes.Add(typeof(YgomGame.Menu.CommonDialogViewController));
                 nativeTypes.Add(typeof(YgomGame.Menu.ActionSheetViewController));
                 nativeTypes.Add(typeof(Win32Hooks));

@@ -50,7 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="YgoMasterClient\DuelSyncTap.cs" />
+    <Compile Include="YgoMasterClient\DuelTapSync.cs" />
     <Compile Include="YgoMasterClient\TradeUtils.cs" />
     <Compile Include="YgoMasterClient\ClientSettings.Text.cs" />
     <Compile Include="YgoMasterClient\DuelDll.cs" />
@@ -118,6 +118,7 @@
     <Compile Include="YgoMasterServer\Net\Message\DuelSpectatorDataMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelSpectatorEnterMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelSpectatorFieldGuideMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Message\DuelTapSyncMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\FriendDuelInviteMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\OpponentDuelEndedMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\PingMessage.cs" />

@@ -1,6 +1,6 @@
 ## PvP
 
-(WIP) The PvP functionality lets you use duel rooms under a low latency environment (LAN). The friends list works. There is also a custom trading implementation.
+PvP (WIP) lets you use duel rooms and the friends list. You can also trade cards.
 
 ## Setting it up on a single PC
 
@@ -33,8 +33,9 @@
 ## Notes
 
 - Every PC (and every seperate YgoMaster folder) must have a different `MultiplayerToken` as otherwise they will share the same session which will break things
-- Due to requiring very low latency PvP is unlikely to perform well over WAN / Hamachi / ZeroTier / Tailscale / etc
+- Due to PvP duels requiring constant synchronization it is unlikely to perform well outside of LAN
 - Do not modify `YgoMaster/Data/Players/` or any sub folders while `YgoMaster.exe` is running
+- Clicking mates / duel field borders are synced with the other player. Spectators also see it but their clicks don't sync
 
 ## Trading
 

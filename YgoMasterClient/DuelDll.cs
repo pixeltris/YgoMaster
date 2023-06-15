@@ -296,6 +296,8 @@ namespace YgoMasterClient
                 }
                 Program.NetClient.Send(new DuelSpectatorEnterMessage());
             }
+
+            DuelTapSync.ClearState();
         }
 
         public static void OnDuelEnd()
@@ -304,6 +306,7 @@ namespace YgoMasterClient
             engineInstance = IntPtr.Zero;
             engineInstanceReplayStream = IntPtr.Zero;
             activePlayerFieldEffectInstance = IntPtr.Zero;
+            DuelTapSync.ClearState();
         }
 
         public static void OnInitEngineStep()
@@ -416,6 +419,7 @@ namespace YgoMasterClient
 
         static int InjectDuelEnd()
         {
+            DuelTapSync.ClearState();
             HasDuelEnd = true;
             if (IsPvpSpectator)
             {
@@ -462,6 +466,7 @@ namespace YgoMasterClient
                         HasDuelStart = true;
                         break;
                     case DuelViewType.DuelEnd:
+                        DuelTapSync.ClearState();
                         HasDuelEnd = true;
                         EndSpectatorReplayStream();
                         break;
@@ -498,6 +503,7 @@ namespace YgoMasterClient
                         HasDuelStart = true;
                         break;
                     case DuelViewType.DuelEnd:
+                        DuelTapSync.ClearState();
                         HasDuelEnd = true;
                         break;
                     case DuelViewType.TurnChange:
@@ -882,6 +888,7 @@ namespace YgoMasterClient
                 case NetMessageType.DuelSpectatorData: OnDuelSpectatorData(client, (DuelSpectatorDataMessage)message); break;
                 case NetMessageType.DuelSpectatorFieldGuide: OnDuelSpectatorFieldGuide(client, (DuelSpectatorFieldGuideMessage)message); break;
                 case NetMessageType.DuelSpectatorCount: OnDuelSpectatorCount((DuelSpectatorCountMessage)message); break;
+                case NetMessageType.DuelTapSync: DuelTapSync.OnDuelTapSync((DuelTapSyncMessage)message); break;
             }
         }
 

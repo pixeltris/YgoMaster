@@ -248,6 +248,8 @@ namespace YgoMaster.Net
                 case NetMessageType.ConnectionRequest: OnConnectionRequest(client, (ConnectionRequestMessage)message); break;
                 case NetMessageType.Pong: OnPong(client, (PongMessage)message); break;
 
+                case NetMessageType.DuelTapSync: OnDuelTapSync(client, (DuelTapSyncMessage)message); break;
+
                 case NetMessageType.DuelSpectatorEnter: OnDuelSpectatorEnter(client, (DuelSpectatorEnterMessage)message); break;
                 case NetMessageType.DuelSpectatorData: OnDuelSpectatorData(client, (DuelSpectatorDataMessage)message); break;
                 case NetMessageType.DuelSpectatorFieldGuide: OnDuelSpectatorFieldGuide(client, (DuelSpectatorFieldGuideMessage)message); break;
@@ -318,6 +320,46 @@ namespace YgoMaster.Net
             {
                 client.Send(new DuelErrorMessage());
             }*/
+        }
+
+        void OnDuelTapSync(NetClient client, DuelTapSyncMessage message)
+        {
+            Player player = client.Player;
+            DuelRoom duelRoom = player == null ? null : player.DuelRoom;
+            if (duelRoom == null)
+            {
+                return;
+            }
+
+            DuelRoomTable table = duelRoom.GetTable(player);
+            if (table == null || table.State != DuelRoomTableState.Dueling || table.IsDuelComplete)
+            {
+                return;
+            }
+
+            Player opponent = GameServer.GetDuelingOpponent(player);
+            NetClient opponentClient = opponent == null ? null : opponent.NetClient;
+            if (opponentClient == null)
+            {
+                return;
+            }
+
+            DuelTapSyncMessage flippedMessage = new DuelTapSyncMessage()
+            {
+                AnimationId = message.AnimationId,
+                Character = message.Character,
+                Near = !message.Near
+            };
+            opponentClient.Send(flippedMessage);
+
+            if (player == table.Player1)
+            {
+                BroadcastDuelSpectatorMessage(client, message, null);
+            }
+            else
+            {
+                BroadcastDuelSpectatorMessage(opponentClient, flippedMessage, null);
+            }
         }
 
         void OnDuelSpectatorEnter(NetClient client, DuelSpectatorEnterMessage message)

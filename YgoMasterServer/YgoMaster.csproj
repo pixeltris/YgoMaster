@@ -78,6 +78,7 @@
     <Compile Include="Net\Message\DuelSpectatorDataMessage.cs" />
     <Compile Include="Net\Message\DuelSpectatorEnterMessage.cs" />
     <Compile Include="Net\Message\DuelSpectatorFieldGuideMessage.cs" />
+    <Compile Include="Net\Message\DuelTapSyncMessage.cs" />
     <Compile Include="Net\Message\FriendDuelInviteMessage.cs" />
     <Compile Include="Net\Message\TradeMoveCardMessage.cs" />
     <Compile Include="Net\Message\TradeEnterRoomMessage.cs" />
