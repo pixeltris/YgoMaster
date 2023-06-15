@@ -312,6 +312,8 @@ namespace YgomGame.Duel
     unsafe static class DuelTimer3D
     {
         static IntPtr instance;
+        static IL2Field fieldRemainInDuel;
+        static IL2Field fieldRemainInTurn;
         static IL2Method methodGetIsPlayerTimeOver;
 
         delegate void Del_PrepareToDuel(IntPtr thisPtr);
@@ -326,6 +328,8 @@ namespace YgomGame.Duel
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("DuelTimer3D", "YgomGame.Duel");
+            fieldRemainInDuel = classInfo.GetField("m_RemainInDuel");
+            fieldRemainInTurn = classInfo.GetField("m_RemainInTurn");
             hookPrepareToDuel = new Hook<Del_PrepareToDuel>(PrepareToDuel, classInfo.GetMethod("PrepareToDuel"));
             methodGetIsPlayerTimeOver = classInfo.GetProperty("IsPlayerTimeOver").GetGetMethod();
         }
@@ -336,6 +340,17 @@ namespace YgomGame.Duel
             DuelDll.IsInsideDuelTimerPrepareToDuel = true;
             hookPrepareToDuel.Original(thisPtr);
             DuelDll.IsInsideDuelTimerPrepareToDuel = false;
+        }
+
+        public static void AddTurnTime(int amount, int limit)
+        {
+            float duelTime = fieldRemainInDuel.GetValue(instance).GetValueRef<float>();
+            float turnTime = fieldRemainInTurn.GetValue(instance).GetValueRef<float>();
+            if (duelTime + turnTime > 0)
+            {
+                turnTime = Math.Min(turnTime + amount, limit);
+                fieldRemainInTurn.SetValue(instance, new IntPtr(&turnTime));
+            }
         }
     }
 

@@ -49,10 +49,10 @@ namespace YgoMaster
             for (int i = 0; i < DuelRoomTimes.Count; i++)
             {
                 Dictionary<string, object> timeData = new Dictionary<string, object>();
-                timeData["name"] = DuelRoomTimes[i].Key;
-                timeData["add_time"] = DuelRoomTimes[i].Value;
-                timeData["add_time_after"] = DuelRoomTimes[i].Value;
-                timeData["rest_time"] = DuelRoomTimes[i].Value;// This is the value which shows in-game
+                timeData["name"] = DuelRoomTimes[i].Name;
+                timeData["add_time"] = DuelRoomTimes[i].AddTimeAtStartOfTurn;
+                timeData["add_time_after"] = DuelRoomTimes[i].AddTimeAtEndOfTurn;
+                timeData["rest_time"] = DuelRoomTimes[i].Time;
                 timeData["sort"] = i + 1;
                 times[(i + 1).ToString()] = timeData;
             }

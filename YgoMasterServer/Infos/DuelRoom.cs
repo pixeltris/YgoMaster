@@ -559,4 +559,13 @@ namespace YgoMaster
         public int Loss;
         public int Draw;
     }
+
+    class DuelTimerInfo
+    {
+        public string Name;
+        public int Time;
+        public int AddTimeAtStartOfTurn;
+        public int AddTimeAtEndOfTurn;
+        public int TurnTimeIndicator;//AddTimeAtStartOfTurn + AddTimeAtEndOfTurn
+    }
 }

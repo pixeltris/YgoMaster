@@ -145,7 +145,7 @@ namespace YgoMaster
         /// <summary>
         /// Duel room times (name / time in seconds)
         /// </summary>
-        List<KeyValuePair<string, int>> DuelRoomTimes;
+        List<DuelTimerInfo> DuelRoomTimes;
         /// <summary>
         /// Game modes where replays will save
         /// </summary>
@@ -355,14 +355,21 @@ namespace YgoMaster
             DuelRoomTableMatchingTimeoutInSeconds = Utils.GetValue<int>(values, "DuelRoomTableMatchingTimeoutInSeconds", 30);
             DuelRoomSpectatorCardVisibility = Utils.GetValue<DuelReplayCardVisibility>(values, "DuelRoomSpectatorCardVisibility");
             DuelRoomDefaultTimeIndex = Utils.GetValue<int>(values, "DuelRoomDefaultTimeIndex");
-            DuelRoomTimes = new List<KeyValuePair<string, int>>();
+            DuelRoomTimes = new List<DuelTimerInfo>();
             List<object> roomTimes = Utils.GetValue<List<object>>(values, "DuelRoomTimes");
             foreach (object roomTimeObj in roomTimes)
             {
                 Dictionary<string, object> roomTimeData = roomTimeObj as Dictionary<string, object>;
-                string roomTimeName = Utils.GetValue<string>(roomTimeData, "Name");
-                int roomTimeValue = Utils.GetValue<int>(roomTimeData, "Time");
-                DuelRoomTimes.Add(new KeyValuePair<string, int>(roomTimeName, roomTimeValue));
+                DuelTimerInfo timer = new DuelTimerInfo();
+                timer.Name = Utils.GetValue<string>(roomTimeData, "Name");
+                timer.Time = Utils.GetValue<int>(roomTimeData, "Time");
+                timer.AddTimeAtStartOfTurn = Utils.GetValue<int>(roomTimeData, "AddTimeAtStartOfTurn");
+                timer.AddTimeAtEndOfTurn = Utils.GetValue<int>(roomTimeData, "AddTimeAtEndOfTurn");
+                if (!Utils.TryGetValue(roomTimeData, "TurnTimeIndicator", out timer.TurnTimeIndicator))
+                {
+                    timer.TurnTimeIndicator = timer.AddTimeAtStartOfTurn + timer.AddTimeAtEndOfTurn;
+                }
+                DuelRoomTimes.Add(timer);
             }
 
             DuelReplaySaveForGameModes = Utils.GetValueTypeList<GameMode>(values, "DuelReplaySaveForGameModes");

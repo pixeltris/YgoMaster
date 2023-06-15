@@ -1149,10 +1149,10 @@ namespace YgoMaster
 
             request.Player.Duel.Mode = GameMode.Room;
 
-            int duelTime = 0;
+            DuelTimerInfo duelTimer = null;
             if (duelRoom.DuelTime <= DuelRoomTimes.Count && duelRoom.DuelTime > 0)
             {
-                duelTime = DuelRoomTimes[duelRoom.DuelTime - 1].Value;
+                duelTimer = DuelRoomTimes[duelRoom.DuelTime - 1];
             }
 
             DuelSettings duelSettings = new DuelSettings();
@@ -1173,9 +1173,12 @@ namespace YgoMaster
             duelSettings.GameMode = (int)GameMode.Room;//GameMode.Normal
             duelSettings.cpu = 100;
             duelSettings.cpuflag = null;
-            duelSettings.LeftTimeMax = duelTime;
-            duelSettings.TurnTimeMax = duelTime;
-            duelSettings.TotalTimeMax = duelTime;
+            if (duelTimer != null && duelTimer.Time > 0)
+            {
+                duelSettings.LeftTimeMax = duelTimer.Time;
+                duelSettings.TurnTimeMax = duelTimer.TurnTimeIndicator;
+                duelSettings.TotalTimeMax = 99999;// Unused by the client? This is a total time over all turns including increments
+            }
             duelSettings.Auto = -1;
             duelSettings.rec = false;
             duelSettings.recf = false;
@@ -1212,6 +1215,11 @@ namespace YgoMaster
 
             Dictionary<string, object> duelData = duelSettings.ToDictionary();
             duelData["SendLiveRecordData"] = duelRoom.AllowSpectators && request.Player == p1;
+            if (duelTimer != null)
+            {
+                duelData["AddTimeAtStartOfTurn"] = duelTimer.AddTimeAtStartOfTurn;
+                duelData["AddTimeAtEndOfTurn"] = duelTimer.AddTimeAtEndOfTurn;
+            }
             request.Response["Duel"] = duelData;
 
             request.Remove("Duel", "DuelResult", "Result");

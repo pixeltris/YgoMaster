@@ -518,6 +518,9 @@ namespace YgomGame.Menu
         delegate void Del_UpdateText(IntPtr thisPtr, IntPtr text);
         static Hook<Del_UpdateText> hookUpdateText;*/
 
+        /*delegate void Del_OnClick(IntPtr thisPtr);
+        static Hook<Del_OnClick> hookOnClick;*/
+
         static bool isNextMessageCustom;
 
         static ToastMessageInform()
@@ -533,7 +536,26 @@ namespace YgomGame.Menu
             /*IL2Class classInfo2 = assembly.GetClass("PopUpText", "YgomGame");
             hookShowText = new Hook<Del_ShowText>(ShowText, classInfo2.GetMethod("ShowText"));
             hookUpdateText = new Hook<Del_UpdateText>(UpdateText, classInfo2.GetMethod("UpdateText"));*/
+
+            /*IL2Class selectionButtonClassInfo = assembly.GetClass("SelectionButton", "YgomSystem.UI");
+            hookOnClick = new Hook<Del_OnClick>(OnClick, selectionButtonClassInfo.GetMethod("OnClick"));*/
         }
+
+        /*static void OnClick(IntPtr thisPtr)
+        {
+            Console.WriteLine("OnClick: " + DateTime.Now.TimeOfDay);
+            hookOnClick.Original(thisPtr);
+
+            IntPtr obj = UnityEngine.Component.GetGameObject(thisPtr);
+            List<IntPtr> objs = new List<IntPtr>();
+            while (obj != IntPtr.Zero)
+            {
+                objs.Add(obj);
+                obj = UnityEngine.GameObject.GetParentObject(obj);
+            }
+            objs.Reverse();
+            Console.WriteLine("Name: " + string.Join(".", objs.Select(x => UnityEngine.UnityObject.GetName(x))));
+        }*/
 
         /*struct worldpos
         {

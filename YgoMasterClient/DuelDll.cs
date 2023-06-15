@@ -9,6 +9,8 @@ using YgoMaster;
 using System.Runtime.InteropServices;
 using IL2CPP;
 
+// TODO: Test wall of revealing light
+
 // TODO: Hook Util.ShowProfileCard - checks.Replay/.Audience - could be used to do action sheet for custom duel msg / popup
 
 // YgomGame.Duel.DuelHUD.updateNetworkStatus - might be useful to display network latency issues. Hook Engine.GetLatency
@@ -54,6 +56,8 @@ namespace YgoMasterClient
         public static bool IsInsideDuelTimerPrepareToDuel;
         public static bool IsTimerEnabled;
         public static DateTime LastCheckTimeOver;
+        public static int AddTimeAtStartOfTurn;
+        public static int AddTimeAtEndOfTurn;
         public static int RivalID
         {
             get { return MyID == 0 ? 1 : 0; }
@@ -263,7 +267,19 @@ namespace YgoMasterClient
             MyID = YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Duel.MyID");
             SendLiveRecordData = YgomSystem.Utility.ClientWork.GetByJsonPath<bool>("Duel.SendLiveRecordData");
             IsInsideDuelTimerPrepareToDuel = false;
+
+            IsTimerEnabled = IsPvpDuel && YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Duel.TotalTimeMax") > 0;
             LastCheckTimeOver = DateTime.MinValue;
+            if (IsPvpDuel)
+            {
+                AddTimeAtStartOfTurn = YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Duel.AddTimeAtStartOfTurn");
+                AddTimeAtEndOfTurn = YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Duel.AddTimeAtEndOfTurn");
+            }
+            else
+            {
+                AddTimeAtStartOfTurn = 0;
+                AddTimeAtEndOfTurn = 0;
+            }
 
             engineInstance = IntPtr.Zero;
             engineInstanceReplayStream = IntPtr.Zero;
@@ -280,8 +296,6 @@ namespace YgoMasterClient
                 }
                 Program.NetClient.Send(new DuelSpectatorEnterMessage());
             }
-
-            IsTimerEnabled = IsPvpDuel && YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Duel.TotalTimeMax") > 0;
         }
 
         public static void OnDuelEnd()
@@ -485,6 +499,22 @@ namespace YgoMasterClient
                         break;
                     case DuelViewType.DuelEnd:
                         HasDuelEnd = true;
+                        break;
+                    case DuelViewType.TurnChange:
+                        if (param1 == MyID && AddTimeAtStartOfTurn > 0)
+                        {
+                            TradeUtils.AddAction(() =>
+                            {
+                                YgomGame.Duel.DuelTimer3D.AddTurnTime(AddTimeAtStartOfTurn, AddTimeAtStartOfTurn + AddTimeAtEndOfTurn);
+                            });
+                        }
+                        else if (param1 == RivalID && AddTimeAtEndOfTurn > 0)
+                        {
+                            TradeUtils.AddAction(() =>
+                            {
+                                YgomGame.Duel.DuelTimer3D.AddTurnTime(AddTimeAtEndOfTurn, AddTimeAtStartOfTurn + AddTimeAtEndOfTurn);
+                            });
+                        }
                         break;
                     case DuelViewType.WaitInput:
                         if (ActiveUserIdForDoCommand != MyID)

@@ -2027,6 +2027,21 @@ namespace UnityEngine
             return IntPtr.Zero;
         }
 
+        public static IntPtr GetParentObject(IntPtr thisPtr)
+        {
+            IntPtr transform = GameObject.GetTranform(thisPtr);
+            if (transform == IntPtr.Zero)
+            {
+                return IntPtr.Zero;
+            }
+            IntPtr parent = Transform.GetParent(transform);
+            if (parent == IntPtr.Zero)
+            {
+                return IntPtr.Zero;
+            }
+            return Component.GetGameObject(parent);
+        }
+
         public static IntPtr GetRootObject(IntPtr thisPtr)
         {
             IntPtr transform = GameObject.GetTranform(thisPtr);

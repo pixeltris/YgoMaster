@@ -46,11 +46,34 @@
     "DuelRoomSpectatorCardVisibility": "AllClose",// AllClose, FrontOpen, AllOpen
     "DuelRoomDefaultTimeIndex": 0,
     "DuelRoomTimes": [
-        { "Name": "IDS_SYS_IDHACK:∞ ", "Time": 0 },
-        { "Name": "IDS_ROOM_TIME_SHORT", "Time": 150 },
-        { "Name": "IDS_ROOM_TIME_NORMAL", "Time": 300 },
-        { "Name": "IDS_ROOM_TIME_LONG", "Time": 600 },
-        { "Name": "IDS_ROOM_TIME_VERY_LONG", "Time": 900 },
+        {
+            "Name": "IDS_SYS_IDHACK:∞ ",
+            "Time": 0
+        },
+        {
+            "Name": "IDS_ROOM_TIME_SHORT",
+            "Time": 150,
+            "AddTimeAtStartOfTurn": 30,
+            "AddTimeAtEndOfTurn": 15
+        },
+        {
+            "Name": "IDS_ROOM_TIME_NORMAL",
+            "Time": 300,
+            "AddTimeAtStartOfTurn": 60,
+            "AddTimeAtEndOfTurn": 30
+        },
+        {
+            "Name": "IDS_ROOM_TIME_LONG",
+            "Time": 600,
+            "AddTimeAtStartOfTurn": 120,
+            "AddTimeAtEndOfTurn": 60
+        },
+        {
+            "Name": "IDS_ROOM_TIME_VERY_LONG",
+            "Time": 900,
+            "AddTimeAtStartOfTurn": 900,
+            "AddTimeAtEndOfTurn": 300
+        },
     ],
     "DuelReplaySaveForGameModes": [ "SoloSingle", "Room" ],
     "DuelReplaySaveFileLimit": 50,
@@ -229,7 +252,7 @@
             },
         ]
     },
-	"DuelRoomRewards": {
+    "DuelRoomRewards": {
         "MinimumTurnsForSurrenderRewardsWin": 0,
         "MinimumTurnsForSurrenderRewardsLose": 0,
         "MinimumTurnsForSurrenderRewardsDraw": 0,
