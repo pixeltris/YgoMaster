@@ -6,8 +6,6 @@ using System.Text;
 using IL2CPP;
 using YgoMaster;
 using YgoMaster.Net.Message;
-using YgomSystem;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace YgoMasterClient
 {
