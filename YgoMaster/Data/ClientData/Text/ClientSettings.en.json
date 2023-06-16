@@ -125,4 +125,6 @@
     "CustomTextTradeCanTradePartnerReady": "Trade!!!",
     
     "CustomTextDuelInvite": "{name} ({code}) sent you a duel invite",
+    
+    "CustomTextEmotesListHeader": "Emotes"
 }

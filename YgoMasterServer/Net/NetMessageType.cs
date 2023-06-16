@@ -12,10 +12,12 @@ namespace YgoMaster.Net
         Ping,
         Pong,
 
+        // Misc duel messages
         DuelError,
         UpdateIsBusyEffect,
         OpponentDuelEnded,
         DuelTapSync,
+        DuelEmote,
 
         // Duel spectator messages
         DuelSpectatorEnter,

@@ -70,6 +70,7 @@
     <Compile Include="Net\Message\DuelComMessage.cs" />
     <Compile Include="Net\Message\DuelComMovePhaseMessage.cs" />
     <Compile Include="Net\Message\DuelDlgSetResultMessage.cs" />
+    <Compile Include="Net\Message\DuelEmoteMessage.cs" />
     <Compile Include="Net\Message\DuelErrorMessage.cs" />
     <Compile Include="Net\Message\DuelListInitStringMessage.cs" />
     <Compile Include="Net\Message\DuelListSetCardExDataMessage.cs" />

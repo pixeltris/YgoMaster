@@ -44,12 +44,8 @@
     "DuelRoomCommentTimeoutInSeconds": 7,
     "DuelRoomTableMatchingTimeoutInSeconds": 30,
     "DuelRoomSpectatorCardVisibility": "AllClose",// AllClose, FrontOpen, AllOpen
-    "DuelRoomDefaultTimeIndex": 0,
+    "DuelRoomDefaultTimeIndex": 1,
     "DuelRoomTimes": [
-        {
-            "Name": "IDS_SYS_IDHACK:∞ ",
-            "Time": 0
-        },
         {
             "Name": "IDS_ROOM_TIME_SHORT",
             "Time": 150,
@@ -74,6 +70,10 @@
             "AddTimeAtStartOfTurn": 900,
             "AddTimeAtEndOfTurn": 300
         },
+        {
+            "Name": "IDS_SYS_IDHACK:∞ ",
+            "Time": 0
+        }
     ],
     "DuelReplaySaveForGameModes": [ "SoloSingle", "Room" ],
     "DuelReplaySaveFileLimit": 50,
@@ -82,6 +82,7 @@
     "TradeAllowOtherPlayerToAddYourCards": true,
     "TradeAllowOtherPlayerToRemoveYourCards": true,
     "TradeEnterRoomRequestDelayInSeconds": 1.5,
+    "EmoteMaxLength": 1000,
     "DefaultGems": 2000,
     "DefaultItems": [
         1000001,// Rescue Rabbit (AVATAR)

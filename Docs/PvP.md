@@ -25,19 +25,20 @@ PvP (WIP) lets you use duel rooms and the friends list. You can also trade cards
 - In `ClientSettings.json` set `BaseIP` to the WAN IP
 - Play around with `MultiplayerNoDelay` (`Setting.json` / `ClientSettings.json`) to see which works best for you (it disables nagle's algorithm)
 
-## Starting duels
-
-- Click `DUEL` in the home menu
-- Click `Duel Room (PvP)` and create a duel room as you would in the normal game
-
 ## Notes
 
 - Every PC (and every seperate YgoMaster folder) must have a different `MultiplayerToken` as otherwise they will share the same session which will break things
 - Due to PvP duels requiring constant synchronization it is unlikely to perform well outside of LAN
 - Do not modify `YgoMaster/Data/Players/` or any sub folders while `YgoMaster.exe` is running
 - Clicking mates / duel field borders are synced with the other player. Spectators also see it but their clicks don't sync
+- Sometimes clients bug out if you restart YgoMaster while in a duel (when you next enter a duel one client will get stuck before starting the duel). Restart all clients when reopening YgoMaster
 
-## Trading
+## Starting duels
+
+- Click `DUEL` in the home menu
+- Click `Duel Room (PvP)` and create a duel room as you would in the normal game
+
+## Trading cards
 
 You can trade cards with other players by going to their profile and clicking "Trade"
 
@@ -47,3 +48,11 @@ You can trade cards with other players by going to their profile and clicking "T
 - Use the sub menu of the trade menu to view their cards
 - You can add their cards / remove their cards from the trade
 - You cannot craft / dismantle while trading
+
+## Duel emotes
+
+You can send a pre defined message to the other player during the duel by clicking your player icon in the bottom left of the screen then clicking an entry.
+
+The raw text is sent over to the player allowing you to enter custom text. The text can be found in `YgoMaster/Data/ClientData/Text/Emotes.json`. Every time you click on your player icon the file is reloaded.
+
+You can play sounds such as `This will make a sound plsd:SE_BUFF_CHANGE`

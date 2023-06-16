@@ -307,6 +307,7 @@ namespace YgoMasterClient
             engineInstanceReplayStream = IntPtr.Zero;
             activePlayerFieldEffectInstance = IntPtr.Zero;
             DuelTapSync.ClearState();
+            DuelEmoteHelper.OnEndDuel();
         }
 
         public static void OnInitEngineStep()
@@ -420,6 +421,7 @@ namespace YgoMasterClient
         static int InjectDuelEnd()
         {
             DuelTapSync.ClearState();
+            DuelEmoteHelper.OnEndDuel();
             HasDuelEnd = true;
             if (IsPvpSpectator)
             {
@@ -438,6 +440,10 @@ namespace YgoMasterClient
 
         static int RunEffect(int id, int param1, int param2, int param3)
         {
+            if (IsPvpDuel || IsPvpSpectator)
+            {
+                DuelEmoteHelper.OnRunEffect((DuelViewType)id, param1, param2, param3);
+            }
             if (IsPvpSpectator)
             {
                 if (HasNetworkError)
@@ -467,6 +473,7 @@ namespace YgoMasterClient
                         break;
                     case DuelViewType.DuelEnd:
                         DuelTapSync.ClearState();
+                        DuelEmoteHelper.OnEndDuel();
                         HasDuelEnd = true;
                         EndSpectatorReplayStream();
                         break;
@@ -504,6 +511,7 @@ namespace YgoMasterClient
                         break;
                     case DuelViewType.DuelEnd:
                         DuelTapSync.ClearState();
+                        DuelEmoteHelper.OnEndDuel();
                         HasDuelEnd = true;
                         break;
                     case DuelViewType.TurnChange:
@@ -889,6 +897,7 @@ namespace YgoMasterClient
                 case NetMessageType.DuelSpectatorFieldGuide: OnDuelSpectatorFieldGuide(client, (DuelSpectatorFieldGuideMessage)message); break;
                 case NetMessageType.DuelSpectatorCount: OnDuelSpectatorCount((DuelSpectatorCountMessage)message); break;
                 case NetMessageType.DuelTapSync: DuelTapSync.OnDuelTapSync((DuelTapSyncMessage)message); break;
+                case NetMessageType.DuelEmote: DuelEmoteHelper.OnDuelEmote((DuelEmoteMessage)message); break;
             }
         }
 

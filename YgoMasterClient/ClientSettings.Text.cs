@@ -489,6 +489,10 @@ namespace YgoMasterClient
         /// {name} ({code}) sent you a duel invite
         /// </summary>
         public static string CustomTextDuelInvite;
+        /// <summary>
+        /// Emotes
+        /// </summary>
+        public static string CustomTextEmotesListHeader;
 
         static bool LoadText()
         {
@@ -633,6 +637,8 @@ namespace YgoMasterClient
             CustomTextTradeCanTradePartnerReady = Utils.GetValue<string>(data, "CustomTextTradeCanTradePartnerReady");
 
             CustomTextDuelInvite = Utils.GetValue<string>(data, "CustomTextDuelInvite");
+
+            CustomTextEmotesListHeader = Utils.GetValue<string>(data, "CustomTextEmotesListHeader");
 
             return true;
         }

@@ -65,6 +65,8 @@ namespace YgoMasterClient
         static void Update(IntPtr thisPtr)
         {
             hookUpdate.Original(thisPtr);
+            DuelEmoteHelper.Update();
+
             if (hasActionToRun || lastActionCheck < DateTime.UtcNow - TimeSpan.FromSeconds(2))
             {
                 lastActionCheck = DateTime.UtcNow;
@@ -512,15 +514,6 @@ namespace YgomGame.Menu
         delegate IntPtr Del_Start(IntPtr thisPtr);
         static Hook<Del_Start> hookStart;
 
-        /*delegate void Del_ShowText(IntPtr thisPtr, IntPtr text, ref worldpos worldPos, bool isforui);
-        static Hook<Del_ShowText> hookShowText;
-
-        delegate void Del_UpdateText(IntPtr thisPtr, IntPtr text);
-        static Hook<Del_UpdateText> hookUpdateText;*/
-
-        /*delegate void Del_OnClick(IntPtr thisPtr);
-        static Hook<Del_OnClick> hookOnClick;*/
-
         static bool isNextMessageCustom;
 
         static ToastMessageInform()
@@ -532,64 +525,7 @@ namespace YgomGame.Menu
             methodOpenEx = classInfo.GetMethod("Open", x => x.GetParameters().Length == 3);
             methodOpenWithBlock = classInfo.GetMethod("OpenWithBlock");
             hookStart = new Hook<Del_Start>(Start, classInfo.GetMethod("Start"));
-
-            /*IL2Class classInfo2 = assembly.GetClass("PopUpText", "YgomGame");
-            hookShowText = new Hook<Del_ShowText>(ShowText, classInfo2.GetMethod("ShowText"));
-            hookUpdateText = new Hook<Del_UpdateText>(UpdateText, classInfo2.GetMethod("UpdateText"));*/
-
-            /*IL2Class selectionButtonClassInfo = assembly.GetClass("SelectionButton", "YgomSystem.UI");
-            hookOnClick = new Hook<Del_OnClick>(OnClick, selectionButtonClassInfo.GetMethod("OnClick"));*/
         }
-
-        /*static void OnClick(IntPtr thisPtr)
-        {
-            Console.WriteLine("OnClick: " + DateTime.Now.TimeOfDay);
-            hookOnClick.Original(thisPtr);
-
-            IntPtr obj = UnityEngine.Component.GetGameObject(thisPtr);
-            List<IntPtr> objs = new List<IntPtr>();
-            while (obj != IntPtr.Zero)
-            {
-                objs.Add(obj);
-                obj = UnityEngine.GameObject.GetParentObject(obj);
-            }
-            objs.Reverse();
-            Console.WriteLine("Name: " + string.Join(".", objs.Select(x => UnityEngine.UnityObject.GetName(x))));
-        }*/
-
-        /*struct worldpos
-        {
-            public float x;
-            public float y;
-            public float z;
-        }
-
-        static void ShowText(IntPtr thisPtr, IntPtr text, ref worldpos worldPos, bool isforui)
-        {
-            Console.WriteLine("ShowText " + new IL2String(text).ToString() + " x:" + worldPos.x + " y:" + worldPos.y + " z:" + worldPos.z);
-
-            // TODO: Hook YgomGame.PopUpTextManager.OnEnterPopUpArea / OnExitPopUpArea / RegistPopUpCallback / RemovePopUpCallback
-
-            string str = "";
-            try
-            {
-                str = System.IO.File.ReadAllText("C:/showtext.txt");
-            }
-            catch
-            {
-            }
-            if (!string.IsNullOrEmpty(str))
-            {
-                text = new IL2String(str).ptr;
-            }
-            hookShowText.Original(thisPtr, text, ref worldPos, isforui);
-        }
-
-        static void UpdateText(IntPtr thisPtr, IntPtr text)
-        {
-            Console.WriteLine("UpdateText " + new IL2String(text).ToString());
-            hookUpdateText.Original(thisPtr, text);
-        }*/
 
         static IntPtr Start(IntPtr thisPtr)
         {

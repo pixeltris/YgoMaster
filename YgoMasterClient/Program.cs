@@ -144,6 +144,8 @@ namespace YgoMasterClient
                     ConsoleHelper.ShowConsole();
                 }
 
+                DuelEmoteHelper.Load();
+
                 if (!string.IsNullOrEmpty(ClientSettings.MultiplayerToken) &&
                     !string.IsNullOrEmpty(ClientSettings.SessionServerIP) && ClientSettings.SessionServerPort != 0)
                 {
@@ -252,6 +254,7 @@ namespace YgoMasterClient
                 // Misc
                 nativeTypes.Add(typeof(DuelDll));
                 nativeTypes.Add(typeof(DuelTapSync));
+                nativeTypes.Add(typeof(DuelEmoteHelper));
                 nativeTypes.Add(typeof(YgomGame.Menu.CommonDialogViewController));
                 nativeTypes.Add(typeof(YgomGame.Menu.ActionSheetViewController));
                 nativeTypes.Add(typeof(Win32Hooks));

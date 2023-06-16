@@ -249,6 +249,7 @@ namespace YgoMaster.Net
                 case NetMessageType.Pong: OnPong(client, (PongMessage)message); break;
 
                 case NetMessageType.DuelTapSync: OnDuelTapSync(client, (DuelTapSyncMessage)message); break;
+                case NetMessageType.DuelEmote: OnDuelEmote(client, (DuelEmoteMessage)message); break;
 
                 case NetMessageType.DuelSpectatorEnter: OnDuelSpectatorEnter(client, (DuelSpectatorEnterMessage)message); break;
                 case NetMessageType.DuelSpectatorData: OnDuelSpectatorData(client, (DuelSpectatorDataMessage)message); break;
@@ -359,6 +360,57 @@ namespace YgoMaster.Net
             else
             {
                 BroadcastDuelSpectatorMessage(opponentClient, flippedMessage, null);
+            }
+        }
+
+        void OnDuelEmote(NetClient client, DuelEmoteMessage message)
+        {
+            if (message.Text.Length == 0 || message.Text.Length > GameServer.EmoteMaxLength)
+            {
+                return;
+            }
+
+            Player player = client.Player;
+            DuelRoom duelRoom = player == null ? null : player.DuelRoom;
+            if (duelRoom == null)
+            {
+                return;
+            }
+
+            DuelRoomTable table = duelRoom.GetTable(player);
+            if (table == null || table.State != DuelRoomTableState.Dueling || table.IsDuelComplete)
+            {
+                return;
+            }
+
+            Player opponent = GameServer.GetDuelingOpponent(player);
+            NetClient opponentClient = opponent == null ? null : opponent.NetClient;
+            if (opponentClient == null)
+            {
+                return;
+            }
+
+            DuelEmoteMessage msgNear = new DuelEmoteMessage()
+            {
+                Near = true,
+                Text = message.Text
+            };
+            DuelEmoteMessage msgFar = new DuelEmoteMessage()
+            {
+                Near = false,
+                Text = message.Text
+            };
+
+            client.Send(msgNear);
+            opponentClient.Send(msgFar);
+
+            if (player == table.Player1)
+            {
+                BroadcastDuelSpectatorMessage(client, msgNear, null);
+            }
+            else
+            {
+                BroadcastDuelSpectatorMessage(opponentClient, msgFar, null);
             }
         }
 

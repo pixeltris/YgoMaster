@@ -230,6 +230,10 @@ namespace YgoMaster
         /// A delay between each enter trade room request to avoid state desync if spamming the button
         /// </summary>
         public float TradeEnterRoomRequestDelayInSeconds;
+        /// <summary>
+        /// How long an emote can be (in characters). If an emote is longer than this it'll be ignored
+        /// </summary>
+        public int EmoteMaxLength;
 
         void LoadSettings()
         {
@@ -334,6 +338,7 @@ namespace YgoMaster
             TradeAllowOtherPlayerToAddYourCards = Utils.GetValue<bool>(values, "TradeAllowOtherPlayerToAddYourCards");
             TradeAllowOtherPlayerToRemoveYourCards = Utils.GetValue<bool>(values, "TradeAllowOtherPlayerToRemoveYourCards");
             TradeEnterRoomRequestDelayInSeconds = Utils.GetValue<float>(values, "TradeEnterRoomRequestDelayInSeconds");
+            EmoteMaxLength = Utils.GetValue<int>(values, "EmoteMaxLength");
 
             FriendSearchLimit = Utils.GetValue<int>(values, "FriendSearchLimit", 100);
             FriendOfflineInSeconds = Utils.GetValue<int>(values, "FriendOfflineInSeconds", 300);

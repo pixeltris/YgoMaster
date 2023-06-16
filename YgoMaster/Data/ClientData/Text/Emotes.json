@@ -1,0 +1,34 @@
+{
+    "NearPos": {
+        "X": 27,
+        "Y": 2,
+        "Z": -21.5,
+    },
+    "FarPos": {
+        "X": -27,
+        "Y": 2,
+        "Z": 24,
+    },
+    "EmoteList": [
+        "Yu-Gi-Oh!",
+        "Believe in the heart of the cards!",
+        "Heart of the cards don't fail me now",
+        "Draw your last pathetic card",        
+        "My deck has no pathetic cards",
+        "Watch this",
+        "I hope you're prepared to lose",
+        "Oof...",
+        "I'll stop you",
+        "Good duel",
+        "NOOOOOOOO!!!!",
+        "You're a good duelist",
+        "You're a bad duelist",
+        "You suck",
+        "I hate you",
+        "Come on!",
+        "You're a third rate duelist with a fourth rate deck",
+        "I banish you to the shadow realm",
+        "<color=#FF0000>This is red.</color> <color=#00FF00><size=30>This is big and green.</size></color> <i>Italics!</i> <b>Bold</b>",
+        "This will make a sound plsd:SE_ATTACK_GUARD",
+    ]
+}

@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="YgoMasterClient\DuelTapSync.cs" />
+    <Compile Include="YgoMasterClient\DuelEmoteHelper.cs" />
     <Compile Include="YgoMasterClient\TradeUtils.cs" />
     <Compile Include="YgoMasterClient\ClientSettings.Text.cs" />
     <Compile Include="YgoMasterClient\DuelDll.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="YgoMasterServer\Net\Message\DuelComMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelComMovePhaseMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelDlgSetResultMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Message\DuelEmoteMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelErrorMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelListInitStringMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelListSetCardExDataMessage.cs" />
