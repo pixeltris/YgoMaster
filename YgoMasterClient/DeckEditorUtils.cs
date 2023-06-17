@@ -380,6 +380,9 @@ namespace YgomGame
         static IL2Method rectTransformSetSizeDelta;
         static IL2Method tmTextSetEnableWordWrapping;
 
+        static IL2Field fieldContentInstance;
+        static IL2Method methodIsExtraDeckCard;
+
         static bool skipNextAsyncFilterAndSort;
         static IL2Method methodToggleShowAllCards;
 
@@ -444,6 +447,10 @@ namespace YgomGame
             rectTransformSetSizeDelta = rectTransformClassInfo.GetProperty("sizeDelta").GetSetMethod();
             IL2Class tmTextClassInfo = textMeshAssembly.GetClass("TMP_Text", "TMPro");
             tmTextSetEnableWordWrapping = tmTextClassInfo.GetProperty("enableWordWrapping").GetSetMethod();
+
+            IL2Class contentClassInfo = assembly.GetClass("Content", "YgomGame.Card");
+            fieldContentInstance = contentClassInfo.GetField("s_instance");
+            methodIsExtraDeckCard = contentClassInfo.GetMethod("IsExtraDeckCard");
         }
 
         static void InitializeView(IntPtr thisPtr)
@@ -478,6 +485,10 @@ namespace YgomGame
                 {
                     return;
                 }
+            }
+            if (ClientSettings.DeckEditorDisableSorting)
+            {
+                return;
             }
             hookSortDeckViewCards.Original(thisPtr);
         }
@@ -594,10 +605,30 @@ namespace YgomGame
                 });
                 return IntPtr.Zero;
             }
+            else if (ClientSettings.DeckEditorDisableSorting)
+            {
+                int cardId = cardData.CardID;
+                bool extraDeck = methodIsExtraDeckCard.Invoke(fieldContentInstance.GetValue().ptr, new IntPtr[] { new IntPtr(&cardId) }).GetValueRef<csbool>();
+
+                IntPtr deckView = fieldDeckView.GetValue(thisPtr).ptr;
+                YgomGame.Deck.DeckView.AddCardWithSound(deckView, cardData.CardID, (CardStyleRarity)cardData.PremiumID, cardData.IsOwned, !extraDeck);
+                UpdateCollectionView(true, false);
+                return IntPtr.Zero;
+            }
             else
             {
                 return hookAddToMainOrExtraDeck.Original(thisPtr, ref cardData);
             }
+        }
+
+        static void RemoveFromDeck(IntPtr thisPtr, YgomGame.Deck.CardBaseData cardData)
+        {
+            int cardId = cardData.CardID;
+            bool extraDeck = methodIsExtraDeckCard.Invoke(fieldContentInstance.GetValue().ptr, new IntPtr[] { new IntPtr(&cardId) }).GetValueRef<csbool>();
+
+            IntPtr deckView = fieldDeckView.GetValue(thisPtr).ptr;
+            Deck.DeckView.RemoveCardWithSound(deckView, cardData.CardID, (CardStyleRarity)cardData.PremiumID, cardData.IsOwned, !extraDeck);
+            UpdateCollectionView(true, false);
         }
 
         static IntPtr RemoveFromDeck1(IntPtr thisPtr, ref YgomGame.Deck.CardBaseData cardData)
@@ -611,6 +642,11 @@ namespace YgomGame
                     StyleRarity = (CardStyleRarity)cardData.PremiumID,
                     OtherPlayerCode = !cardData.IsOwned ? TradeUtils.TradingPlayerCode : 0
                 });
+                return IntPtr.Zero;
+            }
+            else if (ClientSettings.DeckEditorDisableSorting)
+            {
+                RemoveFromDeck(thisPtr, cardData);
                 return IntPtr.Zero;
             }
             else
@@ -631,6 +667,11 @@ namespace YgomGame
                     StyleRarity = (CardStyleRarity)cardData.PremiumID,
                     OtherPlayerCode = !cardData.IsOwned ? TradeUtils.TradingPlayerCode : 0
                 });
+                return IntPtr.Zero;
+            }
+            else if (ClientSettings.DeckEditorDisableSorting)
+            {
+                RemoveFromDeck(thisPtr, YgomGame.Deck.CardBase.GetBaseData(card));
                 return IntPtr.Zero;
             }
             else

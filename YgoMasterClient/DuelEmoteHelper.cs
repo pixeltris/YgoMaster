@@ -102,8 +102,14 @@ namespace YgoMasterClient
 
         public static void OnEndDuel()
         {
-            HideText(true);
-            HideText(false);
+            if (putNearInstance != IntPtr.Zero)
+            {
+                HideText(true);
+            }
+            if (putFarInstance != IntPtr.Zero)
+            {
+                HideText(false);
+            }
             putNearInstance = IntPtr.Zero;
             putFarInstance = IntPtr.Zero;
             isNearVisible = false;

@@ -11,11 +11,6 @@ using IL2CPP;
 
 // TODO: Test wall of revealing light
 
-// TODO: Hook Util.ShowProfileCard - checks.Replay/.Audience - could be used to do action sheet for custom duel msg / popup
-
-// YgomGame.Duel.DuelHUD.updateNetworkStatus - might be useful to display network latency issues. Hook Engine.GetLatency
-// YgomGame.Duel.DuelHUD.OpenDuelLog - might be useful if action sheet doesn't work out (same with OnClickDuelLogButton)
-
 // NOTE: Be careful with threading here
 // - If you want to run something on the duel thread use ActionsToRunInNextSysAct
 // - If you want to run something in the game thread use TradeUtils.AddAction()
@@ -358,7 +353,7 @@ namespace YgoMasterClient
         {
             if (IsPvpDuel)
             {
-                Log("SetGuideEnable:" + thisPtr + " near:" + near + " enable:" + enable + " turnchange:" + turnchange);
+                //Log("SetGuideEnable:" + thisPtr + " near:" + near + " enable:" + enable + " turnchange:" + turnchange);
             }
             activePlayerFieldEffectInstance = thisPtr;
             LastFieldGuideUpdate = DateTime.UtcNow;
@@ -539,10 +534,10 @@ namespace YgoMasterClient
                         }
                         break;
                     case DuelViewType.RunDialog:
-                        if (ActiveUserIdForDoCommand != MyID)
+                        if (ActiveUserIdForSetIndex != MyID)
                         {
                             originalRunEffect((int)DuelViewType.CpuThinking, 0, 0, 0);
-                            Log("Ignore " + (DuelViewType)id + " player:" + ActiveUserIdForDoCommand);
+                            Log("Ignore " + (DuelViewType)id + " player:" + ActiveUserIdForSetIndex);
                             Dictionary<DuelViewType, int> remoteIsBusyEffect;
                             if (!RemoteIsBusyEffect.TryGetValue(RunEffectSeq, out remoteIsBusyEffect))
                             {
