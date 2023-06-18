@@ -146,6 +146,8 @@ namespace IL2CPP
             public extern static IntPtr il2cpp_property_get_get_method(IntPtr property);
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
             public extern static IntPtr il2cpp_property_get_set_method(IntPtr property);
+            [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+            public extern static IntPtr il2cpp_property_get_parent(IntPtr property);
         }
 
         public static class Method

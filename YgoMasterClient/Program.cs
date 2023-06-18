@@ -120,6 +120,8 @@ namespace YgoMasterClient
 
             try
             {
+                //ReflectionValidator.IsDumping = true;
+
                 IsLive = arg == "live";
 
                 CurrentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -144,7 +146,7 @@ namespace YgoMasterClient
                     ConsoleHelper.ShowConsole();
                 }
 
-                DuelEmoteHelper.Load();
+                //ReflectionValidator.ValidateDump();
 
                 if (!string.IsNullOrEmpty(ClientSettings.MultiplayerToken) &&
                     !string.IsNullOrEmpty(ClientSettings.SessionServerIP) && ClientSettings.SessionServerPort != 0)
@@ -280,6 +282,10 @@ namespace YgoMasterClient
                     System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(type.TypeHandle);
                 }
                 PInvoke.WL_EnableAllHooks(true);
+
+                ReflectionValidator.FinishDumping();
+
+                DuelEmoteHelper.Load();
 
                 if (NetClient != null)
                 {

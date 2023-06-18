@@ -9,8 +9,6 @@ using YgoMaster;
 using System.Runtime.InteropServices;
 using IL2CPP;
 
-// TODO: Test wall of revealing light
-
 // NOTE: Be careful with threading here
 // - If you want to run something on the duel thread use ActionsToRunInNextSysAct
 // - If you want to run something in the game thread use TradeUtils.AddAction()
@@ -63,6 +61,9 @@ namespace YgoMasterClient
         {
             get { return *(int*)(WorkMemory + ClientSettings.DuelDllActiveUserDoCommandOffset); }
         }
+        /// <summary>
+        /// NOTE: DuelDlgSetResult value is the next address (+4) so this is probably more likely ActiveUserIdForRunDialog?
+        /// </summary>
         static int ActiveUserIdForSetIndex
         {
             get { return *(int*)(WorkMemory + ClientSettings.DuelDllActiveUserSetIndexOffset); }

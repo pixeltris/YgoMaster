@@ -29,6 +29,8 @@ namespace IL2CPP
             }
         }
 
+        public IL2Class ReflectedType { get { return new IL2Class(Import.Property.il2cpp_property_get_parent(ptr)); } }
+
         public IL2BindingFlags Flags { get { return (IL2BindingFlags)Import.Property.il2cpp_property_get_flags(ptr); } }
         public bool HasFlag(IL2BindingFlags flag) { return ((Flags & flag) != 0); }
         public bool Instance

@@ -2,8 +2,8 @@ A rough list of possible features / things to do. There aren't any plans to impl
 
 - Add a json file with all of the referenced IL2CPP types / methods / fields etc. Use this to automatically validate everything for updates
 - Auto updating of `DuelDllActiveUserDoCommandOffset` / `DuelDllActiveUserSetIndexOffset`
-- Embed Ultralight https://ultralig.ht/ and create a custom shop UI and solo content (visual novel style) - https://github.com/Monogatari/Monogatari / https://github.com/avgjs/avg-core / https://github.com/Kirilllive/tuesday-js / https://github.com/lunafromthemoon/RenJS-V2
-- Implement emoting like in the WC games (auto emotes based on card actions) - allow sound effects to play
+- Embed Ultralight https://ultralig.ht/ or https://sciter.com/ and create a custom shop UI and solo content (visual novel style) - https://github.com/Monogatari/Monogatari / https://github.com/avgjs/avg-core / https://github.com/Kirilllive/tuesday-js / https://github.com/lunafromthemoon/RenJS-V2
+- Implement emoting like in the WC games (auto emotes based on card actions)
 - Add a textbox to the duel UI to send custom messages without having to modify the emote file
 - Customize the PvP duel starter UI to allow for things such as rush duels / speed duels / custom hand / LP /etc
 - Modify DuelSettings.cs to work with a raw Dictionary<string, object>. Change all members to properties which access the dictionary. Fix rank/rate which is currently broken under PvP duels / replays and the rank/rate is displayed incorrectly

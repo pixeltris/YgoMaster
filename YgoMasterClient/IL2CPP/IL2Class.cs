@@ -156,7 +156,7 @@ namespace IL2CPP
         {
             IntPtr result = Import.Class.il2cpp_class_get_method_from_name(ptr, new IL2String(name).ptr, argsCount);
             if (result != IntPtr.Zero)
-                return new IL2Method(result);
+                return ReflectionValidator.Add(new IL2Method(result));
             return null;
         }
         public IL2Method[] GetMethods()
@@ -177,7 +177,7 @@ namespace IL2CPP
         }
         public IL2Method GetMethod(Func<IL2Method, bool> func)
         {
-            return GetMethods().Where(x => func(x)).FirstOrDefault();
+            return ReflectionValidator.Add(GetMethods().Where(x => func(x)).FirstOrDefault());
         }
         public IL2Method GetMethod(string name) { return GetMethod(name, null); }
         public IL2Method GetMethod(string name, IL2BindingFlags flags)
@@ -199,7 +199,7 @@ namespace IL2CPP
             {
                 Console.WriteLine("[WARNING] Failed to find " + FullName + "." + name);
             }
-            return returnval;
+            return ReflectionValidator.Add(returnval);
         }
         public IL2Method GetMethod(string name, IL2BindingFlags flags, Func<IL2Method, bool> func)
         {
@@ -213,7 +213,7 @@ namespace IL2CPP
                 }
             }
             Console.WriteLine("[WARNING] Failed to find " + FullName + "." + name);
-            return returnval;
+            return ReflectionValidator.Add(returnval);
         }
         public IL2Method GetMethod(IL2Class type)
         {
@@ -222,7 +222,7 @@ namespace IL2CPP
             for (int i = 0; i < length; i++)
             {
                 if (methods[i].ReturnType.Name == type.FullName)
-                    return methods[i];
+                    return ReflectionValidator.Add(methods[i]);
             }
             return null;
         }
@@ -263,7 +263,7 @@ namespace IL2CPP
             for (int i=0;i< fields.Length;i++)
             {
                 if (fields[i].ReturnType.Name == type.FullName)
-                    return fields[i];
+                    return ReflectionValidator.Add(fields[i]);
             }
             return null;
         }
@@ -278,7 +278,7 @@ namespace IL2CPP
                     break;
                 }
             }
-            return returnval;
+            return ReflectionValidator.Add(returnval);
         }
         public IL2Field GetField(string name, IL2BindingFlags flags, Func<IL2Field, bool> func)
         {
@@ -291,7 +291,7 @@ namespace IL2CPP
                     break;
                 }
             }
-            return returnval;
+            return ReflectionValidator.Add(returnval);
         }
 
         /*
@@ -314,7 +314,7 @@ namespace IL2CPP
         }
         public IL2Property GetProperty(Func<IL2Property, bool> func)
         {
-            return GetProperties().FirstOrDefault(x => func(x));
+            return ReflectionValidator.Add(GetProperties().FirstOrDefault(x => func(x)));
         }
         public IL2Property GetProperty(IL2Class type)
         {
@@ -323,7 +323,7 @@ namespace IL2CPP
                 IL2Method method = prop.GetGetMethod();
                 if (method != null && method.ReturnType.Name == type.FullName)
                 {
-                    return prop;
+                    return ReflectionValidator.Add(prop);
                 }
                 method = prop.GetSetMethod();
                 if (method != null)
@@ -331,7 +331,7 @@ namespace IL2CPP
                     IL2Param[] args = method.GetParameters();
                     if (args != null && args[0] != null && args[0].Name == type.FullName)
                     {
-                        return prop;
+                        return ReflectionValidator.Add(prop);
                     }
                 }
             }
@@ -348,7 +348,7 @@ namespace IL2CPP
                     break;
                 }
             }
-            return returnval;
+            return ReflectionValidator.Add(returnval);
         }
 
         public IL2Property GetProperty(string name, IL2BindingFlags flags)
@@ -362,7 +362,7 @@ namespace IL2CPP
                     break;
                 }
             }
-            return returnval;
+            return ReflectionValidator.Add(returnval);
         }
 
         // Nested Types

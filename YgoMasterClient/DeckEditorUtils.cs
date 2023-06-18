@@ -116,13 +116,13 @@ namespace YgomGame.Deck
             methodRemoveCard = classInfo.GetMethod("RemoveCard");
             methodSortMainDeckCards = classInfo.GetMethod("sortMainDeckCards");
             methodSortExtraDeckCards = classInfo.GetMethod("sortExtraDeckCards");
-
-            deckCardClassInfo = assembly.GetClass("DeckCard", "YgomGame.Deck");
-            cardBaseDataClassInfo = assembly.GetClass("CardBaseData", "YgomGame.Deck");
             fieldMainDeckCards = classInfo.GetField("mainDeckCards");
             fieldMainCardDataList = classInfo.GetField("mainCardDataList");
             fieldExtraDeckCards = classInfo.GetField("extraDeckCards");
             fieldExtraCardDataList = classInfo.GetField("extraCardDataList");
+
+            deckCardClassInfo = assembly.GetClass("DeckCard", "YgomGame.Deck");
+            cardBaseDataClassInfo = assembly.GetClass("CardBaseData", "YgomGame.Deck");
         }
 
         static int GetAddableType(IntPtr thisPtr, int cardID, int regulation)
