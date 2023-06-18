@@ -254,7 +254,6 @@ namespace YgoMaster
                 }
                 catch
                 {
-                    System.Diagnostics.Debugger.Break();
                 }
             }
             result = default(T);

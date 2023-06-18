@@ -19,6 +19,7 @@ namespace YgoMaster
         public const int CpuIndex = 1;
         public const int MaxPlayers = 4;
         public const string ExpectedDuelDataKey = "icon";
+        public const int MaxBgmId = 13;// Update based on the largest number shown in the custom duel starter UI
 
         public bool IsCustomDuel;
 
@@ -163,7 +164,7 @@ namespace YgoMaster
 
         public void SetRandomBgm(Random rand)
         {
-            BgmsFromValue(rand.Next(1, (8 + 1)));
+            BgmsFromValue(rand.Next(1, (MaxBgmId + 1)));
         }
 
         public void LoadRandomDecks()
