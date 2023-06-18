@@ -77,7 +77,9 @@ namespace YgoMaster
             }
             if (deck.Id == 0)
             {
-                deck.Id = request.Player.NextDeckUId++;
+                while ((deck.Id = request.Player.NextDeckUId++) == DeckInfo.TradeDeckId)
+                {
+                }
                 request.Player.Decks[deck.Id] = deck;
                 deck.TimeCreated = Utils.GetEpochTime();
                 deck.GetNewFilePath(GetDecksDirectory(request.Player));

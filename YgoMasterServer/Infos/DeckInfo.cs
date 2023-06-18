@@ -18,6 +18,8 @@ namespace YgoMaster
 #pragma warning restore CS0649
         public const string DefaultRegulationName = "IDS_CARDMENU_REGULATION_NORMAL";
 
+        public const int TradeDeckId = 99999999;
+
         public int Id;
         public string Name;
         public long TimeCreated;

@@ -28,7 +28,7 @@ namespace YgoMaster
         public TradeInfo()
         {
             State = new DeckInfo();
-            State.Id = 99999999;
+            State.Id = DeckInfo.TradeDeckId;
             State.RegulationId = DeckInfo.DefaultRegulationId;
             State.Name = "";
         }

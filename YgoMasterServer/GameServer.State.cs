@@ -1212,7 +1212,9 @@ namespace YgoMaster
                     DeckInfo deck = new DeckInfo();
                     deck.File = file;
                     deck.Load();
-                    deck.Id = player.NextDeckUId++;
+                    while ((deck.Id = player.NextDeckUId++) == DeckInfo.TradeDeckId)
+                    {
+                    }
                     player.Decks[deck.Id] = deck;
                 }
                 catch

@@ -179,11 +179,11 @@ namespace YgoMasterClient
                 Dictionary<string, object> fakeDeckData = new Dictionary<string, object>()
                 {
                     { "DeckList", new Dictionary<string, object>() {
-                        { fakeDeck.ToString(), fakeDeck.ToDictionary() }
+                        { fakeDeck.Id.ToString(), fakeDeck.ToDictionary() }
                     }},
                     { "Deck", new Dictionary<string, object>() {
                         { "list", new Dictionary<string, object>() {
-                            { fakeDeck.ToString(), fakeDeck.ToDictionaryEx() }
+                            { fakeDeck.Id.ToString(), fakeDeck.ToDictionaryEx() }
                         }}
                     }},
                 };
@@ -347,6 +347,9 @@ namespace YgoMasterClient
                 YgomSystem.Utility.ClientWork.DeleteByJsonPath("Cards.have");
                 YgomSystem.Utility.ClientWork.UpdateJson(MyEntireCollectionJson);
             }
+
+            YgomSystem.Utility.ClientWork.DeleteByJsonPath("DeckList." + DeckInfo.TradeDeckId);
+            YgomSystem.Utility.ClientWork.DeleteByJsonPath("Deck.list." + DeckInfo.TradeDeckId);
         }
 
         public static string GetActiveCollectionString()
