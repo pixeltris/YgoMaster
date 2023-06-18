@@ -150,6 +150,11 @@ namespace YgoMasterClient
 
             if (!string.IsNullOrEmpty(message.DeckJson))
             {
+                if (IsTrading)
+                {
+                    return;
+                }
+
                 OnTradeAction();
                 IsTrading = true;
                 IsLoading = true;
