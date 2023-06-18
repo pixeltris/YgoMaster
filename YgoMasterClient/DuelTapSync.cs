@@ -106,14 +106,30 @@ namespace YgoMasterClient
 
         static void InitState()
         {
-            IntPtr duelClient = fieldDuelClientInstance.GetValue().ptr;
-            IntPtr effectWorker = methodGetEffectWorker.Invoke(duelClient).ptr;
-            IntPtr goManager = methodGetGoManager.Invoke(effectWorker).ptr;
-            IntPtr bg = methodGetBg.Invoke(goManager).ptr;
+            IL2Object duelClient = fieldDuelClientInstance.GetValue();
+            if (duelClient == null)
+            {
+                return;
+            }
+            IL2Object effectWorker = methodGetEffectWorker.Invoke(duelClient);
+            if (effectWorker == null)
+            {
+                return;
+            }
+            IL2Object goManager = methodGetGoManager.Invoke(effectWorker);
+            if (goManager == null)
+            {
+                return;
+            }
+            IL2Object bg = methodGetBg.Invoke(goManager);
+            if (bg == null)
+            {
+                return;
+            }
             bool isMyself = true;
-            nearBgUnit = methodGetBgUnit.Invoke(bg, new IntPtr[] { new IntPtr(&isMyself) }).ptr;
+            nearBgUnit = methodGetBgUnit.Invoke(bg.ptr, new IntPtr[] { new IntPtr(&isMyself) }).ptr;
             isMyself = false;
-            farBgUnit = methodGetBgUnit.Invoke(bg, new IntPtr[] { new IntPtr(&isMyself) }).ptr;
+            farBgUnit = methodGetBgUnit.Invoke(bg.ptr, new IntPtr[] { new IntPtr(&isMyself) }).ptr;
         }
 
         static IntPtr GetActiveCharacter(IntPtr bgUnit)
