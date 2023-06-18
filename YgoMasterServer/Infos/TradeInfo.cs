@@ -106,7 +106,7 @@ namespace YgoMaster
             }
         }
 
-        void ClearHasPressedTrade()
+        public void ClearHasPressedTrade()
         {
             Player1HasPressedTrade = false;
             Player2HasPressedTrade = false;

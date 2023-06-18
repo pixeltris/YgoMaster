@@ -221,7 +221,6 @@ namespace YgoMasterClient
                 }
                 OnTradeAction();
                 IsTradingPartnerHere = false;
-                HasTradingPartnerPressedTrade = false;
                 string msg = FixupBannerMsg(ClientSettings.CustomTextTradeBannerLeaveTrade, message.PlayerCode, message.Name);
                 YgomGame.Menu.ToastMessageInform.Open(msg, ClientSettings.TradeBannerOffsetY, YgomGame.Menu.ToastMessageInform.IconType.None);
             }
@@ -362,6 +361,7 @@ namespace YgoMasterClient
             LastTradeAction = DateTime.UtcNow;
             HasRecentTradeAction = true;
             HasPressedTrade = false;
+            HasTradingPartnerPressedTrade = false;
             UpdateTradeButtonText();
         }
 

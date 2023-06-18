@@ -796,6 +796,8 @@ namespace YgoMaster.Net
 
                 if (success)
                 {
+                    trade.ClearHasPressedTrade();
+
                     client.Send(new TradeMoveCardMessage()
                     {
                         RemoveCard = message.RemoveCard,
