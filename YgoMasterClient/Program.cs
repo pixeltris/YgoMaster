@@ -1554,7 +1554,7 @@ namespace Steamworks
         static IL2Class classInfo;
         static IL2Method methodIsOverlayEnabled;
 
-        delegate bool Del_IsOverlayEnabled();
+        delegate csbool Del_IsOverlayEnabled();
         static Hook<Del_IsOverlayEnabled> hookIsOverlayEnabled;
 
         static SteamUtils()
@@ -1570,7 +1570,7 @@ namespace Steamworks
             hookIsOverlayEnabled = new Hook<Del_IsOverlayEnabled>(IsOverlayEnabled, methodIsOverlayEnabled);
         }
 
-        static bool IsOverlayEnabled()
+        static csbool IsOverlayEnabled()
         {
             return false;
         }
