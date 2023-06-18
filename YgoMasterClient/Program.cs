@@ -34,7 +34,9 @@ namespace YgoMasterClient
             bool isMultiplayerClient = false;
             try
             {
-                ClientDataDir = Path.Combine("Data", "ClientData");
+                CurrentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                DataDir = Utils.GetDataDirectory(false, CurrentDir);
+                ClientDataDir = Path.Combine(DataDir, "ClientData");
                 ClientSettings.Load();
                 if (!string.IsNullOrEmpty(ClientSettings.MultiplayerToken))
                 {
