@@ -742,24 +742,23 @@ namespace YgoMasterClient
 
         static void DLL_DuelComMovePhase(int phase)
         {
-            Log("DLL_DuelComMovePhase phase:" + phase + " seq:" + RunEffectSeq);
             if (IsPvpDuel)
             {
+                Log("DLL_DuelComMovePhase phase:" + phase + " seq:" + RunEffectSeq);
                 Program.NetClient.Send(new DuelComMovePhaseMessage()
                 {
                     RunEffectSeq = RunEffectSeq,
                     Phase = phase
                 });
             }
-
             hookDLL_DuelComMovePhase.Original(phase);
         }
 
         public static void DLL_DuelComDoCommand(int player, int position, int index, int commandId)
         {
-            Log("DLL_DuelComDoCommand player:" + player + " pos:" + position + " indx:" + index + " cmd:" + commandId + " seq:" + RunEffectSeq);
             if (IsPvpDuel)
             {
+                Log("DLL_DuelComDoCommand player:" + player + " pos:" + position + " indx:" + index + " cmd:" + commandId + " seq:" + RunEffectSeq);
                 Program.NetClient.Send(new DuelComDoCommandMessage()
                 {
                     RunEffectSeq = RunEffectSeq,
@@ -769,59 +768,55 @@ namespace YgoMasterClient
                     CommandId = commandId
                 });
             }
-
             hookDLL_DuelComDoCommand.Original(player, position, index, commandId);
         }
 
         static int DLL_DuelComCancelCommand()
         {
-            Log("DLL_DuelComCancelCommand seq:" + RunEffectSeq);
             if (IsPvpDuel)
             {
+                Log("DLL_DuelComCancelCommand seq:" + RunEffectSeq);
                 Program.NetClient.Send(new DuelComCancelCommandMessage()
                 {
                     RunEffectSeq = RunEffectSeq
                 });
             }
-
             return hookDLL_DuelComCancelCommand.Original();
         }
 
         static int DLL_DuelComCancelCommand2(bool decide)
         {
-            Log("DLL_DuelComCancelCommand2 seq:" + RunEffectSeq);
             if (IsPvpDuel)
             {
+                Log("DLL_DuelComCancelCommand2 seq:" + RunEffectSeq);
                 Program.NetClient.Send(new DuelComCancelCommand2Message()
                 {
                     RunEffectSeq = RunEffectSeq,
                     Decide = decide
                 });
             }
-
             return hookDLL_DuelComCancelCommand2.Original(decide);
         }
 
         static void DLL_DuelDlgSetResult(uint result)
         {
-            Log("DLL_DuelDlgSetResult result:" + result + " seq:" + RunEffectSeq);
             if (IsPvpDuel)
             {
+                Log("DLL_DuelDlgSetResult result:" + result + " seq:" + RunEffectSeq);
                 Program.NetClient.Send(new DuelDlgSetResultMessage()
                 {
                     RunEffectSeq = RunEffectSeq,
                     Result = result
                 });
             }
-
             hookDLL_DuelDlgSetResult.Original(result);
         }
 
         static void DLL_DuelListSetCardExData(int index, int data)
         {
-            Log("DLL_DuelListSetCardExData index:" + index + " data:" + data + " seq:" + RunEffectSeq);
             if (IsPvpDuel)
             {
+                Log("DLL_DuelListSetCardExData index:" + index + " data:" + data + " seq:" + RunEffectSeq);
                 Program.NetClient.Send(new DuelListSetCardExDataMessage()
                 {
                     RunEffectSeq = RunEffectSeq,
@@ -829,36 +824,33 @@ namespace YgoMasterClient
                     Data = data
                 });
             }
-
             hookDLL_DuelListSetCardExData.Original(index, data);
         }
 
         static void DLL_DuelListSetIndex(int index)
         {
-            Log("DLL_DuelListSetIndex index:" + index + "seq:" + RunEffectSeq);
             if (IsPvpDuel)
             {
+                Log("DLL_DuelListSetIndex index:" + index + "seq:" + RunEffectSeq);
                 Program.NetClient.Send(new DuelListSetIndexMessage()
                 {
                     RunEffectSeq = RunEffectSeq,
                     Index = index
                 });
             }
-
             hookDLL_DuelListSetIndex.Original(index);
         }
 
         static void DLL_DuelListInitString()
         {
-            Log("DLL_DuelListInitString seq:" + RunEffectSeq);
             if (IsPvpDuel)
             {
+                Log("DLL_DuelListInitString seq:" + RunEffectSeq);
                 Program.NetClient.Send(new DuelListInitStringMessage()
                 {
                     RunEffectSeq = RunEffectSeq
                 });
             }
-
             hookDLL_DuelListInitString.Original();
         }
 

@@ -1,6 +1,5 @@
 A rough list of possible features / things to do. There aren't any plans to implement any of these.
 
-- Add a json file with all of the referenced IL2CPP types / methods / fields etc. Use this to automatically validate everything for updates
 - Auto updating of `DuelDllActiveUserDoCommandOffset` / `DuelDllActiveUserSetIndexOffset`
 - Embed Ultralight https://ultralig.ht/ or https://sciter.com/ and create a custom shop UI and solo content (visual novel style) - https://github.com/Monogatari/Monogatari / https://github.com/avgjs/avg-core / https://github.com/Kirilllive/tuesday-js / https://github.com/lunafromthemoon/RenJS-V2
 - Implement emoting like in the WC games (auto emotes based on card actions)

@@ -82,7 +82,7 @@
     1001012,//Kuriboh
     1001013,//Danger!? Jackalope?
     1001014,//Quillbolt Hedgehog
-    //1001015,//coming soon
+    1001015,//PSY-Framegear Gamma
     //1001016,//coming soon
     1001017,//Gunkan Suship Ikura
     //1001018,//coming soon
@@ -195,11 +195,11 @@
     //1010033,//coming soon
     1010034,//Icejade Aegirine
     1010035,//Rafale, Champion Fur Hire
-    //1010036,//coming soon
+    1010036,//Springans Rockey
     //1010037,//coming soon
     1010038,//Blackwing Full Armor Master
     1010039,//Another Duelist
-    //1010040,//coming soon
+    1010040,//Armed Neos
     1010041,//Number 41: Bagooska the Terribly Tired Tapir
     //1010042,//coming soon
     //1010043,//coming soon
@@ -453,8 +453,8 @@
     1020059,//WCS 2023 Qualifiers Top 10000
     1020060,//WCS 2023 Qualifiers DLv. MAX
     1020061,//Explorer
-    //1020062,//coming soon
-    //1020063,//coming soon
+    1020062,//Academy 2023
+    1020063,//Synchro Festival 2023
     //1020064,//coming soon
     //1020065,//coming soon
     //1020066,//coming soon
@@ -513,7 +513,7 @@
     //1030017,//coming soon
     //1030018,//coming soon
     //1030019,//coming soon
-    //1030020,//coming soon
+    1030020,//Yellow Frame
     1030021,//Master Frame
     //1030022,//coming soon
     //1030023,//coming soon
@@ -655,10 +655,10 @@
     1070047,//Mayhem Fur Hire
     1070048,//Ghoti of the Deep Beyond
     1070049,//Witchcrafter Vice-Madame
-    //1070050,//coming soon
+    1070050,//The Bystial Lubellion
     //1070051,//coming soon
     //1070052,//coming soon
-    //1070053,//coming soon
+    1070053,//Road to Worlds! Proficiency Test 2023
     //1070054,//coming soon
     //1070055,//coming soon
     //1070056,//coming soon
@@ -926,7 +926,7 @@
     1090014,//Madolche Chateau
     1090015,//Ghostrick Mansion
     1090016,//Myutant Evolution Lab
-    //1090017,//coming soon
+    1090017,//Cyber Universe
     1090018,//Memories of an Ancient Duel
     //1090019,//coming soon
     //1090020,//coming soon
@@ -978,7 +978,7 @@
     1100014,//Madolche Chateau
     1100015,//Ghostrick Mansion
     1100016,//Myutant Evolution Lab
-    //1100017,//coming soon
+    1100017,//Cyber Universe
     1100018,//Memories of an Ancient Duel
     //1100019,//coming soon
     //1100020,//coming soon
@@ -1070,7 +1070,7 @@
     1110014,//Madolche Chateau
     1110015,//Ghostrick Mansion
     1110016,//Myutant Evolution Lab
-    //1110017,//coming soon
+    1110017,//Cyber Universe
     1110018,//Memories of an Ancient Duel
     //1110019,//coming soon
     //1110020,//coming soon
@@ -1202,7 +1202,7 @@
     1130017,//Dark Magician
     1130018,//Vernusylph of the Flourishing Hills
     1130019,//Ursarctic Radiation
-    //1130020,//coming soon
+    1130020,//Abyss Actors' Curtain Call
     //1130021,//coming soon
     //1130022,//coming soon
     //1130023,//coming soon

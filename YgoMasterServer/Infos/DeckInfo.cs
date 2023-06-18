@@ -13,6 +13,8 @@ namespace YgoMaster
 
 #pragma warning disable CS0649
         public static int DefaultRegulationId;
+        public static Dictionary<string, int> RegulationIdsByName = new Dictionary<string, int>();
+        public static Dictionary<int, string> RegulationNamesById = new Dictionary<int, string>();
 #pragma warning restore CS0649
         public const string DefaultRegulationName = "IDS_CARDMENU_REGULATION_NORMAL";
 
@@ -21,6 +23,7 @@ namespace YgoMaster
         public long TimeCreated;
         public long TimeEdited;
         public int RegulationId;
+        public string RegulationName;
         public DeckAccessoryInfo Accessory;
         public CardCollection DisplayCards { get; private set; }
         public CardCollection MainDeckCards { get; private set; }
@@ -264,6 +267,7 @@ namespace YgoMaster
             {
                 RegulationId = DefaultRegulationId;
             }
+            FixupRegulation();
         }
 
         public void Save()
@@ -290,6 +294,7 @@ namespace YgoMaster
             TimeCreated = other.TimeCreated;
             TimeEdited = other.TimeEdited;
             RegulationId = other.RegulationId;
+            RegulationName = other.RegulationName;
             Accessory.CopyFrom(other.Accessory);
             DisplayCards.CopyFrom(other.DisplayCards);
             MainDeckCards.CopyFrom(other.MainDeckCards);
@@ -297,6 +302,8 @@ namespace YgoMaster
             SideDeckCards.CopyFrom(other.SideDeckCards);
             TrayCards.CopyFrom(other.TrayCards);
             File = other.File;
+
+            FixupRegulation();
         }
 
         public void Clear()
@@ -357,6 +364,7 @@ namespace YgoMaster
             TimeCreated = Utils.GetValue<uint>(data, "ct");
             TimeEdited = Utils.GetValue<uint>(data, "et");
             RegulationId = Utils.GetValue<int>(data, "regulation_id");
+            RegulationName = Utils.GetValue<string>(data, "regulation_name");
             Accessory.FromDictionary(Utils.GetDictionary(data, "accessory"));
             DisplayCards.FromIndexedDictionary(Utils.GetDictionary(data, "pick_cards"));
             if (data.ContainsKey("focus"))
@@ -373,6 +381,8 @@ namespace YgoMaster
             {
                 File = randomDeckPath;
             }
+
+            FixupRegulation();
         }
 
         public Dictionary<string, object> ToDictionaryEx(bool longKeys = false)
@@ -382,6 +392,7 @@ namespace YgoMaster
             data["ct"] = TimeCreated;
             data["et"] = TimeEdited;
             data["regulation_id"] = RegulationId;
+            data["regulation_name"] = RegulationName;
             data["accessory"] = Accessory.ToDictionary();
             data["pick_cards"] = DisplayCards.ToIndexDictionary();
             data[longKeys ? "Main" : "m"] = MainDeckCards.ToDictionary(longKeys);
@@ -407,6 +418,29 @@ namespace YgoMaster
                 { "s", SideDeckCards.ToDictionary() },
             };
             return data;
+        }
+
+        public void FixupRegulation(bool setDefaultId = true)
+        {
+            if (RegulationIdsByName.Count > 0)
+            {
+                int regId;
+                string regName;
+                if (!string.IsNullOrEmpty(RegulationName) && RegulationIdsByName.TryGetValue(RegulationName, out regId))
+                {
+                    RegulationId = regId;
+                }
+                else if (RegulationId != 0 && RegulationNamesById.TryGetValue(RegulationId, out regName))
+                {
+                    RegulationName = regName;
+                }
+            }
+            if (setDefaultId && RegulationNamesById.Count > 0 && !RegulationNamesById.ContainsKey(RegulationId))
+            {
+                RegulationId = DefaultRegulationId;
+                RegulationName = null;
+                FixupRegulation(false);
+            }
         }
     }
 

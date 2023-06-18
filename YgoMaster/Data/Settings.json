@@ -24,7 +24,7 @@
     "DeckSlots": 999,
     "UnlockAllCards": false,// [WARNING] Enabling this permanently wipes your saved cards (all cards are set to 3x without any shine/royal and any newly obtained cards don't save)
     "UnlockAllItems": false,// [WARNING] Enabling this permanently wipes your saved items
-    "UnlockAllSoloChapters": true,// [WARNING] Enabling this permanently wipes your saved solo progress
+    "UnlockAllSoloChapters": false,// [WARNING] Enabling this permanently wipes your saved solo progress
     "SoloRemoveDuelTutorials": false,
     "SoloDisableNoShuffle": false,
     "SoloShowGateClearForAllSecretPacks": false,

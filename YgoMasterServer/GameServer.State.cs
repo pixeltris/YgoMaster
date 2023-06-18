@@ -439,6 +439,13 @@ namespace YgoMaster
                 if (Regulation != null && RegulationInfo != null)
                 {
                     DeckInfo.DefaultRegulationId = int.Parse(Utils.GetDictionary(RegulationInfo, "rule_list").FirstOrDefault(x => (string)x.Value == DeckInfo.DefaultRegulationName).Key);
+
+                    Dictionary<string, object> regulations = Utils.GetDictionary(RegulationInfo, "rule_list");
+                    foreach (KeyValuePair<string, object> regulation in regulations)
+                    {
+                        DeckInfo.RegulationIdsByName.Add(regulation.Value as string, int.Parse(regulation.Key));
+                        DeckInfo.RegulationNamesById.Add(int.Parse(regulation.Key), regulation.Value as string);
+                    }
                 }
             }
             if (Utils.GetValue<bool>(values, "DisableBanList") && Regulation != null)

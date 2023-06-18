@@ -62,6 +62,7 @@ namespace YgoMaster
             deck.Id = Utils.GetValue(request.ActParams, "deck_id", 0);
             deck.Name = Utils.GetValue(request.ActParams, "name", "Deck");
             deck.RegulationId = Utils.GetValue(request.ActParams, "regulation_id", DeckInfo.DefaultRegulationId);
+            deck.FixupRegulation();
             Dictionary<string, object> accessory = Utils.GetDictionary(request.ActParams, "accessory");
             deck.Accessory.FromDictionary(accessory);
             Dictionary<string, object> displayCards = Utils.GetDictionary(request.ActParams, "pick_cards");
