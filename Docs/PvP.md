@@ -1,6 +1,8 @@
 ## PvP
 
-PvP lets you use duel rooms and the friends list. You can also trade cards.
+**NOTE: PvP will currently desync / lock the duel in many cases. The code needs to be reworked.**
+
+PvP (WIP) lets you use duel rooms and the friends list. You can also trade cards.
 
 ## Setting it up on a single PC
 
