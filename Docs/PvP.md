@@ -1,8 +1,6 @@
 ## PvP
 
-**NOTE: PvP will currently desync / lock the duel in many cases. The code needs to be reworked.**
-
-PvP (WIP) lets you use duel rooms and the friends list. You can also trade cards.
+PvP lets you use duel rooms and the friends list. You can also trade cards.
 
 ## Setting it up on a single PC
 
@@ -30,10 +28,10 @@ PvP (WIP) lets you use duel rooms and the friends list. You can also trade cards
 ## Notes
 
 - Every PC (and every seperate YgoMaster folder) must have a different `MultiplayerToken` as otherwise they will share the same session which will break things
-- Due to PvP duels requiring constant synchronization it is unlikely to perform well outside of LAN
 - Do not modify `YgoMaster/Data/Players/` or any sub folders while `YgoMaster.exe` is running
 - Clicking mates / duel field borders are synced with the other player. Spectators also see it but their clicks don't sync
 - Sometimes clients bug out if you restart YgoMaster while in a duel (when you next enter a duel one client will get stuck before starting the duel). Restart all clients when reopening YgoMaster
+- Releases include a folder called `YgoMaster/CardData/`. To Generate that folder yourself read [Updating.md](Updating.md)
 
 ## Starting duels
 
