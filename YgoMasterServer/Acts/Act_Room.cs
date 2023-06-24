@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -486,6 +487,21 @@ namespace YgoMaster
 
             ClearSpectatingDuel(request.Player);
 
+            if (!File.Exists(Pvp.DllName))
+            {
+                Utils.LogWarning("[Act_RoomBattleReady] Failed to find '" + Pvp.DllName + "'");
+                request.ResultCode = (int)ResultCodes.RoomCode.ERR_INVALID_DATA;
+                return;
+            }
+
+            string cardDataFile = Path.Combine(dataDirectory, "CardData", "#", "CARD_IntID.bytes");
+            if (!File.Exists(cardDataFile))
+            {
+                Utils.LogWarning("[Act_RoomBattleReady] Failed to find '" + cardDataFile + "'");
+                request.ResultCode = (int)ResultCodes.RoomCode.ERR_INVALID_DATA;
+                return;
+            }
+
             bool isBattleReady = Utils.GetValue<bool>(request.ActParams, "isBattleReady");
             //int opponentCode = Utils.GetValue<int>(request.ActParams, "opp_code");
 
@@ -531,6 +547,7 @@ namespace YgoMaster
                                     table.FirstPlayer = -1;
                                     table.CoinFlipPlayerIndex = MultiplayerCoinFlipPlayerIndex != -1 ? MultiplayerCoinFlipPlayerIndex : rand.Next(2);
                                     table.CoinFlipCounter = MultiplayerCoinFlipCounter;
+                                    table.ClearPvpClient();
                                     using (SHA1 sha1 = SHA1.Create())
                                     {
                                         table.TableHash = BitConverter.ToString(sha1.ComputeHash(Guid.NewGuid().ToByteArray())).Replace("-", string.Empty);
@@ -538,6 +555,11 @@ namespace YgoMaster
                                     using (MD5 md5 = MD5.Create())
                                     {
                                         table.TableTicket = BitConverter.ToString(md5.ComputeHash(Guid.NewGuid().ToByteArray())).Replace("-", string.Empty);
+                                    }
+                                    using (SHA256 sha = SHA256.Create())
+                                    {
+                                        byte[] secretKey = sha.ComputeHash(Encoding.UTF8.GetBytes(duelRoom.Id + " - " + duelRoom.TimeCreated + rand.Next()));
+                                        table.SecretKeyForPvpServer = BitConverter.ToString(secretKey).Replace("-", string.Empty);
                                     }
                                 }
                                 break;
@@ -1126,7 +1148,6 @@ namespace YgoMaster
 
             if (request.Player.NetClient == null)
             {
-                table.ClearMatching();
                 Utils.LogWarning("[Act_DuelBeginPvp] Player '" + request.Player.Name + "' can't enter duel as they aren't connected to the session server");
                 request.ResultCode = (int)ResultCodes.RoomCode.ERR_INVALID_DATA;
                 duelRoom.ResetTableStateIfMatchingOrDueling(request.Player);
@@ -1212,6 +1233,55 @@ namespace YgoMaster
             request.Player.ActiveDuelSettings.CopyFrom(duelSettings);
             request.Player.ActiveDuelSettings.HasSavedReplay = false;
             request.Player.ActiveDuelSettings.DuelBeginTime = Utils.GetEpochTime();
+
+            if (request.Player == p1)
+            {
+                using (Process process = new Process())
+                {
+                    Dictionary<string, object> data = new Dictionary<string, object>();
+                    data["Duel"] = duelSettings.ToDictionary();
+                    data["SessionServerIP"] = sessionServerIP;
+                    data["SessionServerPort"] = sessionServerPort;
+                    data["Key"] = table.SecretKeyForPvpServer;
+                    data["DuelRoomId"] = duelRoom.Id;
+                    data["PlayerId1"] = p1.Code;
+                    data["PlayerId2"] = p2.Code;
+                    data["Sleep"] = MultiplayerPvpClientSysActSleepInMilliseconds;
+                    data["CallsPerSleep"] = MultiplayerPvpClientSysActCallsPerSleep;
+                    data["NoDelay"] = MultiplayerNoDelay;
+                    data["DoCommandUserOffset"] = MultiplayerPvpClientDoCommandUserOffset;
+                    data["RunDialogUserOffset"] = MultiplayerPvpClientRunDialogUserOffset;
+
+                    process.StartInfo.Arguments = "--pvp \"" + Convert.ToBase64String(Encoding.UTF8.GetBytes(MiniJSON.Json.Serialize(data))) + "\"";
+                    process.StartInfo.FileName = Path.GetFileName(ygoMasterExePath);
+                    if (!MultiplayerPvpClientShowConsole)
+                    {
+                        process.StartInfo.CreateNoWindow = true;
+                        process.StartInfo.UseShellExecute = false;
+                    }
+                    process.Start();
+                }
+            }
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            while (table.PvpClientState != PvpClientState.Ready && table.State == DuelRoomTableState.Dueling &&
+                sw.Elapsed < TimeSpan.FromSeconds(10))
+            {
+                Thread.Sleep(200);
+            }
+
+            if (table.PvpClientState == PvpClientState.Ready && table.State == DuelRoomTableState.Dueling)
+            {
+                //Console.WriteLine("Ready");
+            }
+            else
+            {
+                Utils.LogWarning("[Act_DuelBeginPvp] Player '" + request.Player.Name + "' can't enter duel as the pvp client wasn't set up in time");
+                request.ResultCode = (int)ResultCodes.RoomCode.ERR_INVALID_DATA;
+                duelRoom.ResetTableStateIfMatchingOrDueling(request.Player);
+                return;
+            }
 
             Dictionary<string, object> duelData = duelSettings.ToDictionary();
             duelData["SendLiveRecordData"] = duelRoom.AllowSpectators && request.Player == p1;
@@ -1430,6 +1500,16 @@ namespace YgoMaster
                 ClearSpectatingDuel(request.Player);
                 Dictionary<string, object> responseData = request.GetOrCreateDictionary("Response");
                 responseData["UrlScheme"] = "duel:push?GameMode=" + (int)GameMode.Audience + "&pcode=" + pcode + "&rapid=" + rapid;
+            }
+        }
+
+        public DuelRoom GetDuelRoom(uint duelRoomId)
+        {
+            lock (duelRoomsLocker)
+            {
+                DuelRoom result;
+                duelRoomsByRoomId.TryGetValue(duelRoomId, out result);
+                return result;
             }
         }
 

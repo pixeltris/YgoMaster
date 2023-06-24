@@ -19,7 +19,11 @@
     "MultiplayerSeed": -1,
     "MultiplayerCoinFlipPlayerIndex": -1,
     "MultiplayerCoinFlipCounter": 5,
-    "DisableDeckValidation": false,
+    "MultiplayerPvpClientShowConsole": true,
+    "MultiplayerPvpClientSysActSleepInMilliseconds": 10,
+    "MultiplayerPvpClientSysActCallsPerSleep": 5,
+    "MultiplayerPvpClientDoCommandUserOffset": 13440,
+    "MultiplayerPvpClientRunDialogUserOffset": 13340,
     "ShowTopics": true,
     "DeckSlots": 999,
     "UnlockAllCards": false,// [WARNING] Enabling this permanently wipes your saved cards (all cards are set to 3x without any shine/royal and any newly obtained cards don't save)

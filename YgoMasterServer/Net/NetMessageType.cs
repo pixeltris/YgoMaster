@@ -7,17 +7,20 @@ namespace YgoMaster.Net
 {
     enum NetMessageType
     {
+        PvpServerConnectionRequest,
         ConnectionRequest,
         ConnectionResponse,
         Ping,
         Pong,
 
         // Misc duel messages
-        DuelError,
-        UpdateIsBusyEffect,
         OpponentDuelEnded,
+        DuelError,
         DuelTapSync,
         DuelEmote,
+        DuelEngineState,
+        DuelSysActFinished,
+        DuelIsBusyEffect,
 
         // Duel spectator messages
         DuelSpectatorEnter,
@@ -42,6 +45,7 @@ namespace YgoMaster.Net
         TradeStateChange,
 
         // Friend messages
-        FriendDuelInvite
+        FriendDuelInvite,
+
     }
 }

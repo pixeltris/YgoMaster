@@ -17,6 +17,12 @@ namespace YgoMaster
 
             for (int i = 0; i < args.Length; i++)
             {
+                if (args[i].ToLowerInvariant() == "--pvp" && i < args.Length - 1)
+                {
+                    Pvp pvp = new Pvp();
+                    pvp.Run(Encoding.UTF8.GetString(Convert.FromBase64String(args[i + 1])));
+                    return 0;
+                }
                 if (args[i].ToLowerInvariant() == "--cpucontest-sim" && i < args.Length - 5)
                 {
                     try
@@ -56,7 +62,7 @@ namespace YgoMaster
 
             GameServer server = new GameServer();
             server.Start();
-            System.Diagnostics.Process.GetCurrentProcess().WaitForExit();
+            Process.GetCurrentProcess().WaitForExit();
             return 0;
         }
     }

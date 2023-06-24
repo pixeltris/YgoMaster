@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="YgoMasterClient\DuelDll.ProxyFunctions.cs" />
     <Compile Include="YgoMasterClient\DuelTapSync.cs" />
     <Compile Include="YgoMasterClient\DuelEmoteHelper.cs" />
     <Compile Include="YgoMasterClient\IL2CPP\ReflectionValidator.cs" />
@@ -101,6 +102,13 @@
     <Compile Include="YgoMasterServer\Enums\Misc.cs" />
     <Compile Include="YgoMasterServer\Enums\ResultCodes.cs" />
     <Compile Include="YgoMasterServer\Infos\CardCollection.cs" />
+    <Compile Include="YgoMasterServer\Lib\LZ4.cs" />
+    <Compile Include="YgoMasterServer\Lib\LZ4Codec.cs" />
+    <Compile Include="YgoMasterServer\Lib\LZ4Codec.Safe.cs" />
+    <Compile Include="YgoMasterServer\Lib\LZ4Codec.Safe32.Dirty.cs" />
+    <Compile Include="YgoMasterServer\Lib\LZ4Codec.Safe32HC.Dirty.cs" />
+    <Compile Include="YgoMasterServer\Lib\LZ4Codec.Safe64.Dirty.cs" />
+    <Compile Include="YgoMasterServer\Lib\LZ4Codec.Safe64HC.Dirty.cs" />
     <Compile Include="YgoMasterServer\Lib\MiniJSON.cs" />
     <Compile Include="YgoMasterServer\Infos\DeckInfo.cs" />
     <Compile Include="YgoMasterServer\Lib\MiniMessagePacker.cs" />
@@ -113,7 +121,9 @@
     <Compile Include="YgoMasterServer\Net\Message\DuelComMovePhaseMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelDlgSetResultMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelEmoteMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Message\DuelEngineStateMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelErrorMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Message\DuelIsBusyEffectMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelListInitStringMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelListSetCardExDataMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelListSetIndexMessage.cs" />
@@ -121,20 +131,22 @@
     <Compile Include="YgoMasterServer\Net\Message\DuelSpectatorDataMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelSpectatorEnterMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelSpectatorFieldGuideMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Message\DuelSysActFinishedMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelTapSyncMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\FriendDuelInviteMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\OpponentDuelEndedMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\PingMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\PongMessage.cs" />
+    <Compile Include="YgoMasterServer\Net\Message\PvpServerConnectionRequestMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\TradeEnterRoomMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\TradeLeaveRoomMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\TradeMoveCardMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\TradeStateChangedMessage.cs" />
-    <Compile Include="YgoMasterServer\Net\Message\UpdateIsBusyEffectMessage.cs" />
     <Compile Include="YgoMasterServer\Net\NetClient.cs" />
     <Compile Include="YgoMasterServer\Net\NetMessage.cs" />
     <Compile Include="YgoMasterServer\Net\NetMessageType.cs" />
     <Compile Include="YgoMasterServer\Net\NetPacketBuffer.cs" />
+    <Compile Include="YgoMasterServer\Pvp.cs" />
     <Compile Include="YgoMasterServer\Utils.cs" />
     <Compile Include="YgoMasterServer\YdkHelper.cs" />
   </ItemGroup>

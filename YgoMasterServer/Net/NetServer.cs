@@ -191,8 +191,12 @@ namespace YgoMaster.Net
             }
         }
 
-        void SendDuelErrorMessageToTable(Player player, Player excludePlayer = null)
+        void SendDuelErrorMessageToTable(Player player, Player excludePlayer = null, DuelErrorMessage message = null)
         {
+            if (message == null)
+            {
+                message = new DuelErrorMessage();
+            }
             DuelRoom duelRoom = player.DuelRoom;
             DuelRoomTable table = duelRoom == null ? null : duelRoom.GetTable(player);
             if (table != null)
@@ -204,13 +208,15 @@ namespace YgoMaster.Net
                 NetClient client = player.NetClient;
                 if (client != null)
                 {
-                    client.Send(new DuelErrorMessage());
+                    client.Send(message);
                 }
             }
         }
 
         void SendDuelErrorMessageToTable(DuelRoomTable table, Player excludePlayer = null)
         {
+            DuelErrorMessage message = new DuelErrorMessage();
+
             Player[] players = { table.Player1, table.Player2 };
             foreach (Player player in players)
             {
@@ -219,7 +225,7 @@ namespace YgoMaster.Net
                     NetClient client = player.NetClient;
                     if (client != null)
                     {
-                        client.Send(new DuelErrorMessage());
+                        client.Send(message);
                     }
                 }
             }
@@ -233,11 +239,17 @@ namespace YgoMaster.Net
                         NetClient spectatorClient = spectator.NetClient;
                         if (spectatorClient != null)
                         {
-                            spectatorClient.Send(new DuelErrorMessage());
+                            spectatorClient.Send(message);
                         }
                     }
                 }
                 table.ClearSpectators();
+            }
+
+            NetClient pvpClient = table.PvpClient;
+            if (pvpClient != null)
+            {
+                pvpClient.Send(message);
             }
         }
 
@@ -263,15 +275,19 @@ namespace YgoMaster.Net
                 case NetMessageType.DuelListSetCardExData:
                 case NetMessageType.DuelListSetIndex:
                 case NetMessageType.DuelListInitString:
-                case NetMessageType.UpdateIsBusyEffect:// Special case
-                case NetMessageType.DuelError:// Special case
                     OnDuelCom(client, message);
                     break;
+
+                case NetMessageType.DuelError: OnDuelError(client, (DuelErrorMessage)message); break;
+                case NetMessageType.DuelEngineState: OnDuelEngineState(client, (DuelEngineStateMessage)message); break;
+                case NetMessageType.DuelIsBusyEffect: OnDuelIsBusyEffect(client, (DuelIsBusyEffectMessage)message); break;
 
                 case NetMessageType.TradeEnterRoom: OnTradeEnterRoom(client, (TradeEnterRoomMessage)message);  break;
                 case NetMessageType.TradeLeaveRoom: OnTradeLeaveRoom(client, (TradeLeaveRoomMessage)message); break;
                 case NetMessageType.TradeMoveCard: OnTradeMoveCard(client, (TradeMoveCardMessage)message); break;
                 case NetMessageType.TradeStateChange: OnTradeStateChange(client, (TradeStateChangeMessage)message); break;
+
+                case NetMessageType.PvpServerConnectionRequest: OnPvpServerConnectionRequest(client, (PvpServerConnectionRequestMessage)message); break;
             }
         }
 
@@ -565,17 +581,118 @@ namespace YgoMaster.Net
             }
         }
 
+        void OnDuelError(NetClient client, DuelErrorMessage message)
+        {
+            SendDuelErrorMessageToTable(client.Player, client.Player, message);
+        }
+
         void OnDuelCom(NetClient client, NetMessage message)
         {
-            Player opponent = GameServer.GetDuelingOpponent(client.Player);
-            NetClient opponentClient = opponent == null ? null : opponent.NetClient;
-            if (opponentClient != null)
+            Player player = client.Player;
+            if (player == null)
             {
-                opponentClient.Send(message);
+                return;
             }
-            else
+
+            DuelRoom duelRoom = player.DuelRoom;
+            if (duelRoom == null)
             {
-                SendDuelErrorMessageToTable(client.Player);
+                return;
+            }
+
+            DuelRoomTable table = duelRoom.GetTable(player);
+            if (table == null)
+            {
+                return;
+            }
+
+            NetClient pvpClient = table.PvpClient;
+            if (pvpClient == null)
+            {
+                return;
+            }
+
+            pvpClient.Send(message);
+        }
+
+        void OnDuelEngineState(NetClient client, DuelEngineStateMessage message)
+        {
+            DuelRoomTable table = client.Table;
+            if (table == null || table.PvpClient != client || table.State != DuelRoomTableState.Dueling)
+            {
+                table.ClearMatching();
+                client.Close();
+                return;
+            }
+
+            Player p1 = table.Player1;
+            Player p2 = table.Player2;
+            if (p1 == null || p2 == null)
+            {
+                client.Close();
+                return;
+            }
+
+            NetClient p1Client = p1.NetClient;
+            NetClient p2Client = p2.NetClient;
+
+            if (p1Client == null || p2Client == null)
+            {
+                client.Close();
+                return;
+            }
+
+            p1Client.Send(message);
+            p2Client.Send(message);
+        }
+
+        void OnDuelIsBusyEffect(NetClient client, DuelIsBusyEffectMessage message)
+        {
+            DuelRoomTable table = client.Table;
+            Player player = client.Player;
+            if (table != null)
+            {
+                Player p1 = table.Player1;
+                Player p2 = table.Player2;
+                if (p1 == null || p2 == null)
+                {
+                    client.Close();
+                    return;
+                }
+
+                NetClient p1Client = p1.NetClient;
+                NetClient p2Client = p2.NetClient;
+
+                if (p1Client == null || p2Client == null)
+                {
+                    client.Close();
+                    return;
+                }
+
+                p1Client.Send(message);
+                p2Client.Send(message);
+            }
+            else if (player != null)
+            {
+                DuelRoom duelRoom = player.DuelRoom;
+                if (duelRoom == null)
+                {
+                    return;
+                }
+
+                table = duelRoom.GetTable(player);
+                if (table == null)
+                {
+                    return;
+                }
+
+                NetClient pvpClient = table.PvpClient;
+                if (pvpClient == null)
+                {
+                    return;
+                }
+
+                pvpClient.Send(message);
             }
         }
 
@@ -941,6 +1058,49 @@ namespace YgoMaster.Net
                     }
                 }
             }
+        }
+
+        void OnPvpServerConnectionRequest(NetClient client, PvpServerConnectionRequestMessage message)
+        {
+            // TODO: Validate the IP
+            DuelRoom duelRoom = GameServer.GetDuelRoom(message.DuelRoomId);
+            if (duelRoom == null)
+            {
+                client.Send(new ConnectionResponseMessage()
+                {
+                    Success = false
+                });
+                return;
+            }
+            Player p1 = GameServer.GetPlayerFromId(message.PlayerId1);
+            Player p2 = GameServer.GetPlayerFromId(message.PlayerId2);
+            if (p1 == null || p2 == null || p1 == p2)
+            {
+                client.Send(new ConnectionResponseMessage()
+                {
+                    Success = false
+                });
+                return;
+            }
+            DuelRoomTable table = duelRoom.GetTable(p1);
+            if (!table.ContainsPlayer(p2) || table.State != DuelRoomTableState.Dueling || table.IsDuelComplete)
+            {
+                client.Send(new ConnectionResponseMessage()
+                {
+                    Success = false
+                });
+                return;
+            }
+            lock (table.PvpClientLocker)
+            {
+                client.Table = table;
+                table.PvpClient = client;
+                table.PvpClientState = PvpClientState.Ready;
+            }
+            client.Send(new ConnectionResponseMessage()
+            {
+                Success = true
+            });
         }
     }
 }

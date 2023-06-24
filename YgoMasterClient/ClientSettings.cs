@@ -18,8 +18,6 @@ namespace YgoMasterClient
         public static int MultiplayerConnectDelayInSeconds;
         public static bool MultiplayerNoDelay;
         public static bool MultiplayerLogConnectionState;
-        public static int DuelDllActiveUserDoCommandOffset;
-        public static int DuelDllActiveUserSetIndexOffset;
         public static string ClientSettingsTextFile;
         public static bool ShowConsole;
         public static bool LogIDs;
@@ -110,8 +108,6 @@ namespace YgoMasterClient
             MultiplayerConnectDelayInSeconds = Utils.GetValue<int>(data, "MultiplayerConnectDelayInSeconds");
             MultiplayerNoDelay = Utils.GetValue<bool>(data, "MultiplayerNoDelay");
             MultiplayerLogConnectionState = Utils.GetValue<bool>(data, "MultiplayerLogConnectionState");
-            DuelDllActiveUserDoCommandOffset = Utils.GetValue<int>(data, "DuelDllActiveUserDoCommandOffset");
-            DuelDllActiveUserSetIndexOffset = Utils.GetValue<int>(data, "DuelDllActiveUserSetIndexOffset");
             ClientSettingsTextFile = Utils.GetValue<string>(data, "ClientSettingsTextFile");
             ShowConsole = Utils.GetValue<bool>(data, "ShowConsole");
             LogIDs = Utils.GetValue<bool>(data, "LogIDs");

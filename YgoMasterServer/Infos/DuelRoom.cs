@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using YgoMaster.Net;
 
 namespace YgoMaster
 {
@@ -265,7 +266,12 @@ namespace YgoMaster
         public int CoinFlipPlayerIndex;
         public string TableHash;
         public string TableTicket;
+        public string SecretKeyForPvpServer;
         public DuelRoomTableRewards Rewards = new DuelRoomTableRewards();
+
+        public object PvpClientLocker = new object();
+        public NetClient PvpClient;
+        public PvpClientState PvpClientState;
 
         public HashSet<Player> Spectators = new HashSet<Player>();
         public List<byte> SpectatorData = new List<byte>();
@@ -478,6 +484,7 @@ namespace YgoMaster
                     entry.HasBeginDuel = false;
                 }
                 State = DuelRoomTableState.Joinable;
+                SecretKeyForPvpServer = null;
             }
             ClearSpectators();
         }
@@ -511,6 +518,19 @@ namespace YgoMaster
                 }
                 SpectatorData.Clear();
                 Spectators.Clear();
+            }
+        }
+
+        public void ClearPvpClient()
+        {
+            lock (PvpClientLocker)
+            {
+                PvpClientState = PvpClientState.None;
+                NetClient pvpClient = PvpClient;
+                if (pvpClient != null)
+                {
+                    pvpClient.Close();
+                }
             }
         }
     }
@@ -567,5 +587,12 @@ namespace YgoMaster
         public int AddTimeAtStartOfTurn;
         public int AddTimeAtEndOfTurn;
         public int TurnTimeIndicator;//AddTimeAtStartOfTurn + AddTimeAtEndOfTurn
+    }
+
+    enum PvpClientState
+    {
+        None,
+        Launching,
+        Ready
     }
 }

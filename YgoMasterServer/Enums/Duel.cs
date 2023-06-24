@@ -164,7 +164,8 @@ namespace YgoMaster
         TurnDef,
         Surrender,
         Decide,
-        Draw
+        Draw,
+        COUNT
     }
 
     /// <summary>

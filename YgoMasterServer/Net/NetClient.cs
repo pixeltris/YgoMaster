@@ -12,9 +12,11 @@ namespace YgoMaster.Net
 {
     class NetClient
     {
+        public bool NoDelay;
         public DateTime LastMessageTime;
 #if !YGO_MASTER_CLIENT
         public Player Player;
+        public DuelRoomTable Table;
 #endif
 
         private int bCalledDisconnected = 0;
@@ -137,9 +139,10 @@ namespace YgoMaster.Net
                 socket.Close();
 
             Socket = socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-#if YGO_MASTER_CLIENT
-            Socket.NoDelay = YgoMasterClient.ClientSettings.MultiplayerNoDelay;
-#endif
+            if (NoDelay)
+            {
+                Socket.NoDelay = true;
+            }
             socket.Connect(ip, port);
             LastMessageTime = DateTime.UtcNow;
             bCalledDisconnected = 0;
@@ -204,9 +207,15 @@ namespace YgoMaster.Net
 
         public void Close()
         {
-            Socket socket = Socket;
-            if (socket.Connected)
-                socket.Close();
+            try
+            {
+                Socket socket = Socket;
+                if (socket.Connected)
+                    socket.Close();
+            }
+            catch
+            {
+            }
         }
 
         void OnRecvData(IAsyncResult ar)

@@ -6,6 +6,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Threading;
 using System.Net;
+using System.Reflection;
 
 namespace YgoMaster
 {
@@ -17,16 +18,17 @@ namespace YgoMaster
         static readonly string deckSearchDetailUrl = "https://ayk-deck.mo.konami.net/ayk/yocgapi/detail";
         static readonly string deckSearchAttributesUrl = "https://ayk-deck.mo.konami.net/ayk/yocgapi/attributes";
 
-        static string sessionServerIP;
-        static int sessionServerPort;
+        string sessionServerIP;
+        int sessionServerPort;
 
-        static string bindIP;
-        static string serverUrl;
-        static string serverPollUrl;
+        string bindIP;
+        string serverUrl;
+        string serverPollUrl;
 
-        static string dataDirectory;
-        static string playersDirectory;
-        static string settingsFile;
+        string ygoMasterExePath;
+        string dataDirectory;
+        string playersDirectory;
+        string settingsFile;
 
         Random rand = new Random();
 
@@ -234,9 +236,30 @@ namespace YgoMaster
         /// How long an emote can be (in characters). If an emote is longer than this it'll be ignored
         /// </summary>
         public int EmoteMaxLength;
+        /// <summary>
+        /// Should the pvp client console be visible
+        /// </summary>
+        public bool MultiplayerPvpClientShowConsole;
+        /// <summary>
+        /// How long to sleep for after each sysact call
+        /// </summary>
+        public int MultiplayerPvpClientSysActSleepInMilliseconds;
+        /// <summary>
+        /// How many times to call sysact per loop
+        /// </summary>
+        public int MultiplayerPvpClientSysActCallsPerSleep;
+        /// <summary>
+        /// Offset for getting the active player for a given DoCommand in duel.dll
+        /// </summary>
+        public int MultiplayerPvpClientDoCommandUserOffset;
+        /// <summary>
+        /// Offset for getting the active player for a given RunDialog in duel.dll
+        /// </summary>
+        public int MultiplayerPvpClientRunDialogUserOffset;
 
         void LoadSettings()
         {
+            ygoMasterExePath = Assembly.GetExecutingAssembly().Location;
             dataDirectory = Utils.GetDataDirectory(true);
             if (!Directory.Exists(dataDirectory))
             {
@@ -339,6 +362,11 @@ namespace YgoMaster
             TradeAllowOtherPlayerToRemoveYourCards = Utils.GetValue<bool>(values, "TradeAllowOtherPlayerToRemoveYourCards");
             TradeEnterRoomRequestDelayInSeconds = Utils.GetValue<float>(values, "TradeEnterRoomRequestDelayInSeconds");
             EmoteMaxLength = Utils.GetValue<int>(values, "EmoteMaxLength");
+            MultiplayerPvpClientShowConsole = Utils.GetValue<bool>(values, "MultiplayerPvpClientShowConsole");
+            MultiplayerPvpClientSysActSleepInMilliseconds = Utils.GetValue<int>(values, "MultiplayerPvpClientSysActSleepInMilliseconds");
+            MultiplayerPvpClientSysActCallsPerSleep = Utils.GetValue<int>(values, "MultiplayerPvpClientSysActCallsPerSleep");
+            MultiplayerPvpClientDoCommandUserOffset = Utils.GetValue<int>(values, "MultiplayerPvpClientDoCommandUserOffset");
+            MultiplayerPvpClientRunDialogUserOffset = Utils.GetValue<int>(values, "MultiplayerPvpClientRunDialogUserOffset");
 
             FriendSearchLimit = Utils.GetValue<int>(values, "FriendSearchLimit", 100);
             FriendOfflineInSeconds = Utils.GetValue<int>(values, "FriendOfflineInSeconds", 300);

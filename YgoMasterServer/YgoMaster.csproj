@@ -71,6 +71,7 @@
     <Compile Include="Net\Message\DuelComMovePhaseMessage.cs" />
     <Compile Include="Net\Message\DuelDlgSetResultMessage.cs" />
     <Compile Include="Net\Message\DuelEmoteMessage.cs" />
+    <Compile Include="Net\Message\DuelEngineStateMessage.cs" />
     <Compile Include="Net\Message\DuelErrorMessage.cs" />
     <Compile Include="Net\Message\DuelListInitStringMessage.cs" />
     <Compile Include="Net\Message\DuelListSetCardExDataMessage.cs" />
@@ -79,8 +80,10 @@
     <Compile Include="Net\Message\DuelSpectatorDataMessage.cs" />
     <Compile Include="Net\Message\DuelSpectatorEnterMessage.cs" />
     <Compile Include="Net\Message\DuelSpectatorFieldGuideMessage.cs" />
+    <Compile Include="Net\Message\DuelSysActFinishedMessage.cs" />
     <Compile Include="Net\Message\DuelTapSyncMessage.cs" />
     <Compile Include="Net\Message\FriendDuelInviteMessage.cs" />
+    <Compile Include="Net\Message\PvpServerConnectionRequestMessage.cs" />
     <Compile Include="Net\Message\TradeMoveCardMessage.cs" />
     <Compile Include="Net\Message\TradeEnterRoomMessage.cs" />
     <Compile Include="Net\Message\TradeLeaveRoomMessage.cs" />
@@ -88,12 +91,13 @@
     <Compile Include="Net\Message\PingMessage.cs" />
     <Compile Include="Net\Message\PongMessage.cs" />
     <Compile Include="Net\Message\TradeStateChangedMessage.cs" />
-    <Compile Include="Net\Message\UpdateIsBusyEffectMessage.cs" />
+    <Compile Include="Net\Message\DuelIsBusyEffectMessage.cs" />
     <Compile Include="Net\NetMessage.cs" />
     <Compile Include="Net\NetClient.cs" />
     <Compile Include="Net\NetMessageType.cs" />
     <Compile Include="Net\NetPacketBuffer.cs" />
     <Compile Include="Net\NetServer.cs" />
+    <Compile Include="Pvp.cs" />
     <Compile Include="Sim\CpuContest.cs" />
     <Compile Include="Updater.cs" />
     <Compile Include="WikiDump\HtmlAgilityPack.Merged.cs" />

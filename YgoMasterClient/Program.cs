@@ -154,6 +154,7 @@ namespace YgoMasterClient
                     !string.IsNullOrEmpty(ClientSettings.SessionServerIP) && ClientSettings.SessionServerPort != 0)
                 {
                     NetClient = new NetClient();
+                    NetClient.NoDelay = ClientSettings.MultiplayerNoDelay;
                     NetClient.Disconnected += (x) =>
                     {
                         if (ClientSettings.MultiplayerLogConnectionState)
@@ -937,6 +938,23 @@ namespace YgoMasterClient
                                                             }
                                                         }
                                                     }
+                                                }
+                                                break;
+                                            case "pvpops":// Generates enum for YgoMaster.PvpOperation
+                                                {
+                                                    using (TextWriter tw = File.CreateText(Path.Combine(CurrentDir, "PvpOps.txt")))
+                                                    {
+                                                        IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+                                                        IL2Class engineClass = assembly.GetClass("Engine", "YgomGame.Duel");
+                                                        foreach (IL2Method method in engineClass.GetMethods().OrderBy(x => x.Name))
+                                                        {
+                                                            if (method.Name.StartsWith("DLL_"))
+                                                            {
+                                                                tw.WriteLine(method.Name + ",");
+                                                            }
+                                                        }
+                                                    }
+                                                    Console.WriteLine("Done");
                                                 }
                                                 break;
                                         }
