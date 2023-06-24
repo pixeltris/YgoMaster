@@ -138,14 +138,15 @@ namespace YgoMaster
             List<int> r3 = Utils.GetValueTypeList<int>(requireData, "r3");
 
             List<int> a0 = Utils.GetValueTypeList<int>(availableData, "a0");// Banned
-            List<int> a1 = Utils.GetValueTypeList<int>(availableData, "a1");// 2
-            List<int> a2 = Utils.GetValueTypeList<int>(availableData, "a2");// 1
-            List<int> a3 = Utils.GetValueTypeList<int>(availableData, "a3");// ?
+            List<int> a1 = Utils.GetValueTypeList<int>(availableData, "a1");// 1
+            List<int> a2 = Utils.GetValueTypeList<int>(availableData, "a2");// 2
+            List<int> a3 = Utils.GetValueTypeList<int>(availableData, "a3");// 3
             Dictionary<List<int>, int> limits = new Dictionary<List<int>, int>()
             {
                 { a0, 0 },
-                { a1, 2 },
-                { a2, 1 }
+                { a1, 1 },
+                { a2, 2 },
+                { a3, 3 }
             };
 
             Dictionary<int, int> cards = new Dictionary<int, int>();
