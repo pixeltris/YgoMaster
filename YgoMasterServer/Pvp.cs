@@ -286,21 +286,21 @@ namespace YgoMaster
             }
 
             // Always get 1 mix num at minimum as some places get mix num without checking mix num
-            int mixNum = UpdateValue(PvpOperationType.DLL_DuelDlgGetMixNum, Pvp.DLL_DuelDlgGetMixNum());
+            int mixNum = Math.Max(1, UpdateValue(PvpOperationType.DLL_DuelDlgGetMixNum, Pvp.DLL_DuelDlgGetMixNum()));
             for (int i = 0; i < mixNum; i++)
             {
                 UpdateValue(PvpOperationType.DLL_DuelDlgGetMixData, Pvp.DLL_DuelDlgGetMixData(i), i);
                 UpdateValue(PvpOperationType.DLL_DuelDlgGetMixType, Pvp.DLL_DuelDlgGetMixType(i), i);
             }
             
-            int selectItemNum = UpdateValue(PvpOperationType.DLL_DuelDlgGetSelectItemNum, Pvp.DLL_DuelDlgGetSelectItemNum());
+            int selectItemNum = Math.Max(1, UpdateValue(PvpOperationType.DLL_DuelDlgGetSelectItemNum, Pvp.DLL_DuelDlgGetSelectItemNum()));
             for (int i = 0; i < selectItemNum; i++)
             {
                 UpdateValue(PvpOperationType.DLL_DuelDlgGetSelectItemEnable, Pvp.DLL_DuelDlgGetSelectItemEnable(i), i);
                 UpdateValue(PvpOperationType.DLL_DuelDlgGetSelectItemStr, Pvp.DLL_DuelDlgGetSelectItemStr(i), i);
             }
 
-            int listItemNum = UpdateValue(PvpOperationType.DLL_DuelListGetItemMax, Pvp.DLL_DuelListGetItemMax());
+            int listItemNum = Math.Max(1, UpdateValue(PvpOperationType.DLL_DuelListGetItemMax, Pvp.DLL_DuelListGetItemMax()));
             for (int i = 0; i < listItemNum; i++)
             {
                 UpdateValue(PvpOperationType.DLL_DuelListGetItemAttribute, Pvp.DLL_DuelListGetItemAttribute(i), i);
@@ -356,7 +356,6 @@ namespace YgoMaster
             });
 
             Console.WriteLine("Done calls:" + callsThisCycle + " updates:" + updatesThisCycle + " len:" + buffer.Length + " compressed:" + compressedBuffer.Length + " " + stopwatch.Elapsed);
-            //File.AppendAllText("log.txt", "Done calls:" + callsThisCycle + " updates:" + updatesThisCycle + " len:" + buffer.Length + " compressed:" + compressedBuffer.Length + " " + stopwatch.Elapsed + Environment.NewLine);
         }
 
         int UpdateValue(PvpOperationType operationType, int value)
@@ -718,6 +717,8 @@ namespace YgoMaster
         delegate int IsRecordEnd();
 
         NetClient netClient;
+        DateTime lastPing;
+        bool hasDuelEnd;
         IntPtr engineWork;
         int doCommandUserOffset;
         int runDialogUserOffset;
@@ -725,6 +726,8 @@ namespace YgoMaster
 
         RunEffect runEffect;
         IsBusyEffect isBusyEffect;
+        AddRecord addRecord;
+        bool isFirstAddRecord;
 
         byte[] bufferInternalID;
         byte[] bufferProp;
@@ -737,6 +740,7 @@ namespace YgoMaster
         {
             runEffect = DoRunEffect;
             isBusyEffect = DoIsBusyEffect;
+            addRecord = DoAddRecord;
         }
 
         bool InitContent()
@@ -794,12 +798,14 @@ namespace YgoMaster
             DuelSettings duelSettings = new DuelSettings();
             duelSettings.FromDictionary(Utils.GetDictionary(data, "Duel"));
 
+            lastPing = DateTime.UtcNow;
+
             netClient = new NetClient();
             netClient.NoDelay = noDelay;
             netClient.Disconnected += (NetClient nc) =>
             {
                 Console.WriteLine("netClient.Disconnected");
-                //Environment.Exit(0);
+                Environment.Exit(0);
             };
             try
             {
@@ -811,7 +817,7 @@ namespace YgoMaster
             if (!netClient.IsConnected)
             {
                 Console.WriteLine("!netClient.IsConnected");
-                //Environment.Exit(0);
+                Environment.Exit(0);
             }
             netClient.HandleMessage += HandleNetMessage;
 
@@ -848,6 +854,7 @@ namespace YgoMaster
                 DLL_SetWorkMemory(engineWork);
 
                 bool tag = false;
+                isFirstAddRecord = true;
 
                 DLL_SetEffectDelegate(runEffect, isBusyEffect);
                 DLL_DuelSysClearWork();
@@ -861,6 +868,7 @@ namespace YgoMaster
                 DLL_DuelSetCpuParam(1, GetCpuParam(100));
                 DLL_DuelSetFirstPlayer(duelSettings.FirstPlayer);
                 DLL_DuelSetDuelLimitedType((uint)DuelLimitedType.None);
+                DLL_SetAddRecordDelegate(addRecord);
                 DLL_DuelSysInitCustom((int)DuelType.Normal, tag, duelSettings.life[0], duelSettings.life[1], duelSettings.hnum[0], duelSettings.hnum[1], duelSettings.noshuffle);
 
                 uint cardRareBufferSize = DLL_CardRareGetBufferSize();
@@ -876,6 +884,11 @@ namespace YgoMaster
 
                 while (true)
                 {
+                    if (lastPing < DateTime.UtcNow - TimeSpan.FromMinutes(1))
+                    {
+                        break;
+                    }
+
                     for (int i = 0; i < callsPerSleep; i++)
                     {
                         int res;
@@ -887,6 +900,12 @@ namespace YgoMaster
                         {
                             netClient.Send(new DuelSysActFinishedMessage());
                             Thread.Sleep(10000);
+                            CloseClient();
+                            break;
+                        }
+                        else if (hasDuelEnd)
+                        {
+                            Thread.Sleep(2000);
                             CloseClient();
                             break;
                         }
@@ -903,7 +922,9 @@ namespace YgoMaster
                 CloseClient();
             }
 
-            Process.GetCurrentProcess().WaitForExit();
+            CloseClient();
+            Thread.Sleep(2000);
+            Environment.Exit(0);
         }
 
         unsafe int DoRunEffect(int id, int param1, int param2, int param3)
@@ -929,6 +950,18 @@ namespace YgoMaster
                 });
             }
             return isBusyState == 2 ? 0 : 1;
+        }
+
+        void DoAddRecord(IntPtr ptr, int size)
+        {
+            byte[] buffer = new byte[size];
+            Marshal.Copy(ptr, buffer, 0, size);
+            netClient.Send(new DuelSpectatorDataMessage()
+            {
+                IsFirstData = isFirstAddRecord,
+                Buffer = buffer
+            });
+            isFirstAddRecord = false;
         }
 
         void SetDeck(int player, DeckInfo deck)
@@ -961,9 +994,11 @@ namespace YgoMaster
         {
             switch (message.Type)
             {
-                case NetMessageType.Ping: OnPing(client, (PingMessage)message); break;
-                case NetMessageType.ConnectionResponse: OnConnectionResponse(client, (ConnectionResponseMessage)message); break;
-                case NetMessageType.DuelIsBusyEffect: OnDuelIsBusyEffect(client, (DuelIsBusyEffectMessage)message); break;
+                case NetMessageType.Ping: OnPing((PingMessage)message); break;
+                case NetMessageType.ConnectionResponse: OnConnectionResponse((ConnectionResponseMessage)message); break;
+                case NetMessageType.OpponentDuelEnded: hasDuelEnd = true; break;
+                case NetMessageType.DuelError: OnDuelError((DuelErrorMessage)message); break;
+                case NetMessageType.DuelIsBusyEffect: OnDuelIsBusyEffect((DuelIsBusyEffectMessage)message); break;
                 case NetMessageType.DuelComMovePhase: OnDuelComMovePhase((DuelComMovePhaseMessage)message); break;
                 case NetMessageType.DuelComDoCommand: OnDuelComDoCommand((DuelComDoCommandMessage)message); break;
                 case NetMessageType.DuelComCancelCommand: OnDuelComCancelCommand((DuelComCancelCommandMessage)message); break;
@@ -975,16 +1010,17 @@ namespace YgoMaster
             }
         }
 
-        void OnPing(NetClient client, PingMessage message)
+        void OnPing(PingMessage message)
         {
-            client.Send(new PongMessage()
+            lastPing = DateTime.UtcNow;
+            netClient.Send(new PongMessage()
             {
                 ServerToClientLatency = Utils.GetEpochTime() - Utils.GetEpochTime(message.RequestTime),
                 ResponseTime = DateTime.UtcNow,
             });
         }
 
-        void OnConnectionResponse(NetClient client, ConnectionResponseMessage message)
+        void OnConnectionResponse(ConnectionResponseMessage message)
         {
             if (!message.Success)
             {
@@ -992,7 +1028,12 @@ namespace YgoMaster
             }
         }
 
-        void OnDuelIsBusyEffect(NetClient client, DuelIsBusyEffectMessage message)
+        void OnDuelError(DuelErrorMessage message)
+        {
+            CloseClient();
+        }
+
+        void OnDuelIsBusyEffect(DuelIsBusyEffectMessage message)
         {
             lock (engineState)
             {
@@ -1110,7 +1151,7 @@ namespace YgoMaster
             {
                 Console.WriteLine("CloseClient");
                 Thread.Sleep(2000);
-                //Environment.Exit(0);
+                Environment.Exit(0);
             }).Start();
         }
 

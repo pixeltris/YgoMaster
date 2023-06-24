@@ -13,10 +13,12 @@ namespace YgoMaster.Net.Message
             get { return NetMessageType.DuelSpectatorData; }
         }
 
+        public bool IsFirstData;
         public byte[] Buffer;
 
         public override void Read(BinaryReader reader)
         {
+            IsFirstData = reader.ReadBoolean();
             int len = reader.ReadInt32();
             if (len > 0)
             {
@@ -26,6 +28,7 @@ namespace YgoMaster.Net.Message
 
         public override void Write(BinaryWriter writer)
         {
+            writer.Write(IsFirstData);
             if (Buffer != null && Buffer.Length > 0)
             {
                 writer.Write((int)Buffer.Length);

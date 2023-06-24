@@ -389,6 +389,9 @@ namespace YgomSystem.Network
                         DuelDll.OnDuelEnd();
                         PInvoke.SetTimeMultiplier(ClientSettings.TimeMultiplier);
                         break;
+                    case "Room.is_room_battle_ready":
+                        DuelDll.OnDuelRoomBattleReady();
+                        break;
                 }
 
                 YgomGame.Menu.ProfileReplayViewController.OnNetworkComplete(thisPtr, cmd);

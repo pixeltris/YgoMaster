@@ -291,7 +291,7 @@ namespace YgoMaster
                             FileInfo[] autoSavedReplaysByCreationDate = replays
                                 .Select(filePath => new FileInfo(filePath))
                                 .Where(fileInfo => long.TryParse(Path.GetFileNameWithoutExtension(fileInfo.Name), out temp))
-                                .OrderByDescending(x => x.CreationTimeUtc)
+                                .OrderBy(x => x.CreationTimeUtc)
                                 .ToArray();
 
                             // Delete auto saved replays when we reach the save limit for auto saved replays
@@ -483,6 +483,12 @@ namespace YgoMaster
                                 Result = res,
                                 Finish = finish
                             });
+
+                            NetClient pvpClient = duelRoomTable.PvpClient;
+                            if (pvpClient != null)
+                            {
+                                pvpClient.Send(new OpponentDuelEndedMessage());
+                            }
                         }
                         break;
                 }

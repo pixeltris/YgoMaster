@@ -780,7 +780,8 @@ namespace YgoMasterClient
         {
             if (IsPvpDuel)
             {
-                return pvpEngineState.GetValue(PvpOperationType.DLL_DuelGetDuelFinish);
+                return DuelEndFinish;
+                //return pvpEngineState.GetValue(PvpOperationType.DLL_DuelGetDuelFinish);
             }
             else
             {
@@ -792,7 +793,8 @@ namespace YgoMasterClient
         {
             if (IsPvpDuel)
             {
-                return pvpEngineState.GetValue(PvpOperationType.DLL_DuelGetDuelFinishCardID);
+                return DuelEndFinishCardID;
+                //return pvpEngineState.GetValue(PvpOperationType.DLL_DuelGetDuelFinishCardID);
             }
             else
             {
@@ -816,7 +818,8 @@ namespace YgoMasterClient
         {
             if (IsPvpDuel)
             {
-                return pvpEngineState.GetValue(PvpOperationType.DLL_DuelGetDuelResult);
+                return DuelEndResult;
+                //return pvpEngineState.GetValue(PvpOperationType.DLL_DuelGetDuelResult);
             }
             else
             {

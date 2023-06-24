@@ -185,6 +185,12 @@ namespace YgoMaster.Net
                 }
             }
 
+            DuelRoomTable pvpClientTable = client.Table;
+            if (pvpClientTable != null && pvpClientTable.State == DuelRoomTableState.Dueling)
+            {
+                SendDuelErrorMessageToTable(pvpClientTable);
+            }
+
             lock (connections)
             {
                 connections.Remove(client);
@@ -281,6 +287,7 @@ namespace YgoMaster.Net
                 case NetMessageType.DuelError: OnDuelError(client, (DuelErrorMessage)message); break;
                 case NetMessageType.DuelEngineState: OnDuelEngineState(client, (DuelEngineStateMessage)message); break;
                 case NetMessageType.DuelIsBusyEffect: OnDuelIsBusyEffect(client, (DuelIsBusyEffectMessage)message); break;
+                case NetMessageType.DuelSysActFinished: OnDuelSysActFinished(client, (DuelSysActFinishedMessage)message); break;
 
                 case NetMessageType.TradeEnterRoom: OnTradeEnterRoom(client, (TradeEnterRoomMessage)message);  break;
                 case NetMessageType.TradeLeaveRoom: OnTradeLeaveRoom(client, (TradeLeaveRoomMessage)message); break;
@@ -479,13 +486,18 @@ namespace YgoMaster.Net
 
         void OnDuelSpectatorData(NetClient client, DuelSpectatorDataMessage message)
         {
-            BroadcastDuelSpectatorMessage(client, message, (DuelRoomTable table) =>
+            DuelRoomTable table = client.Table;
+            if (table != null)
             {
-                if (message.Buffer != null && message.Buffer.Length > 0)
+                lock (table.Spectators)
                 {
-                    table.SpectatorData.AddRange(message.Buffer);
+                    if (message.Buffer != null && message.Buffer.Length > 0)
+                    {
+                        table.SpectatorData.AddRange(message.Buffer);
+                    }
+                    BroadcastMessageToTable(table, message);
                 }
-            });
+            }
         }
 
         void OnDuelSpectatorFieldGuide(NetClient client, DuelSpectatorFieldGuideMessage message)
@@ -693,6 +705,15 @@ namespace YgoMaster.Net
                 }
 
                 pvpClient.Send(message);
+            }
+        }
+
+        void OnDuelSysActFinished(NetClient netClient, DuelSysActFinishedMessage message)
+        {
+            DuelRoomTable table = netClient.Table;
+            if (table != null && table.State == DuelRoomTableState.Dueling)
+            {
+                BroadcastMessageToTable(table, message);
             }
         }
 

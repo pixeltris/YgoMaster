@@ -28,12 +28,15 @@ namespace YgoMasterClient
 
         public static DuelResultType SpecialResultType;
         public static DuelFinishType SpecialFinishType;
+        public static int DuelEndResult;
+        public static int DuelEndFinish;
+        public static int DuelEndFinishCardID;
         public static bool HasNetworkError;
         public static bool HasDuelStart;
         public static bool HasDuelEnd;
+        public static bool HasSysActFinished;
         public static DateTime BeginDuelTime;
         public static ulong RunEffectSeq;
-        public static ulong AddRecordSeq;
         public static bool IsPvpDuel;
         public static bool IsPvpSpectator;
         public static PvpSpectatorRapidState PvpSpectatorRapidState;
@@ -202,22 +205,28 @@ namespace YgoMasterClient
             }
         }
 
-        public static void OnDuelBegin(GameMode gameMode)
+        public static void OnDuelRoomBattleReady()
         {
-            LogToFile(string.Empty, false);
             lock (ActionsToRunInNextSysAct)
             {
                 ActionsToRunInNextSysAct.Clear();
             }
-            ReplayData.Clear();
+        }
+
+        public static void OnDuelBegin(GameMode gameMode)
+        {
+            LogToFile(string.Empty, false);
             SpecialResultType = DuelResultType.None;
             SpecialFinishType = DuelFinishType.None;
+            DuelEndResult = 0;
+            DuelEndFinish = 0;
+            DuelEndFinishCardID = 0;
             HasNetworkError = false;
             HasDuelStart = false;
             HasDuelEnd = false;
+            HasSysActFinished = false;
             BeginDuelTime = DateTime.UtcNow;
             RunEffectSeq = 0;
-            AddRecordSeq = 0;
             IsPvpDuel = Program.NetClient != null && gameMode == GameMode.Room;
             IsPvpSpectator = Program.NetClient != null && gameMode == GameMode.Audience;
             SpectatorCount = 0;
@@ -302,7 +311,6 @@ namespace YgoMasterClient
 
         static Del_AddRecord AddRecord = (IntPtr ptr, int size) =>
         {
-            AddRecordSeq++;
             for (int i = 0; i < size; i++)
             {
                 ReplayData.Add(*(byte*)(ptr + i));
@@ -499,6 +507,14 @@ namespace YgoMasterClient
 
                 if (IsPvpDuel)
                 {
+                    lock (pvpEngineStates)
+                    {
+                        if (HasSysActFinished && pvpEngineStates.Count == 0)
+                        {
+                            return 1;
+                        }
+                    }
+
                     PvpEngineState stateUpdate = null;
                     lock (pvpEngineState)
                     {
@@ -513,7 +529,7 @@ namespace YgoMasterClient
                                     {
                                         changedStates = new HashSet<DuelViewType>();
                                     }
-                                    Console.WriteLine("Send DuelIsBusyEffectMessage " + busyState.Key + " " + pvpEngineState.RunEffectSeq);
+                                    //Log("Send DuelIsBusyEffectMessage " + busyState.Key + " " + pvpEngineState.RunEffectSeq);
                                     changedStates.Add(busyState.Key);
                                     Program.NetClient.Send(new DuelIsBusyEffectMessage()
                                     {
@@ -553,6 +569,22 @@ namespace YgoMasterClient
                                 DuelTapSync.ClearState();
                                 DuelEmoteHelper.OnEndDuel();
                                 HasDuelEnd = true;
+                                if (MyID != 0)
+                                {
+                                    switch ((DuelResultType)pvpEngineState.Param1)
+                                    {
+                                        case DuelResultType.Win:
+                                            pvpEngineState.Param1 = (int)DuelResultType.Lose;
+                                            break;
+                                        case DuelResultType.Lose:
+                                            pvpEngineState.Param1 = (int)DuelResultType.Win;
+                                            break;
+                                    }
+                                }
+                                // We do this because the DLL_XXXX functions don't seem to be working correctly
+                                DuelEndResult = pvpEngineState.Param1;
+                                DuelEndFinish = pvpEngineState.Param2;
+                                DuelEndFinishCardID = pvpEngineState.Param3;
                                 goto default;
                             case DuelViewType.TurnChange:
                                 if (pvpEngineState.Param1 == MyID && AddTimeAtStartOfTurn > 0)
@@ -577,7 +609,7 @@ namespace YgoMasterClient
                                 }
                                 else
                                 {
-                                    originalRunEffect((int)DuelViewType.CpuThinking, 0, 0, 0);
+                                    RunEffect((int)DuelViewType.CpuThinking, 0, 0, 0);
                                 }
                                 break;
                             case DuelViewType.RunDialog:
@@ -587,7 +619,7 @@ namespace YgoMasterClient
                                 }
                                 else
                                 {
-                                    originalRunEffect((int)DuelViewType.CpuThinking, 0, 0, 0);
+                                    RunEffect((int)DuelViewType.CpuThinking, 0, 0, 0);
                                 }
                                 break;
                             case DuelViewType.RunList:
@@ -597,11 +629,11 @@ namespace YgoMasterClient
                                 }
                                 else
                                 {
-                                    originalRunEffect((int)DuelViewType.CpuThinking, 0, 0, 0);
+                                    RunEffect((int)DuelViewType.CpuThinking, 0, 0, 0);
                                 }
                                 break;
                             default:
-                                originalRunEffect((int)pvpEngineState.ViewType, pvpEngineState.Param1, pvpEngineState.Param2, pvpEngineState.Param3);
+                                RunEffect((int)pvpEngineState.ViewType, pvpEngineState.Param1, pvpEngineState.Param2, pvpEngineState.Param3);
                                 break;
                         }
                         stateUpdate.Clear();
@@ -757,7 +789,7 @@ namespace YgoMasterClient
         {
             switch (message.Type)
             {
-                case NetMessageType.ConnectionResponse: OnConnectionResponse(client, (ConnectionResponseMessage)message); break;
+                case NetMessageType.ConnectionResponse: OnConnectionResponse((ConnectionResponseMessage)message); break;
                 case NetMessageType.Ping: OnPing((PingMessage)message); break;
                 case NetMessageType.DuelError: OnDuelError((DuelErrorMessage)message); break;
                 case NetMessageType.OpponentDuelEnded: OnOpponentDuelEnded((OpponentDuelEndedMessage)message); break;
@@ -768,10 +800,11 @@ namespace YgoMasterClient
                 case NetMessageType.DuelEmote: DuelEmoteHelper.OnDuelEmote((DuelEmoteMessage)message); break;
                 case NetMessageType.DuelEngineState: OnDuelEngineState((DuelEngineStateMessage)message); break;
                 case NetMessageType.DuelIsBusyEffect: OnDuelIsBusyEffect((DuelIsBusyEffectMessage)message); break;
+                case NetMessageType.DuelSysActFinished: OnDuelSysActFinished((DuelSysActFinishedMessage)message); break;
             }
         }
 
-        static void OnConnectionResponse(NetClient client, ConnectionResponseMessage message)
+        static void OnConnectionResponse(ConnectionResponseMessage message)
         {
             if (!message.Success)
             {
@@ -784,8 +817,8 @@ namespace YgoMasterClient
             try
             {
                 // try/catch as we aren't in the main thread
-                if (HasNetworkError || SpecialFinishType != DuelFinishType.None || HasDuelEnd ||
-                    (YgomGame.Duel.DuelClient.Step != DuelClientStep.ExecDuel && !IsPvpSpectator))
+                if (HasNetworkError || SpecialFinishType != DuelFinishType.None || HasDuelEnd/* ||
+                    (YgomGame.Duel.DuelClient.Step != DuelClientStep.ExecDuel && !IsPvpSpectator)*/)
                 {
                     return;
                 }
@@ -798,14 +831,14 @@ namespace YgoMasterClient
             {
                 ActionsToRunInNextSysAct.Add(() =>
                 {
-                    if (HasNetworkError || SpecialFinishType != DuelFinishType.None || HasDuelEnd ||
-                        (YgomGame.Duel.DuelClient.Step != DuelClientStep.ExecDuel && !IsPvpSpectator))
+                    if (HasNetworkError || SpecialFinishType != DuelFinishType.None || HasDuelEnd/* ||
+                        (YgomGame.Duel.DuelClient.Step != DuelClientStep.ExecDuel && !IsPvpSpectator)*/)
                     {
                         return;
                     }
                     HasNetworkError = true;
                     Log("OnNetworkError");
-                    if (IsPvpSpectator && !HasDuelStart)
+                    if (/*IsPvpSpectator && */!HasDuelStart)
                     {
                         // NOTE: This is really hacky and looks weird but the client can get stuck without this
                         originalRunEffect((int)DuelViewType.DuelStart, 0, 0, 0);
@@ -883,12 +916,23 @@ namespace YgoMasterClient
             {
                 if (message.Buffer != null && message.Buffer.Length > 0)
                 {
-                    IntPtr replayStream = GetReplayStream();
-                    if (replayStream != IntPtr.Zero)
+                    if (IsPvpDuel)
                     {
-                        IL2Array<byte> buffer = new IL2Array<byte>(message.Buffer.Length, IL2SystemClass.Byte);
-                        buffer.CopyFrom(message.Buffer);
-                        methodReplayStreamAdd.Invoke(replayStream, new IntPtr[] { buffer.ptr });
+                        if (message.IsFirstData)
+                        {
+                            ReplayData.Clear();
+                        }
+                        ReplayData.AddRange(message.Buffer);
+                    }
+                    else if (IsPvpSpectator)
+                    {
+                        IntPtr replayStream = GetReplayStream();
+                        if (replayStream != IntPtr.Zero)
+                        {
+                            IL2Array<byte> buffer = new IL2Array<byte>(message.Buffer.Length, IL2SystemClass.Byte);
+                            buffer.CopyFrom(message.Buffer);
+                            methodReplayStreamAdd.Invoke(replayStream, new IntPtr[] { buffer.ptr });
+                        }
                     }
                 }
             };
@@ -914,8 +958,8 @@ namespace YgoMasterClient
 
         static void OnDuelEngineState(DuelEngineStateMessage message)
         {
-            Console.WriteLine("OnDuelEngineState " + message.RunEffectSeq + " " + (DuelViewType)message.ViewType);
-            if (message.RunEffectSeq == 0)
+            Log("OnDuelEngineState " + message.RunEffectSeq + " " + message.ViewType);
+            if (message.RunEffectSeq == 1)
             {
                 ClearEngineState();
             }
@@ -961,7 +1005,7 @@ namespace YgoMasterClient
                 }
                 if (state != null)
                 {
-                    Console.WriteLine("OnDuelIsBusyEffect " + message.RunEffectSeq + " " + message.ViewType);
+                    Log("OnDuelIsBusyEffect " + message.RunEffectSeq + " " + message.ViewType);
                     state.IsBusyEffect[message.ViewType] = 0;
                 }
                 else
@@ -969,6 +1013,11 @@ namespace YgoMasterClient
                     Utils.LogWarning("Failed to find state for IsBusyEffect seq " + message.RunEffectSeq + " " + message.ViewType);
                 }
             }
+        }
+
+        static void OnDuelSysActFinished(DuelSysActFinishedMessage message)
+        {
+            HasSysActFinished = true;
         }
     }
 
