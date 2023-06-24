@@ -19,7 +19,7 @@ namespace YgoMaster
         const int PosGrave = 16;
         const int PosSelect = 18;
 
-        public static bool SendEntireState = true;
+        public static bool SendEntireState = false;
 
         public ulong RunEffectSeq;
         public DuelViewType ViewType;
@@ -134,10 +134,7 @@ namespace YgoMaster
                     UpdateValue(PvpOperationType.DLL_DuelGetTopCardIndex, Pvp.DLL_DuelGetTopCardIndex(player, pos), player, pos);
                     UpdateValue(PvpOperationType.DLL_DuelIsThisCardExist, Pvp.DLL_DuelIsThisCardExist(player, pos), player, pos);
                     UpdateValue(PvpOperationType.DLL_DuelIsThisContinuousCard, Pvp.DLL_DuelIsThisContinuousCard(player, pos), player, pos);
-
-                    // NOTE: This is probably an index into the monster zones
                     UpdateValue(PvpOperationType.DLL_DuelIsThisEffectiveMonster, Pvp.DLL_DuelIsThisEffectiveMonster(player, pos) ? 1 : 0, player, pos);
-                    
                     UpdateValue(PvpOperationType.DLL_DuelIsThisEquipCard, Pvp.DLL_DuelIsThisEquipCard(player, pos), player, pos);
                     UpdateValue(PvpOperationType.DLL_DuelIsThisMagic, Pvp.DLL_DuelIsThisMagic(player, pos) ? 1 : 0, player, pos);
                     UpdateValue(PvpOperationType.DLL_DuelIsThisNormalMonster, Pvp.DLL_DuelIsThisNormalMonster(player, pos), player, pos);
@@ -159,9 +156,7 @@ namespace YgoMaster
                             UpdateValue(PvpOperationType.DLL_DuelGetThisCardCounter, Pvp.DLL_DuelGetThisCardCounter(player, pos, counter), player, pos, counter);
                         }
                         
-                        // NOTE: This is probably an index into the monster zones
                         UpdateValue(PvpOperationType.DLL_DuelGetThisCardDirectFlag, Pvp.DLL_DuelGetThisCardDirectFlag(player, pos), player, pos);
-                        
                         UpdateValue(PvpOperationType.DLL_DuelGetThisCardEffectFlags, Pvp.DLL_DuelGetThisCardEffectFlags(player, pos), player, pos);
                         UpdateValue(PvpOperationType.DLL_DuelGetThisCardEffectIDAtChain, Pvp.DLL_DuelGetThisCardEffectIDAtChain(player, pos), player, pos);
                         
@@ -210,6 +205,9 @@ namespace YgoMaster
                             UpdateValue(PvpOperationType.DLL_DuelGetFldAffectIcon, 0, fldAffectBuffer, player, pos, view_player);
                         }
                     }
+
+                    UpdateValue(PvpOperationType.DLL_DuelComGetCommandMask, (int)Pvp.DLL_DuelComGetCommandMask(player, pos, 0), player, pos, 0);
+                    UpdateValue(PvpOperationType.DLL_DuelComGetTextIDOfThisCommand, (int)Pvp.DLL_DuelComGetTextIDOfThisCommand(player, pos, 0), player, pos, 0);
 
                     int numCards = UpdateValue(PvpOperationType.DLL_DuelGetCardNum, Pvp.DLL_DuelGetCardNum(player, pos), player, pos);
                     for (int index = 0; index < numCards; index++)
@@ -408,7 +406,7 @@ namespace YgoMaster
             if (result.Value != value)
             {
                 result.Value = value;
-                result.HasChanged = true;// Temporary
+                result.HasChanged = true;
             }
             if (result.HasChanged)
             {
@@ -544,7 +542,10 @@ namespace YgoMaster
             if (!data.TryGetValue(arg, out result))
             {
                 data[arg] = result = new PvpEngineOperationResult();
-                result.HasChanged = true;
+                if (SendEntireState)
+                {
+                    result.HasChanged = true;
+                }
             }
             return result;
         }
