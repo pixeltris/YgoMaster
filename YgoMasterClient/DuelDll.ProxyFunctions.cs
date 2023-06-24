@@ -43,6 +43,8 @@ namespace YgoMasterClient
         static Hook<Del_DLL_DuelDlgCanYesNoSkip> hookDLL_DuelDlgCanYesNoSkip;
         delegate int Del_DLL_DuelDlgGetMixNum();
         static Hook<Del_DLL_DuelDlgGetMixNum> hookDLL_DuelDlgGetMixNum;
+        delegate int Del_DLL_DuelDlgGetMixData(int index);
+        static Hook<Del_DLL_DuelDlgGetMixData> hookDLL_DuelDlgGetMixData;
         delegate int Del_DLL_DuelDlgGetMixType(int index);
         static Hook<Del_DLL_DuelDlgGetMixType> hookDLL_DuelDlgGetMixType;
         delegate int Del_DLL_DuelDlgGetPosMaskOfThisSummon();
@@ -225,6 +227,8 @@ namespace YgoMasterClient
         static Hook<Del_DLL_FusionGetMaterialList> hookDLL_FusionGetMaterialList;
         delegate int Del_DLL_FusionGetMonsterLevelInTuning(int wUniqueID);
         static Hook<Del_DLL_FusionGetMonsterLevelInTuning> hookDLL_FusionGetMonsterLevelInTuning;
+        delegate int Del_DLL_FusionIsThisTunedMonsterInTuning(int wUniqueID);
+        static Hook<Del_DLL_FusionIsThisTunedMonsterInTuning> hookDLL_FusionIsThisTunedMonsterInTuning;
         delegate void Del_DLL_SetCardExistWork(IntPtr pWork, int size, int count);
         static Hook<Del_DLL_SetCardExistWork> hookDLL_SetCardExistWork;
         delegate void Del_DLL_SetDuelChallenge(int flagbit);
@@ -253,6 +257,7 @@ namespace YgoMasterClient
             hookDLL_DuelDlgCanYesNoSkip = new Hook<Del_DLL_DuelDlgCanYesNoSkip>(DLL_DuelDlgCanYesNoSkip, PInvoke.GetProcAddress(lib, "DLL_DuelDlgCanYesNoSkip"));
             hookDLL_DuelDlgGetMixNum = new Hook<Del_DLL_DuelDlgGetMixNum>(DLL_DuelDlgGetMixNum, PInvoke.GetProcAddress(lib, "DLL_DuelDlgGetMixNum"));
             hookDLL_DuelDlgGetMixType = new Hook<Del_DLL_DuelDlgGetMixType>(DLL_DuelDlgGetMixType, PInvoke.GetProcAddress(lib, "DLL_DuelDlgGetMixType"));
+            hookDLL_DuelDlgGetMixData = new Hook<Del_DLL_DuelDlgGetMixData>(DLL_DuelDlgGetMixData, PInvoke.GetProcAddress(lib, "DLL_DuelDlgGetMixData"));
             hookDLL_DuelDlgGetPosMaskOfThisSummon = new Hook<Del_DLL_DuelDlgGetPosMaskOfThisSummon>(DLL_DuelDlgGetPosMaskOfThisSummon, PInvoke.GetProcAddress(lib, "DLL_DuelDlgGetPosMaskOfThisSummon"));
             hookDLL_DuelDlgGetSelectItemEnable = new Hook<Del_DLL_DuelDlgGetSelectItemEnable>(DLL_DuelDlgGetSelectItemEnable, PInvoke.GetProcAddress(lib, "DLL_DuelDlgGetSelectItemEnable"));
             hookDLL_DuelDlgGetSelectItemNum = new Hook<Del_DLL_DuelDlgGetSelectItemNum>(DLL_DuelDlgGetSelectItemNum, PInvoke.GetProcAddress(lib, "DLL_DuelDlgGetSelectItemNum"));
@@ -343,6 +348,7 @@ namespace YgoMasterClient
             hookDLL_DuelWhichTurnNow = new Hook<Del_DLL_DuelWhichTurnNow>(DLL_DuelWhichTurnNow, PInvoke.GetProcAddress(lib, "DLL_DuelWhichTurnNow"));
             hookDLL_FusionGetMaterialList = new Hook<Del_DLL_FusionGetMaterialList>(DLL_FusionGetMaterialList, PInvoke.GetProcAddress(lib, "DLL_FusionGetMaterialList"));
             hookDLL_FusionGetMonsterLevelInTuning = new Hook<Del_DLL_FusionGetMonsterLevelInTuning>(DLL_FusionGetMonsterLevelInTuning, PInvoke.GetProcAddress(lib, "DLL_FusionGetMonsterLevelInTuning"));
+            hookDLL_FusionIsThisTunedMonsterInTuning = new Hook<Del_DLL_FusionIsThisTunedMonsterInTuning>(DLL_FusionIsThisTunedMonsterInTuning, PInvoke.GetProcAddress(lib, "DLL_FusionIsThisTunedMonsterInTuning"));
             hookDLL_SetCardExistWork = new Hook<Del_DLL_SetCardExistWork>(DLL_SetCardExistWork, PInvoke.GetProcAddress(lib, "DLL_SetCardExistWork"));
             hookDLL_SetDuelChallenge = new Hook<Del_DLL_SetDuelChallenge>(DLL_SetDuelChallenge, PInvoke.GetProcAddress(lib, "DLL_SetDuelChallenge"));
             hookDLL_SetDuelChallenge2 = new Hook<Del_DLL_SetDuelChallenge2>(DLL_SetDuelChallenge2, PInvoke.GetProcAddress(lib, "DLL_SetDuelChallenge2"));
@@ -538,6 +544,18 @@ namespace YgoMasterClient
             else
             {
                 return hookDLL_DuelDlgGetMixNum.Original();
+            }
+        }
+
+        static int DLL_DuelDlgGetMixData(int index)
+        {
+            if (IsPvpDuel)
+            {
+                return pvpEngineState.GetValue(PvpOperationType.DLL_DuelDlgGetMixData, index);
+            }
+            else
+            {
+                return hookDLL_DuelDlgGetMixData.Original(index);
             }
         }
 
@@ -1706,6 +1724,18 @@ namespace YgoMasterClient
             else
             {
                 return hookDLL_FusionGetMonsterLevelInTuning.Original(wUniqueID);
+            }
+        }
+
+        static int DLL_FusionIsThisTunedMonsterInTuning(int wUniqueID)
+        {
+            if (IsPvpDuel)
+            {
+                return pvpEngineState.GetValue(PvpOperationType.DLL_FusionIsThisTunedMonsterInTuning, wUniqueID);
+            }
+            else
+            {
+                return hookDLL_FusionIsThisTunedMonsterInTuning.Original(wUniqueID);
             }
         }
 

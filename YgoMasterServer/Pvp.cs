@@ -134,7 +134,10 @@ namespace YgoMaster
                     UpdateValue(PvpOperationType.DLL_DuelGetTopCardIndex, Pvp.DLL_DuelGetTopCardIndex(player, pos), player, pos);
                     UpdateValue(PvpOperationType.DLL_DuelIsThisCardExist, Pvp.DLL_DuelIsThisCardExist(player, pos), player, pos);
                     UpdateValue(PvpOperationType.DLL_DuelIsThisContinuousCard, Pvp.DLL_DuelIsThisContinuousCard(player, pos), player, pos);
+
+                    // NOTE: This is probably an index into the monster zones
                     UpdateValue(PvpOperationType.DLL_DuelIsThisEffectiveMonster, Pvp.DLL_DuelIsThisEffectiveMonster(player, pos) ? 1 : 0, player, pos);
+                    
                     UpdateValue(PvpOperationType.DLL_DuelIsThisEquipCard, Pvp.DLL_DuelIsThisEquipCard(player, pos), player, pos);
                     UpdateValue(PvpOperationType.DLL_DuelIsThisMagic, Pvp.DLL_DuelIsThisMagic(player, pos) ? 1 : 0, player, pos);
                     UpdateValue(PvpOperationType.DLL_DuelIsThisNormalMonster, Pvp.DLL_DuelIsThisNormalMonster(player, pos), player, pos);
@@ -150,16 +153,18 @@ namespace YgoMaster
                     {
                         // NOTE: Assuming "index" is actually "locate" for DLL_DeulIsThisEffectiveMonsterWithDual
                         UpdateValue(PvpOperationType.DLL_DeulIsThisEffectiveMonsterWithDual, Pvp.DLL_DeulIsThisEffectiveMonsterWithDual(player, pos) ? 1 : 0, player, pos);
-
+                        
                         for (int counter = 0; counter < (int)DuelCounterType.Max; counter++)
                         {
                             UpdateValue(PvpOperationType.DLL_DuelGetThisCardCounter, Pvp.DLL_DuelGetThisCardCounter(player, pos, counter), player, pos, counter);
                         }
-
+                        
+                        // NOTE: This is probably an index into the monster zones
                         UpdateValue(PvpOperationType.DLL_DuelGetThisCardDirectFlag, Pvp.DLL_DuelGetThisCardDirectFlag(player, pos), player, pos);
+                        
                         UpdateValue(PvpOperationType.DLL_DuelGetThisCardEffectFlags, Pvp.DLL_DuelGetThisCardEffectFlags(player, pos), player, pos);
                         UpdateValue(PvpOperationType.DLL_DuelGetThisCardEffectIDAtChain, Pvp.DLL_DuelGetThisCardEffectIDAtChain(player, pos), player, pos);
-
+                        
                         uint effectListLen = Pvp.DLL_DuelGetThisCardEffectList(player, pos, null);
                         if (effectListLen > 0)
                         {
@@ -171,13 +176,13 @@ namespace YgoMaster
                         {
                             UpdateValue(PvpOperationType.DLL_DuelGetThisCardEffectList, 0, new byte[0]);
                         }
-
+                        
                         UpdateValue(PvpOperationType.DLL_DuelGetThisCardOverlayNum, Pvp.DLL_DuelGetThisCardOverlayNum(player, pos), player, pos);
                         UpdateValue(PvpOperationType.DLL_DuelGetThisCardParameter, (int)Pvp.DLL_DuelGetThisCardParameter(player, pos), player, pos);
                         UpdateValue(PvpOperationType.DLL_DuelGetThisCardShowParameter, (int)Pvp.DLL_DuelGetThisCardShowParameter(player, pos), player, pos);
                         UpdateValue(PvpOperationType.DLL_DuelGetThisCardTurnCounter, (int)Pvp.DLL_DuelGetThisCardTurnCounter(player, pos), player, pos);
                         UpdateValue(PvpOperationType.DLL_DuelGetThisMonsterFightableOnEffect, Pvp.DLL_DuelGetThisMonsterFightableOnEffect(player, pos) ? 1 : 0, player, pos);
-
+                        
                         UpdateValue(PvpOperationType.DLL_DuelGetFldMonstOrgLevel, Pvp.DLL_DuelGetFldMonstOrgLevel(player, pos), player, pos);
                         UpdateValue(PvpOperationType.DLL_DuelGetFldMonstOrgRank, Pvp.DLL_DuelGetFldMonstOrgRank(player, pos), player, pos);
                         UpdateValue(PvpOperationType.DLL_DuelGetFldMonstOrgType, Pvp.DLL_DuelGetFldMonstOrgType(player, pos), player, pos);
@@ -200,7 +205,7 @@ namespace YgoMaster
                                     view_player = -1;
                                     break;
                             }
-                            byte[] fldAffectBuffer = new byte[sizeof(short) * (PosField + 1)];
+                            byte[] fldAffectBuffer = new byte[sizeof(short) * ((PosField + 1) * 2)];
                             Pvp.DLL_DuelGetFldAffectIcon(player, pos, fldAffectBuffer, view_player);
                             UpdateValue(PvpOperationType.DLL_DuelGetFldAffectIcon, 0, fldAffectBuffer, player, pos, view_player);
                         }
@@ -218,7 +223,7 @@ namespace YgoMaster
                         UpdateValue(PvpOperationType.DLL_CardRareGetRareByUniqueID, Pvp.DLL_CardRareGetRareByUniqueID(uid), uid);
                         UpdateValue(PvpOperationType.DLL_DuelGetCardIDByUniqueID2, (int)Pvp.DLL_DuelGetCardIDByUniqueID2(uid), uid);
                         UpdateValue(PvpOperationType.DLL_DuelSearchCardByUniqueID, (int)Pvp.DLL_DuelSearchCardByUniqueID(uid), uid);
-
+                        
                         int functionMaterialListLen = Pvp.DLL_FusionGetMaterialList(uid, null);
                         if (functionMaterialListLen > 0)
                         {
@@ -228,7 +233,7 @@ namespace YgoMaster
                         }
                         UpdateValue(PvpOperationType.DLL_FusionGetMonsterLevelInTuning, Pvp.DLL_FusionGetMonsterLevelInTuning(uid), uid);
                         UpdateValue(PvpOperationType.DLL_FusionIsThisTunedMonsterInTuning, Pvp.DLL_FusionIsThisTunedMonsterInTuning(uid), uid);
-
+                        
                         for (int i = 0; i < 3; i++)
                         {
                             int view_player = 0;
@@ -244,14 +249,14 @@ namespace YgoMaster
                                     view_player = -1;
                                     break;
                             }
-                            Pvp.DLL_DuelListGetCardAttribute(view_player, uid);
+                            UpdateValue(PvpOperationType.DLL_DuelListGetCardAttribute, Pvp.DLL_DuelListGetCardAttribute(view_player, uid), view_player, uid);
                         }
-
+                        
                         unsafe
                         {
                             UpdateValue(PvpOperationType.DLL_DuelGetCardPropByUniqueID, *(int*)Pvp.DLL_DuelGetCardPropByUniqueID(uid), uid);
                         }
-
+                        
                         if (pos == PosHand)
                         {
                             for (int commandId = 0; commandId < (int)DuelCommandType.COUNT; commandId++)
@@ -262,10 +267,11 @@ namespace YgoMaster
                                     UpdateValue(PvpOperationType.DLL_DUELCOMGetPosMaskOfThisHand, (int)Pvp.DLL_DUELCOMGetPosMaskOfThisHand(player, index, commandId), player, index, commandId);
                                 }
                             }
-
+                        
                             UpdateValue(PvpOperationType.DLL_DuelGetHandCardOpen, Pvp.DLL_DuelGetHandCardOpen(player, index) ? 1 : 0, player, index);
                         }
 
+                        
                         PvpBasicVal basicVal = default(PvpBasicVal);
                         Pvp.DLL_DuelGetCardBasicVal(player, pos, index, ref basicVal);
                         UpdateValue(PvpOperationType.DLL_DuelGetCardBasicVal, 0, StructToByteArray(basicVal), player, pos, index);
@@ -282,14 +288,14 @@ namespace YgoMaster
             }
 
             // Always get 1 mix num at minimum as some places get mix num without checking mix num
-            int mixNum = Math.Max(1, UpdateValue(PvpOperationType.DLL_DuelDlgGetMixNum, Pvp.DLL_DuelDlgGetMixNum()));
+            int mixNum = UpdateValue(PvpOperationType.DLL_DuelDlgGetMixNum, Pvp.DLL_DuelDlgGetMixNum());
             for (int i = 0; i < mixNum; i++)
             {
                 UpdateValue(PvpOperationType.DLL_DuelDlgGetMixData, Pvp.DLL_DuelDlgGetMixData(i), i);
                 UpdateValue(PvpOperationType.DLL_DuelDlgGetMixType, Pvp.DLL_DuelDlgGetMixType(i), i);
             }
             
-            int selectItemNum = Math.Max(1, UpdateValue(PvpOperationType.DLL_DuelDlgGetSelectItemNum, Pvp.DLL_DuelDlgGetSelectItemNum()));
+            int selectItemNum = UpdateValue(PvpOperationType.DLL_DuelDlgGetSelectItemNum, Pvp.DLL_DuelDlgGetSelectItemNum());
             for (int i = 0; i < selectItemNum; i++)
             {
                 UpdateValue(PvpOperationType.DLL_DuelDlgGetSelectItemEnable, Pvp.DLL_DuelDlgGetSelectItemEnable(i), i);
@@ -402,7 +408,7 @@ namespace YgoMaster
             if (result.Value != value)
             {
                 result.Value = value;
-                result.HasChanged = true;
+                result.HasChanged = true;// Temporary
             }
             if (result.HasChanged)
             {
@@ -538,6 +544,7 @@ namespace YgoMaster
             if (!data.TryGetValue(arg, out result))
             {
                 data[arg] = result = new PvpEngineOperationResult();
+                result.HasChanged = true;
             }
             return result;
         }
@@ -689,6 +696,12 @@ namespace YgoMaster
         public byte VoidMagic;
         public byte VoidTrap;
         public byte VoidMonst;
+
+        public override string ToString()
+        {
+            return "{" + CardID + "," + EffectID + "," + Atk + "," + Def + "," + OrgAtk + "," + OrgDef + "," + Type + "," +
+                Attr + "," + Element + "," + Level + "," + Rank + "," + VoidMagic + "," + VoidTrap + "," + VoidMonst + "}";
+        }
     }
 
     class Pvp
@@ -735,24 +748,31 @@ namespace YgoMaster
             }
 
             bufferInternalID = File.ReadAllBytes(Path.Combine(cardDataDir, "#", "CARD_IntID.bytes"));
-            DLL_SetInternalID(bufferInternalID);
+            DLL_SetInternalID(GetPtr(bufferInternalID));
 
             bufferProp = File.ReadAllBytes(Path.Combine(cardDataDir, "#", "CARD_Prop.bytes"));
-            DLL_SetCardProperty(bufferProp, bufferProp.Length);
+            DLL_SetCardProperty(GetPtr(bufferProp), bufferProp.Length);
 
             bufferSame = File.ReadAllBytes(Path.Combine(cardDataDir, "MD", "CARD_Same.bytes"));
-            DLL_SetCardSame(bufferSame, bufferSame.Length);
+            DLL_SetCardSame(GetPtr(bufferSame), bufferSame.Length);
 
             bufferGenre = File.ReadAllBytes(Path.Combine(cardDataDir, "#", "CARD_Genre.bytes"));
-            DLL_SetCardGenre(bufferGenre);
+            DLL_SetCardGenre(GetPtr(bufferGenre));
 
             bufferNamed = File.ReadAllBytes(Path.Combine(cardDataDir, "#", "CARD_Named.bytes"));
-            DLL_SetCardNamed(bufferNamed);
+            DLL_SetCardNamed(GetPtr(bufferNamed));
 
             bufferLink = File.ReadAllBytes(Path.Combine(cardDataDir, "MD", "CARD_Link.bytes"));
-            DLL_SetCardLink(bufferLink, bufferLink.Length);
+            DLL_SetCardLink(GetPtr(bufferLink), bufferLink.Length);
 
             return true;
+        }
+
+        IntPtr GetPtr(byte[] buffer)
+        {
+            IntPtr res = Marshal.AllocHGlobal(buffer.Length);
+            Marshal.Copy(buffer, 0, res, buffer.Length);
+            return res;
         }
 
         public void Run(string json)
@@ -1000,7 +1020,12 @@ namespace YgoMaster
             {
                 if (engineState.RunEffectSeq == message.RunEffectSeq)
                 {
+                    Console.WriteLine("OnDuelComDoCommand player:" + message.Player + " pos:" + message.Position + " indx:" + message.Index + " cmd:" + message.CommandId + " seq:" + engineState.RunEffectSeq + " mseq:" + message.RunEffectSeq);
                     DLL_DuelComDoCommand(message.Player, message.Position, message.Index, message.CommandId);
+                }
+                else
+                {
+                    Utils.LogWarning("OnDuelComDoCommand bad seq expected:" + engineState.RunEffectSeq + " got:" + message.RunEffectSeq);
                 }
             }
         }
@@ -1089,17 +1114,17 @@ namespace YgoMaster
         }
 
         [DllImport(DllName)]
-        static extern void DLL_SetInternalID(byte[] data);
+        static extern void DLL_SetInternalID(IntPtr data);
         [DllImport(DllName)]
-        static extern int DLL_SetCardProperty(byte[] data, int size);
+        static extern int DLL_SetCardProperty(IntPtr data, int size);
         [DllImport(DllName)]
-        static extern void DLL_SetCardSame(byte[] data, int size);
+        static extern void DLL_SetCardSame(IntPtr data, int size);
         [DllImport(DllName)]
-        static extern void DLL_SetCardGenre(byte[] data);
+        static extern void DLL_SetCardGenre(IntPtr data);
         [DllImport(DllName)]
-        static extern void DLL_SetCardNamed(byte[] data);
+        static extern void DLL_SetCardNamed(IntPtr data);
         [DllImport(DllName)]
-        static extern void DLL_SetCardLink(byte[] data, int size);
+        static extern void DLL_SetCardLink(IntPtr data, int size);
 
         [DllImport(DllName)]
         public static extern uint DLL_CardRareGetBufferSize();
