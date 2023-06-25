@@ -241,6 +241,10 @@ namespace YgoMaster
         /// </summary>
         public bool MultiplayerPvpClientShowConsole;
         /// <summary>
+        /// Keep the pvp client console alive after the duel finishes
+        /// </summary>
+        public bool MultiplayerPvpClientKeepConsoleAlive;
+        /// <summary>
         /// How long to sleep for after each sysact call
         /// </summary>
         public int MultiplayerPvpClientSysActSleepInMilliseconds;
@@ -363,6 +367,7 @@ namespace YgoMaster
             TradeEnterRoomRequestDelayInSeconds = Utils.GetValue<float>(values, "TradeEnterRoomRequestDelayInSeconds");
             EmoteMaxLength = Utils.GetValue<int>(values, "EmoteMaxLength");
             MultiplayerPvpClientShowConsole = Utils.GetValue<bool>(values, "MultiplayerPvpClientShowConsole");
+            MultiplayerPvpClientKeepConsoleAlive = Utils.GetValue<bool>(values, "MultiplayerPvpClientKeepConsoleAlive");
             MultiplayerPvpClientSysActSleepInMilliseconds = Utils.GetValue<int>(values, "MultiplayerPvpClientSysActSleepInMilliseconds");
             MultiplayerPvpClientSysActCallsPerSleep = Utils.GetValue<int>(values, "MultiplayerPvpClientSysActCallsPerSleep");
             MultiplayerPvpClientDoCommandUserOffset = Utils.GetValue<int>(values, "MultiplayerPvpClientDoCommandUserOffset");

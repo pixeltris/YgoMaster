@@ -544,6 +544,7 @@ namespace YgoMaster
                                 {
                                     table.State = DuelRoomTableState.Matching;
                                     table.Seed = MultiplayerSeed != -1 ? (uint)MultiplayerSeed : (uint)rand.Next();
+                                    table.Bgm = DuelSettings.GetRandomBgmValue(rand);
                                     table.FirstPlayer = -1;
                                     table.CoinFlipPlayerIndex = MultiplayerCoinFlipPlayerIndex != -1 ? MultiplayerCoinFlipPlayerIndex : rand.Next(2);
                                     table.CoinFlipCounter = MultiplayerCoinFlipCounter;
@@ -1207,7 +1208,7 @@ namespace YgoMaster
             duelSettings.duel = null;
             duelSettings.is_pvp = true;//false
             duelSettings.chapter = 0;
-            duelSettings.SetRandomBgm(rand);
+            duelSettings.BgmsFromValue(table.Bgm);
             for (int i = 0; i < players.Length; i++)
             {
                 duelSettings.Deck[i] = decks[i];
@@ -1249,6 +1250,7 @@ namespace YgoMaster
                     data["Sleep"] = MultiplayerPvpClientSysActSleepInMilliseconds;
                     data["CallsPerSleep"] = MultiplayerPvpClientSysActCallsPerSleep;
                     data["NoDelay"] = MultiplayerNoDelay;
+                    data["KeepConsoleAlive"] = MultiplayerPvpClientKeepConsoleAlive;
                     data["DoCommandUserOffset"] = MultiplayerPvpClientDoCommandUserOffset;
                     data["RunDialogUserOffset"] = MultiplayerPvpClientRunDialogUserOffset;
 

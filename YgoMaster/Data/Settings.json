@@ -20,6 +20,7 @@
     "MultiplayerCoinFlipPlayerIndex": -1,
     "MultiplayerCoinFlipCounter": 5,
     "MultiplayerPvpClientShowConsole": false,
+    "MultiplayerPvpClientKeepConsoleAlive": false,
     "MultiplayerPvpClientSysActSleepInMilliseconds": 10,
     "MultiplayerPvpClientSysActCallsPerSleep": 5,
     "MultiplayerPvpClientDoCommandUserOffset": 13440,

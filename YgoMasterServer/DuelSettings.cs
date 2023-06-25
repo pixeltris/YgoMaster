@@ -167,6 +167,11 @@ namespace YgoMaster
             BgmsFromValue(rand.Next(1, (MaxBgmId + 1)));
         }
 
+        public static int GetRandomBgmValue(Random rand)
+        {
+            return rand.Next(1, (MaxBgmId + 1));
+        }
+
         public void LoadRandomDecks()
         {
             for (int i = 0; i < Deck.Length; i++)

@@ -261,6 +261,7 @@ namespace YgoMaster
 
         public DuelRoomReplay Replay;
         public uint Seed;
+        public int Bgm;
         public int FirstPlayer;
         public int CoinFlipCounter;
         public int CoinFlipPlayerIndex;

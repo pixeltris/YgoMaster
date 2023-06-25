@@ -83,7 +83,7 @@ namespace YgoMaster
 
             callsThisCycle = 0;
             updatesThisCycle = 0;
-            Console.WriteLine("RunEffect!! " + viewType + " " + param1 + " " + param2 + " " + param3);
+            Console.WriteLine("RunEffect " + viewType + " " + param1 + " " + param2 + " " + param3);
             stopwatch.Restart();
 
             // TOOD:
@@ -210,13 +210,13 @@ namespace YgoMaster
                     UpdateValue(PvpOperationType.DLL_DuelComGetTextIDOfThisCommand, (int)Pvp.DLL_DuelComGetTextIDOfThisCommand(player, pos, 0), player, pos, 0);
 
                     int numCards = UpdateValue(PvpOperationType.DLL_DuelGetCardNum, Pvp.DLL_DuelGetCardNum(player, pos), player, pos);
-                    for (int index = 0; index < numCards; index++)
+                    for (int index = 0; index <= numCards; index++)
                     {
                         int commandMask = UpdateValue(PvpOperationType.DLL_DuelComGetCommandMask, (int)Pvp.DLL_DuelComGetCommandMask(player, pos, index), player, pos, index);
                         UpdateValue(PvpOperationType.DLL_DuelComGetTextIDOfThisCommand, (int)Pvp.DLL_DuelComGetTextIDOfThisCommand(player, pos, index), player, pos, index);
-                        
+
                         int uid = UpdateValue(PvpOperationType.DLL_DuelGetCardUniqueID, Pvp.DLL_DuelGetCardUniqueID(player, pos, index), player, pos, index);
-                        
+
                         // We could do these once per uid that we see but cards could maybe be modified?
                         UpdateValue(PvpOperationType.DLL_CardRareGetRareByUniqueID, Pvp.DLL_CardRareGetRareByUniqueID(uid), uid);
                         UpdateValue(PvpOperationType.DLL_DuelGetCardIDByUniqueID2, (int)Pvp.DLL_DuelGetCardIDByUniqueID2(uid), uid);
@@ -252,7 +252,9 @@ namespace YgoMaster
                         
                         unsafe
                         {
-                            UpdateValue(PvpOperationType.DLL_DuelGetCardPropByUniqueID, *(int*)Pvp.DLL_DuelGetCardPropByUniqueID(uid), uid);
+                            IntPtr prop = Pvp.DLL_DuelGetCardPropByUniqueID(uid);
+                            int propValue = prop != IntPtr.Zero ? *(int*)prop : 0;
+                            UpdateValue(PvpOperationType.DLL_DuelGetCardPropByUniqueID, propValue, uid);
                         }
                         
                         if (pos == PosHand)
@@ -355,7 +357,7 @@ namespace YgoMaster
                 CompressedBuffer = compressedBuffer
             });
 
-            Console.WriteLine("Done calls:" + callsThisCycle + " updates:" + updatesThisCycle + " len:" + buffer.Length + " compressed:" + compressedBuffer.Length + " " + stopwatch.Elapsed);
+            Console.WriteLine("Calls:" + callsThisCycle + " updates:" + updatesThisCycle + " len:" + buffer.Length + " compressed:" + compressedBuffer.Length + " " + stopwatch.Elapsed);
         }
 
         int UpdateValue(PvpOperationType operationType, int value)
@@ -716,6 +718,7 @@ namespace YgoMaster
         delegate void RecordBegin();
         delegate int IsRecordEnd();
 
+        bool keepConsoleAlive;
         NetClient netClient;
         DateTime lastPing;
         bool hasDuelEnd;
@@ -793,6 +796,7 @@ namespace YgoMaster
             int sleep = Utils.GetValue<int>(data, "Sleep");
             int callsPerSleep = Utils.GetValue<int>(data, "CallsPerSleep");
             bool noDelay = Utils.GetValue<bool>(data, "NoDelay");
+            keepConsoleAlive = Utils.GetValue<bool>(data, "KeepConsoleAlive");
             doCommandUserOffset = Utils.GetValue<int>(data, "DoCommandUserOffset");
             runDialogUserOffset = Utils.GetValue<int>(data, "RunDialogUserOffset");
             DuelSettings duelSettings = new DuelSettings();
@@ -805,7 +809,10 @@ namespace YgoMaster
             netClient.Disconnected += (NetClient nc) =>
             {
                 Console.WriteLine("netClient.Disconnected");
-                Environment.Exit(0);
+                if (!keepConsoleAlive)
+                {
+                    Environment.Exit(0);
+                }
             };
             try
             {
@@ -817,7 +824,10 @@ namespace YgoMaster
             if (!netClient.IsConnected)
             {
                 Console.WriteLine("!netClient.IsConnected");
-                Environment.Exit(0);
+                if (!keepConsoleAlive)
+                {
+                    Environment.Exit(0);
+                }
             }
             netClient.HandleMessage += HandleNetMessage;
 
@@ -924,7 +934,15 @@ namespace YgoMaster
 
             CloseClient();
             Thread.Sleep(2000);
-            Environment.Exit(0);
+            if (keepConsoleAlive)
+            {
+                Process.GetCurrentProcess().WaitForExit();
+                Console.WriteLine("END");
+            }
+            else
+            {
+                Environment.Exit(0);
+            }
         }
 
         unsafe int DoRunEffect(int id, int param1, int param2, int param3)
@@ -1037,7 +1055,7 @@ namespace YgoMaster
         {
             lock (engineState)
             {
-                Console.WriteLine("Recv OnDuelIsBusyEffect " + message.ViewType + " " + message.RunEffectSeq + " | " + engineState.RunEffectSeq);
+                //Console.WriteLine("Recv OnDuelIsBusyEffect " + message.ViewType + " " + message.RunEffectSeq + " | " + engineState.RunEffectSeq);
                 if (engineState.RunEffectSeq == message.RunEffectSeq)
                 {
                     engineState.IsBusyEffect[message.ViewType]++;
@@ -1151,7 +1169,10 @@ namespace YgoMaster
             {
                 Console.WriteLine("CloseClient");
                 Thread.Sleep(2000);
-                Environment.Exit(0);
+                if (!keepConsoleAlive)
+                {
+                    Environment.Exit(0);
+                }
             }).Start();
         }
 
