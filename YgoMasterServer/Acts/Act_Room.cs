@@ -1250,7 +1250,7 @@ namespace YgoMaster
                     data["Sleep"] = MultiplayerPvpClientSysActSleepInMilliseconds;
                     data["CallsPerSleep"] = MultiplayerPvpClientSysActCallsPerSleep;
                     data["NoDelay"] = MultiplayerNoDelay;
-                    data["KeepConsoleAlive"] = MultiplayerPvpClientKeepConsoleAlive;
+                    data["KeepConsoleAlive"] = MultiplayerPvpClientShowConsole && MultiplayerPvpClientKeepConsoleAlive;
                     data["DoCommandUserOffset"] = MultiplayerPvpClientDoCommandUserOffset;
                     data["RunDialogUserOffset"] = MultiplayerPvpClientRunDialogUserOffset;
 
