@@ -1,8 +1,6 @@
 ## PvP
 
-**NOTE: Xyz summons are currently broken**
-
-PvP (WIP) lets you use duel rooms and the friends list. You can also trade cards.
+PvP lets you use duel rooms and the friends list. You can also trade cards.
 
 ## Setting it up on a single PC
 
