@@ -22,9 +22,8 @@ PvP lets you use duel rooms and the friends list. You can also trade cards.
 - Open `Data/Setting.json` and set `MultiplayerEnabled` to `true`
 - Open `Data/ClientData/ClientSettings.json` and set `MultiplayerToken` to some random text value
 - In `Settings.json` set `SessionServerIP` to `0.0.0.0`
-- In `Settings.json` set `BaseIP` to the WAN IP
 - In `Settings.json` set `BindIP` to `http://*:{BasePort}/`
-- In `ClientSettings.json` set `BaseIP` to the WAN IP
+- In `Settings.json` and `ClientSettings.json` set `BaseIP` to the WAN IP
 - Play around with `MultiplayerNoDelay` (`Setting.json` / `ClientSettings.json`) to see which works best for you (it disables nagle's algorithm)
 
 ## Notes
