@@ -20,6 +20,8 @@ namespace YgoMaster
 
         string sessionServerIP;
         int sessionServerPort;
+        string multiplayerPvpClientConnectIP;
+        int multiplayerPvpClientConnectPort;
 
         string bindIP;
         string serverUrl;
@@ -304,6 +306,7 @@ namespace YgoMaster
                 str = str.Replace("{BaseIP}", baseIP);
                 str = str.Replace("{BasePort}", basePort.ToString());
                 str = str.Replace("{SessionServerPort}", sessionServerPort.ToString());
+                str = str.Replace("{SessionServerIP}", sessionServerIP);
                 if (str == "localhost")
                 {
                     str = "127.0.0.1";
@@ -315,7 +318,14 @@ namespace YgoMaster
             serverUrl = FixupUrl(Utils.GetValue<string>(values, "ServerUrl"));
             serverPollUrl = FixupUrl(Utils.GetValue<string>(values, "ServerPollUrl"));
             bindIP = FixupUrl(Utils.GetValue<string>(values, "BindIP"));
-            if (string.IsNullOrEmpty(serverUrl) || string.IsNullOrEmpty(serverPollUrl) || string.IsNullOrEmpty(bindIP))
+            multiplayerPvpClientConnectIP = FixupUrl(Utils.GetValue<string>(values, "MultiplayerPvpClientConnectIP"));
+            multiplayerPvpClientConnectPort = Utils.GetValue<int>(values, "MultiplayerPvpClientConnectPort");
+            if (multiplayerPvpClientConnectPort == 0)
+            {
+                multiplayerPvpClientConnectPort = sessionServerPort;
+            }
+            if (string.IsNullOrEmpty(serverUrl) || string.IsNullOrEmpty(serverPollUrl) || string.IsNullOrEmpty(bindIP) ||
+                string.IsNullOrEmpty(multiplayerPvpClientConnectIP) || multiplayerPvpClientConnectPort == 0)
             {
                 throw new Exception("Failed to get server url settings");
             }

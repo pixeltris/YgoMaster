@@ -1241,8 +1241,8 @@ namespace YgoMaster
                 {
                     Dictionary<string, object> data = new Dictionary<string, object>();
                     data["Duel"] = duelSettings.ToDictionary();
-                    data["SessionServerIP"] = sessionServerIP;
-                    data["SessionServerPort"] = sessionServerPort;
+                    data["SessionServerIP"] = multiplayerPvpClientConnectIP;
+                    data["SessionServerPort"] = multiplayerPvpClientConnectPort;
                     data["Key"] = table.SecretKeyForPvpServer;
                     data["DuelRoomId"] = duelRoom.Id;
                     data["PlayerId1"] = p1.Code;

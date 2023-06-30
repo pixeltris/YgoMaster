@@ -3,6 +3,8 @@
     "BasePort": 4989,
     "SessionServerPort": 4988,
     "SessionServerIP": "{BaseIP}",
+    "MultiplayerPvpClientConnectIP": "{SessionServerIP}",
+    "MultiplayerPvpClientConnectPort": 0,// A value of 0 will use SessionServerPort
     "ServerUrl": "http://{BaseIP}:{BasePort}/ygo",
     "ServerPollUrl": "http://{BaseIP}:{BasePort}/ygo/poll",
     "BindIP": "http://{BaseIP}:{BasePort}/",
