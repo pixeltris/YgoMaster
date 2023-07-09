@@ -133,10 +133,22 @@ namespace YgoMaster
                             //desc.Add(shopItem.Cards.Count + " cards");
                             //desc.Add(numCardsObtained + " owned");
                             desc.Add(numCardsObtained + " / " + shopItem.Cards.Count + " owned");
-                            if (shopItem.UnlockSecrets.Count > 0 && percentComplete < shopItem.UnlockSecretsAtPercent &&
-                                !shopItem.HasUnlockedAllSecrets(request.Player, Shop))
+                            if (shopItem.UnlockSecrets.Count > 0)
                             {
-                                desc.Add((shopItem.UnlockSecretsAtPercent - percentComplete).ToString("N1") + "% left until the next pack");
+                                if (shopItem.UnlockSecretsAtPercent > 0)
+                                {
+                                    if (percentComplete < shopItem.UnlockSecretsAtPercent && !shopItem.HasUnlockedAllSecrets(request.Player, Shop))
+                                    {
+                                        desc.Add((shopItem.UnlockSecretsAtPercent - percentComplete).ToString("N1") + "% left until the next pack");
+                                    }
+                                }
+                                else if (shopItem.UnlockSecretsAtNumDuels > 0)
+                                {
+                                    if (!shopItem.HasUnlockedAllSecrets(request.Player, Shop))
+                                    {
+                                        desc.Add(Math.Max(0, shopItem.UnlockSecretsAtNumDuels - request.Player.ShopState.DuelsCompletedForNextSecretUnlock) + " duels until the next pack");
+                                    }
+                                }
                             }
                             string descStr = Utils.FixIdString(string.Join("\n", desc));
                             data["descShortTextId"] = descStr;

@@ -643,6 +643,7 @@ namespace YgoMaster
 
     class PlayerShopState
     {
+        public int DuelsCompletedForNextSecretUnlock;
         public Dictionary<int, PlayerShopItemState> ShopItems { get; private set; }// <shopid, PlayerShopItemState>
         public HashSet<int> UltraRareGuaranteedPacks { get; private set; }// <packid>
 
@@ -806,6 +807,7 @@ namespace YgoMaster
         public Dictionary<string, object> ToDictionary()
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
+            result["DuelsCompletedForNextSecretUnlock"] = DuelsCompletedForNextSecretUnlock;
             result["UltraRareGuaranteedPacks"] = UltraRareGuaranteedPacks.ToArray();
             Dictionary<string, object> shopItemsData = new Dictionary<string, object>();
             foreach (KeyValuePair<int, PlayerShopItemState> shopItemState in ShopItems)
@@ -835,6 +837,7 @@ namespace YgoMaster
             {
                 return;
             }
+            DuelsCompletedForNextSecretUnlock = Utils.GetValue<int>(data, "DuelsCompletedForNextSecretUnlock");
             List<object> guaranteesObj = Utils.GetValue(data, "UltraRareGuaranteedPacks", default(List<object>));
             if (guaranteesObj != null)
             {

@@ -1479,6 +1479,15 @@ namespace YgoMaster
                                 {
                                     shopItem.UnlockSecretsAtPercent = Shop.DefaultUnlockSecretsAtPercent;
                                 }
+
+                                if (Shop.OverrideUnlockSecretsAtNumDuels > 0)
+                                {
+                                    shopItem.UnlockSecretsAtNumDuels = Shop.OverrideUnlockSecretsAtNumDuels;
+                                }
+                                else if (shopItem.UnlockSecretsAtNumDuels == 0)
+                                {
+                                    shopItem.UnlockSecretsAtNumDuels = Shop.DefaultUnlockSecretsAtNumDuels;
+                                }
                             }
                             switch (shopItem.SecretType)
                             {
@@ -1576,6 +1585,8 @@ namespace YgoMaster
                 Shop.OverrideStructureDeckPrice = Utils.GetValue<int>(data, "OverrideStructureDeckPrice");
                 Shop.DefaultUnlockSecretsAtPercent = Utils.GetValue<int>(data, "DefaultUnlockSecretsAtPercent");
                 Shop.OverrideUnlockSecretsAtPercent = Utils.GetValue<int>(data, "OverrideUnlockSecretsAtPercent");
+                Shop.DefaultUnlockSecretsAtNumDuels = Utils.GetValue<int>(data, "DefaultUnlockSecretsAtNumDuels");
+                Shop.OverrideUnlockSecretsAtNumDuels = Utils.GetValue<int>(data, "OverrideUnlockSecretsAtNumDuels");
                 Shop.DefaultPackCardNum = Utils.GetValue<int>(data, "DefaultPackCardNum");
                 Shop.OverridePackCardNum = Utils.GetValue<int>(data, "OverridePackCardNum");
             }

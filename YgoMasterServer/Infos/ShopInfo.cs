@@ -78,6 +78,9 @@ namespace YgoMaster
         public int DefaultUnlockSecretsAtPercent;
         public int OverrideUnlockSecretsAtPercent;
 
+        public int DefaultUnlockSecretsAtNumDuels;
+        public int OverrideUnlockSecretsAtNumDuels;
+
         public ShopInfo()
         {
             PackOddsByName = new Dictionary<string, ShopOddsInfo>();
@@ -184,6 +187,11 @@ namespace YgoMaster
         /// The percent of completion at which to unlock linked secret packs
         /// </summary>
         public double UnlockSecretsAtPercent;
+        /// <summary>
+        /// A number of duels to complete before unlocking the next pack (an alternative to using percent complete unlock)
+        /// NOTE: Only applies for PvP duels
+        /// </summary>
+        public int UnlockSecretsAtNumDuels;
 
         /// <summary>
         /// A list of shop other ids which should have an incremented purchase count when this shop item is purchased
@@ -255,7 +263,7 @@ namespace YgoMaster
         public List<ShopItemInfo> DoUnlockSecrets(Player player, ShopInfo shop)
         {
             List<ShopItemInfo> result = null;
-            if (UnlockSecrets.Count > 0 && UnlockSecretsAtPercent > 0)
+            if (UnlockSecrets.Count > 0 && (UnlockSecretsAtPercent > 0 || UnlockSecretsAtNumDuels > 0))
             {
                 bool isComplete = false;
                 foreach (int id in UnlockSecrets)
@@ -267,9 +275,20 @@ namespace YgoMaster
                         {
                             if (!isComplete)
                             {
-                                if (GetPercentComplete(player) < UnlockSecretsAtPercent)
+                                if (UnlockSecretsAtPercent > 0)
                                 {
-                                    return null;
+                                    if (GetPercentComplete(player) < UnlockSecretsAtPercent)
+                                    {
+                                        return null;
+                                    }
+                                }
+                                else if (UnlockSecretsAtNumDuels > 0)
+                                {
+                                    if (player.ShopState.DuelsCompletedForNextSecretUnlock < UnlockSecretsAtNumDuels)
+                                    {
+                                        return null;
+                                    }
+                                    player.ShopState.DuelsCompletedForNextSecretUnlock = 0;
                                 }
                                 result = new List<ShopItemInfo>();
                                 isComplete = true;

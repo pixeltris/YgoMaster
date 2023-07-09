@@ -400,6 +400,9 @@ namespace YgoMaster
                                 duelRoomTable.Rewards.Player2Rewards = request.Response;
                                 request.Response = new Dictionary<string, object>();
 
+                                UpdateUnlockedSecretsForCompletedDuels(request.Player, res, finish);
+                                UpdateUnlockedSecretsForCompletedDuels(opponentPlayer, opponentResult, finish);
+
                                 SavePlayerNow(request.Player);
                                 SavePlayerNow(opponentPlayer);
 
@@ -497,6 +500,14 @@ namespace YgoMaster
 
         void GiveDuelReward(GameServerWebRequest request, Player player, DuelRewardInfos rewards, DuelResultType result, DuelFinishType finishType, bool chapterStatusChanged)
         {
+            Player temp = request.Player;
+            request.Player = player;
+            GiveDuelRewardImpl(request, rewards, result, finishType, chapterStatusChanged);
+            request.Player = temp;
+        }
+
+        void GiveDuelRewardImpl(GameServerWebRequest request, DuelRewardInfos rewards, DuelResultType result, DuelFinishType finishType, bool chapterStatusChanged)
+        {
             int turn = 0;
             Dictionary<string, object> endParams;
             if (Utils.TryGetValue(request.ActParams, "params", out endParams))
@@ -561,7 +572,7 @@ namespace YgoMaster
                                 {
                                     continue;
                                 }
-                                player.Gems += amount;
+                                request.Player.Gems += amount;
                                 WriteItem(request, (int)ItemID.Value.Gem);
                                 duelScoreTotal += duelScoreRewardValue;
                                 duelRewards.Add(new Dictionary<string, object>()
@@ -585,7 +596,7 @@ namespace YgoMaster
                                 {
                                     foreach (int id in reward.Ids)
                                     {
-                                        if (!player.Items.Contains(id))
+                                        if (!request.Player.Items.Contains(id))
                                         {
                                             unownedIds.Add(id);
                                         }
@@ -610,7 +621,7 @@ namespace YgoMaster
                                     {
                                         foreach (int id in ItemID.Values[category])
                                         {
-                                            if (!player.Items.Contains(id))
+                                            if (!request.Player.Items.Contains(id))
                                             {
                                                 unownedIds.Add(id);
                                             }
@@ -632,11 +643,11 @@ namespace YgoMaster
                                         {
                                             continue;
                                         }
-                                        player.AddItem(id, amount);
+                                        request.Player.AddItem(id, amount);
                                     }
                                     else
                                     {
-                                        player.Items.Add(id);
+                                        request.Player.Items.Add(id);
                                         WriteItem(request, id);
                                     }
                                     duelScoreTotal += duelScoreRewardValue;
@@ -664,7 +675,7 @@ namespace YgoMaster
                                     HashSet<int> cardIds = new HashSet<int>();
                                     foreach (int id in reward.Ids)
                                     {
-                                        if (reward.CardOwnedLimit == 0 || reward.CardOwnedLimit > player.Cards.GetCount(id))
+                                        if (reward.CardOwnedLimit == 0 || reward.CardOwnedLimit > request.Player.Cards.GetCount(id))
                                         {
                                             cardIds.Add(id);
                                         }
@@ -672,7 +683,7 @@ namespace YgoMaster
                                     if (cardIds.Count > 0)
                                     {
                                         int cardId = cardIds.ElementAt(rand.Next(cardIds.Count));
-                                        player.Cards.Add(cardId, numCards, dismantle, CardStyleRarity.Normal);
+                                        request.Player.Cards.Add(cardId, numCards, dismantle, CardStyleRarity.Normal);
                                         WriteCards_have(request, cardId);
                                         duelScoreTotal += duelScoreRewardValue;
                                         duelRewards.Add(new Dictionary<string, object>()
@@ -716,12 +727,12 @@ namespace YgoMaster
                                     }
                                     if (cardRarity != CardRarity.None)
                                     {
-                                        Dictionary<int, int> cardRare = GetCardRarities(player);
+                                        Dictionary<int, int> cardRare = GetCardRarities(request.Player);
                                         List<int> cardIds = new List<int>();
                                         foreach (KeyValuePair<int, int> card in cardRare)
                                         {
                                             if (card.Value == (int)cardRarity && (reward.CardOwnedLimit == 0 ||
-                                                reward.CardOwnedLimit < player.Cards.GetCount(card.Key)))
+                                                reward.CardOwnedLimit < request.Player.Cards.GetCount(card.Key)))
                                             {
                                                 cardIds.Add(card.Key);
                                             }
@@ -729,7 +740,7 @@ namespace YgoMaster
                                         if (cardIds.Count > 0)
                                         {
                                             int cardId = cardIds[rand.Next(cardIds.Count)];
-                                            player.Cards.Add(cardId, numCards, dismantle, CardStyleRarity.Normal);
+                                            request.Player.Cards.Add(cardId, numCards, dismantle, CardStyleRarity.Normal);
                                             WriteCards_have(request, cardId);
                                             duelScoreTotal += duelScoreRewardValue;
                                             duelRewards.Add(new Dictionary<string, object>()
@@ -750,6 +761,25 @@ namespace YgoMaster
             }
 
             duelScore["total"] = duelScoreTotal;
+        }
+
+        void UpdateUnlockedSecretsForCompletedDuels(Player player, DuelResultType result, DuelFinishType finishType)
+        {
+            if (finishType == DuelFinishType.Surrender)
+            {
+                return;
+            }
+            player.ShopState.DuelsCompletedForNextSecretUnlock++;
+            foreach (ShopItemInfo shopItem in Shop.AllShops.Values.OrderBy(x => x.ShopId))
+            {
+                if (shopItem.UnlockSecrets.Count > 0 && shopItem.UnlockSecretsAtNumDuels > 0 &&
+                    player.ShopState.GetAvailability(Shop, shopItem) == PlayerShopItemAvailability.Available &&
+                    !shopItem.HasUnlockedAllSecrets(player, Shop))
+                {
+                    shopItem.DoUnlockSecrets(player, Shop);
+                    break;
+                }
+            }
         }
     }
 }

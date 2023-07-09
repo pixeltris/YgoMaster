@@ -4,7 +4,7 @@ PvP lets you use duel rooms and the friends list. You can also trade cards.
 
 ## Setting it up on a single PC
 
-- In `Data/Setting.json` and set `MultiplayerEnabled` to `true`
+- In `Data/Settings.json` and set `MultiplayerEnabled` to `true`
 - In `Data/ClientData/ClientSettings.json` and set `MultiplayerToken` to some random text value
 - Copy / paste the entire `YgoMaster` folder so that it creates `YgoMaster - Copy`
 - Inside that `YgoMaster - Copy` folder edit `Data/ClientData/ClientSettings.json` and set `MultiplayerToken` to a different random text value to the previous folder
@@ -13,19 +13,19 @@ PvP lets you use duel rooms and the friends list. You can also trade cards.
 
 ## Setting it up on LAN
 
-- In `Data/Setting.json` and set `MultiplayerEnabled` to `true`
+- In `Data/Settings.json` and set `MultiplayerEnabled` to `true`
 - In `Data/ClientData/ClientSettings.json` and set `MultiplayerToken` to some random text value
-- Modify `BaseIP` in both `Data/Setting.json` and `Data/ClientData/ClientSettings.json` to point to the IP of the machine which runs `YgoMaster.exe`
+- Modify `BaseIP` in both `Data/Settings.json` and `Data/ClientData/ClientSettings.json` to point to the IP of the machine which runs `YgoMaster.exe`
 
 ## Setting it up on WAN
 
-- In `Data/Setting.json` and set `MultiplayerEnabled` to `true`
+- In `Data/Settings.json` and set `MultiplayerEnabled` to `true`
 - In `Settings.json` set `SessionServerIP` to `0.0.0.0`
 - In `Settings.json` set `MultiplayerPvpClientConnectIP` to `localhost`
 - In `Settings.json` set `BindIP` to `http://*:{BasePort}/`
 - In `Settings.json` and `ClientSettings.json` set `BaseIP` to the WAN IP
 - In `Data/ClientData/ClientSettings.json` and set `MultiplayerToken` to some random text value
-- Play around with `MultiplayerNoDelay` (`Setting.json` / `ClientSettings.json`) to see which works best for you (it disables nagle's algorithm)
+- Play around with `MultiplayerNoDelay` (`Settings.json` / `ClientSettings.json`) to see which works best for you (it disables nagle's algorithm)
 
 ## Notes
 
