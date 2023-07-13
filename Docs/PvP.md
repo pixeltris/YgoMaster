@@ -17,6 +17,8 @@ PvP lets you use duel rooms and the friends list. You can also trade cards.
 - In `Data/ClientData/ClientSettings.json` and set `MultiplayerToken` to some random text value
 - Modify `BaseIP` in both `Data/Settings.json` and `Data/ClientData/ClientSettings.json` to point to the IP of the machine which runs `YgoMaster.exe`
 
+*If this doesn't work then use the WAN instructions but use your LAN IP where it says "WAN IP".*
+
 ## Setting it up on WAN
 
 - In `Data/Settings.json` and set `MultiplayerEnabled` to `true`
@@ -25,7 +27,6 @@ PvP lets you use duel rooms and the friends list. You can also trade cards.
 - In `Settings.json` set `BindIP` to `http://*:{BasePort}/`
 - In `Settings.json` and `ClientSettings.json` set `BaseIP` to the WAN IP
 - In `Data/ClientData/ClientSettings.json` and set `MultiplayerToken` to some random text value
-- Play around with `MultiplayerNoDelay` (`Settings.json` / `ClientSettings.json`) to see which works best for you (it disables nagle's algorithm)
 
 ## Notes
 
@@ -33,6 +34,7 @@ PvP lets you use duel rooms and the friends list. You can also trade cards.
 - Do not modify `YgoMaster/Data/Players/` or any sub folders while `YgoMaster.exe` is running
 - Clicking mates / duel field borders are synced with the other player. Spectators also see it but their clicks don't sync
 - Sometimes clients bug out if you restart YgoMaster while in a duel (when you next enter a duel one client will get stuck before starting the duel). Restart all clients when reopening YgoMaster
+- Play around with `MultiplayerNoDelay` (`Settings.json` / `ClientSettings.json`) to see which works best for you (it disables nagle's algorithm)
 - Releases include a folder called `YgoMaster/Data/CardData/`. To Generate that folder yourself read [Updating.md](Updating.md)
 
 ## Starting duels

@@ -304,10 +304,10 @@ namespace YgoMaster.Net
             {
                 return;
             }
-            Player player = GameServer.GetPlayerFromToken(message.Token);
+            Player player;
             try
             {
-                GameServer.CheckTokenLimitForIP(null, message.Token, client.IP);
+                player = GameServer.GetOrCreatePlayerFromToken(message.Token, client.IP);
             }
             catch (Exception e)
             {

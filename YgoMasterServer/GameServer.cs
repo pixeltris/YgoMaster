@@ -233,31 +233,7 @@ namespace YgoMaster
                                 }
 
                                 sessionToken = Encoding.UTF8.GetString(Convert.FromBase64String(sessionToken));
-
-                                uint playerId = GetPlayerIdFromToken(sessionToken);
-                                if (playerId == 0)
-                                {
-                                    throw new Exception("Invalid player id " + playerId + " from token '" + sessionToken + "'");
-                                }
-
-                                lock (playersLock)
-                                {
-                                    if (!playersByToken.TryGetValue(sessionToken, out gameServerWebRequest.Player))
-                                    {
-                                        Player possibleExistingPlayer;
-                                        if (playersById.TryGetValue(playerId, out possibleExistingPlayer))
-                                        {
-                                            throw new Exception("Duplicate player code " + playerId + ". Requested token: '" + sessionToken + "'. Existing token: '" + possibleExistingPlayer.Token + "'");
-                                        }
-                                        playersByToken[sessionToken] = playersById[playerId] = gameServerWebRequest.Player = new Player(playerId);
-                                        gameServerWebRequest.Player.LastRequestTime = DateTime.UtcNow;
-                                        CheckTokenLimitForIP(gameServerWebRequest.Player, sessionToken, context.Request.RemoteEndPoint.Address.ToString());
-                                        LoadPlayer(gameServerWebRequest.Player);
-                                        gameServerWebRequest.Player.Token = sessionToken;
-                                        SavePlayerNow(gameServerWebRequest.Player);
-                                    }
-                                    CheckTokenLimitForIP(gameServerWebRequest.Player, sessionToken, context.Request.RemoteEndPoint.Address.ToString());
-                                }
+                                gameServerWebRequest.Player = GetOrCreatePlayerFromToken(sessionToken, context.Request.RemoteEndPoint.ToString());
 
                                 if (!gameServerWebRequest.Player.HasWrittenToken)
                                 {
@@ -613,6 +589,36 @@ namespace YgoMaster
                 return ms.ToArray();
             }
             //return Encoding.UTF8.GetBytes("@" + value);
+        }
+
+        public Player GetOrCreatePlayerFromToken(string token, string ip)
+        {
+            uint playerId = GetPlayerIdFromToken(token);
+            if (playerId == 0)
+            {
+                throw new Exception("Invalid player id " + playerId + " from token '" + token + "'");
+            }
+
+            lock (playersLock)
+            {
+                Player player;
+                if (!playersByToken.TryGetValue(token, out player))
+                {
+                    Player possibleExistingPlayer;
+                    if (playersById.TryGetValue(playerId, out possibleExistingPlayer))
+                    {
+                        throw new Exception("Duplicate player code " + playerId + ". Requested token: '" + token + "'. Existing token: '" + possibleExistingPlayer.Token + "'");
+                    }
+                    playersByToken[token] = playersById[playerId] = player = new Player(playerId);
+                    player.LastRequestTime = DateTime.UtcNow;
+                    CheckTokenLimitForIP(player, token, ip);
+                    LoadPlayer(player);
+                    player.Token = token;
+                    SavePlayerNow(player);
+                }
+                CheckTokenLimitForIP(player, token, ip);
+                return player;
+            }
         }
 
         public Player GetPlayerFromId(uint playerId)

@@ -1268,7 +1268,7 @@ namespace YgoMaster
             Stopwatch sw = new Stopwatch();
             sw.Start();
             while (table.PvpClientState != PvpClientState.Ready && table.State == DuelRoomTableState.Dueling &&
-                sw.Elapsed < TimeSpan.FromSeconds(10))
+                sw.Elapsed < TimeSpan.FromSeconds(30))
             {
                 Thread.Sleep(200);
             }

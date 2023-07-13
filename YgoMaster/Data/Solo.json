@@ -134,7 +134,7 @@
                 "clear_chapter": 190109
               },
               "20": {
-                "priority": 49,
+                "priority": 50,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
@@ -162,7 +162,7 @@
                 "clear_chapter": 230184
               },
               "24": {
-                "priority": 34,
+                "priority": 33,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
@@ -190,7 +190,7 @@
                 "clear_chapter": 280226
               },
               "29": {
-                "priority": 50,
+                "priority": 51,
                 "parent_gate": 0,
                 "unlock_id": 13,
                 "view_gate": 5,
@@ -217,6 +217,13 @@
                 "view_gate": 5,
                 "clear_chapter": 320259
               },
+              "34": {
+                "priority": 41,
+                "parent_gate": 0,
+                "unlock_id": 11,
+                "view_gate": 5,
+                "clear_chapter": 340276
+              },
               "35": {
                 "priority": 32,
                 "parent_gate": 0,
@@ -232,28 +239,28 @@
                 "clear_chapter": 360290
               },
               "37": {
-                "priority": 36,
+                "priority": 34,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
                 "clear_chapter": 370301
               },
               "40": {
-                "priority": 39,
+                "priority": 35,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
                 "clear_chapter": 400322
               },
               "41": {
-                "priority": 40,
+                "priority": 36,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
                 "clear_chapter": 410329
               },
               "43": {
-                "priority": 42,
+                "priority": 37,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
@@ -267,21 +274,21 @@
                 "clear_chapter": 440355
               },
               "45": {
-                "priority": 43,
+                "priority": 38,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
                 "clear_chapter": 450367
               },
               "46": {
-                "priority": 45,
+                "priority": 40,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
                 "clear_chapter": 460374
               },
               "47": {
-                "priority": 44,
+                "priority": 39,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
@@ -2557,6 +2564,80 @@
                   "npc_id": 1111
                 }
               },
+              "34": {
+                "340272": {
+                  "parent_chapter": 0,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 803,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00340272",
+                  "npc_id": 0
+                },
+                "340273": {
+                  "parent_chapter": 340272,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 903,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00340273",
+                  "npc_id": 0
+                },
+                "340274": {
+                  "parent_chapter": 340273,
+                  "difficulty": 1,
+                  "mydeck_set_id": 0,
+                  "set_id": 803,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1112
+                },
+                "340275": {
+                  "parent_chapter": 340274,
+                  "difficulty": 3,
+                  "mydeck_set_id": 803,
+                  "set_id": 7540,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1112
+                },
+                "340276": {
+                  "parent_chapter": 340275,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 7960,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00340276",
+                  "npc_id": 0
+                },
+                "340277": {
+                  "parent_chapter": 340275,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 0,
+                  "unlock_id": 10806,
+                  "begin_sn": "",
+                  "npc_id": 0
+                },
+                "340278": {
+                  "parent_chapter": 340277,
+                  "difficulty": 4,
+                  "mydeck_set_id": 1140102,
+                  "set_id": 1071010,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1113
+                },
+                "340279": {
+                  "parent_chapter": 340278,
+                  "difficulty": 5,
+                  "mydeck_set_id": 104,
+                  "set_id": 1012034,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1114
+                }
+              },
               "35": {
                 "350280": {
                   "parent_chapter": 0,
@@ -3488,6 +3569,11 @@
                   420336
                 ]
               },
+              "19": {
+                "2": [
+                  260211
+                ]
+              },
               "10101": {
                 "3": [
                   101
@@ -3883,6 +3969,16 @@
                   2019
                 ]
               },
+              "12020": {
+                "3": [
+                  2020
+                ]
+              },
+              "12021": {
+                "3": [
+                  2021
+                ]
+              },
               "20001": {
                 "5": [
                   3001
@@ -3896,6 +3992,11 @@
               "20003": {
                 "5": [
                   3003
+                ]
+              },
+              "20004": {
+                "5": [
+                  3004
                 ]
               }
             },
@@ -4343,6 +4444,18 @@
                   "13": 100
                 }
               },
+              "2020": {
+                "1": {
+                  "8": 100,
+                  "9": 200
+                }
+              },
+              "2021": {
+                "1": {
+                  "11": 100,
+                  "12": 100
+                }
+              },
               "3001": {
                 "7": {
                   "1071002": 1
@@ -4356,6 +4469,11 @@
               "3003": {
                 "7": {
                   "1071020": 1
+                }
+              },
+              "3004": {
+                "4": {
+                  "1012043": 1
                 }
               }
             },
@@ -5490,6 +5608,11 @@
                   "1001020": 1
                 }
               },
+              "1001018": {
+                "3": {
+                  "1001018": 1
+                }
+              },
               "1012001": {
                 "4": {
                   "1012001": 1
@@ -5735,6 +5858,16 @@
                   "1012053": 1
                 }
               },
+              "1012043": {
+                "4": {
+                  "1012043": 1
+                }
+              },
+              "1012040": {
+                "4": {
+                  "1012040": 1
+                }
+              },
               "1020012": {
                 "5": {
                   "1020012": 1
@@ -5843,6 +5976,16 @@
               "1071025": {
                 "7": {
                   "1071025": 1
+                }
+              },
+              "1071017": {
+                "7": {
+                  "1071017": 1
+                }
+              },
+              "1071016": {
+                "7": {
+                  "1071016": 1
                 }
               },
               "1090006": {

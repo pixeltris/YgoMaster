@@ -2061,6 +2061,7 @@ namespace YgoMaster
         /// </summary>
         void MergeShopDumps()
         {
+            // This is a mess. TODO: Improve this
             string dir = Path.Combine(dataDirectory, "ShopDumps");
             if (!Directory.Exists(dir))
             {
@@ -2097,8 +2098,14 @@ namespace YgoMaster
                                             {
                                                 if (itemData.ContainsKey("limitdate") && Utils.GetValue<int>(itemData, "packType") != 2)
                                                 {
-                                                    // Ignore time limited packs as they overwrite the previous secret
-                                                    continue;
+                                                    switch (shopId)
+                                                    {
+                                                        case 10102156:// The Trap in the Wicked Castle
+                                                            break;
+                                                        default:
+                                                            // Ignore time limited packs as they overwrite the previous secret
+                                                            continue;
+                                                    }
                                                 }
 
                                                 ShopPackType packType = Utils.GetValue<ShopPackType>(itemData, "packType");
