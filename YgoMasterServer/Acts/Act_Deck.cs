@@ -17,6 +17,7 @@ namespace YgoMaster
                 WriteDeckList(request, deckId);
             }
             request.Remove("DeckList." + deckId);
+            request.Remove("Craft.secret_pack_list", "Craft.open_secret_pack");
         }
 
         void Act_DeckDeleteDeck(GameServerWebRequest request)

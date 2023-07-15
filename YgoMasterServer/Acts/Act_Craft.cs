@@ -170,7 +170,7 @@ namespace YgoMaster
                         }
                     }
                 }
-                List<Dictionary<string, object>> secretPackList = new List<Dictionary<string, object>>();
+                Dictionary<int, Dictionary<string, object>> secretPackList = new Dictionary<int, Dictionary<string, object>>();
                 if (isCraft)
                 {
                     request.Player.CraftPoints.Subtract(points);
@@ -190,14 +190,15 @@ namespace YgoMaster
                                         request.Player.ShopState.New(secretPack);
                                     }
                                     request.Player.ShopState.Unlock(secretPack);
-                                    secretPackList.Add(new Dictionary<string, object>()
+                                    secretPackList[secretPack.ShopId] = new Dictionary<string, object>()
                                     {
                                         { "nameTextId", Utils.FixIdString(secretPack.NameText) },
                                         { "shopId", secretPack.ShopId },
-                                        { "iconMrk", secretPack.IconMrk },
                                         { "is_extend", !isNewSecret },
-                                        //{ "free_num", 1 }// "1 Free Pull" (this is also the only way to show a "!" mark)
-                                    });
+                                        //{ "free_num", 0 },// "1 Free Pull" (this is also the only way to show a "!" mark)
+                                        { "iconType", 1 },
+                                        { "iconData", secretPack.IconMrk.ToString() },
+                                    };
                                 }
                             }
                         }
@@ -236,7 +237,7 @@ namespace YgoMaster
                 request.Response["Craft"] = new Dictionary<string, object>()
                 {
                     { "point", request.Player.CraftPoints.ToDictionary() },
-                    { "secret_pack_list", secretPackList },
+                    { "open_secret_pack", secretPackList },
                     { "is_send_present_box", false }
                 };
                 WriteCards_have(request, new HashSet<int>(cards.Keys));

@@ -77,6 +77,7 @@ namespace YgoMaster
                 }
                 int buyLimit = 0;
                 int have = 0;
+                int targetCategory = 0;
                 Dictionary<string, object> data = new Dictionary<string, object>();
                 switch (shopItem.Category)
                 {
@@ -97,7 +98,7 @@ namespace YgoMaster
                                 pickupCardListId = shopItem.ShopId;
                             }
                         }
-                        
+
                         int numCardsObtained;
                         double percentComplete = shopItem.GetPercentComplete(request.Player, out numCardsObtained);
                         double percentToNextPack = shopItem.UnlockSecretsAtPercent - percentComplete;
@@ -118,7 +119,7 @@ namespace YgoMaster
                             str = str.Replace("{PERCENT_TO_PACK_N2}", percentToNextPack.ToString("N2"));
                             return Utils.FixIdString(str);
                         };
-                        
+
                         packShop[shopItem.ShopId.ToString()] = data;
                         data["packId"] = shopItem.Id;
                         data["packType"] = (int)shopItem.PackType;
@@ -168,6 +169,7 @@ namespace YgoMaster
                         data["pickupCardListId"] = pickupCardListId;
                         data["isFinalizedUR"] = request.Player.ShopState.IsUltraRareGuaranteed(shopItem.Id);
                         data["isSpecialTime"] = shopItem.IsSpecialTime;
+                        targetCategory = (int)shopItem.PackType;
                         break;
                     case ShopCategory.Structure:
                         structureShop[shopItem.ShopId.ToString()] = data;
@@ -178,25 +180,32 @@ namespace YgoMaster
                         data["accessory"] = deck.Accessory.ToDictionary();
                         data["focus"] = deck.DisplayCards.ToDictionary();
                         data["contents"] = deck.ToDictionary();
+                        targetCategory = 0;
                         break;
                     case ShopCategory.Accessory:
                         accessoryShop[shopItem.ShopId.ToString()] = data;
                         buyLimit = 1;
                         have = request.Player.Items.Contains(shopItem.Id) ? 1 : 0;
                         data["itemId"] = shopItem.Id;
+                        data["targetId"] = shopItem.Id;
                         data["item_id"] = shopItem.Id;
                         data["item_category"] = (int)ItemID.GetCategoryFromID(shopItem.Id);
                         data["is_period"] = false;//?
                         data["max"] = buyLimit;
                         data["have"] = have;
+                        targetCategory = (int)ItemID.GetCategoryFromID(shopItem.Id);
                         break;
                     case ShopCategory.Special:
                         specialShop[shopItem.ShopId.ToString()] = data;
                         // TODO (same as Pack but also has "setItems" / "isSPProb")
                         continue;
                 }
+                data["targetCategory"] = targetCategory;
+                data["targetId"] = shopItem.Id;
                 data["shopId"] = shopItem.ShopId;
                 data["category"] = (int)shopItem.Category;
+                data["productType"] = (int)shopItem.Category;
+                data["targetPeriodFlag"] = false;
                 data["subCategory"] = shopItem.SubCategory;
                 data["iconMrk"] = shopItem.IconMrk;
                 data["iconType"] = (int)shopItem.IconType;
@@ -214,6 +223,7 @@ namespace YgoMaster
                 data["limit_buy_count"] = buyLimit;
                 data["now_buy_count"] = have;
                 data["list_button_type"] = (int)ShopItemListButtonType.Default;
+                data["list_button_price"] = 0;
                 data["confirm_text_id"] = new string[0];// Custom text for the "Purchase Confirmation" popup (entries are line breaked)
                 data["isNew"] = isNew;
 
@@ -264,7 +274,8 @@ namespace YgoMaster
                         { "use_item_num", price.Price },
                         { "buy_count", 1 },
                         { "sort", price.Id },
-                        { "confirm_reg_id", 0 },// Added v1.1.1
+                        { "confirm_reg_id", 0 },
+                        { "special_flag", 0 },
                         //"free_num":1 <--- used for "1 Free Pull" (also need "use_item_num" set to 0)
                     };
                     if (!string.IsNullOrEmpty(textId))
