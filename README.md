@@ -34,6 +34,7 @@ Offline Yu-Gi-Oh! Master Duel (PC)
 
 Additionally...
 
+- [Run on Linux](Docs/Linux.md)
 - *If you see errors, infinite loading screens, corrupt screens, etc [follow these instructions](Docs/FileLoadError.md)*
 - [It's recommended that you tailor the server settings to your preferences](Docs/Settings.md)
 - Download [VG.TCG.Decks.7z](https://github.com/pixeltris/YgoMaster/releases/download/v1.4/VG.TCG.Decks.7z) for ~6000 decks from the YGO video games
