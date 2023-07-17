@@ -1259,7 +1259,7 @@ BOOL CreateTrampolineFunction(PTRAMPOLINE ct);
 #define MEMORY_BLOCK_SIZE 0x1000
 
 // Max range for seeking a memory block. (= 1024MB)
-#define MAX_MEMORY_RANGE 0xFFFFFFFF
+#define MAX_MEMORY_RANGE 0x7FFFFFFF
 
 // Memory protection flags to check the executable address.
 #define PAGE_EXECUTE_FLAGS \
