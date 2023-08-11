@@ -1089,8 +1089,10 @@ namespace YgomSystem.Utility
 
         delegate IntPtr Del_GetTextString(IntPtr textEnum, bool richTextEx);
         delegate IntPtr Del_GetTextEnum(int textEnum, bool richTextEx, IntPtr methodInstance);
+        delegate csbool Del_ParseTextId(IntPtr fullTextId, IntPtr groupId, IntPtr textId);
         static Hook<Del_GetTextString> hookGetTextString;
         static Hook<Del_GetTextEnum> hookGetTextEnum;
+        static Hook<Del_ParseTextId> hookParseTextId;
 
         public static Dictionary<string, string> CustomTextData = new Dictionary<string, string>();
 
@@ -1103,6 +1105,7 @@ namespace YgomSystem.Utility
             hookGetTextString = new Hook<Del_GetTextString>(GetTextString, methodGetTextString);
             methodGetTextEnum = classInfo.GetMethod("GetText").MakeGenericMethod(new IntPtr[] { CastUtils.IL2Typeof("Int32Enum", "System", "mscorlib") });
             hookGetTextEnum = new Hook<Del_GetTextEnum>(GetTextEnum, methodGetTextEnum);
+            hookParseTextId = new Hook<Del_ParseTextId>(ParseTextId, classInfo.GetMethod("ParseTextId"));
 
             // System.Object.ToString
             methodObjectToString = Assembler.GetAssembly("mscorlib").GetClass("Object", "System").GetMethod("ToString");
@@ -1159,6 +1162,26 @@ namespace YgomSystem.Utility
         public static string GetText(string id)
         {
             return new IL2String(GetTextString(new IL2String(id).ptr, false)).ToString();
+        }
+
+        static csbool ParseTextId(IntPtr textString, IntPtr groupId, IntPtr textId)
+        {
+            string inputString = new IL2Object(textString).GetValueObj<string>();
+            csbool result = hookParseTextId.Original(textString, groupId, textId);
+            string groupIdString = new IL2Object(Marshal.ReadIntPtr(groupId)).GetValueObj<string>();
+            string textIdString = new IL2Object(Marshal.ReadIntPtr(textId)).GetValueObj<string>();
+            //Console.WriteLine("ParseTextId " + inputString + " error:" + result + " groupId:" + groupIdString + " textId:" + textIdString);
+            if (!string.IsNullOrEmpty(inputString) && inputString.StartsWith(HackID))
+            {
+                // Hacky fix for card packs. They seem to be sanitizing these for some reason (but only for card packs)
+                // We might need to do something smarter if they add additional checks for other types of custom strings
+                // - PvP infinite time
+                // - Pack descriptions
+                // - Solo gate text and chapter text
+                Marshal.WriteIntPtr(textId, new IL2String("ID3001_NAME").ptr);
+                Marshal.WriteIntPtr(groupId, new IL2String("CARDPACK").ptr);
+            }
+            return result;
         }
 
         static IntPtr GetTextString(IntPtr textString, bool richTextEx)
