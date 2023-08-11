@@ -235,7 +235,7 @@ namespace YgoMaster
                     ShopItemPriceButtonType buttonType = ShopItemPriceButtonType.Blue;
                     if (shopItem.PackType != ShopPackType.None)
                     {
-                        textId = price.ItemAmount <= 1 ? "IDS_SHOP_BUY_BUTTON_CARDPACK_SINGLE" : "IDS_SHOP_BUY_BUTTON_CARDPACK_MULTI";
+                        textId = price.ItemAmount <= 1 && price.MultiBuyLimit <= 1 ? "IDS_SHOP_BUY_BUTTON_CARDPACK_SINGLE" : "IDS_SHOP_BUY_BUTTON_CARDPACK_MULTI";
                         if (price.ItemAmount > 1)
                         {
                             if (packBuyLimit > 0 && price.ItemAmount > packBuyLimit)
@@ -264,6 +264,11 @@ namespace YgoMaster
                             pop = "IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_10_SR_SET";// "At least 1 SR guaranteed"
                         }
                     }
+                    int priceValue = price.Price;
+                    if (price.MultiBuyLimit > 1)
+                    {
+                        priceValue = Math.Max(1, price.GetAvailableBuyAmount(request.Player)) * price.Price;
+                    }
                     // NOTE: If you send "IDS_SHOP_BUY_BUTTON_CARDPACK_MULTI" with no "textArgs" the shops will break
                     Dictionary<string, object> priceData = new Dictionary<string, object>()
                     {
@@ -271,7 +276,7 @@ namespace YgoMaster
                         { "item_category", 1 },
                         { "item_id", 1 },
                         { "button_type", (int)buttonType },
-                        { "use_item_num", price.Price },
+                        { "use_item_num", priceValue },
                         { "buy_count", 1 },
                         { "sort", price.Id },
                         { "confirm_reg_id", 0 },
@@ -281,7 +286,14 @@ namespace YgoMaster
                     if (!string.IsNullOrEmpty(textId))
                     {
                         priceData["textId"] = textId;
-                        priceData["textArgs"] = price.ItemAmount > 1 ? new int[] { price.ItemAmount } : new int[0];
+                        if (price.MultiBuyLimit > 1)
+                        {
+                            priceData["textArgs"] = new int[] { Math.Max(1, price.GetAvailableBuyAmount(request.Player)) };
+                        }
+                        else
+                        {
+                            priceData["textArgs"] = price.ItemAmount > 1 ? new int[] { price.ItemAmount } : new int[0];
+                        }
                     }
                     if (!string.IsNullOrEmpty(pop))
                     {
@@ -375,7 +387,7 @@ namespace YgoMaster
                     request.Remove("Gacha.drawPackInfo", "Gacha.effects", "Gacha.info", "Operation.Dialog");
                     return;
                 }
-                if (request.Player.Gems < price.Price)
+                if (price.GetAvailableBuyAmount(request.Player) == 0)
                 {
                     Utils.LogWarning("Lacking funds to purchase item " + shopItem.Id);
                 }
@@ -494,13 +506,17 @@ namespace YgoMaster
                 request.ResultCode = (int)ResultCodes.ShopCode.PROCESSING_FAILED;
                 Utils.LogWarning("Shop purchase failed!");
             }
-            request.Remove("Gacha.drawPackInfo", "Gacha.effects", "Gacha.info");
+            request.Remove("Gacha.drawPackInfo", "Gacha.effects", "Gacha.info", "Gacha.drawInfo", "Gacha.resultInfo");
         }
 
         bool Act_ShopPurchase_Pack(GameServerWebRequest request, ShopItemPrice price, ShopItemInfo shopItem)
         {
-            // NOTE: Anything above 10 packs makes the client bug out
-            int packCount = Math.Min(10, Math.Max(1, price.ItemAmount));
+            int packCount = price.GetAvailableBuyAmount(request.Player) * price.ItemAmount;
+            if (packCount == 0)
+            {
+                Utils.LogWarning("Packet count 0 for " + shopItem.Id + " gems:" + request.Player.Gems + " price:" + price.Price + " multiBuyLimit:" + price.MultiBuyLimit);
+                return false;
+            }
             ShopOddsInfo odds = shopItem.GetOdds(Shop);
             if (odds == null)
             {
@@ -509,7 +525,7 @@ namespace YgoMaster
             }
             else
             {
-                request.Player.Gems -= price.Price;
+                request.Player.Gems -= price.Price * price.GetAvailableBuyAmount(request.Player);
 
                 Dictionary<int, int> standardPackCardRare = GetCardRarities(request.Player, Shop.StandardPack);
                 Dictionary<int, int> packCardRare = GetCardRarities(request.Player, shopItem);
@@ -523,7 +539,7 @@ namespace YgoMaster
                 // 2 = Orange smoke
                 // 3 = A lot of orange smoke
                 int smokeType = rand.Next(100) < 15 ? 2 : 1;
-                if (packCount == shopExtraGuaranteePackCount)
+                if (packCount >= shopExtraGuaranteePackCount)
                 {
                     smokeType = 3;
                 }
@@ -535,7 +551,8 @@ namespace YgoMaster
                 HashSet<ShopItemInfo> pickupPacks = new HashSet<ShopItemInfo>();
                 bool showSecretFoundResult = false;
                 bool pulledUltraRare = false;
-                bool isUltraRareGuaranteed = request.Player.ShopState.IsUltraRareGuaranteed(shopItem.Id);
+                bool isUltraRareGuaranteed = packCount == shopExtraGuaranteePackCount && request.Player.ShopState.IsUltraRareGuaranteed(shopItem.Id) &&
+                    !Shop.DisableUltraRareGuarantee && !shopItem.DisableUltraRareGuarantee;
                 Dictionary<CardRarity, int> numCardsByRarity = shopItem.GetNumCardsByRarity(packCardRare);
                 for (int packIndex = 0; packIndex < packCount; packIndex++)
                 {
@@ -879,25 +896,28 @@ namespace YgoMaster
                         });
                     }
                 }
-                bool isNextPackUR = packCount == shopExtraGuaranteePackCount && !pulledUltraRare && !Shop.DisableUltraRareGuarantee;
+                bool isNextPackUR = packCount == shopExtraGuaranteePackCount && !pulledUltraRare && !Shop.DisableUltraRareGuarantee && !shopItem.DisableUltraRareGuarantee;
                 if (packInfos.Count > 0)
                 {
                     Dictionary<string, object> gacha = request.GetOrCreateDictionary("Gacha");
 
-                    // TODO: Add support for more than 10 per pack type (would need to split this up based on set of 10 per pack type)
+                    // TODO: Improve the pack splitting (each set of 10 will have the same effect)
                     List<object> packs = new List<object>();
                     foreach (KeyValuePair<ShopItemInfo, List<Dictionary<string, object>>> pack in packInfos)
                     {
-                        packs.Add(new Dictionary<string, object>()
+                        for (int i = 0; i < pack.Value.Count; i += 10)
                         {
-                            { "packInfo", pack.Value },
-                            { "effects", new Dictionary<string, object>()
+                            packs.Add(new Dictionary<string, object>()
                             {
-                                { "isPickup", pickupPacks.Contains(pack.Key) },
-                                { "imageName", shopItem.PackImageName },
-                                { "smokeType", smokeType }
-                            } },
-                        });
+                                { "packInfo", pack.Value.GetRange(i, Math.Min(10, pack.Value.Count - i)) },
+                                { "effects", new Dictionary<string, object>()
+                                {
+                                    { "isPickup", pickupPacks.Contains(pack.Key) },
+                                    { "imageName", shopItem.PackImageName },
+                                    { "smokeType", smokeType }
+                                } },
+                            });
+                        }
                     }
 
                     Dictionary<string, object> drawInfo = Utils.GetOrCreateDictionary(gacha, "drawInfo");
@@ -923,7 +943,7 @@ namespace YgoMaster
                     }}
                 };
                 HashSet<int> shopIdsToUpdate = new HashSet<int>();
-                if (packCount == shopExtraGuaranteePackCount)
+                if (packCount == shopExtraGuaranteePackCount && !Shop.DisableUltraRareGuarantee && !shopItem.DisableUltraRareGuarantee)
                 {
                     request.Player.ShopState.SetUltraRareGaurantee(shopItem.Id, isNextPackUR);
                     shopIdsToUpdate.Add(shopItem.ShopId);// Update for either state change (SR->UR / UR->SR)
@@ -941,6 +961,11 @@ namespace YgoMaster
                 foreach (int secretShopId in foundSecrets)
                 {
                     shopIdsToUpdate.Add(secretShopId);
+                }
+                if (shopItem.Prices.Any(x => x.MultiBuyLimit > 1))
+                {
+                    // To update shops with a varied buy limit
+                    shopIdsToUpdate.Add(shopItem.ShopId);
                 }
                 foreach (int shopIdToUpdate in shopIdsToUpdate)
                 {

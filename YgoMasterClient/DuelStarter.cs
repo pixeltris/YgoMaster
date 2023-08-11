@@ -208,6 +208,7 @@ namespace YgomSystem.Network
                 {
                     DuelSettings settings = new DuelSettings();
                     settings.CopyFrom(YgomGame.Room.RoomCreateViewController.Settings);
+                    RequestStructure.SetDuelRequiredDefaults(settings);
                     settings.ClearRandomDeckPaths(!ClientSettings.RandomDecksDontSetCpuName);
                     settings.FirstPlayer = YgomGame.Solo.SoloStartProductionViewController.DuelStarterFirstPlayer;
                     rule["duelStarterData"] = settings.ToDictionary();
@@ -323,7 +324,7 @@ namespace YgomSystem.Network
             hookComplete = new Hook<Del_Complete>(Complete, classInfo.GetMethod("Complete"));
         }
 
-        static void SetDuelRequiredDefaults(DuelSettings settings)
+        public static void SetDuelRequiredDefaults(DuelSettings settings)
         {
             Dictionary<string, object> userProfile = YgomSystem.Utility.ClientWork.GetDict("$.User.profile");
             if (userProfile != null)
@@ -972,7 +973,12 @@ namespace YgomGame.Room
                 return defaultValue;
             }
 
-            Dictionary<int, string> GetItemNames(ItemID.Category category, string defaultName = "Default")
+            Dictionary<int, string> GetItemNames(ItemID.Category category)
+            {
+                return GetItemNames(category, ClientSettings.CustomTextDefault);
+            }
+
+            Dictionary<int, string> GetItemNames(ItemID.Category category, string defaultName)
             {
                 Dictionary<int, string> result = new Dictionary<int, string>();
                 if (!string.IsNullOrEmpty(defaultName))
@@ -1009,20 +1015,19 @@ namespace YgomGame.Room
             int GetButtonValueI32(IntPtr buttonPtr, int defaultValue = -1)
             {
                 string valueStr = GetButtonValueString(buttonPtr);
-                switch (valueStr)
+                if (valueStr == ClientSettings.CustomTextDefault || valueStr == ClientSettings.CustomTextRandom)
                 {
-                    case "Default":
-                    case "Random":
-                        return defaultValue;
-                    default:
-                        int value;
-                        if (int.TryParse(valueStr, out value))
-                        {
-                            return value;
-                        }
-                        break;
+                    return defaultValue;
                 }
-                return defaultValue;
+                else
+                {
+                    int value;
+                    if (int.TryParse(valueStr, out value))
+                    {
+                        return value;
+                    }
+                    return defaultValue;
+                }
             }
 
             bool GetButtonValueBool(IntPtr buttonPtr)
@@ -1239,22 +1244,22 @@ namespace YgomGame.Room
 
                 string[] lpStrings = new string[]
                 {
-                    "Default", "1", "50", "100", "500", "1000", "2000", "3000", "4000", "5000","6000", "7000", "8000", "9000",
+                    ClientSettings.CustomTextDefault, "1", "50", "100", "500", "1000", "2000", "3000", "4000", "5000","6000", "7000", "8000", "9000",
                     "10000", "15000", "20000", "25000", "50000", "100000", "250000", "500000", "1000000", "9999999"
                 };
                 string[] handStrings = new string[]
                 {
-                    "Default", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15",
+                    ClientSettings.CustomTextDefault, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15",
                     "20", "25", "30", "35", "45", "55", "60", "65", "65", "70", "75", "80", "85", "90", "95", "100"
                 };
                 List<string> cpuParamStrings = new List<string>();
-                cpuParamStrings.Add("Default");
+                cpuParamStrings.Add(ClientSettings.CustomTextDefault);
                 for (int i = -100; i <= 100; i++)
                 {
                     cpuParamStrings.Add(i.ToString());
                 }
                 List<string> seedStrings = new List<string>();
-                seedStrings.Add("Random");
+                seedStrings.Add(ClientSettings.CustomTextRandom);
                 for (int i = 1; i <= 500; i++)
                 {
                     seedStrings.Add(i.ToString());
@@ -1286,7 +1291,7 @@ namespace YgomGame.Room
                     }
                 }
                 List<string> bgmStrings = new List<string>();
-                bgmStrings.Add("Random");
+                bgmStrings.Add(ClientSettings.CustomTextRandom);
                 for (int i = 1; i <= bgmMax; i++)
                 {
                     bgmStrings.Add(i.ToString());
@@ -1304,7 +1309,7 @@ namespace YgomGame.Room
                     ClientSettings.CustomTextDuelStarterLoadDeckFromFolder
                 });
                 AddLabel(infosList, ClientSettings.CustomTextDuelStarterSettings);
-                buttons.StartingPlayer = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterStartingPlayer, new string[] { "Random", "1", "2"/*, "3", "4"*/ });
+                buttons.StartingPlayer = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterStartingPlayer, new string[] { ClientSettings.CustomTextRandom, "1", "2"/*, "3", "4"*/ });
                 buttons.LifePoints = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterLifePoints, lpStrings);
                 buttons.Hand = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterHand, handStrings);
                 buttons.Field = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterField, GetItemNames(ItemID.Category.FIELD).Values.ToArray());

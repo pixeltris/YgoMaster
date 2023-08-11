@@ -216,6 +216,7 @@ namespace YgoMasterClient
         public static void OnDuelBegin(GameMode gameMode)
         {
             LogToFile(string.Empty, false);
+            ReplayData.Clear();
             SpecialResultType = DuelResultType.None;
             SpecialFinishType = DuelFinishType.None;
             DuelEndResult = 0;

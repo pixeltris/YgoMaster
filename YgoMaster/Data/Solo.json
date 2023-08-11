@@ -12,294 +12,344 @@
                 "parent_gate": 0,
                 "unlock_id": 0,
                 "view_gate": 0,
-                "clear_chapter": 10003
+                "clear_chapter": 10003,
+                "open_date": -2208988800
               },
               "2": {
                 "priority": 19,
                 "parent_gate": 21,
                 "unlock_id": 8,
                 "view_gate": 5,
-                "clear_chapter": 20120
+                "clear_chapter": 20120,
+                "open_date": -2208988800
               },
               "3": {
                 "priority": 20,
                 "parent_gate": 21,
                 "unlock_id": 10,
                 "view_gate": 5,
-                "clear_chapter": 30126
+                "clear_chapter": 30126,
+                "open_date": -2208988800
               },
               "4": {
                 "priority": 15,
                 "parent_gate": 0,
                 "unlock_id": 7,
                 "view_gate": 5,
-                "clear_chapter": 40018
+                "clear_chapter": 40018,
+                "open_date": -2208988800
               },
               "5": {
                 "priority": 6,
                 "parent_gate": 0,
                 "unlock_id": 1,
                 "view_gate": 1,
-                "clear_chapter": 50021
+                "clear_chapter": 50021,
+                "open_date": -2208988800
               },
               "6": {
                 "priority": 7,
                 "parent_gate": 0,
                 "unlock_id": 1,
                 "view_gate": 1,
-                "clear_chapter": 60025
+                "clear_chapter": 60025,
+                "open_date": -2208988800
               },
               "7": {
                 "priority": 8,
                 "parent_gate": 0,
                 "unlock_id": 2,
                 "view_gate": 5,
-                "clear_chapter": 70037
+                "clear_chapter": 70037,
+                "open_date": -2208988800
               },
               "8": {
                 "priority": 9,
                 "parent_gate": 0,
                 "unlock_id": 3,
                 "view_gate": 5,
-                "clear_chapter": 80043
+                "clear_chapter": 80043,
+                "open_date": -2208988800
               },
               "9": {
                 "priority": 10,
                 "parent_gate": 0,
                 "unlock_id": 2,
                 "view_gate": 5,
-                "clear_chapter": 90049
+                "clear_chapter": 90049,
+                "open_date": -2208988800
               },
               "10": {
                 "priority": 11,
                 "parent_gate": 0,
                 "unlock_id": 4,
                 "view_gate": 5,
-                "clear_chapter": 100055
+                "clear_chapter": 100055,
+                "open_date": -2208988800
               },
               "11": {
                 "priority": 12,
                 "parent_gate": 0,
                 "unlock_id": 5,
                 "view_gate": 5,
-                "clear_chapter": 110061
+                "clear_chapter": 110061,
+                "open_date": -2208988800
               },
               "12": {
                 "priority": 13,
                 "parent_gate": 0,
                 "unlock_id": 6,
                 "view_gate": 5,
-                "clear_chapter": 120067
+                "clear_chapter": 120067,
+                "open_date": -2208988800
               },
               "13": {
                 "priority": 14,
                 "parent_gate": 0,
                 "unlock_id": 5,
                 "view_gate": 5,
-                "clear_chapter": 130073
+                "clear_chapter": 130073,
+                "open_date": -2208988800
               },
               "14": {
                 "priority": 16,
                 "parent_gate": 0,
                 "unlock_id": 8,
                 "view_gate": 5,
-                "clear_chapter": 140079
+                "clear_chapter": 140079,
+                "open_date": -2208988800
               },
               "15": {
                 "priority": 17,
                 "parent_gate": 0,
                 "unlock_id": 9,
                 "view_gate": 5,
-                "clear_chapter": 150085
+                "clear_chapter": 150085,
+                "open_date": -2208988800
               },
               "16": {
                 "priority": 25,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 160091
+                "clear_chapter": 160091,
+                "open_date": 1646976600
               },
               "17": {
                 "priority": 23,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 170099
+                "clear_chapter": 170099,
+                "open_date": 1645075800
               },
               "19": {
                 "priority": 26,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 190109
+                "clear_chapter": 190109,
+                "open_date": 1649035800
               },
               "20": {
                 "priority": 50,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 200139
+                "clear_chapter": 200139,
+                "open_date": 1646283600
               },
               "21": {
                 "priority": 18,
                 "parent_gate": 0,
                 "unlock_id": 8,
                 "view_gate": 5,
-                "clear_chapter": 230184
+                "clear_chapter": 230184,
+                "open_date": -2208988800
               },
               "22": {
                 "priority": 4,
                 "parent_gate": 31,
                 "unlock_id": 1,
                 "view_gate": 1,
-                "clear_chapter": 220150
+                "clear_chapter": 220150,
+                "open_date": -2208988800
               },
               "23": {
                 "priority": 21,
                 "parent_gate": 21,
                 "unlock_id": 14,
                 "view_gate": 5,
-                "clear_chapter": 230184
+                "clear_chapter": 230184,
+                "open_date": 1658982600
               },
               "24": {
                 "priority": 33,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 240195
+                "clear_chapter": 240195,
+                "open_date": 1666584000
               },
               "26": {
                 "priority": 27,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 260211
+                "clear_chapter": 260211,
+                "open_date": 1653454800
               },
               "27": {
                 "priority": 28,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 270219
+                "clear_chapter": 270219,
+                "open_date": 1652070600
               },
               "28": {
                 "priority": 29,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 280226
+                "clear_chapter": 280226,
+                "open_date": 1654839000
               },
               "29": {
                 "priority": 51,
                 "parent_gate": 0,
                 "unlock_id": 13,
                 "view_gate": 5,
-                "clear_chapter": 290240
+                "clear_chapter": 290240,
+                "open_date": 1657513800
               },
               "30": {
                 "priority": 5,
                 "parent_gate": 31,
                 "unlock_id": 15,
                 "view_gate": 1,
-                "clear_chapter": 300247
+                "clear_chapter": 300247,
+                "open_date": 1652070600
               },
               "31": {
                 "priority": 3,
                 "parent_gate": 0,
                 "unlock_id": 1,
                 "view_gate": 1,
-                "clear_chapter": 300247
+                "clear_chapter": 300247,
+                "open_date": 1652070600
               },
               "32": {
                 "priority": 31,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 320259
+                "clear_chapter": 320259,
+                "open_date": 1661749200
               },
               "34": {
                 "priority": 41,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 340276
+                "clear_chapter": 340276,
+                "open_date": 1688356800
               },
               "35": {
                 "priority": 32,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 350283
+                "clear_chapter": 350283,
+                "open_date": 1662697800
               },
               "36": {
                 "priority": 30,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 360290
+                "clear_chapter": 360290,
+                "open_date": 1660019400
               },
               "37": {
                 "priority": 34,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 370301
+                "clear_chapter": 370301,
+                "open_date": 1664515800
               },
               "40": {
                 "priority": 35,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 400322
+                "clear_chapter": 400322,
+                "open_date": 1669003200
               },
               "41": {
                 "priority": 36,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 410329
+                "clear_chapter": 410329,
+                "open_date": 1670212800
               },
               "43": {
                 "priority": 37,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 430344
+                "clear_chapter": 430344,
+                "open_date": 1673325000
               },
               "44": {
                 "priority": 22,
                 "parent_gate": 21,
                 "unlock_id": 16,
                 "view_gate": 5,
-                "clear_chapter": 440355
+                "clear_chapter": 440355,
+                "open_date": 1679977800
               },
               "45": {
                 "priority": 38,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 450367
+                "clear_chapter": 450367,
+                "open_date": 1677556800
               },
               "46": {
                 "priority": 40,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 460374
+                "clear_chapter": 460374,
+                "open_date": 1685332800
               },
               "47": {
                 "priority": 39,
                 "parent_gate": 0,
                 "unlock_id": 11,
                 "view_gate": 5,
-                "clear_chapter": 470382
+                "clear_chapter": 470382,
+                "open_date": 1683000000
               },
               "48": {
                 "priority": 2,
                 "parent_gate": 0,
                 "unlock_id": 1,
                 "view_gate": 1,
-                "clear_chapter": 480391
+                "clear_chapter": 480391,
+                "open_date": 1676349000
+              },
+              "49": {
+                "priority": 42,
+                "parent_gate": 0,
+                "unlock_id": 11,
+                "view_gate": 5,
+                "clear_chapter": 490396,
+                "open_date": 1690776000
               }
             },
             "chapter": {
@@ -3468,6 +3518,80 @@
                   "unlock_id": 0,
                   "begin_sn": "",
                   "npc_id": 0
+                }
+              },
+              "49": {
+                "490392": {
+                  "parent_chapter": 0,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1003,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00490393",
+                  "npc_id": 0
+                },
+                "490393": {
+                  "parent_chapter": 490392,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1103,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00490394",
+                  "npc_id": 0
+                },
+                "490394": {
+                  "parent_chapter": 490393,
+                  "difficulty": 1,
+                  "mydeck_set_id": 0,
+                  "set_id": 1303,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1157
+                },
+                "490395": {
+                  "parent_chapter": 490394,
+                  "difficulty": 3,
+                  "mydeck_set_id": 903,
+                  "set_id": 1203,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1157
+                },
+                "490396": {
+                  "parent_chapter": 490395,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1071025,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00490396",
+                  "npc_id": 0
+                },
+                "490397": {
+                  "parent_chapter": 490395,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 0,
+                  "unlock_id": 12021,
+                  "begin_sn": "",
+                  "npc_id": 0
+                },
+                "490398": {
+                  "parent_chapter": 490397,
+                  "difficulty": 4,
+                  "mydeck_set_id": 1140102,
+                  "set_id": 1010005,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1158
+                },
+                "490399": {
+                  "parent_chapter": 490398,
+                  "difficulty": 5,
+                  "mydeck_set_id": 104,
+                  "set_id": 1012053,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1159
                 }
               }
             },

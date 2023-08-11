@@ -21,12 +21,19 @@ namespace YgoMaster
             }
 
             Player player;
-            lock (playersLock)
+            if (MultiplayerEnabled)
             {
-                if (!playersById.TryGetValue(pcode, out player))
+                lock (playersLock)
                 {
-                    return;
+                    if (!playersById.TryGetValue(pcode, out player))
+                    {
+                        return;
+                    }
                 }
+            }
+            else
+            {
+                player = request.Player;
             }
 
             if (isSelf)

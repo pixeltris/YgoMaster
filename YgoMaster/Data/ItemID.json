@@ -201,11 +201,11 @@
     1010039,//Another Duelist
     1010040,//Armed Neos
     1010041,//Number 41: Bagooska the Terribly Tired Tapir
-    //1010042,//coming soon
-    //1010043,//coming soon
+    1010042,//WCS2023 "Legendary Magician of Dark"
+    1010043,//WCS2023 "Legendary Dragon of White"
     //1010044,//coming soon
     //1010045,//coming soon
-    //1010046,//coming soon
+    1010046,//I:P Masquerena
     //1010047,//coming soon
     //1010048,//coming soon
     //1010049,//coming soon
@@ -235,10 +235,10 @@
     1011013,//WCS 2023 Qualifiers Gold Finalist
     1011014,//WCS 2023 Qualifiers Silver Finalist
     1011015,//WCS 2023 Qualifiers Bronze Finalist
-    //1011016,//coming soon
-    //1011017,//coming soon
-    //1011018,//coming soon
-    //1011019,//coming soon
+    1011016,//WCS 2023 Champion
+    1011017,//WCS 2023 Finalist
+    1011018,//WCS 2023 Top 4
+    1011019,//WCS 2023 Top 8
     //1011020,//coming soon
     //1011021,//coming soon
     //1011022,//coming soon
@@ -332,7 +332,7 @@
     1012050,//S-Force Justify
     1012051,//Teardrop the Rikka Queen
     1012052,//Subterror Behemoth Speleogeist
-    //1012053,//coming soon
+    1012053,//Monk of the Tenyi
     //1012054,//coming soon
     //1012055,//coming soon
     //1012056,//coming soon
@@ -456,9 +456,9 @@
     1020062,//Academy 2023
     1020063,//Synchro Festival 2023
     1020064,//Monster Type Festival 2023
-    //1020065,//coming soon
-    //1020066,//coming soon
-    //1020067,//coming soon
+    1020065,//Harnesser of Chaos
+    1020066,//DARK Side
+    1020067,//LIGHT Side
     //1020068,//coming soon
     //1020069,//coming soon
     //1020070,//coming soon
@@ -467,10 +467,10 @@
     //1020073,//coming soon
     //1020074,//coming soon
     //1020075,//coming soon
-    //1020076,//coming soon
-    //1020077,//coming soon
-    //1020078,//coming soon
-    //1020079,//coming soon
+    1020076,//WCS 2023 Champion
+    1020077,//WCS 2023 Finalist
+    1020078,//WCS 2023 Top 4
+    1020079,//WCS 2023 Top 8
     //1020080,//coming soon
     //1020081,//coming soon
     //1020082,//coming soon
@@ -565,7 +565,7 @@
     //1030069,//coming soon
     //1030070,//coming soon
     1031001,//The Path of the Blue Sky Striker
-    //1031002,//coming soon
+    1031002,//The Path of the Red Sky Striker
     1031003,//Magic Cylinder
     1031004,//Dark Magical Circle
     1031005,//Evil Eye of Selene
@@ -604,13 +604,23 @@
     //1032018,//coming soon
     //1032019,//coming soon
     //1032020,//coming soon
+    1033001,//WCS 2023 Party Favor
+    //1033002,//coming soon
+    //1033003,//coming soon
+    //1033004,//coming soon
+    //1033005,//coming soon
+    //1033006,//coming soon
+    //1033007,//coming soon
+    //1033008,//coming soon
+    //1033009,//coming soon
+    //1033010,//coming soon
   ],
   "PROTECTOR": [
     1070001,//Yu-Gi-Oh! Trading Card Game
     1070002,//Auram the World Chalice Blademaster
     1070003,//Link Black
-    1070004,//Fusion Purple
-    1070005,//Synchro Silver
+    //1070004,//coming soon
+    //1070005,//coming soon
     1070006,//Xyz Black
     1070007,//Geartown
     1070008,//Ash Blossom & Joyous Spring
@@ -643,7 +653,7 @@
     1070035,//Kurikara Divincarnate
     1070036,//Tearlaments Kaleido-Heart
     1070037,//Exosisters Magnifica
-    //1070038,//coming soon
+    1070038,//P.U.N.K. JAM Dragon Drive
     1070039,//Video Game Awards 2022 Commemoration
     1070040,//Five-Headed Dragon
     1070041,//Number 41: Bagooska the Terribly Tired Tapir
@@ -659,14 +669,14 @@
     1070051,//Traptantalizing Tune
     1070052,//Reign-Beaux, Overking of Dark World
     1070053,//Road to Worlds! Proficiency Test 2023
-    //1070054,//coming soon
+    1070054,//Chaos Angel
     //1070055,//coming soon
     //1070056,//coming soon
     //1070057,//coming soon
     //1070058,//coming soon
-    //1070059,//coming soon
-    //1070060,//coming soon
-    //1070061,//coming soon
+    1070059,//WCS2023 "Legendary Magician of Dark"
+    1070060,//WCS2023 "Legendary Dragon of White"
+    1070061,//Light and Darkness Dragon
     //1070062,//coming soon
     //1070063,//coming soon
     //1070064,//coming soon
@@ -730,7 +740,7 @@
     1071022,//S-Force Justify
     1071023,//Teardrop the Rikka Queen
     1071024,//Subterror Behemoth Speleogeist
-    //1071025,//coming soon
+    1071025,//Draco Masters of the Tenyi
     //1071026,//coming soon
     //1071027,//coming soon
     //1071028,//coming soon
@@ -826,6 +836,16 @@
     //1072018,//coming soon
     //1072019,//coming soon
     //1072020,//coming soon
+    1073001,//WCS 2023 Party Favor
+    1073002,//WCS 2023 Celebration
+    //1073003,//coming soon
+    //1073004,//coming soon
+    //1073005,//coming soon
+    //1073006,//coming soon
+    //1073007,//coming soon
+    //1073008,//coming soon
+    //1073009,//coming soon
+    //1073010,//coming soon
   ],
   "DECK_CASE": [
     1080001,//Duelist Card Case Red
@@ -928,7 +948,7 @@
     1090016,//Myutant Evolution Lab
     1090017,//Cyber Universe
     1090018,//Memories of an Ancient Duel
-    //1090019,//coming soon
+    1090019,//Dogmatika Cathedral
     //1090020,//coming soon
     //1090021,//coming soon
     //1090022,//coming soon
@@ -946,7 +966,7 @@
     //1090034,//coming soon
     //1090035,//coming soon
     1092001,//Colosseum
-    //1092002,//coming soon
+    1092002,//WCS
     //1092003,//coming soon
     //1092004,//coming soon
     //1092005,//coming soon
@@ -980,7 +1000,7 @@
     1100016,//Myutant Evolution Lab
     1100017,//Cyber Universe
     1100018,//Memories of an Ancient Duel
-    //1100019,//coming soon
+    1100019,//Dogmatika Cathedral
     //1100020,//coming soon
     //1100021,//coming soon
     //1100022,//coming soon
@@ -1009,7 +1029,7 @@
     //1101010,//coming soon
     1101011,//Negate Attack
     1101012,//Twin Twisters
-    //1101013,//coming soon
+    1101013,//Foolish Burial
     //1101014,//coming soon
     //1101015,//coming soon
     //1101016,//coming soon
@@ -1038,7 +1058,7 @@
     //1101039,//coming soon
     //1101040,//coming soon
     1102001,//Colosseum
-    //1102002,//coming soon
+    1102002,//WCS
     //1102003,//coming soon
     //1102004,//coming soon
     //1102005,//coming soon
@@ -1072,7 +1092,7 @@
     1110016,//Myutant Evolution Lab
     1110017,//Cyber Universe
     1110018,//Memories of an Ancient Duel
-    //1110019,//coming soon
+    1110019,//Dogmatika Cathedral
     //1110020,//coming soon
     //1110021,//coming soon
     //1110022,//coming soon
@@ -1109,7 +1129,7 @@
     //1111018,//coming soon
     //1111019,//coming soon
     //1111020,//coming soon
-    //1111021,//coming soon
+    1111021,//Green Stone of Magic
     1111022,//Summer Trace of the Thunder God
     //1111023,//coming soon
     //1111024,//coming soon
@@ -1130,7 +1150,7 @@
     //1111039,//coming soon
     //1111040,//coming soon
     1112001,//Colosseum
-    //1112002,//coming soon
+    1112002,//WCS
     //1112003,//coming soon
     //1112004,//coming soon
     //1112005,//coming soon
@@ -1144,6 +1164,7 @@
     //1112013,//coming soon
     //1112014,//coming soon
     //1112015,//coming soon
+    1113001,//WCS 2023 Party Favor
   ],
   "STRUCTURE": [
     1120001,//Starting Deck
@@ -1204,9 +1225,9 @@
     1130019,//Ursarctic Radiation
     1130020,//Abyss Actors' Curtain Call
     //1130021,//coming soon
-    //1130022,//coming soon
-    //1130023,//coming soon
-    //1130024,//coming soon
+    1130022,//Master Peace, the True Dracoslayer
+    1130023,//WCS2023 "Legendary Magician of Dark"
+    1130024,//WCS2023 "Legendary Dragon of White"
     //1130025,//coming soon
     //1130026,//coming soon
     //1130027,//coming soon

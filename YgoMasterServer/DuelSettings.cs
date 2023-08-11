@@ -614,6 +614,7 @@ namespace YgoMaster
                     playerProfileData["sleeve"] = sleeve[i];
                     playerProfileData["avatar_home"] = avatar_home[i];
                     playerProfileData["duel_object"] = duel_object[i];
+                    playerProfileData["deck_case"] = Deck[i].Accessory.Box;
                     playerProfileData["level"] = player.Level;
                     playerProfileData["wallpaper"] = player.Wallpaper;
                     playerProfileData["profile_tag"] = player.TitleTags.ToArray();
@@ -623,9 +624,9 @@ namespace YgoMaster
                     playerProfileData["rank_str"] = null;//?
                     playerProfileData["rank_sub"] = 0;//?
                     playerProfileData["rank_id"] = 0;//?
-                    playerProfileData["rank"] = player.Rank;
+                    playerProfileData["rank"] = Math.Max(1, player.Rank);
                     playerProfileData["lv"] = null;//?
-                    playerProfileData["rate"] = player.Rate;
+                    playerProfileData["rate"] = Math.Max(1, player.Rate);
                     playerProfileData["os"] = (int)PlatformID.Steam;
                     playerProfileData["is_same_os"] = null;
                     playerProfileData["online_id"] = null;
@@ -643,6 +644,7 @@ namespace YgoMaster
                     playerProfileData["sleeve"] = sleeve[i];
                     playerProfileData["avatar_home"] = avatar_home[i];
                     playerProfileData["duel_object"] = duel_object[i];
+                    playerProfileData["deck_case"] = 0;
                     playerProfileData["level"] = level[i];
                     playerProfileData["wallpaper"] = wallpaper[i];
                     playerProfileData["profile_tag"] = profile_tag[i];
@@ -652,9 +654,9 @@ namespace YgoMaster
                     playerProfileData["rank_str"] = null;//?
                     playerProfileData["rank_sub"] = 0;//?
                     playerProfileData["rank_id"] = 0;//?
-                    playerProfileData["rank"] = rank[i];
+                    playerProfileData["rank"] = Math.Max(1, rank[i]);
                     playerProfileData["lv"] = null;//?
-                    playerProfileData["rate"] = rate[i];
+                    playerProfileData["rate"] = Math.Max(1, rate[i]);
                     playerProfileData["os"] = (int)PlatformID.Steam;
                     playerProfileData["is_same_os"] = null;
                     playerProfileData["online_id"] = null;

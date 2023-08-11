@@ -122,6 +122,8 @@ namespace YgoMaster
         /// See YgomGame.Shop.ShopDef - AccessorySubCategory, PackSubCategory, ProductCategory, SpecialSubCategory, StructureSubCategory
         /// </summary>
         public int SubCategory;
+        public int TargetCategory;
+        public int ProductType;
 
         public string NameText;
         public string DescShortText;
@@ -197,6 +199,11 @@ namespace YgoMaster
         /// A list of shop other ids which should have an incremented purchase count when this shop item is purchased
         /// </summary>
         public List<int> SetPurchased { get; private set; }
+
+        /// <summary>
+        /// Disable the ultra rare guarantee (which is determined based on whether the previous 10 pack didn't have an UR)
+        /// </summary>
+        public bool DisableUltraRareGuarantee;
 
         public ShopItemInfo()
         {
@@ -355,11 +362,12 @@ namespace YgoMaster
     {
         public int Id;
         public int Price;
-        public int ItemAmount;
+        public int ItemAmount = 1;
+        public int MultiBuyLimit = 1;
 
-        public ShopItemPrice()
+        public int GetAvailableBuyAmount(Player player)
         {
-            ItemAmount = 1;
+            return Math.Min(player.Gems / Price, Math.Max(1, MultiBuyLimit));
         }
     }
 

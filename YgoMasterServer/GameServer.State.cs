@@ -1638,6 +1638,8 @@ namespace YgoMaster
                 info.IconType = (ShopItemIconType)Utils.GetValue<int>(data, "iconType");
                 info.IconData = Utils.GetValue<string>(data, "iconData");
                 info.SubCategory = Utils.GetValue<int>(data, "subCategory", 1);
+                info.TargetCategory = Utils.GetValue<int>(data, "targetCategory");
+                info.ProductType = Utils.GetValue<int>(data, "productType");
                 object previewObj = Utils.GetValue<object>(data, "preview");
                 if (previewObj is string)
                 {
@@ -1696,13 +1698,17 @@ namespace YgoMaster
                 {
                     case "PackShop":
                         info.Category = ShopCategory.Pack;
-                        info.Id = Utils.GetValue<int>(data, "packId");
+                        info.Id = Utils.GetValue<int>(data, data.ContainsKey("targetId") ? "targetId" : "packId");
                         if (info.Id == 0)
                         {
                             Utils.LogWarning("Invalid pack id id " + info.Id + " in shop data");
                             return;
                         }
-                        info.PackType = (ShopPackType)Utils.GetValue<int>(data, "packType", 1);
+                        info.PackType = (ShopPackType)Utils.GetValue<int>(data, "packType");
+                        if (info.PackType == 0)
+                        {
+                            info.PackType = (ShopPackType)(info.TargetCategory > 0 ? info.TargetCategory : 1);
+                        }
                         info.CardNum = Utils.GetValue<int>(data, "pack_card_num", 1);
                         info.PackImageName = Utils.GetValue<string>(data, "packImage");// custom
                         object cardListObj;
@@ -1751,7 +1757,7 @@ namespace YgoMaster
                         break;
                     case "StructureShop":
                         info.Category = ShopCategory.Structure;
-                        info.Id = Utils.GetValue<int>(data, "structure_id");
+                        info.Id = Utils.GetValue<int>(data, "targetId");
                         if (info.Buylimit == 0)
                         {
                             info.Buylimit = Utils.GetValue<int>(data, "limit_buy_count");
@@ -1860,6 +1866,33 @@ namespace YgoMaster
                             });
                         }
                     }
+                }
+                if (info.ShopId == 10003001)
+                {
+                    info.DisableUltraRareGuarantee = true;
+                    const int legacyPackPrice = 10;
+                    info.Prices.Clear();
+                    info.Prices.Add(new ShopItemPrice()
+                    {
+                        Id = info.Prices.Count + 1,
+                        Price = legacyPackPrice,
+                        ItemAmount = 1,
+                        MultiBuyLimit = 100
+                    });
+                    info.Prices.Add(new ShopItemPrice()
+                    {
+                        Id = info.Prices.Count + 1,
+                        Price = legacyPackPrice,
+                        ItemAmount = 1,
+                        MultiBuyLimit = 10
+                    });
+                    info.Prices.Add(new ShopItemPrice()
+                    {
+                        Id = info.Prices.Count + 1,
+                        Price = legacyPackPrice,
+                        ItemAmount = 1,
+                        MultiBuyLimit = 1
+                    });
                 }
                 if (shopItems.ContainsKey(info.ShopId))
                 {
@@ -2096,11 +2129,15 @@ namespace YgoMaster
                                         {
                                             if (shopName == "PackShop")
                                             {
-                                                if (itemData.ContainsKey("limitdate") && Utils.GetValue<int>(itemData, "packType") != 2)
+                                                if (itemData.ContainsKey("limitdate") && Utils.GetValue<int>(itemData, "packType") != 2 &&
+                                                    Utils.GetValue<int>(itemData, "targetCategory") != 2)
                                                 {
                                                     switch (shopId)
                                                     {
                                                         case 10102156:// The Trap in the Wicked Castle
+                                                        case 10102157:// Guardian of the Sacred Summit
+                                                        case 10102158:// The Ultimate Traditional Art
+                                                        case 10102159:// Guided by Fate
                                                             break;
                                                         default:
                                                             // Ignore time limited packs as they overwrite the previous secret
