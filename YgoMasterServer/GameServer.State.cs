@@ -2138,6 +2138,7 @@ namespace YgoMaster
                                                         case 10102157:// Guardian of the Sacred Summit
                                                         case 10102158:// The Ultimate Traditional Art
                                                         case 10102159:// Guided by Fate
+                                                        case 10102160:// Beastly Claws of Terror
                                                             break;
                                                         default:
                                                             // Ignore time limited packs as they overwrite the previous secret

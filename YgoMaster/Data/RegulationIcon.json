@@ -89,6 +89,18 @@
     "name": "IDS_EXHIBITION_REG_019",
     "icon": "RegulationLogoEvent"
   },
+  "116": {
+    "id": "116",
+    "regulation_id": 116,
+    "name": "IDS_REGULATION_NAME_VERSUS_001_1",
+    "icon": "RegulationLogoEvent"
+  },
+  "117": {
+    "id": "117",
+    "regulation_id": 117,
+    "name": "IDS_REGULATION_NAME_VERSUS_001_2",
+    "icon": "RegulationLogoEvent"
+  },
   "118": {
     "id": "118",
     "regulation_id": 118,
