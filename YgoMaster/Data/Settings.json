@@ -51,6 +51,7 @@
     "DuelRoomMaxSpectators": 1000,
     "DuelRoomCommentTimeoutInSeconds": 7,
     "DuelRoomTableMatchingTimeoutInSeconds": 30,
+    "DuelRoomPvpClientSetupTimeoutInSeconds": 30,
     "DuelRoomSpectatorCardVisibility": "AllClose",// AllClose, FrontOpen, AllOpen
     "DuelRoomDefaultTimeIndex": 1,
     "DuelRoomTimes": [

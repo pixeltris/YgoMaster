@@ -55,7 +55,7 @@ You can copy/paste/move/rename (but not modify the contents of) files in this fo
 
 ## File list
 
-- `CardBanList.json` - the ban list.
+- `Regulation*.json` - the ban list.
 - `CardCraftableList.json` - a list of all craftable cards in the game.
 - `CardList.json` - a list of all available cards in the game (and their rarities).
 - `CustomDuel.json` - used to start custom duels (duel settings which replaces the tutorial duel).

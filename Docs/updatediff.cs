@@ -1,4 +1,4 @@
-// Client version 1.5.2
+// Client version 1.6.1
 // This file is generated using the 'updatediff' command in YgoMasterClient. This information is used to determine changes between client versions which impact YgoMaster.
 // Run the command, diff against the old file, and use the changes to update code.
 
@@ -165,6 +165,25 @@ enum StandardRank
     TEMP10,
 }
 /// <summary>
+/// YgomGame.Colosseum.ColosseumUtil.PlayMode
+/// </summary>
+enum PlayMode
+{
+    NONE,
+    RANK,
+    TOURNAMENT,
+    ROOM,
+    EXHIBITION,
+    FREE,
+    DUELISTCUP,
+    RANKEVENT,
+    TEAMMATCH,
+    DUELTRIAL,
+    WCS,
+    VERSUS,
+    WCS_FINAL,
+}
+/// <summary>
 /// YgomSystem.Network.ServerStatus
 /// </summary>
 enum ServerStatus
@@ -196,7 +215,26 @@ enum GameMode
     TeamMatch,
     DuelTrial,
     WCS,
+    Versus,
+    WcsFinal,
     Null,
+}
+/// <summary>
+/// YgomGame.Duel.Util.PlatformID
+/// </summary>
+enum PlatformID
+{
+    Invalid,
+    Android,
+    iOS,
+    Steam,
+    PS4,
+    NX,
+    XboxOne,
+    Stadia,
+    PS5,
+    XboxSX,
+    Editor = 100,
 }
 /// <summary>
 /// YgomGame.Solo.SoloModeUtil.ChapterStatus
@@ -227,6 +265,14 @@ enum SoloDeckType
 {
     POSSESSION,
     STORY,
+}
+/// <summary>
+/// YgomGame.Room.RoomEntryViewController.Mode
+/// </summary>
+enum RoomEntryViewController.Mode
+{
+    NORMAL,
+    SPECTER,
 }
 /// <summary>
 /// IDS_DECKEDIT.HOWTOGET_CATEGORY (off by 1?)
@@ -280,6 +326,49 @@ enum DuelResultScore
     PerformedXyzSummon,
     PerformedPendulumSummon,
     LinkSummon,
+}
+/// <summary>
+/// YgomGame.Duel.DuelClient.Step
+/// </summary>
+enum DuelClientStep
+{
+    InitLoadRes,
+    WaitLoadRes,
+    InitializeProcess,
+    FinishInitialize,
+    WaitConnecting,
+    InitEngine,
+    InitSound,
+    WaitSound,
+    InitLoadSound,
+    WaitLoadSound,
+    WaitGameObjectInit,
+    PrepareProcess,
+    FinishPrepare,
+    WaitCameraWork,
+    ShowUpDuel,
+    WaitShowUp,
+    ExecDuel,
+    EndDuel,
+    WaitEndNetwork,
+    DuelEnd,
+    InitTerm,
+    WaitTerm,
+    End,
+    WaitDestroy,
+    ConnectingError,
+    Beginning,
+    InitSequenceStart = 0,
+    InitSequenceEnd = 12,
+}
+/// <summary>
+/// YgomGame.Duel.Util.PublicLevel
+/// </summary>
+enum DuelReplayCardVisibility
+{
+    AllClose,
+    FrontOpen,
+    AllOpen,
 }
 /// <summary>
 /// YgomGame.Utility.ItemUtil.Category
@@ -531,6 +620,7 @@ enum DuelCounterType
     Illusion,
     GG,
     Rabbit,
+    Kyoumei,
     Max,
 }
 /// <summary>
@@ -778,6 +868,7 @@ enum DuelListAttribute
     Activate = 65536,
     Cost = 131072,
     End = 262144,
+    ExtraExclude = 524288,
     FromMask = 63,
 }
 /// <summary>
@@ -860,6 +951,53 @@ enum DuelPlayerType
     Replay,
     Replay2,
     None = -1,
+}
+/// <summary>
+/// YgomSystem.Network.PvP.Command
+/// </summary>
+enum DuelPvpCommand
+{
+    ENTRY,
+    INIT,
+    WAIT,
+    READY,
+    COMMAND,
+    EFFECT,
+    CANCEL,
+    RESULT,
+    DBGCMD,
+    CHEATCARD,
+    CHAT,
+    LIST,
+    PHASE,
+    SKILL,
+    LEAVE,
+    EXIT,
+    RECOVERY,
+    WATCH,
+    SURRENDER,
+    LATENCY,
+    SEND,
+    RECV,
+    TIME,
+    TURN,
+    DATA = 50,
+    REPLAY = 60,
+    TIMEUP = 97,
+    FINISH,
+    POLL,
+    ERROR,
+    FATAL = 900,
+    CONNECT = 1000,
+    RECONNECT,
+    CLOSE = 1003,
+    PING,
+    PONG,
+    MATCH,
+    DROP,
+    MATCH_UPDATE = 1010,
+    MATCH_LIST,
+    INFO,
 }
 /// <summary>
 /// YgomGame.Duel.Engine.PvpCommandType
@@ -1280,6 +1418,7 @@ enum DuelTrialCode
     INVALID_PARAM = 4100,
     ERR_OUT_OF_TERM,
     ERROR_FIXED_ACCESSORY,
+    ERROR_IN_SHOP_MAINTE,
 }
 enum EnqueteCode
 {
@@ -1630,6 +1769,17 @@ enum UserCode
     ERR_NG_WORD,
     ERR_NAME_LENGTH,
 }
+enum VersusCode
+{
+    NONE,
+    ERROR,
+    FATAL,
+    CRITICAL,
+    INVALID_PARAM = 4400,
+    ERR_OUT_OF_TERM,
+    ERROR_FIXED_ACCESSORY,
+    ERROR_NOT_JOINNED_GROUP,
+}
 enum WcsCode
 {
     NONE,
@@ -1640,6 +1790,11 @@ enum WcsCode
     ERR_OUT_OF_TERM,
     ERR_NO_USER_DATA,
     ERR_OUT_OF_CONDITION,
+    ERR_FINAL_INVALID_DATA = 4310,
+    ERR_FINAL_ROOM_EMPTY,
+    ERR_FINAL_ROOM_RIVAL_LEAVE,
+    ERR_FINAL_INVALID_TEAM_ID,
+    ERR_FINAL_OUT_OF_SUPPORT_TERM,
 }
 //==================================
 // Network API
@@ -1832,7 +1987,8 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Exhibition_get_deck_list(System.Int32 _exhid_, System.Boolean _is_empty_get_)
 //public static YgomSystem.Network.Handle Duelpass_get_info()
 //public static YgomSystem.Network.Handle Duelpass_bulk_receive(System.Int32 _season_id_, System.Int32[] _reward_id_list_)
-//public static YgomSystem.Network.Handle DuelLive_replay_duel()
+//public static YgomSystem.Network.Handle DuelLive_replay_list(System.Int32 _menu_id_, System.Int32 _section_id_)
+//public static YgomSystem.Network.Handle DuelLive_replay_duel(System.Int32 _menu_id_, System.Int32 _idx_)
 //public static YgomSystem.Network.Handle Enquete_get_questions(System.Int32 _enquete_id_)
 //public static YgomSystem.Network.Handle Enquete_send_answers(System.Int32 _enquete_id_, System.Collections.Generic.Dictionary<System.String,System.Object> _results_)
 //public static YgomSystem.Network.Handle RankEvent_detail(System.Int32 _rank_event_id_)
@@ -1893,6 +2049,33 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Wcs_set_region(System.Int32 _wcs_id_, System.Int32 _region_)
 //public static YgomSystem.Network.Handle Wcs_get_participation()
 //public static YgomSystem.Network.Handle Wcs_confirm_participation(System.Int32 _id_)
+//public static YgomSystem.Network.Handle Wcs_get_final_deck_info()
+//public static YgomSystem.Network.Handle Wcs_set_final_deck(System.Int32 _wcs_id_, System.Int32 _member_idx_, System.Int32 _slot_, System.String _name_, System.Collections.Generic.Dictionary<System.String,System.Object> _deck_list_)
+//public static YgomSystem.Network.Handle Wcs_delete_final_deck(System.Int32 _wcs_id_, System.Int32 _member_idx_, System.Int32 _slot_)
+//public static YgomSystem.Network.Handle Wcs_set_final_share_card(System.Int32 _wcs_id_, System.Collections.Generic.Dictionary<System.String,System.Object> _share_cards_)
+//public static YgomSystem.Network.Handle Wcs_check_final_deck_regulation(System.Int32 _wcs_id_)
+//public static YgomSystem.Network.Handle Wcs_complete_final_deck(System.Int32 _wcs_id_)
+//public static YgomSystem.Network.Handle Wcs_unregister_final_deck(System.Int32 _wcs_id_)
+//public static YgomSystem.Network.Handle Versus_detail(System.Int32 _versus_id_, System.Int32 _set_group_id_)
+//public static YgomSystem.Network.Handle Versus_duel_history(System.Int32 _versus_id_)
+//public static YgomSystem.Network.Handle Versus_get_deck_list(System.Int32 _versus_id_, System.Int32 _idx_, System.Boolean _is_empty_get_)
+//public static YgomSystem.Network.Handle Versus_set_deck(System.Int32 _versus_id_, System.Int32 _idx_, System.Collections.Generic.Dictionary<System.String,System.Object> _deck_list_, System.Collections.Generic.Dictionary<System.String,System.Object> _accessory_, System.Collections.Generic.Dictionary<System.String,System.Object> _pick_cards_)
+//public static YgomSystem.Network.Handle Versus_set_deck_accessory(System.Int32 _versus_id_, System.Int32 _idx_, System.Collections.Generic.Dictionary<System.String,System.Object> _param_)
+//public static YgomSystem.Network.Handle Versus_delete_deck(System.Int32 _versus_id_, System.Int32 _idx_)
+//public static YgomSystem.Network.Handle Versus_set_use_deck(System.Int32 _versus_id_, System.Int32 _rental_idx_)
+//public static YgomSystem.Network.Handle Versus_get_rental_deck_list(System.Int32 _versus_id_, System.Int32 _rental_idx_)
+//public static YgomSystem.Network.Handle WcsFinal_table_polling()
+//public static YgomSystem.Network.Handle WcsFinal_is_duel_ready(System.Boolean _isReady_, System.Int64 _opp_pcode_)
+//public static YgomSystem.Network.Handle WcsFinal_admin_table_polling(System.Int32 _room_id_)
+//public static YgomSystem.Network.Handle WcsFinal_admin_primary_polling()
+//public static YgomSystem.Network.Handle WcsFinal_admin_final_polling()
+//public static YgomSystem.Network.Handle WcsfCampaign_info()
+//public static YgomSystem.Network.Handle WcsfCampaign_primary_polling()
+//public static YgomSystem.Network.Handle WcsfCampaign_final_polling()
+//public static YgomSystem.Network.Handle WcsfCampaign_table_polling(System.Int32 _room_id_, System.String _room_unique_id_)
+//public static YgomSystem.Network.Handle WcsfCampaign_watch_duel(System.Int32 _room_id_, System.String _room_unique_id_, System.Int32 _tno_, System.Int32 _rapid_)
+//public static YgomSystem.Network.Handle WcsfCampaign_set_support_team(System.Int32 _team_id_)
+//public static YgomSystem.Network.Handle WcsfCampaign_support_entry()
 //public System.Void .ctor()
 //==================================
 // duel.dll functions (Engine)

@@ -76,7 +76,9 @@ namespace YgoMaster
         RANKEVENT,
         TEAMMATCH,
         DUELTRIAL,
-        WCS
+        WCS,
+        VERSUS,
+        WCS_FINAL,
     }
 
     /// <summary>
@@ -276,7 +278,7 @@ namespace YgoMaster
         ConnectingError,
         Beginning,
         InitSequenceStart = 0,
-        InitSequenceEnd = 1
+        InitSequenceEnd = 12
     }
 
     /// <summary>

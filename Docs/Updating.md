@@ -4,7 +4,7 @@
 
 ## Logging requirements
 
-- Download Fiddler Classic https://www.telerik.com/download/fiddler (make sure the install location is `C:/Program Files (x86)/Fiddler/`)
+- Download Fiddler Classic https://www.telerik.com/download/fiddler (install to `C:/Program Files (x86)/Fiddler/` as the YgoMasterFiddler project file uses this path)
 - Run `YgoMaster/YgoMasterFiddler/Build.bat`
 - Copy `YgoMaster/YgoMasterFiddler/bin/Debug/YgoMasterFiddler.dll` to `C:/Program Files (x86)/Fiddler/Inspectors/`
 - Run Fiddler, select a game network request and click the two `YgoMaster` tabs (request / response)
@@ -54,7 +54,7 @@ For shop pack odds...
 - In the client console run `carddata` which should create `/Data/ClientDataDump/Card/Data/{CLIENT_VERSION}/`, move and rename the `{CLIENT_VERSION}` folder to `/Data/CardData/`. You must do this while using the `English` language setting.
 - Run `--updateydk` to update `YdkIds.txt`.
 
-## ItemID.cs
+## ItemID.json
 
 - In the client console run `itemid` which will create `ItemID.json` in the game folder.
 - Copy it over to `/Data/` and remove any invalid entries (some make the client crash / are blank).

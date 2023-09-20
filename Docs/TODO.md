@@ -1,6 +1,6 @@
 A rough list of possible features / things to do. There aren't any plans to implement any of these.
 
-- Auto updating of `DuelDllActiveUserDoCommandOffset` / `DuelDllActiveUserSetIndexOffset`
+- Auto updating of `DuelDllActiveUserDoCommandOffset` / `DuelDllActiveUserSetIndexOffset` *NOTE: This is done done but it's not currently open source*
 - Embed Ultralight https://ultralig.ht/ or https://sciter.com/ and create a custom shop UI and solo content (visual novel style) - https://github.com/Monogatari/Monogatari / https://github.com/avgjs/avg-core / https://github.com/Kirilllive/tuesday-js / https://github.com/lunafromthemoon/RenJS-V2
 - Implement emoting like in the WC games (auto emotes based on card actions)
 - Add a textbox to the duel UI to send custom messages without having to modify the emote file

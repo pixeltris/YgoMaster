@@ -1,6 +1,6 @@
 ## Unity asset file paths
 
-File paths in `LocalData` are determined crc32 of the file path which you can calculate online https://emn178.github.io/online-tools/crc32.html
+File names in `LocalData` are based on the crc32 of the original file path which you can calculate online https://emn178.github.io/online-tools/crc32.html
 
 The first two characters of the crc determines the folder name for the file.
 
@@ -12,7 +12,7 @@ A few examples:
 
 The casing of the file path is important. For the most part you can use AssetStudio to find the file paths on disk.
 
-If you want to create new files which don't already exist in the game you can use the crc method as described above to determine where the given file should be placed. There are also a few commands `locate` / `locateraw` / `crc` in YgoMasterClient which can be used to crc file paths (enable `ShowConsole` in `ClientSettings.json`). [Read the code for more info on what these do](https://github.com/pixeltris/YgoMaster/blob/83f53fe6cc3f38cbdedda1f88a49d6bd0bfda423/YgoMasterClient/Program.cs#L368-L420).
+If you want to create new files which don't exist in the game you can use the crc method as described above to determine where the given file should be placed. There are also a few commands `locate` / `locateraw` / `crc` in YgoMasterClient which can be used to crc file paths (enable `ShowConsole` in `ClientSettings.json`). [Read the code for more info on what these do](https://github.com/pixeltris/YgoMaster/blob/83f53fe6cc3f38cbdedda1f88a49d6bd0bfda423/YgoMasterClient/Program.cs#L368-L420).
 
 The following can be used to create / modify unity assets:
 

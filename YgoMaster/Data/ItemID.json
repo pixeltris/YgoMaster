@@ -83,13 +83,13 @@
     1001013,//Danger!? Jackalope?
     1001014,//Quillbolt Hedgehog
     1001015,//PSY-Framegear Gamma
-    //1001016,//coming soon
+    1001016,//Kagetokage
     1001017,//Gunkan Suship Ikura
     //1001018,//coming soon
     //1001019,//coming soon
     1001020,//A New Life - Galatea
     //1001021,//coming soon
-    //1001022,//coming soon
+    1001022,//Cross-Sheep
     //1001023,//coming soon
     //1001024,//coming soon
     //1001025,//coming soon
@@ -192,7 +192,7 @@
     //1010030,//coming soon
     1010031,//Kurikara Divincarnate
     1010032,//Melffy Staring Contest
-    //1010033,//coming soon
+    1010033,//Ancient Fairy Dragon
     1010034,//Icejade Aegirine
     1010035,//Rafale, Champion Fur Hire
     1010036,//Springans Rockey
@@ -203,7 +203,7 @@
     1010041,//Number 41: Bagooska the Terribly Tired Tapir
     1010042,//WCS2023 "Legendary Magician of Dark"
     1010043,//WCS2023 "Legendary Dragon of White"
-    //1010044,//coming soon
+    1010044,//Purrely
     //1010045,//coming soon
     1010046,//I:P Masquerena
     //1010047,//coming soon
@@ -319,7 +319,7 @@
     1012037,//Beetrooper Sting Lancer
     1012038,//Vendread Battlelord
     1012039,//Vendread Chimera
-    //1012040,//coming soon
+    1012040,//Legendary Six Samurai - Shi En
     //1012041,//coming soon
     1012042,//Ghostrick Alucard
     //1012043,//coming soon
@@ -459,8 +459,8 @@
     1020065,//Harnesser of Chaos
     1020066,//DARK Side
     1020067,//LIGHT Side
-    //1020068,//coming soon
-    //1020069,//coming soon
+    1020068,//King of the Island 2023
+    1020069,//Fusion x Xyz Festival 2023
     //1020070,//coming soon
     //1020071,//coming soon
     //1020072,//coming soon
@@ -507,7 +507,7 @@
     1030011,//Silver Award Frame
     1030012,//Gold Award Frame
     1030013,//Red Frame
-    //1030014,//coming soon
+    1030014,//Icon Frame - LIGHT
     1030015,//Icon Frame - DARK
     //1030016,//coming soon
     //1030017,//coming soon
@@ -515,7 +515,7 @@
     //1030019,//coming soon
     1030020,//Yellow Frame
     1030021,//Master Frame
-    //1030022,//coming soon
+    1030022,//Pink Frame
     //1030023,//coming soon
     //1030024,//coming soon
     //1030025,//coming soon
@@ -569,7 +569,7 @@
     1031003,//Magic Cylinder
     1031004,//Dark Magical Circle
     1031005,//Evil Eye of Selene
-    //1031006,//coming soon
+    1031006,//Polymerization
     //1031007,//coming soon
     //1031008,//coming soon
     //1031009,//coming soon
@@ -671,7 +671,7 @@
     1070053,//Road to Worlds! Proficiency Test 2023
     1070054,//Chaos Angel
     1070055,//Black Luster Soldier - Legendary Swordsman
-    //1070056,//coming soon
+    1070056,//Ohime the Manifested Mikanko
     //1070057,//coming soon
     //1070058,//coming soon
     1070059,//WCS2023 "Legendary Magician of Dark"
@@ -731,7 +731,7 @@
     1071013,//Revendread Slayer
     1071014,//Ghostrick Alucard
     //1071015,//coming soon
-    //1071016,//coming soon
+    1071016,//Legendary Six Samurai - Shi En
     //1071017,//coming soon
     1071018,//Myutant Ultimus
     1071019,//Starry Night, Starry Dragon
@@ -817,7 +817,7 @@
     //1071099,//coming soon
     //1071100,//coming soon
     1072001,//Sky Striker Conversion: Flaming Wings of Destruction
-    //1072002,//coming soon
+    1072002,//Chaos Xyz Evolution －Galactic Gathering of Dragons－
     //1072003,//coming soon
     //1072004,//coming soon
     //1072005,//coming soon
@@ -870,7 +870,7 @@
     1080020,//Vortex of Magic
     1080021,//Spiral Spear Strike
     1080022,//Blackwing's Pride
-    //1080023,//coming soon
+    1080023,//Hidden Arts of Shadows
     //1080024,//coming soon
     //1080025,//coming soon
     //1080026,//coming soon
@@ -911,7 +911,7 @@
     1082001,//Xyz Black
     1082002,//The Millennium Puzzle
     1082003,//Duelist Card Case Blue
-    //1082004,//coming soon
+    1082004,//Card Case - LIGHT
     1082005,//Card Case - DARK
     //1082006,//coming soon
     //1082007,//coming soon
@@ -1127,7 +1127,7 @@
     1111016,//Normal Monster Card
     //1111017,//coming soon
     //1111018,//coming soon
-    //1111019,//coming soon
+    1111019,//Polymerization
     //1111020,//coming soon
     1111021,//Green Stone of Magic
     1111022,//Summer Trace of the Thunder God
@@ -1189,7 +1189,7 @@
     1120020,//Vortex of Magic
     1120021,//Spiral Spear Strike
     1120022,//Blackwing's Pride
-    //1120023,//coming soon
+    1120023,//Hidden Arts of Shadows
     //1120024,//coming soon
     //1120025,//coming soon
     //1120026,//coming soon

@@ -139,6 +139,10 @@ namespace YgoMaster
         /// </summary>
         int DuelRoomTableMatchingTimeoutInSeconds;
         /// <summary>
+        /// How long to wait for the pvp client to set up before abandoning the duel
+        /// </summary>
+        int DuelRoomPvpClientSetupTimeoutInSeconds;
+        /// <summary>
         /// Visibility of cards when spectating duels in duel rooms
         /// </summary>
         DuelReplayCardVisibility DuelRoomSpectatorCardVisibility;
@@ -401,6 +405,7 @@ namespace YgoMaster
             DuelRoomMaxSpectators = Utils.GetValue<int>(values, "DuelRoomMaxSpectators", 100);
             DuelRoomCommentTimeoutInSeconds = Utils.GetValue<int>(values, "DuelRoomCommentTimeoutInSeconds", 7);
             DuelRoomTableMatchingTimeoutInSeconds = Utils.GetValue<int>(values, "DuelRoomTableMatchingTimeoutInSeconds", 30);
+            DuelRoomPvpClientSetupTimeoutInSeconds = Utils.GetValue<int>(values, "DuelRoomPvpClientSetupTimeoutInSeconds", 30);
             DuelRoomSpectatorCardVisibility = Utils.GetValue<DuelReplayCardVisibility>(values, "DuelRoomSpectatorCardVisibility");
             DuelRoomDefaultTimeIndex = Utils.GetValue<int>(values, "DuelRoomDefaultTimeIndex");
             DuelRoomTimes = new List<DuelTimerInfo>();
@@ -2139,6 +2144,8 @@ namespace YgoMaster
                                                         case 10102158:// The Ultimate Traditional Art
                                                         case 10102159:// Guided by Fate
                                                         case 10102160:// Beastly Claws of Terror
+                                                        case 10102161:// Beetle Troops Roll Out
+                                                        case 10102162:// The Noble Knights of Crimson Flowers
                                                             break;
                                                         default:
                                                             // Ignore time limited packs as they overwrite the previous secret

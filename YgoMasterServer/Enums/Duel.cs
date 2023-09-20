@@ -241,6 +241,8 @@ namespace YgoMaster
         Burn,
         Illusion,//v1.1.1
         GG,//v1.1.1
+        Rabbit,//1.5.X?
+        Kyoumei,//1.6.1?
         Max
     }
 
