@@ -1,0 +1,70 @@
+<!-- The WebUI is a WIP / test -->
+<html>
+<head>
+    <script>
+    var doZoom = () => {
+        document.body.style.zoom = ((document.body.scrollHeight / 1080.0) * 100.0) + '%';
+    };
+    addEventListener("load", doZoom);
+    addEventListener("resize", doZoom);
+    function updatePageTitle() {
+        nativeCall('SetHeaderTitle', 'page2!!!');
+    }
+    function onCreatedView() {
+        console.log('onCreatedView');
+        updatePageTitle();
+    }
+    function onTransitionStart(type) {
+        console.log("onTransitionStart type:" + type);
+        updatePageTitle();
+    }
+    function onTransitionComplete(type) {
+    }
+    function timeoutFunc() {
+        document.getElementsByTagName("h1")[0].innerText += " hi";
+        nativeCall('999', '888');
+        setTimeout(timeoutFunc, 2000);
+    }
+    addEventListener("load", () => {
+        updatePageTitle();
+        timeoutFunc();
+        nativeCall('Bee', 'DEEF');
+    });
+    </script>
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            color: white;
+            font-family: -apple-system, 'Segoe UI', 'Roboto', 'Ubuntu', 'Arial', sans-serif;
+            background-color: transparent;
+            /* background: linear-gradient(45deg, #4e95ff, #6032e4, #c478ff); */
+        }
+
+        div {
+            width: 350px;
+            text-align: center;
+            border-radius: 5px;
+            background: linear-gradient(45deg, #61a0ff, #6737e9, #cb86ff);
+        }
+
+        body, div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            padding: 1em;
+            font-size: 24px;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Hello Ultralight!</h1>
+    </div>
+</body>
+</html>

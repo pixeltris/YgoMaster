@@ -74,12 +74,14 @@ namespace YgoMasterClient
         const int TextureFormat_ARGB32 = 5;
         const int RenderTextureFormat_ARGB32 = 0;
         const int FilterMode_Point = 0;
-        static IL2Class texture2DClassInfo;// Texture2D
-        static IL2Method methodTexture2DCtor;
+        public static IL2Class texture2DClassInfo;// Texture2D
+        public static IL2Method methodTexture2DCtor;
+        public static IL2Method methodTexture2DCtor2;
         static IL2Method methodGetIsReadable;
         static IL2Method methodGetFormat;
         static IL2Method methodReadPixels;
-        static IL2Method methodApply;
+        public static IL2Method methodSetPixels32;
+        public static IL2Method methodApply;
         //static IL2Class textureClassInfo;// Texture
         static IL2Method methodGetWidth;
         static IL2Method methodGetHeight;
@@ -130,7 +132,7 @@ namespace YgoMasterClient
             }
         }
 
-        struct Rect
+        public struct Rect
         {
             public float m_XMin;
             public float m_YMin;
@@ -252,9 +254,11 @@ namespace YgoMasterClient
             IL2Assembly uiAssembly = Assembler.GetAssembly("UnityEngine.UI");
             texture2DClassInfo = coreModuleAssembly.GetClass("Texture2D");// Texture2D
             methodTexture2DCtor = texture2DClassInfo.GetMethod(".ctor", x => x.GetParameters().Length == 2);
+            methodTexture2DCtor2 = texture2DClassInfo.GetMethod(".ctor", x => x.GetParameters().Length == 4 && x.GetParameters()[2].Name == "textureFormat");
             methodGetIsReadable = texture2DClassInfo.GetProperty("isReadable").GetGetMethod();
             methodGetFormat = texture2DClassInfo.GetProperty("format").GetGetMethod();
             methodReadPixels = texture2DClassInfo.GetMethod("ReadPixels", x => x.GetParameters().Length == 3);
+            methodSetPixels32 = texture2DClassInfo.GetMethod("SetPixels32", x => x.GetParameters().Length == 1);
             methodApply = texture2DClassInfo.GetMethod("Apply", x => x.GetParameters().Length == 2);
             IL2Class textureClassInfo = coreModuleAssembly.GetClass("Texture");// Texture (putting class here as I've used it by mistake before...)
             methodGetWidth = textureClassInfo.GetProperty("width").GetGetMethod();

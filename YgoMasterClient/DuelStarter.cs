@@ -1931,6 +1931,7 @@ namespace UnityEngine
     unsafe static class UnityObject
     {
         static IL2Method methodGetName;
+        static IL2Method methodSetName;
         static IL2Method methodInstantiate;
         static IL2Method methodInstantiate2;
         static IL2Method methodDestroy;
@@ -1939,7 +1940,9 @@ namespace UnityEngine
         {
             IL2Assembly assembly = Assembler.GetAssembly("UnityEngine.CoreModule");
             IL2Class classInfo = assembly.GetClass("Object");
-            methodGetName = classInfo.GetProperty("name").GetGetMethod();
+            IL2Property propertyName = classInfo.GetProperty("name");
+            methodGetName = propertyName.GetGetMethod();
+            methodSetName = propertyName.GetSetMethod();
             methodInstantiate = classInfo.GetMethod("Instantiate", x => x.GetParameters().Length == 1 && x.GetParameters()[0].Type.Name == classInfo.FullName);
             methodInstantiate2 = classInfo.GetMethod("Instantiate", x => x.GetParameters().Length == 2 && x.GetParameters()[0].Type.Name == classInfo.FullName);
             methodDestroy = classInfo.GetMethod("Destroy");
@@ -1949,6 +1952,11 @@ namespace UnityEngine
         {
             IL2Object result = methodGetName.Invoke(thisPtr);
             return result != null ? result.GetValueObj<string>() : null;
+        }
+
+        public static void SetName(IntPtr thisPtr, string name)
+        {
+            methodSetName.Invoke(thisPtr, new IntPtr[] { new IL2String(name).ptr });
         }
 
         public static IntPtr Instantiate(IntPtr original)
@@ -1971,20 +1979,34 @@ namespace UnityEngine
 
     unsafe static class GameObject
     {
+        static IL2Class classInfo;
+        static IL2Method methodCtor;
         static IL2Method methodGetTransform;
         static IL2Method methodGetComponentsTObject;
         static IL2Method methodGetComponent;
+        static IL2Method methodAddComponent;
         static IL2Method methodGetActiveSelf;
+        static IL2Method methodSetActive;
 
         static GameObject()
         {
             IL2Assembly assembly = Assembler.GetAssembly("UnityEngine.CoreModule");
-            IL2Class classInfo = assembly.GetClass("GameObject");
+            classInfo = assembly.GetClass("GameObject");
+            methodCtor = classInfo.GetMethod(".ctor", x => x.GetParameters().Length == 0);
             methodGetTransform = classInfo.GetProperty("transform").GetGetMethod();
             methodGetComponentsTObject = classInfo.GetMethod("GetComponents", x => x.GetParameters().Length == 0).MakeGenericMethod(
                 new Type[] { typeof(object) });
             methodGetComponent = classInfo.GetMethod("GetComponent", x => x.GetParameters().Length == 1 && x.GetParameters()[0].Type.Name == typeof(Type).FullName);
+            methodAddComponent = classInfo.GetMethod("AddComponent", x => x.GetParameters().Length == 1 && x.GetParameters()[0].Type.Name == typeof(Type).FullName);
             methodGetActiveSelf = classInfo.GetProperty("activeSelf").GetGetMethod();
+            methodSetActive = classInfo.GetMethod("SetActive");
+        }
+
+        public static IntPtr New()
+        {
+            IntPtr result = Import.Object.il2cpp_object_new(classInfo.ptr);
+            methodCtor.Invoke(result);
+            return result;
         }
 
         public static IntPtr GetTranform(IntPtr thisPtr)
@@ -2007,6 +2029,12 @@ namespace UnityEngine
         public static IntPtr GetComponent(IntPtr thisPtr, IntPtr type)
         {
             IL2Object result = methodGetComponent.Invoke(thisPtr, new IntPtr[] { type });
+            return result != null ? result.ptr : IntPtr.Zero;
+        }
+
+        public static IntPtr AddComponent(IntPtr thisPtr, IntPtr type)
+        {
+            IL2Object result = methodAddComponent.Invoke(thisPtr, new IntPtr[] { type });
             return result != null ? result.ptr : IntPtr.Zero;
         }
 
@@ -2033,6 +2061,18 @@ namespace UnityEngine
                 }
             }
             return IntPtr.Zero;
+        }
+
+        public static void DestroyChildObjects(IntPtr thisPtr)
+        {
+            IntPtr transform = UnityEngine.GameObject.GetTranform(thisPtr);
+            int childCount = UnityEngine.Transform.GetChildCount(transform);
+            for (int i = childCount - 1; i >= 0; i--)
+            {
+                IntPtr childTransform = UnityEngine.Transform.GetChild(transform, i);
+                IntPtr childObject = UnityEngine.Component.GetGameObject(childTransform);
+                UnityEngine.UnityObject.Destroy(childObject);
+            }
         }
 
         public static IntPtr GetParentObject(IntPtr thisPtr)
@@ -2083,6 +2123,11 @@ namespace UnityEngine
         {
             IL2Object result = methodGetActiveSelf.Invoke(thisPtr);
             return result != null && result.GetValueRef<bool>();
+        }
+
+        public static void SetActive(IntPtr thisPtr, bool value)
+        {
+            methodSetActive.Invoke(thisPtr, new IntPtr[] { new IntPtr(&value) });
         }
     }
 

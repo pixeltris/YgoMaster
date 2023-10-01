@@ -76,7 +76,10 @@ namespace YgoMasterClient
         [DllImport(dllName)]
         public static extern void CreateVSyncHook(IntPtr funcPtr);
 
-        [DllImport("kernel32")]
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        public static extern int SetDllDirectoryW(string lpPathName);
+
+        [DllImport("kernel32", SetLastError = true)]
         public static extern IntPtr LoadLibrary(string lpFileName);
 
         [DllImport("kernel32")]

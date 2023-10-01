@@ -1,0 +1,81 @@
+<!-- The WebUI is a WIP / test -->
+<html>
+<head>
+    <script>
+    var doZoom = () => {
+        document.body.style.zoom = ((document.body.scrollHeight / 1080.0) * 100.0) + '%';
+    };
+    addEventListener("keydown", (event) => {
+        console.log("keydown key:" + event.keyCode);
+    });
+    addEventListener("keyup", (event) => {
+        console.log("keyup key:" + event.keyCode);
+    });
+    addEventListener("keypress", (event) => {
+        console.log("keypress key:" + event.keyCode + " char:" + String.fromCharCode(event.charCode));
+    });
+    addEventListener("load", doZoom);
+    addEventListener("resize", doZoom);
+    function timeoutFunc() {
+        document.getElementsByTagName("h1")[0].innerText += " hi";
+        nativeCall('123', '456');
+        //nativeCall("PushViewController", "");
+        console.log('hi');
+        //setTimeout(timeoutFunc, 2000);
+    }
+    function onTransitionStartOnAnotherView(type, viewClassName) {
+        console.log(`onTransitionStartOnAnotherView type:${type} className:${viewClassName}`);
+    }
+    function onTransitionStart(type) {
+    }
+    function onTransitionComplete(type) {
+    }
+    addEventListener("load", () => {
+        timeoutFunc();
+        setTimeout(() => {
+            //window.location.href = "/page2.html";
+            //document.title = 'hello world!!!';
+        }, 10000);
+        nativeCall('abc', 'def');
+    });
+    </script>
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            color: white;
+            font-family: -apple-system, 'Segoe UI', 'Roboto', 'Ubuntu', 'Arial', sans-serif;
+            background-color: transparent;
+            /* background: linear-gradient(45deg, #4e95ff, #6032e4, #c478ff); */
+        }
+
+        div {
+            width: 350px;
+            text-align: center;
+            border-radius: 5px;
+            background: linear-gradient(45deg, #61a0ff, #6737e9, #cb86ff);
+        }
+        div:active {
+            background: linear-gradient(45deg, #fff, #000, #eee);
+        }
+
+        body, div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            padding: 1em;
+            font-size: 24px;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Hello Ultralight!</h1>
+    </div>
+</body>
+</html>
