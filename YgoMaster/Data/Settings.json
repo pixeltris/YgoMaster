@@ -28,7 +28,7 @@
     "MultiplayerPvpClientDoCommandUserOffset": 13440,
     "MultiplayerPvpClientRunDialogUserOffset": 13340,
     "DisableDeckValidation": false,
-    "DontUpdateDeckEditTime": true,
+    "DontUpdateDeckEditTime": false,
     "ShowTopics": true,
     "DeckSlots": 999,
     "UnlockAllCards": false,// [WARNING] Enabling this permanently wipes your saved cards (all cards are set to 3x without any shine/royal and any newly obtained cards don't save)
