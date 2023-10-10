@@ -11,6 +11,8 @@
 
 Certain logs will be dumped as json into `C:/Program Files (x86)/Fiddler/YgoMasterUpdate/` when the log is clicked and both `YgoMaster` tabs are selected.
 
+*Obtain all logs from the Steam version of the game. Not YgoMaster.*
+
 ## Card list / card craft list / ban list
 
 - Go back to the title screen

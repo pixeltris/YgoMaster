@@ -44,7 +44,7 @@
     1000024,//Blue-Eyes White Dragon
     //1000025,//coming soon
     1000026,//Spright Blue
-    //1000027,//coming soon
+    1000027,//Unchained Abomination
     //1000028,//coming soon
     //1000029,//coming soon
     //1000030,//coming soon
@@ -239,9 +239,9 @@
     1011017,//WCS 2023 Finalist
     1011018,//WCS 2023 Top 4
     1011019,//WCS 2023 Top 8
-    //1011020,//coming soon
-    //1011021,//coming soon
-    //1011022,//coming soon
+    1011020,//DC 2023 OCT Gold Finalist
+    1011021,//DC 2023 OCT Silver Finalist
+    1011022,//DC 2023 OCT Bronze Finalist
     //1011023,//coming soon
     //1011024,//coming soon
     //1011025,//coming soon
@@ -311,8 +311,8 @@
     1012029,//Danger! Nessie!
     1012030,//Nephthys, the Sacred Flame
     1012031,//Blackbeard, the Plunder Patroll Captain
-    1012032,//Bujintei Susanowo
-    1012033,//Bujinki Amaterasu
+    //1012032,//coming soon
+    //1012033,//coming soon
     1012034,//Ally of Justice Catastor
     1012035,//Worm Dimikles
     1012036,//Mermail Abysstrite
@@ -461,12 +461,12 @@
     1020067,//LIGHT Side
     1020068,//King of the Island 2023
     1020069,//Fusion x Xyz Festival 2023
-    //1020070,//coming soon
-    //1020071,//coming soon
-    //1020072,//coming soon
-    //1020073,//coming soon
-    //1020074,//coming soon
-    //1020075,//coming soon
+    1020070,//DC 2023 OCT Top 10
+    1020071,//DC 2023 OCT Top 100
+    1020072,//DC 2023 OCT Top 500
+    1020073,//DC 2023 OCT Top 1000
+    1020074,//DC 2023 OCT Top 10000
+    1020075,//DC 2023 OCT 2nd Stage Duelist
     1020076,//WCS 2023 Champion
     1020077,//WCS 2023 Finalist
     1020078,//WCS 2023 Top 4
@@ -511,7 +511,7 @@
     1030015,//Icon Frame - DARK
     //1030016,//coming soon
     //1030017,//coming soon
-    //1030018,//coming soon
+    1030018,//Icon Frame - FIRE
     //1030019,//coming soon
     1030020,//Yellow Frame
     1030021,//Master Frame
@@ -672,7 +672,7 @@
     1070054,//Chaos Angel
     1070055,//Black Luster Soldier - Legendary Swordsman
     1070056,//Ohime the Manifested Mikanko
-    //1070057,//coming soon
+    1070057,//Kashtira Arise-Heart
     //1070058,//coming soon
     1070059,//WCS2023 "Legendary Magician of Dark"
     1070060,//WCS2023 "Legendary Dragon of White"
@@ -724,7 +724,7 @@
     1071006,//Nephthys, the Sacred Flame
     1071007,//U.A. Playmaker
     1071008,//Blackbeard, the Plunder Patroll Captain
-    1071009,//Bujintei Susanowo
+    //1071009,//coming soon
     1071010,//Ally of Justice Catastor
     1071011,//Mermail Abyssmegalo
     1071012,//Giant Beetrooper Invincible Atlas
@@ -838,7 +838,7 @@
     //1072020,//coming soon
     1073001,//WCS 2023 Party Favor
     1073002,//WCS 2023 Celebration
-    //1073003,//coming soon
+    1073003,//DC 2023 OCT Celebration
     //1073004,//coming soon
     //1073005,//coming soon
     //1073006,//coming soon
@@ -915,7 +915,7 @@
     1082005,//Card Case - DARK
     //1082006,//coming soon
     //1082007,//coming soon
-    //1082008,//coming soon
+    1082008,//Card Case - FIRE
     //1082009,//coming soon
     //1082010,//coming soon
     //1082011,//coming soon
@@ -949,7 +949,7 @@
     1090017,//Cyber Universe
     1090018,//Memories of an Ancient Duel
     1090019,//Dogmatika Cathedral
-    //1090020,//coming soon
+    1090020,//Archfiend Palabyrinth
     //1090021,//coming soon
     //1090022,//coming soon
     //1090023,//coming soon
@@ -1001,7 +1001,7 @@
     1100017,//Cyber Universe
     1100018,//Memories of an Ancient Duel
     1100019,//Dogmatika Cathedral
-    //1100020,//coming soon
+    1100020,//Archfiend Palabyrinth
     //1100021,//coming soon
     //1100022,//coming soon
     //1100023,//coming soon
@@ -1093,7 +1093,7 @@
     1110017,//Cyber Universe
     1110018,//Memories of an Ancient Duel
     1110019,//Dogmatika Cathedral
-    //1110020,//coming soon
+    1110020,//Archfiend Palabyrinth
     //1110021,//coming soon
     //1110022,//coming soon
     //1110023,//coming soon
@@ -1224,7 +1224,7 @@
     1130018,//Vernusylph of the Flourishing Hills
     1130019,//Ursarctic Radiation
     1130020,//Abyss Actors' Curtain Call
-    //1130021,//coming soon
+    1130021,//Rescue-ACE Turbulence
     1130022,//Master Peace, the True Dracoslayer
     1130023,//WCS2023 "Legendary Magician of Dark"
     1130024,//WCS2023 "Legendary Dragon of White"

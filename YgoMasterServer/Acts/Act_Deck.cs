@@ -83,6 +83,7 @@ namespace YgoMaster
                 }
                 request.Player.Decks[deck.Id] = deck;
                 deck.TimeCreated = Utils.GetEpochTime();
+                deck.TimeEdited = Utils.GetEpochTime();
                 deck.GetNewFilePath(GetDecksDirectory(request.Player));
             }
             else
@@ -95,6 +96,7 @@ namespace YgoMaster
                 }
                 deck.File = existingDeck.File;
                 deck.TimeCreated = existingDeck.TimeCreated;
+                deck.TimeEdited = existingDeck.TimeEdited;
                 request.Player.Decks[deck.Id] = deck;
                 if (deck.Name != existingDeck.Name)
                 {
@@ -111,7 +113,10 @@ namespace YgoMaster
                 }
             }
             deck.Accessory.Sanitize(request.Player);
-            deck.TimeEdited = Utils.GetEpochTime();
+            if (!DontUpdateDeckEditTime)
+            {
+                deck.TimeEdited = Utils.GetEpochTime();
+            }
             SaveDeck(deck);
             WriteDeck(request, deck.Id);
             WriteDeckList(request, deck.Id);

@@ -266,6 +266,10 @@ namespace YgoMaster
         /// Offset for getting the active player for a given RunDialog in duel.dll
         /// </summary>
         public int MultiplayerPvpClientRunDialogUserOffset;
+        /// <summary>
+        /// Doesn't update the deck edit time when the deck is edited (this will preserve the deck order of the deck list)
+        /// </summary>
+        public bool DontUpdateDeckEditTime;
 
         void LoadSettings()
         {
@@ -376,6 +380,7 @@ namespace YgoMaster
             ShowTopics = Utils.GetValue<bool>(values, "ShowTopics");
             DisableNoDismantle = Utils.GetValue<bool>(values, "DisableNoDismantle");
             DisableDeckValidation = Utils.GetValue<bool>(values, "DisableDeckValidation");
+            DontUpdateDeckEditTime = Utils.GetValue<bool>(values, "DontUpdateDeckEditTime");
             TradeAllowOtherPlayerToAddYourCards = Utils.GetValue<bool>(values, "TradeAllowOtherPlayerToAddYourCards");
             TradeAllowOtherPlayerToRemoveYourCards = Utils.GetValue<bool>(values, "TradeAllowOtherPlayerToRemoveYourCards");
             TradeEnterRoomRequestDelayInSeconds = Utils.GetValue<float>(values, "TradeEnterRoomRequestDelayInSeconds");
@@ -2146,6 +2151,7 @@ namespace YgoMaster
                                                         case 10102160:// Beastly Claws of Terror
                                                         case 10102161:// Beetle Troops Roll Out
                                                         case 10102162:// The Noble Knights of Crimson Flowers
+                                                        case 10102163:// The Opening Act of an Apocalypse
                                                             break;
                                                         default:
                                                             // Ignore time limited packs as they overwrite the previous secret
