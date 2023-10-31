@@ -269,7 +269,8 @@ namespace YgomGame.Credit
                 {
                     // Mouse button down
                     {
-                        IntPtr* args = stackalloc IntPtr[1] { new IntPtr(&i) };
+                        IntPtr* args = stackalloc IntPtr[1];
+                        args[0] = new IntPtr(&i);
                         IntPtr res = Import.Method.il2cpp_runtime_invoke(methodGetMouseButtonDown.ptr, IntPtr.Zero, (void**)args, IntPtr.Zero);
                         if (NativeUtils.PtrToStruct<csbool>(res + 0x10))
                         {
@@ -280,7 +281,8 @@ namespace YgomGame.Credit
 
                     // Mouse button up
                     {
-                        IntPtr* args = stackalloc IntPtr[1] { new IntPtr(&i) };
+                        IntPtr* args = stackalloc IntPtr[1];
+                        args[0] = new IntPtr(&i);
                         IntPtr res = Import.Method.il2cpp_runtime_invoke(methodGetMouseButtonUp.ptr, IntPtr.Zero, (void**)args, IntPtr.Zero);
                         if (NativeUtils.PtrToStruct<csbool>(res + 0x10))
                         {
@@ -369,7 +371,8 @@ namespace YgomGame.Credit
 
         static bool GetKey(UnityKeyCode keyCode, IL2Method method)
         {
-            IntPtr* args = stackalloc IntPtr[1] { new IntPtr(&keyCode) };
+            IntPtr* args = stackalloc IntPtr[1];
+            args[0] = new IntPtr(&keyCode);
             IntPtr res = Import.Method.il2cpp_runtime_invoke(method.ptr, IntPtr.Zero, (void**)args, IntPtr.Zero);
             return NativeUtils.PtrToStruct<csbool>(res + 0x10);
         }

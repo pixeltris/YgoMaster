@@ -136,7 +136,7 @@ namespace YgomGame.Solo
                     DuelStarterFirstPlayer = settings.FirstPlayer;
                     if (DuelStarterFirstPlayer < 0)
                     {
-                        DuelStarterFirstPlayer = Program.Rand.Next(2);
+                        DuelStarterFirstPlayer = Utils.Rand.Next(2);
                     }
                     if (ClientSettings.DuelStarterShowFirstPlayer)
                     {
@@ -208,7 +208,6 @@ namespace YgomSystem.Network
                 {
                     DuelSettings settings = new DuelSettings();
                     settings.CopyFrom(YgomGame.Room.RoomCreateViewController.Settings);
-                    RequestStructure.SetDuelRequiredDefaults(settings);
                     settings.ClearRandomDeckPaths(!ClientSettings.RandomDecksDontSetCpuName);
                     settings.FirstPlayer = YgomGame.Solo.SoloStartProductionViewController.DuelStarterFirstPlayer;
                     rule["duelStarterData"] = settings.ToDictionary();
@@ -324,39 +323,6 @@ namespace YgomSystem.Network
             hookComplete = new Hook<Del_Complete>(Complete, classInfo.GetMethod("Complete"));
         }
 
-        public static void SetDuelRequiredDefaults(DuelSettings settings)
-        {
-            Dictionary<string, object> userProfile = YgomSystem.Utility.ClientWork.GetDict("$.User.profile");
-            if (userProfile != null)
-            {
-                if (string.IsNullOrEmpty(settings.name[0]))
-                {
-                    settings.name[0] = Utils.GetValue<string>(userProfile, "name");
-                }
-                if (settings.icon[0] <= 0)
-                {
-                    settings.icon[0] = Utils.GetValue<int>(userProfile, "icon_id");
-                }
-                if (settings.icon_frame[0] <= 0)
-                {
-                    settings.icon_frame[0] = Utils.GetValue<int>(userProfile, "icon_frame_id");
-                }
-                if (settings.avatar[0] <= 0)
-                {
-                    settings.avatar[0] = Utils.GetValue<int>(userProfile, "avatar_id");
-                }
-            }
-            if (settings.RandSeed == 0)
-            {
-                settings.RandSeed = (uint)Program.Rand.Next();
-            }
-            if (settings.bgms.Count == 0)
-            {
-                settings.SetRandomBgm(Program.Rand);
-            }
-            settings.SetRequiredDefaults();
-        }
-
         public static void SetCode(IntPtr thisPtr, int code)
         {
             fieldCode.SetValue(thisPtr, new IntPtr(&code));
@@ -409,7 +375,6 @@ namespace YgomSystem.Network
                                     settings.CopyFrom(YgomGame.Room.RoomCreateViewController.Settings);
                                     settings.ClearRandomDeckPaths(!ClientSettings.RandomDecksDontSetCpuName);
                                     settings.FirstPlayer = YgomGame.Solo.SoloStartProductionViewController.DuelStarterFirstPlayer;
-                                    SetDuelRequiredDefaults(settings);
                                     YgomSystem.Utility.ClientWork.DeleteByJsonPath("Duel");
                                     YgomSystem.Utility.ClientWork.UpdateJson(MiniJSON.Json.Serialize(new Dictionary<string, object>()
                                     {
@@ -424,7 +389,6 @@ namespace YgomSystem.Network
                                 DuelSettings settings = new DuelSettings();
                                 settings.CopyFrom(YgomGame.Room.RoomCreateViewController.Settings);
                                 settings.ClearRandomDeckPaths(!ClientSettings.RandomDecksDontSetCpuName);
-                                SetDuelRequiredDefaults(settings);
                                 YgomSystem.Utility.ClientWork.DeleteByJsonPath("Duel");
                                 YgomSystem.Utility.ClientWork.UpdateJson(MiniJSON.Json.Serialize(new Dictionary<string, object>()
                                 {
@@ -671,7 +635,7 @@ namespace YgomGame.Room
 
         public static DuelSettings Settings
         {
-            get { return duelSettingsManager != null ? duelSettingsManager.Settings : null; }
+            get { return duelSettingsManager != null ? duelSettingsManager.SettingsClone : null; }
         }
 
         static RoomCreateViewController()
@@ -749,6 +713,7 @@ namespace YgomGame.Room
             if (IsHacked)
             {
                 // Update the duel settings
+                duelSettingsManager.SettingsClone = null;
                 duelSettingsManager.DuelSettingsFromUI();
 
                 YgomSystem.Network.Request.Entry("Solo.start", "{\"chapter\":" + ClientSettings.DuelStarterLiveChapterId + "}");
@@ -895,6 +860,7 @@ namespace YgomGame.Room
             }
 
             DuelSettings settings;
+            DuelSettings settingsClone;
             Buttons buttons;
 
             static int bgmMax = 0;
@@ -902,6 +868,56 @@ namespace YgomGame.Room
             public DuelSettings Settings
             {
                 get { return settings; }
+            }
+            public DuelSettings SettingsClone
+            {
+                get
+                {
+                    if (settingsClone == null)
+                    {
+                        settingsClone = new DuelSettings();
+                        settingsClone.CopyFrom(settings);
+                        SetDuelRequiredDefaults(settingsClone);
+                    }
+                    return settingsClone;
+                }
+                set
+                {
+                    settingsClone = value;
+                }
+            }
+
+            static void SetDuelRequiredDefaults(DuelSettings settings)
+            {
+                Dictionary<string, object> userProfile = YgomSystem.Utility.ClientWork.GetDict("$.User.profile");
+                if (userProfile != null)
+                {
+                    if (string.IsNullOrEmpty(settings.name[0]))
+                    {
+                        settings.name[0] = Utils.GetValue<string>(userProfile, "name");
+                    }
+                    if (settings.icon[0] <= 0 && settings.icon[0] != -2)
+                    {
+                        settings.icon[0] = Utils.GetValue<int>(userProfile, "icon_id");
+                    }
+                    if (settings.icon_frame[0] <= 0 && settings.icon_frame[0] != -2)
+                    {
+                        settings.icon_frame[0] = Utils.GetValue<int>(userProfile, "icon_frame_id");
+                    }
+                    if (settings.avatar[0] == -1)
+                    {
+                        settings.avatar[0] = Utils.GetValue<int>(userProfile, "avatar_id");
+                    }
+                }
+                if (settings.RandSeed == 0)
+                {
+                    settings.RandSeed = (uint)Utils.Rand.Next();
+                }
+                if (settings.bgms.Count == 0)
+                {
+                    settings.SetRandomBgm();
+                }
+                settings.SetRequiredDefaults();
             }
 
             public void Save()
@@ -962,6 +978,14 @@ namespace YgomGame.Room
 
             int LookupItemName(ItemID.Category category, string name, int defaultValue = -1)
             {
+                if (name == ClientSettings.CustomTextRandom)
+                {
+                    return -2;
+                }
+                else if (name == ClientSettings.CustomTextNone)
+                {
+                    return -3;
+                }
                 foreach (int value in ItemID.Values[category])
                 {
                     string itemName = YgomGame.Utility.ItemUtil.GetItemName(value);
@@ -973,17 +997,14 @@ namespace YgomGame.Room
                 return defaultValue;
             }
 
-            Dictionary<int, string> GetItemNames(ItemID.Category category)
-            {
-                return GetItemNames(category, ClientSettings.CustomTextDefault);
-            }
-
-            Dictionary<int, string> GetItemNames(ItemID.Category category, string defaultName)
+            Dictionary<int, string> GetItemNames(ItemID.Category category, bool addNone = false)
             {
                 Dictionary<int, string> result = new Dictionary<int, string>();
-                if (!string.IsNullOrEmpty(defaultName))
+                result[-1] = ClientSettings.CustomTextDefault;
+                result[-2] = ClientSettings.CustomTextRandom;
+                if (addNone)
                 {
-                    result[-1] = defaultName;
+                    result[-3] = ClientSettings.CustomTextNone;
                 }
                 foreach (int value in ItemID.Values[category])
                 {
@@ -1075,7 +1096,15 @@ namespace YgomGame.Room
             void SetButtonIndexFromI32(IntPtr buttonPtr, int value)
             {
                 int index = 0;
-                if (value != -1)
+                if (value == -3)
+                {
+                    index = 2;
+                }
+                else if (value == -2)
+                {
+                    index = 1;
+                }
+                else if (value != -1)
                 {
                     IL2Array<IntPtr> strings = new IL2Array<IntPtr>(buttonSettingStrings.GetValue(buttonPtr).ptr);
                     int len = strings.Length;
@@ -1112,6 +1141,14 @@ namespace YgomGame.Room
                         }
                     }
                 }
+                else if (itemId == -2)
+                {
+                    index = 1;
+                }
+                else if (itemId == -3)
+                {
+                    index = 2;
+                }
                 SetButtonIndex(buttonPtr, index);
             }
 
@@ -1141,11 +1178,7 @@ namespace YgomGame.Room
                 {
                     settings.hnum[i] = hand;
                 }
-                int field = LookupItemName(ItemID.Category.FIELD, GetButtonValueString(buttons.Field));
-                for (int i = 0; i < DuelSettings.MaxPlayers; i++)
-                {
-                    settings.mat[i] = field;
-                }
+                settings.SharedField = LookupItemName(ItemID.Category.FIELD, GetButtonValueString(buttons.Field));
                 DuelType duelType;
                 Enum.TryParse<DuelType>(GetButtonValueString(buttons.DuelType), out duelType);
                 settings.Type = (int)duelType;
@@ -1175,8 +1208,8 @@ namespace YgomGame.Room
                 SetTeamValue(GetButtonValueI32(buttons.Hand2), settings.hnum, 1, 3, false);
                 SetTeamValue(LookupItemName(ItemID.Category.PROTECTOR, GetButtonValueString(buttons.Sleeve1)), settings.sleeve, 0, 2, true);
                 SetTeamValue(LookupItemName(ItemID.Category.PROTECTOR, GetButtonValueString(buttons.Sleeve2)), settings.sleeve, 1, 3, true);
-                SetTeamValue(LookupItemName(ItemID.Category.FIELD, GetButtonValueString(buttons.Field1)), settings.mat, 0, 2, false);
-                SetTeamValue(LookupItemName(ItemID.Category.FIELD, GetButtonValueString(buttons.Field2)), settings.mat, 1, 3, false);
+                SetTeamValue(LookupItemName(ItemID.Category.FIELD, GetButtonValueString(buttons.Field1)), settings.mat, 0, 2, true);
+                SetTeamValue(LookupItemName(ItemID.Category.FIELD, GetButtonValueString(buttons.Field2)), settings.mat, 1, 3, true);
                 SetTeamValue(LookupItemName(ItemID.Category.FIELD_OBJ, GetButtonValueString(buttons.FieldPart1)), settings.duel_object, 0, 2, true);
                 SetTeamValue(LookupItemName(ItemID.Category.FIELD_OBJ, GetButtonValueString(buttons.FieldPart2)), settings.duel_object, 1, 3, true);
                 SetTeamValue(LookupItemName(ItemID.Category.AVATAR, GetButtonValueString(buttons.Mate1)), settings.avatar, 0, 2, true);
@@ -1187,6 +1220,23 @@ namespace YgomGame.Room
                 SetTeamValue(LookupItemName(ItemID.Category.ICON, GetButtonValueString(buttons.Icon2)), settings.icon, 1, 3, true);
                 SetTeamValue(LookupItemName(ItemID.Category.ICON_FRAME, GetButtonValueString(buttons.IconFrame1)), settings.icon_frame, 0, 2, true);
                 SetTeamValue(LookupItemName(ItemID.Category.ICON_FRAME, GetButtonValueString(buttons.IconFrame2)), settings.icon_frame, 1, 3, true);
+
+                /*TODO: Fix up DeckInfo.File loading/saving so this code can be used // Reload decks which are loaded from files
+                for (int i = 0; i < settings.Deck.Length; i++)
+                {
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(settings.Deck[i].File) && !settings.Deck[i].IsRandomDeckPath && File.Exists(settings.Deck[i].File))
+                        {
+                            settings.Deck[i].Load();
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }*/
+
+                YgomSystem.Utility.ClientWork.UpdateJson("$.Persistence.System.DuelStarterUI", MiniJSON.Json.Serialize(settings.ToDictionary()));
             }
 
             void DuelSettingsToUI()
@@ -1194,7 +1244,7 @@ namespace YgomGame.Room
                 SetButtonIndex(buttons.StartingPlayer, settings.FirstPlayer < 0 ? 0 : (settings.FirstPlayer + 1));
                 SetButtonIndexFromI32(buttons.LifePoints, settings.AreAllEqual(settings.life) ? settings.life[0] : -1);
                 SetButtonIndexFromI32(buttons.Hand, settings.AreAllEqual(settings.hnum) ? settings.hnum[0] : -1);
-                SetButtonIndexFromItemId(buttons.Field, settings.AreAllEqual(settings.mat) ? settings.mat[0] : -1);
+                SetButtonIndexFromItemId(buttons.Field, settings.SharedField);
                 SetButtonIndexFromString(buttons.DuelType, ((DuelType)settings.Type).ToString());
                 SetButtonIndexFromString(buttons.Seed, settings.RandSeed == 0 ? null : settings.RandSeed.ToString());
                 SetButtonIndexFromBool(buttons.Shuffle, !settings.noshuffle);
@@ -1254,7 +1304,7 @@ namespace YgomGame.Room
                 };
                 List<string> cpuParamStrings = new List<string>();
                 cpuParamStrings.Add(ClientSettings.CustomTextDefault);
-                for (int i = -100; i <= 100; i++)
+                for (int i = 0; i <= 100; i++)
                 {
                     cpuParamStrings.Add(i.ToString());
                 }
@@ -1335,10 +1385,10 @@ namespace YgomGame.Room
                 buttons.Field2 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterField2, GetItemNames(ItemID.Category.FIELD).Values.ToArray());
                 buttons.FieldPart1 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterFieldPart1, GetItemNames(ItemID.Category.FIELD_OBJ).Values.ToArray());
                 buttons.FieldPart2 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterFieldPart2, GetItemNames(ItemID.Category.FIELD_OBJ).Values.ToArray());
-                buttons.Mate1 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterMate1, GetItemNames(ItemID.Category.AVATAR).Values.ToArray());
-                buttons.Mate2 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterMate2, GetItemNames(ItemID.Category.AVATAR).Values.ToArray());
-                buttons.MateBase1 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterMateBase1, GetItemNames(ItemID.Category.AVATAR_HOME).Values.ToArray());
-                buttons.MateBase2 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterMateBase2, GetItemNames(ItemID.Category.AVATAR_HOME).Values.ToArray());
+                buttons.Mate1 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterMate1, GetItemNames(ItemID.Category.AVATAR, true).Values.ToArray());
+                buttons.Mate2 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterMate2, GetItemNames(ItemID.Category.AVATAR, true).Values.ToArray());
+                buttons.MateBase1 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterMateBase1, GetItemNames(ItemID.Category.AVATAR_HOME, true).Values.ToArray());
+                buttons.MateBase2 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterMateBase2, GetItemNames(ItemID.Category.AVATAR_HOME, true).Values.ToArray());
                 buttons.Icon1 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterIcon1, GetItemNames(ItemID.Category.ICON).Values.ToArray());
                 buttons.Icon2 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterIcon2, GetItemNames(ItemID.Category.ICON).Values.ToArray());
                 buttons.IconFrame1 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterIconFrame1, GetItemNames(ItemID.Category.ICON_FRAME).Values.ToArray());
@@ -1351,6 +1401,21 @@ namespace YgomGame.Room
                 buttons.OpenDeckEditor = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterOpenDeckEditor);
                 buttons.ClearAllDecks = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterClearSelectedDecks);
 
+                if (!hasExistingSetting)
+                {
+                    try
+                    {
+                        Dictionary<string, object> dict = YgomSystem.Utility.ClientWork.GetDict("$.Persistence.System.DuelStarterUI");
+                        if (dict != null && dict.Count > 0)
+                        {
+                            settings.FromDictionary(dict);
+                            hasExistingSetting = true;
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
                 if (hasExistingSetting)
                 {
                     DuelSettingsToUI();
@@ -1464,11 +1529,19 @@ namespace YgomGame.Room
                                         string decksDir = Path.Combine(Program.LocalPlayerSaveDataDir, "Decks");
                                         Utils.TryCreateDirectory(decksDir);
 
-                                        FolderBrowserDialog fbd = new FolderBrowserDialog();
-                                        fbd.SelectedPath = decksDir;
-                                        if (fbd.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(fbd.SelectedPath) && Directory.Exists(fbd.SelectedPath))
+                                        if (deck.IsRandomDeckPath)
                                         {
-                                            DirectoryInfo directoryInfo = new DirectoryInfo(fbd.SelectedPath);
+                                            decksDir = deck.File;
+                                        }
+
+                                        /*FolderBrowserDialog fbd = new FolderBrowserDialog();
+                                        fbd.SelectedPath = decksDir;
+                                        if (fbd.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(fbd.SelectedPath) && Directory.Exists(fbd.SelectedPath))*/
+                                        FolderPicker fbd = new FolderPicker();
+                                        fbd.InputPath = decksDir;
+                                        if (fbd.ShowDialog() == true)
+                                        {
+                                            DirectoryInfo directoryInfo = new DirectoryInfo(fbd.ResultPath);//fbd.SelectedPath);
                                             deck.Clear();
                                             deck.File = directoryInfo.FullName;
                                             UpdateDeckName(buttonPtr, deck);

@@ -6,6 +6,7 @@
     "CustomTextOK": "OK",
     "CustomTextDefault": "Default",
     "CustomTextRandom": "Random",
+    "CustomTextNone": "None",
     "CustomTextExceptionOccurred": "An exception occurred\n{exception}",
     "CustomTextYes": "Yes",
     "CustomTextNo": "No",

@@ -47,4 +47,5 @@
     "PvpLogToFile": false,
     "PvpDuelTapSyncEnabled": true,
     "EmoteDurationInSeconds": 4.0,
+    "LaunchMode": "Detours",
 }

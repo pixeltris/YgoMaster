@@ -129,7 +129,7 @@
     1002009,//Crown
     1002010,//Inline Skates
     1002011,//Darts
-    //1002012,//coming soon
+    1002012,//Bicycle
     //1002013,//coming soon
     //1002014,//coming soon
     //1002015,//coming soon
@@ -204,9 +204,9 @@
     1010042,//WCS2023 "Legendary Magician of Dark"
     1010043,//WCS2023 "Legendary Dragon of White"
     1010044,//Purrely
-    //1010045,//coming soon
+    1010045,//Pumpking the King of Ghosts
     1010046,//I:P Masquerena
-    //1010047,//coming soon
+    1010047,//Promethean Princess, Bestower of Flames
     //1010048,//coming soon
     //1010049,//coming soon
     //1010050,//coming soon
@@ -214,7 +214,7 @@
     //1010052,//coming soon
     //1010053,//coming soon
     //1010054,//coming soon
-    //1010055,//coming soon
+    1010055,//Question
     //1010056,//coming soon
     //1010057,//coming soon
     //1010058,//coming soon
@@ -311,8 +311,8 @@
     1012029,//Danger! Nessie!
     1012030,//Nephthys, the Sacred Flame
     1012031,//Blackbeard, the Plunder Patroll Captain
-    //1012032,//coming soon
-    //1012033,//coming soon
+    1012032,//Bujintei Susanowo
+    1012033,//Bujinki Amaterasu
     1012034,//Ally of Justice Catastor
     1012035,//Worm Dimikles
     1012036,//Mermail Abysstrite
@@ -587,7 +587,7 @@
     1032001,//Festive Ornament
     1032002,//Celebration of Spring Breeze
     1032003,//Tropical Seaside
-    //1032004,//coming soon
+    1032004,//Night festival in Costume
     //1032005,//coming soon
     //1032006,//coming soon
     //1032007,//coming soon
@@ -620,7 +620,7 @@
     1070002,//Auram the World Chalice Blademaster
     1070003,//Link Black
     //1070004,//coming soon
-    //1070005,//coming soon
+    1070005,//Synchro Silver
     1070006,//Xyz Black
     1070007,//Geartown
     1070008,//Ash Blossom & Joyous Spring
@@ -673,11 +673,11 @@
     1070055,//Black Luster Soldier - Legendary Swordsman
     1070056,//Ohime the Manifested Mikanko
     1070057,//Kashtira Arise-Heart
-    //1070058,//coming soon
+    1070058,//Live☆Twin Lil-la Treat
     1070059,//WCS2023 "Legendary Magician of Dark"
     1070060,//WCS2023 "Legendary Dragon of White"
     1070061,//Light and Darkness Dragon
-    //1070062,//coming soon
+    1070062,//Promethean Princess, Bestower of Flames
     //1070063,//coming soon
     //1070064,//coming soon
     //1070065,//coming soon
@@ -724,7 +724,7 @@
     1071006,//Nephthys, the Sacred Flame
     1071007,//U.A. Playmaker
     1071008,//Blackbeard, the Plunder Patroll Captain
-    //1071009,//coming soon
+    1071009,//Bujintei Susanowo
     1071010,//Ally of Justice Catastor
     1071011,//Mermail Abyssmegalo
     1071012,//Giant Beetrooper Invincible Atlas
@@ -1126,7 +1126,7 @@
     1111015,//O - Oversoul
     1111016,//Normal Monster Card
     //1111017,//coming soon
-    //1111018,//coming soon
+    1111018,//Spell Card
     1111019,//Polymerization
     //1111020,//coming soon
     1111021,//Green Stone of Magic

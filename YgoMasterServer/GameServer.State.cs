@@ -24,8 +24,6 @@ namespace YgoMaster
         int multiplayerPvpClientConnectPort;
 
         string bindIP;
-        string serverUrl;
-        string serverPollUrl;
 
         string ygoMasterExePath;
         string dataDirectory;
@@ -323,8 +321,6 @@ namespace YgoMaster
             };
 
             sessionServerIP = FixupUrl(Utils.GetValue<string>(values, "SessionServerIP"));
-            serverUrl = FixupUrl(Utils.GetValue<string>(values, "ServerUrl"));
-            serverPollUrl = FixupUrl(Utils.GetValue<string>(values, "ServerPollUrl"));
             bindIP = FixupUrl(Utils.GetValue<string>(values, "BindIP"));
             multiplayerPvpClientConnectIP = FixupUrl(Utils.GetValue<string>(values, "MultiplayerPvpClientConnectIP"));
             multiplayerPvpClientConnectPort = Utils.GetValue<int>(values, "MultiplayerPvpClientConnectPort");
@@ -332,7 +328,7 @@ namespace YgoMaster
             {
                 multiplayerPvpClientConnectPort = sessionServerPort;
             }
-            if (string.IsNullOrEmpty(serverUrl) || string.IsNullOrEmpty(serverPollUrl) || string.IsNullOrEmpty(bindIP) ||
+            if (string.IsNullOrEmpty(bindIP) ||
                 string.IsNullOrEmpty(multiplayerPvpClientConnectIP) || multiplayerPvpClientConnectPort == 0)
             {
                 throw new Exception("Failed to get server url settings");
@@ -765,6 +761,14 @@ namespace YgoMaster
                                         }
                                     }
                                 }
+                            }
+                            break;
+                        case "--get-cids":
+                            {
+                                DeckInfo deck = new DeckInfo();
+                                deck.File = args[++i];
+                                deck.Load();
+                                File.WriteAllText("cids.txt", string.Join(",", deck.GetAllCards()));
                             }
                             break;
                         default:
@@ -2129,6 +2133,10 @@ namespace YgoMaster
                             {
                                 bool foundPackShop = false;
                                 Dictionary<string, object> items = Utils.GetValue(shopData, shopName, default(Dictionary<string, object>));
+                                if (shopName != "PackShop" && items.Count > 0)
+                                {
+                                    shop.Clear();
+                                }
                                 foreach (KeyValuePair<string, object> item in items)
                                 {
                                     int shopId;
@@ -2152,6 +2160,8 @@ namespace YgoMaster
                                                         case 10102161:// Beetle Troops Roll Out
                                                         case 10102162:// The Noble Knights of Crimson Flowers
                                                         case 10102163:// The Opening Act of an Apocalypse
+                                                        case 10102164:// Treasures of the Cosmic Ocean
+                                                        case 10102168:// Fires of Scorching Bonds
                                                             break;
                                                         default:
                                                             // Ignore time limited packs as they overwrite the previous secret

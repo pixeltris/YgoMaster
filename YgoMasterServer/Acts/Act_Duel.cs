@@ -224,7 +224,7 @@ namespace YgoMaster
                     }
                     if (duelSettings.bgms.Count == 0)
                     {
-                        duelSettings.SetRandomBgm(rand);
+                        duelSettings.SetRandomBgm();
                     }
                     
                     duelSettings.pcode[0] = (int)request.Player.Code;
@@ -596,7 +596,7 @@ namespace YgoMaster
                                 {
                                     foreach (int id in reward.Ids)
                                     {
-                                        if (!request.Player.Items.Contains(id))
+                                        if (ItemID.GetCategoryFromID(id) == ItemID.Category.CONSUME || !request.Player.Items.Contains(id))
                                         {
                                             unownedIds.Add(id);
                                         }

@@ -14,6 +14,8 @@ namespace YgoMaster
     {
         static readonly bool disableInfoLogging = false;
 
+        public static Random Rand = new Random();
+
         public static string GetDataDirectory(bool isServer, string currentDir = "")
         {
             string dataDir = null;

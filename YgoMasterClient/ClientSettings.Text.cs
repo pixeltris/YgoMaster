@@ -38,6 +38,10 @@ namespace YgoMasterClient
         /// </summary>
         public static string CustomTextRandom;
         /// <summary>
+        /// None
+        /// </summary>
+        public static string CustomTextNone;
+        /// <summary>
         /// An exception occurred\n{exception}
         /// </summary>
         public static string CustomTextExceptionOccurred;
@@ -133,6 +137,10 @@ namespace YgoMasterClient
         /// Field
         /// </summary>
         public static string CustomTextDuelStarterField;
+        /// <summary>
+        /// Field sync
+        /// </summary>
+        public static string CustomTextDuelStarterFieldSync;
         /// <summary>
         /// Duel type
         /// </summary>
@@ -518,6 +526,7 @@ namespace YgoMasterClient
             CustomTextOK = Utils.GetValue<string>(data, "CustomTextOK");
             CustomTextDefault = Utils.GetValue<string>(data, "CustomTextDefault");
             CustomTextRandom = Utils.GetValue<string>(data, "CustomTextRandom");
+            CustomTextNone = Utils.GetValue<string>(data, "CustomTextNone");
             CustomTextExceptionOccurred = Utils.GetValue<string>(data, "CustomTextExceptionOccurred");
             CustomTextYes = Utils.GetValue<string>(data, "CustomTextYes");
             CustomTextNo = Utils.GetValue<string>(data, "CustomTextNo");
@@ -543,6 +552,7 @@ namespace YgoMasterClient
             CustomTextDuelStarterLifePoints = Utils.GetValue<string>(data, "CustomTextDuelStarterLifePoints");
             CustomTextDuelStarterHand = Utils.GetValue<string>(data, "CustomTextDuelStarterHand");
             CustomTextDuelStarterField = Utils.GetValue<string>(data, "CustomTextDuelStarterField");
+            CustomTextDuelStarterFieldSync = Utils.GetValue<string>(data, "CustomTextDuelStarterFieldSync");
             CustomTextDuelStarterDuelType = Utils.GetValue<string>(data, "CustomTextDuelStarterDuelType");
             CustomTextDuelStarterAdvancedSettings = Utils.GetValue<string>(data, "CustomTextDuelStarterAdvancedSettings");
             CustomTextDuelStarterSeed = Utils.GetValue<string>(data, "CustomTextDuelStarterSeed");

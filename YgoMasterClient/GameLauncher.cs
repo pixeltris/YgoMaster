@@ -14,7 +14,7 @@ namespace YgoMasterClient
     enum GameLauncherMode
     {
         /// <summary>
-        /// This is a great solution but I've previously observed issues with hooking early functions (i.e. WinMain)
+        /// DetourCreateProcessWithDll
         /// </summary>
         Detours,
         /// <summary>

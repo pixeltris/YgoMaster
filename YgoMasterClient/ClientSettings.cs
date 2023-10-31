@@ -59,6 +59,7 @@ namespace YgoMasterClient
         public static bool PvpLogToFile;
         public static bool PvpDuelTapSyncEnabled;
         public static float EmoteDurationInSeconds;
+        public static GameLauncherMode LaunchMode;
 
         public static string FilePath
         {
@@ -149,6 +150,7 @@ namespace YgoMasterClient
             PvpLogToFile = Utils.GetValue<bool>(data, "PvpLogToFile");
             PvpDuelTapSyncEnabled = Utils.GetValue<bool>(data, "PvpDuelTapSyncEnabled");
             EmoteDurationInSeconds = Utils.GetValue<float>(data, "EmoteDurationInSeconds");
+            LaunchMode = Utils.GetValue<GameLauncherMode>(data, "LaunchMode");
 
             return LoadText();
         }

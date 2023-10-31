@@ -544,7 +544,7 @@ namespace YgoMaster
                                 {
                                     table.State = DuelRoomTableState.Matching;
                                     table.Seed = MultiplayerSeed != -1 ? (uint)MultiplayerSeed : (uint)rand.Next();
-                                    table.Bgm = DuelSettings.GetRandomBgmValue(rand);
+                                    table.Bgm = DuelSettings.GetRandomBgmValue();
                                     table.FirstPlayer = -1;
                                     table.CoinFlipPlayerIndex = MultiplayerCoinFlipPlayerIndex != -1 ? MultiplayerCoinFlipPlayerIndex : rand.Next(2);
                                     table.CoinFlipCounter = MultiplayerCoinFlipCounter;

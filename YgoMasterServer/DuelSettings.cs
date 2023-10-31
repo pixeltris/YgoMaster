@@ -35,6 +35,9 @@ namespace YgoMaster
         [DuelSettingsCustomArray]
         public List<int>[] cmds { get; private set; }
 
+        // Used by custom duel starter to select random field / synced parts
+        public int SharedField;
+
         static string[] ignoreZero = { "life", "hnum" };
 
         // Use the same names as in the packet (using reflection here to reduce the amount of manual work)
@@ -162,14 +165,14 @@ namespace YgoMaster
             }
         }
 
-        public void SetRandomBgm(Random rand)
+        public void SetRandomBgm()
         {
-            BgmsFromValue(rand.Next(1, (MaxBgmId + 1)));
+            BgmsFromValue(Utils.Rand.Next(1, (MaxBgmId + 1)));
         }
 
-        public static int GetRandomBgmValue(Random rand)
+        public static int GetRandomBgmValue()
         {
-            return rand.Next(1, (MaxBgmId + 1));
+            return Utils.Rand.Next(1, (MaxBgmId + 1));
         }
 
         public void LoadRandomDecks()
@@ -211,10 +214,42 @@ namespace YgoMaster
                 tag = true;
             }
 
+            if (SharedField != -1)
+            {
+                int field = SharedField;
+                if (field == -2)
+                {
+                    field = ItemID.GetRandomId(Utils.Rand, ItemID.Category.FIELD);
+                }
+                int fieldPart = ItemID.GetFieldObjFromField(field);
+                for (int i = 0; i < MaxPlayers; i++)
+                {
+                    mat[i] = field;
+                    if (duel_object[i] <= 0)
+                    {
+                        duel_object[i] = fieldPart;
+                    }
+                }
+#if YGO_MASTER_CLIENT
+                //Console.WriteLine("Random field: " + field);
+#endif
+            }
+
             for (int i = 0; i < MaxPlayers; i++)
             {
                 if (hnum[i] == -1) hnum[i] = 0;
                 if (life[i] == -1) life[i] = 0;
+
+                if (avatar[i] == -3) avatar[i] = 0;
+                if (avatar_home[i] == -3) avatar_home[i] = 0;
+
+                if (avatar[i] == -2) avatar[i] = ItemID.GetRandomId(Utils.Rand, ItemID.Category.AVATAR);
+                if (mat[i] == -2) mat[i] = ItemID.GetRandomId(Utils.Rand, ItemID.Category.FIELD);
+                if (sleeve[i] == -2) sleeve[i] = ItemID.GetRandomId(Utils.Rand, ItemID.Category.PROTECTOR);
+                if (avatar_home[i] == -2) avatar_home[i] = ItemID.GetRandomId(Utils.Rand, ItemID.Category.AVATAR_HOME);
+                if (duel_object[i] == -2) duel_object[i] = ItemID.GetRandomId(Utils.Rand, ItemID.Category.FIELD_OBJ);
+                if (icon[i] == -2) icon[i] = ItemID.GetRandomId(Utils.Rand, ItemID.Category.ICON);
+                if (icon_frame[i] == -2) icon_frame[i] = ItemID.GetRandomId(Utils.Rand, ItemID.Category.ICON_FRAME);
 
                 if (mat[i] == -1) mat[i] = Deck[i].Accessory.Field;
                 if (sleeve[i] == -1) sleeve[i] = Deck[i].Accessory.Sleeve;

@@ -15,12 +15,13 @@ using YgoMasterClient;
 using YgoMaster;
 using YgoMaster.Net;
 using YgoMaster.Net.Message;
+using System.Net;
+using System.Net.Sockets;
 
 namespace YgoMasterClient
 {
     static class Program
     {
-        public static Random Rand = new Random();
         public static bool IsLive;
         public static string CurrentDir;// Path of where the current assembly is (YgoMasterClient.exe)
         public static string DataDir;// Path of misc data
@@ -106,7 +107,13 @@ namespace YgoMasterClient
                         }
                     }
                 }
-                success = GameLauncher.Launch(GameLauncherMode.Detours);
+                switch (ClientSettings.LaunchMode)
+                {
+                    case GameLauncherMode.Inject:
+                        ClientSettings.LaunchMode = GameLauncherMode.Detours;
+                        break;
+                }
+                success = GameLauncher.Launch(ClientSettings.LaunchMode);
             }
             if (!success)
             {
@@ -168,6 +175,29 @@ namespace YgoMasterClient
 
                     new Thread(delegate ()
                     {
+                        string ip = ClientSettings.SessionServerIP;
+                        try
+                        {
+                            ip = ip.Replace("https://", string.Empty).Replace("http://", string.Empty);
+                            if (Uri.CheckHostName(ip) == UriHostNameType.Dns)
+                            {
+                                foreach (IPAddress address in Dns.GetHostAddresses(ip))
+                                {
+                                    if (address.AddressFamily == AddressFamily.InterNetwork)
+                                    {
+                                        ip = address.ToString();
+                                        if (ClientSettings.MultiplayerLogConnectionState)
+                                        {
+                                            Console.WriteLine("Resolved " + ClientSettings.SessionServerIP + " to " + ip);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                        }
+
                         while (true)
                         {
                             if (!NetClient.IsConnected && lastConnectAttempt < DateTime.UtcNow - TimeSpan.FromSeconds(ClientSettings.MultiplayerConnectDelayInSeconds))
@@ -175,7 +205,7 @@ namespace YgoMasterClient
                                 lastConnectAttempt = DateTime.UtcNow;
                                 try
                                 {
-                                    NetClient.Connect(ClientSettings.SessionServerIP, ClientSettings.SessionServerPort);
+                                    NetClient.Connect(ip, ClientSettings.SessionServerPort);
                                     NetClient.Send(new ConnectionRequestMessage()
                                     {
                                         Token = ClientSettings.MultiplayerToken
@@ -1373,9 +1403,26 @@ namespace YgomSystem.Network
             url = new IL2String(ClientSettings.ServerUrl).ptr;
             pollingUrl = new IL2String(ClientSettings.ServerPollUrl).ptr;
             // But this does...
-            YgomSystem.Utility.ClientWork.UpdateJson("$.Server.urls", "{\"System.info\":\"" + ClientSettings.ServerUrl + "\"}");
+            Dictionary<string, object> urls = new Dictionary<string, object>()
+            {
+                { "System.info", ClientSettings.ServerUrl },
+                { "Account.auth", ClientSettings.ServerUrl },
+                { "Account.create", ClientSettings.ServerUrl },
+                { "Account.inherit", ClientSettings.ServerUrl },
+                { "Account.Steam.get_user_id", ClientSettings.ServerUrl },
+                { "Account.Steam.re_auth", ClientSettings.ServerUrl },
+                { "Billing.add_purchased_item", ClientSettings.ServerUrl },
+                { "Billing.cancel", ClientSettings.ServerUrl },
+                { "Billing.history", ClientSettings.ServerUrl },
+                { "Billing.in_complete_item_check", ClientSettings.ServerUrl },
+                { "Billing.product_list", ClientSettings.ServerUrl },
+                { "Billing.purchase", ClientSettings.ServerUrl },
+                { "Billing.re_store", ClientSettings.ServerUrl },
+                { "Billing.reservation", ClientSettings.ServerUrl },
+            };
+            YgomSystem.Utility.ClientWork.UpdateJson("$.Server.urls", MiniJSON.Json.Serialize(urls));
             YgomSystem.Utility.ClientWork.UpdateValue("$.Server.url", ClientSettings.ServerUrl);
-            YgomSystem.Utility.ClientWork.UpdateValue("$.Server.url_polling", ClientSettings.ServerUrl);
+            YgomSystem.Utility.ClientWork.UpdateValue("$.Server.url_polling", ClientSettings.ServerPollUrl);
         }
     }
 }

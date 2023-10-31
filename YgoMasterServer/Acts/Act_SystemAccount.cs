@@ -71,31 +71,11 @@ namespace YgoMaster
 
             WriteToken(request);
 
-            Dictionary<string, object> urls = new Dictionary<string, object>();
-            urls["Account.auth"] = serverUrl;
-            urls["Account.create"] = serverUrl;
-            urls["Account.inherit"] = serverUrl;
-            urls["Account.Steam.get_user_id"] = serverUrl;
-            urls["Account.Steam.re_auth"] = serverUrl;
-            urls["Billing.add_purchased_item"] = serverUrl;
-            urls["Billing.cancel"] = serverUrl;
-            urls["Billing.history"] = serverUrl;
-            urls["Billing.in_complete_item_check"] = serverUrl;
-            urls["Billing.product_list"] = serverUrl;
-            urls["Billing.purchase"] = serverUrl;
-            urls["Billing.re_store"] = serverUrl;
-            urls["Billing.reservation"] = serverUrl;
-            urls["Billing.in_complete_item_check"] = serverUrl;
-            urls["Billing.re_store"] = serverUrl;
-
             request.Response["Server"] = new Dictionary<string, object>()
             {
                 { "status", (int)ServerStatus.NORMAL },
                 { "pvp", true },
                 { "inherit", true },
-                { "urls", urls },
-                { "url", serverUrl },
-                { "url_polling", serverPollUrl },
                 { "debug_tool", false },
                 { "langs", new List<object>() {
                     new string[] { "en-US", "English" },

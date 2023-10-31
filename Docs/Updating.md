@@ -22,7 +22,7 @@ Certain logs will be dumped as json into `C:/Program Files (x86)/Fiddler/YgoMast
 
 ## Structure decks
 
-- Run `--extractstructure` to extract those structure decks from the previous step into individual files which get placed into the `StructureDecks` folder.
+- Run `YgoMaster.exe --extractstructure` to extract those structure decks from the previous step into individual files which get placed into the `StructureDecks` folder.
 - Delete `YgoMaster/Data/StructureDecks.json`
 
 ## Solo
@@ -40,7 +40,7 @@ Certain logs will be dumped as json into `C:/Program Files (x86)/Fiddler/YgoMast
 - Click `SHOP` to log `/ayk/api/Shop.get_list`
 - Rename the `YgoMasterUpdate/Shop.json` log to the update date and copy it into `YgoMaster/Data/ShopDumps/`
 - In game select `Master Pack` and click `Cards included in this pack`. Manually copy the response of `/ayk/api/Gacha.get_card_list` into `Data/ShopDumps/Gacha-10000001.json`
-- Run the `--mergeshops` command to merge `/Data/ShopDumps/` into `/Data/AllShopsMerged.json`. Copy out what is needed. For some shops like 3001 you'll need to manually fix up the shop price (and maybe the card list as well?).
+- Run the `YgoMaster.exe --mergeshops` command to merge `/Data/ShopDumps/` into `/Data/AllShopsMerged.json`. Copy out what is needed. For some shops like 3001 you'll need to manually fix up the shop price (and maybe the card list as well?).
 - Zip up your `ShopDumps` folder and update the link at the top of this section. Then delete your `ShopDumps` folder.
 
 For any new packs with new pack images...
@@ -54,7 +54,7 @@ For shop pack odds...
 ## YdkIds.txt
 
 - In the client console run `carddata` which should create `/Data/ClientDataDump/Card/Data/{CLIENT_VERSION}/`, move and rename the `{CLIENT_VERSION}` folder to `/Data/CardData/`. You must do this while using the `English` language setting.
-- Run `--updateydk` to update `YdkIds.txt`.
+- Run `YgoMaster.exe --updateydk` to update `YdkIds.txt`.
 
 ## ItemID.json
 

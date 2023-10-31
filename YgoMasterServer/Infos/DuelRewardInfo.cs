@@ -47,6 +47,10 @@ namespace YgoMaster
         {
             int amount = reward.MinValue == reward.MaxValue ?
                 reward.MinValue : rand.Next(reward.MinValue, reward.MaxValue + 1);
+            if (reward.Multiplier > 0)
+            {
+                amount *= reward.Multiplier;
+            }
             if (chapterStatusChanged && ChapterStatusChangedMultiplier > 0)
             {
                 amount = (int)(amount * ChapterStatusChangedMultiplier);
@@ -102,32 +106,33 @@ namespace YgoMaster
                     reward.Type = type;
                     reward.Rate = Utils.GetValue<double>(data, "rate");
                     reward.Rare = Utils.GetValue<bool>(data, "rare");
+                    int value;
+                    if (Utils.TryGetValue(data, "value", out value))
+                    {
+                        reward.MinValue = value;
+                        reward.MaxValue = value;
+                    }
+                    else
+                    {
+                        int min, max;
+                        if (Utils.TryGetValue(data, "min", out min) &&
+                            Utils.TryGetValue(data, "max", out max))
+                        {
+                            if (min > max)
+                            {
+                                int temp = min;
+                                min = max;
+                                max = temp;
+                            }
+                            reward.MinValue = min;
+                            reward.MaxValue = max;
+                        }
+                    }
+                    reward.Multiplier = Utils.GetValue<int>(data, "multiplier");
                     switch (type)
                     {
                         case DuelCustomRewardType.Gem:
                             {
-                                int value;
-                                if (Utils.TryGetValue(data, "value", out value))
-                                {
-                                    reward.MinValue = value;
-                                    reward.MaxValue = value;
-                                }
-                                else
-                                {
-                                    int min, max;
-                                    if (Utils.TryGetValue(data, "min", out min) &&
-                                        Utils.TryGetValue(data, "max", out max))
-                                    {
-                                        if (min > max)
-                                        {
-                                            int temp = min;
-                                            min = max;
-                                            max = temp;
-                                        }
-                                        reward.MinValue = min;
-                                        reward.MaxValue = max;
-                                    }
-                                }
                                 if (reward.MinValue == 0 && reward.MaxValue == 0)
                                 {
                                     continue;
@@ -214,6 +219,7 @@ namespace YgoMaster
         public DuelCustomRewardType Type;
         public int MinValue;
         public int MaxValue;
+        public int Multiplier;
         /// <summary>
         /// The percent chance for obtaining this reward
         /// </summary>
