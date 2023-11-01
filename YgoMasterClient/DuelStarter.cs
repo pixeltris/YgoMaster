@@ -385,7 +385,6 @@ namespace YgomSystem.Network
                             break;
                         case "Solo.start":
                             {
-                                YgomGame.Room.RoomCreateViewController.Settings.LoadRandomDecks();
                                 DuelSettings settings = new DuelSettings();
                                 settings.CopyFrom(YgomGame.Room.RoomCreateViewController.Settings);
                                 settings.ClearRandomDeckPaths(!ClientSettings.RandomDecksDontSetCpuName);
@@ -877,6 +876,7 @@ namespace YgomGame.Room
                     {
                         settingsClone = new DuelSettings();
                         settingsClone.CopyFrom(settings);
+                        settingsClone.LoadRandomDecks();
                         SetDuelRequiredDefaults(settingsClone);
                     }
                     return settingsClone;
