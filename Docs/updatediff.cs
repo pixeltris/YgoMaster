@@ -1,4 +1,4 @@
-// Client version 1.6.1
+// Client version 1.7.1
 // This file is generated using the 'updatediff' command in YgoMasterClient. This information is used to determine changes between client versions which impact YgoMaster.
 // Run the command, diff against the old file, and use the changes to update code.
 
@@ -290,6 +290,9 @@ enum HowToObtainCard
     Mission,// HOWTOGET_CATEGORY008
     DuelResult,// HOWTOGET_CATEGORY009
     BundleDeals,// HOWTOGET_CATEGORY010
+    SelectionPack,// HOWTOGET_CATEGORY011
+    SecretPack,// HOWTOGET_CATEGORY012
+    BonusPack,// HOWTOGET_CATEGORY013
     Other,// HOWTOGET_CATEGORY099
 }
 /// <summary>
@@ -898,6 +901,7 @@ enum DuelListType
     SelAllMonst2,
     SelAllGadget,
     SelAllIndeck,
+    SelAllGunkan,
 }
 /// <summary>
 /// YgomGame.Duel.Engine.MenuActType
@@ -1306,6 +1310,16 @@ enum CasualCode
     CRITICAL,
     INVALID_PARAM = 3500,
     ERR_OUT_OF_TERM,
+}
+enum CertificationCode
+{
+    NONE,
+    ERROR,
+    FATAL,
+    CRITICAL,
+    ERR_INVALID_PARAM = 4500,
+    ERR_NO_MASTER_DATA,
+    ERR_OVER_GRADE_CHECK,
 }
 enum CgdbDeckSearchCode
 {
@@ -1795,6 +1809,7 @@ enum WcsCode
     ERR_FINAL_ROOM_RIVAL_LEAVE,
     ERR_FINAL_INVALID_TEAM_ID,
     ERR_FINAL_OUT_OF_SUPPORT_TERM,
+    ERR_FINAL_SUPPORT_ABSENT,
 }
 //==================================
 // Network API
@@ -2069,6 +2084,11 @@ enum WcsCode
 //public static YgomSystem.Network.Handle WcsFinal_admin_table_polling(System.Int32 _room_id_)
 //public static YgomSystem.Network.Handle WcsFinal_admin_primary_polling()
 //public static YgomSystem.Network.Handle WcsFinal_admin_final_polling()
+//public static YgomSystem.Network.Handle WcsFinal_user_home()
+//public static YgomSystem.Network.Handle WcsFinal_user_entry()
+//public static YgomSystem.Network.Handle WcsFinal_duel_menu_info()
+//public static YgomSystem.Network.Handle WcsFinal_watch_duel(System.Int64 _pcode_, System.Int64 _rapid_)
+//public static YgomSystem.Network.Handle WcsFinal_replay_duel_history(System.Int64 _did_, System.Int32 _eid_, System.Boolean _is_open_)
 //public static YgomSystem.Network.Handle WcsfCampaign_info()
 //public static YgomSystem.Network.Handle WcsfCampaign_primary_polling()
 //public static YgomSystem.Network.Handle WcsfCampaign_final_polling()
@@ -2076,6 +2096,9 @@ enum WcsCode
 //public static YgomSystem.Network.Handle WcsfCampaign_watch_duel(System.Int32 _room_id_, System.String _room_unique_id_, System.Int32 _tno_, System.Int32 _rapid_)
 //public static YgomSystem.Network.Handle WcsfCampaign_set_support_team(System.Int32 _team_id_)
 //public static YgomSystem.Network.Handle WcsfCampaign_support_entry()
+//public static YgomSystem.Network.Handle Certification_detail(System.Int32 _certification_id_)
+//public static YgomSystem.Network.Handle Certification_get_academic_exam(System.Int32 _certification_id_, System.Int32 _grade_id_)
+//public static YgomSystem.Network.Handle Certification_check_quiz_answers(System.Int32[] _answers_)
 //public System.Void .ctor()
 //==================================
 // duel.dll functions (Engine)

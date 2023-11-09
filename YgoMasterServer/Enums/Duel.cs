@@ -532,7 +532,8 @@ namespace YgoMaster
         SelAllMonst,
         SelAllMonst2,
         SelAllGadget,
-        SelAllIndeck
+        SelAllIndeck,
+        SelAllGunkan//v1.7.1
     }
 
     /// <summary>

@@ -50,7 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FolderPicker.cs" />
+    <Compile Include="YgoMasterClient\FolderPicker.cs" />
     <Compile Include="YgoMasterClient\DuelDll.ProxyFunctions.cs" />
     <Compile Include="YgoMasterClient\DuelTapSync.cs" />
     <Compile Include="YgoMasterClient\DuelEmoteHelper.cs" />

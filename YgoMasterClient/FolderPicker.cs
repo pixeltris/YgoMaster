@@ -18,8 +18,14 @@ public class FolderPicker
     {
         get { return _resultNames; }
     }
-    public string ResultPath => ResultPaths.FirstOrDefault();
-    public string ResultName => ResultNames.FirstOrDefault();
+    public string ResultPath
+    {
+        get { return ResultPaths.FirstOrDefault(); }
+    }
+    public string ResultName
+    {
+        get { return ResultNames.FirstOrDefault(); }
+    }
     public virtual string InputPath { get; set; }
     public virtual bool ForceFileSystem { get; set; }
     public virtual bool Multiselect { get; set; }

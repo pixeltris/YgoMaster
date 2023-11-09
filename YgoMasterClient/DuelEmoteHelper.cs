@@ -6,6 +6,7 @@ using System.Text;
 using IL2CPP;
 using YgoMaster;
 using YgoMaster.Net.Message;
+using UnityEngine;
 
 namespace YgoMasterClient
 {
@@ -41,20 +42,12 @@ namespace YgoMasterClient
         // PopUpText
         static IL2Method methodShowText;
         static IL2Method methodUpdateText;
-        static IL2Field fieldUpdateSize;
         static IL2Field fieldShowing;
         delegate void Del_HideText(IntPtr thisPtr);
         static Hook<Del_HideText> hookHideText;
 
         // Sound
         static IL2Method methodPlaySE;
-
-        struct Vector3
-        {
-            public float x;
-            public float y;
-            public float z;
-        }
 
         static DuelEmoteHelper()
         {
@@ -72,7 +65,6 @@ namespace YgoMasterClient
             IL2Class putClassInfo = assembly.GetClass("PopUpText", "YgomGame");
             methodShowText = putClassInfo.GetMethod("ShowText");
             methodUpdateText = putClassInfo.GetMethod("UpdateText");
-            fieldUpdateSize = putClassInfo.GetField("m_UpdateSize");
             fieldShowing = putClassInfo.GetField("m_Showing");
             hookHideText = new Hook<Del_HideText>(HideText, putClassInfo.GetMethod("HideText"));
 
@@ -283,12 +275,14 @@ namespace YgoMasterClient
             }
             else
             {
-                bool isforui = false;
-                methodShowText.Invoke(putInstance, new IntPtr[] { new IL2String(text).ptr, new IntPtr(&pos), new IntPtr(&isforui) });
-            }
+                IntPtr gameObj = GameObject.New();
+                IntPtr transform = GameObject.GetTranform(gameObj);
+                UnityEngine.Transform.SetPosition(transform, pos);
 
-            bool updateSize = true;
-            fieldUpdateSize.SetValue(putInstance, new IntPtr(&updateSize));
+                bool isforui = false;
+                bool followTarget = false;
+                methodShowText.Invoke(putInstance, new IntPtr[] { new IL2String(text).ptr, transform, new IntPtr(&isforui), new IntPtr(&followTarget) });
+            }
         }
 
         static List<string> GetSounds(ref string text)

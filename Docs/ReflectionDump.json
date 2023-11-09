@@ -3,126 +3,6 @@
     "Assembly": "Assembly-CSharp",
     "Namespace": "YgomGame.Duel",
     "Class": [
-      "Util"
-    ],
-    "Type": "Method",
-    "Name": "ShowProfileCard",
-    "Signature": "public static System.Void ShowProfileCard(UnityEngine.Transform parent, UnityEngine.Transform buttonParent, System.Int32 player, System.Boolean isMyself, System.Boolean force, System.Collections.Generic.Dictionary<System.String,System.Object> profileData)"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame",
-    "Class": [
-      "PopUpTextManager"
-    ],
-    "Type": "Field",
-    "Name": "m_FreeInstanceQueue",
-    "Signature": "PopUpTextManager"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame",
-    "Class": [
-      "PopUpTextManager"
-    ],
-    "Type": "Method",
-    "Name": "GetPutInstance",
-    "Signature": "YgomGame.PopUpText GetPutInstance()"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame",
-    "Class": [
-      "PopUpTextManager"
-    ],
-    "Type": "Method",
-    "Name": "Create",
-    "Signature": "public static YgomGame.PopUpTextManager Create(UnityEngine.Events.UnityAction onFinish)"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame",
-    "Class": [
-      "PopUpTextManager"
-    ],
-    "Type": "Method",
-    "Name": "ReturnInstance",
-    "Signature": "System.Void ReturnInstance(YgomGame.PopUpText instance)"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame",
-    "Class": [
-      "PopUpTextManager"
-    ],
-    "Type": "Method",
-    "Name": "Terminate",
-    "Signature": "public System.Void Terminate()"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame",
-    "Class": [
-      "PopUpText"
-    ],
-    "Type": "Method",
-    "Name": "ShowText",
-    "Signature": "public System.Void ShowText(System.String text, UnityEngine.Vector3 worldPos, System.Boolean isforui)"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame",
-    "Class": [
-      "PopUpText"
-    ],
-    "Type": "Method",
-    "Name": "UpdateText",
-    "Signature": "public System.Void UpdateText(System.String text)"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame",
-    "Class": [
-      "PopUpText"
-    ],
-    "Type": "Field",
-    "Name": "m_UpdateSize",
-    "Signature": "PopUpText"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame",
-    "Class": [
-      "PopUpText"
-    ],
-    "Type": "Field",
-    "Name": "m_Showing",
-    "Signature": "PopUpText"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame",
-    "Class": [
-      "PopUpText"
-    ],
-    "Type": "Method",
-    "Name": "HideText",
-    "Signature": "public System.Void HideText()"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Duel",
-    "Class": [
-      "Sound"
-    ],
-    "Type": "Method",
-    "Name": "PlaySE",
-    "Signature": "public static System.Int32 PlaySE(System.String label)"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Duel",
-    "Class": [
       "ReplayControl"
     ],
     "Type": "Field",
@@ -224,7 +104,7 @@
     "Namespace": "YgomGame.Duel",
     "Class": [
       "DuelHUD",
-      "<PrepareToDuelProcess>d__118"
+      "<PrepareToDuelProcess>d__128"
     ],
     "Type": "Method",
     "Name": "MoveNext",
@@ -724,7 +604,7 @@
     ],
     "Type": "Method",
     "Name": "SelectDeck",
-    "Signature": "System.Void SelectDeck(YgomGame.DeckSelectViewController2.SelectMode mode, System.Int32 deckId, System.Int32 tournamentId, System.Int32 rentalId)"
+    "Signature": "System.Void SelectDeck(YgomGame.DeckSelectViewController2.SelectMode mode, System.Int32 deckID, System.Int32 eventID)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1428,33 +1308,33 @@
     "Namespace": "YgomGame.Menu",
     "Class": [
       "ProfileReplayViewController",
-      "<>c__DisplayClass28_0"
+      "<>c__DisplayClass29_0"
     ],
     "Type": "Field",
     "Name": "dataindex",
-    "Signature": "public <>c__DisplayClass28_0"
+    "Signature": "public <>c__DisplayClass29_0"
   },
   {
     "Assembly": "Assembly-CSharp",
     "Namespace": "YgomGame.Menu",
     "Class": [
       "ProfileReplayViewController",
-      "<>c__DisplayClass28_0"
+      "<>c__DisplayClass29_0"
     ],
     "Type": "Field",
     "Name": "dataindex",
-    "Signature": "public <>c__DisplayClass28_0"
+    "Signature": "public <>c__DisplayClass29_0"
   },
   {
     "Assembly": "Assembly-CSharp",
     "Namespace": "YgomGame.Menu",
     "Class": [
       "ProfileReplayViewController",
-      "<>c__DisplayClass28_0"
+      "<>c__DisplayClass29_0"
     ],
     "Type": "Field",
     "Name": "dataindex",
-    "Signature": "public <>c__DisplayClass28_0"
+    "Signature": "public <>c__DisplayClass29_0"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1575,6 +1455,196 @@
     "Type": "Method",
     "Name": "Update",
     "Signature": "System.Void Update()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Mission",
+    "Class": [
+      "MissionViewController"
+    ],
+    "Type": "Method",
+    "Name": "CheckLaunch",
+    "Signature": "static System.Void CheckLaunch(System.Int32 tabId, System.Int32 poolId, System.Action onSuccess, System.Action onFailed)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Credit",
+    "Class": [
+      "CreditViewController"
+    ],
+    "Type": "Method",
+    "Name": "OnBack",
+    "Signature": "public System.Boolean OnBack()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "BaseMenuViewController"
+    ],
+    "Type": "Method",
+    "Name": "OnBack",
+    "Signature": "public System.Boolean OnBack()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Credit",
+    "Class": [
+      "CreditViewController"
+    ],
+    "Type": "Method",
+    "Name": "Update",
+    "Signature": "System.Void Update()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Credit",
+    "Class": [
+      "CreditViewController"
+    ],
+    "Type": "Method",
+    "Name": "OnCreatedView",
+    "Signature": "public System.Void OnCreatedView()"
+  },
+  {
+    "Assembly": "UnityEngine.UI",
+    "Namespace": "UnityEngine.UI",
+    "Class": [
+      "RawImage"
+    ],
+    "Type": "Property",
+    "Name": "texture",
+    "Signature": "public UnityEngine.Texture"
+  },
+  {
+    "Assembly": "UnityEngine.UI",
+    "Namespace": "UnityEngine.UI",
+    "Class": [
+      "RawImage"
+    ],
+    "Type": "Property",
+    "Name": "uvRect",
+    "Signature": "public UnityEngine.Rect"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Screen"
+    ],
+    "Type": "Property",
+    "Name": "width",
+    "Signature": "public static System.Int32"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Screen"
+    ],
+    "Type": "Property",
+    "Name": "height",
+    "Signature": "public static System.Int32"
+  },
+  {
+    "Assembly": "UnityEngine.InputLegacyModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Input"
+    ],
+    "Type": "Method",
+    "Name": "GetMouseButtonDown",
+    "Signature": "public static System.Boolean GetMouseButtonDown(System.Int32 button)"
+  },
+  {
+    "Assembly": "UnityEngine.InputLegacyModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Input"
+    ],
+    "Type": "Method",
+    "Name": "GetMouseButtonUp",
+    "Signature": "public static System.Boolean GetMouseButtonUp(System.Int32 button)"
+  },
+  {
+    "Assembly": "UnityEngine.InputLegacyModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Input"
+    ],
+    "Type": "Property",
+    "Name": "mousePosition",
+    "Signature": "public static UnityEngine.Vector3"
+  },
+  {
+    "Assembly": "UnityEngine.InputLegacyModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Input"
+    ],
+    "Type": "Property",
+    "Name": "mouseScrollDelta",
+    "Signature": "public static UnityEngine.Vector2"
+  },
+  {
+    "Assembly": "UnityEngine.InputLegacyModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Input"
+    ],
+    "Type": "Method",
+    "Name": "GetKey",
+    "Signature": "public static System.Boolean GetKey(UnityEngine.KeyCode key)"
+  },
+  {
+    "Assembly": "UnityEngine.InputLegacyModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Input"
+    ],
+    "Type": "Method",
+    "Name": "GetKeyDown",
+    "Signature": "public static System.Boolean GetKeyDown(UnityEngine.KeyCode key)"
+  },
+  {
+    "Assembly": "Unity.TextMeshPro",
+    "Namespace": "TMPro",
+    "Class": [
+      "TMP_Text"
+    ],
+    "Type": "Property",
+    "Name": "text",
+    "Signature": "public System.String"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenViewController"
+    ],
+    "Type": "Method",
+    "Name": "TransitionStart",
+    "Signature": "public System.Void TransitionStart(YgomSystem.UI.ViewController.TransitionType type)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "Tween"
+    ],
+    "Type": "Method",
+    "Name": "TargetIsPlaying",
+    "Signature": "public static System.Boolean TargetIsPlaying(UnityEngine.GameObject target, System.String _label, System.Boolean includeChildren, System.Boolean isActive)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Settings",
+    "Class": [
+      "SettingsUtil"
+    ],
+    "Type": "Method",
+    "Name": "SetResolution",
+    "Signature": "public static System.Void SetResolution(System.Int32 width, System.Int32 height)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1784,7 +1854,117 @@
     ],
     "Type": "Method",
     "Name": "PlayMotion",
-    "Signature": "public System.Void PlayMotion(YgomGame.Duel.AvatarMotionSetting.MotionID motionId)"
+    "Signature": "public System.Void PlayMotion(YgomGame.Bg.AvatarMotionSetting.MotionID motionId)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
+      "Util"
+    ],
+    "Type": "Method",
+    "Name": "ShowProfileCard",
+    "Signature": "public static System.Void ShowProfileCard(UnityEngine.Transform parent, UnityEngine.Transform buttonParent, System.Int32 player, System.Boolean isMyself, System.Boolean force, System.Collections.Generic.Dictionary<System.String,System.Object> profileData)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame",
+    "Class": [
+      "PopUpTextManager"
+    ],
+    "Type": "Field",
+    "Name": "m_FreeInstanceQueue",
+    "Signature": "PopUpTextManager"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame",
+    "Class": [
+      "PopUpTextManager"
+    ],
+    "Type": "Method",
+    "Name": "GetPutInstance",
+    "Signature": "YgomGame.PopUpText GetPutInstance()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame",
+    "Class": [
+      "PopUpTextManager"
+    ],
+    "Type": "Method",
+    "Name": "Create",
+    "Signature": "public static YgomGame.PopUpTextManager Create(UnityEngine.Events.UnityAction onFinish)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame",
+    "Class": [
+      "PopUpTextManager"
+    ],
+    "Type": "Method",
+    "Name": "ReturnInstance",
+    "Signature": "System.Void ReturnInstance(YgomGame.PopUpText instance)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame",
+    "Class": [
+      "PopUpTextManager"
+    ],
+    "Type": "Method",
+    "Name": "Terminate",
+    "Signature": "public System.Void Terminate()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame",
+    "Class": [
+      "PopUpText"
+    ],
+    "Type": "Method",
+    "Name": "ShowText",
+    "Signature": "public System.Void ShowText(System.String text, UnityEngine.Transform targetRT, System.Boolean isforui, System.Boolean followTarget)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame",
+    "Class": [
+      "PopUpText"
+    ],
+    "Type": "Method",
+    "Name": "UpdateText",
+    "Signature": "public System.Void UpdateText(System.String text)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame",
+    "Class": [
+      "PopUpText"
+    ],
+    "Type": "Field",
+    "Name": "m_Showing",
+    "Signature": "PopUpText"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame",
+    "Class": [
+      "PopUpText"
+    ],
+    "Type": "Method",
+    "Name": "HideText",
+    "Signature": "public System.Void HideText()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
+      "Sound"
+    ],
+    "Type": "Method",
+    "Name": "PlaySE",
+    "Signature": "public static System.Int32 PlaySE(System.String label)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2233,6 +2413,16 @@
     "Class": [
       "Texture2D"
     ],
+    "Type": "Method",
+    "Name": ".ctor",
+    "Signature": "public System.Void .ctor(System.Int32 width, System.Int32 height, UnityEngine.TextureFormat textureFormat, System.Boolean mipChain)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Texture2D"
+    ],
     "Type": "Property",
     "Name": "isReadable",
     "Signature": "public System.Boolean"
@@ -2256,6 +2446,16 @@
     "Type": "Method",
     "Name": "ReadPixels",
     "Signature": "public System.Void ReadPixels(UnityEngine.Rect source, System.Int32 destX, System.Int32 destY)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Texture2D"
+    ],
+    "Type": "Method",
+    "Name": "SetPixels32",
+    "Signature": "public System.Void SetPixels32(UnityEngine.Color32[] colors)"
   },
   {
     "Assembly": "UnityEngine.CoreModule",
@@ -2655,6 +2855,16 @@
     "Type": "Method",
     "Name": "MakeGenericMethod",
     "Signature": "public System.Reflection.MethodInfo MakeGenericMethod(System.Type[] methodInstantiation)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.Utility",
+    "Class": [
+      "TextData"
+    ],
+    "Type": "Method",
+    "Name": "ParseTextId",
+    "Signature": "public static System.Boolean ParseTextId(System.String fullTextId, System.String& groupId, System.String& textId)"
   },
   {
     "Assembly": "mscorlib",

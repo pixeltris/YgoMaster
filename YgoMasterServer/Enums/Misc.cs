@@ -241,7 +241,8 @@ namespace YgoMaster
     {
         None,
         Joinable = 1,
-        Matching = 3,
+        P1StandingBy = 2,
+        P2StandingBy = 3,
         Matched = 4,
         Dueling = 5
     }

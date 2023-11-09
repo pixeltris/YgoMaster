@@ -192,6 +192,8 @@ namespace YgoMaster
                 {
                     switch (table.State)
                     {
+                        case DuelRoomTableState.P1StandingBy:
+                        case DuelRoomTableState.P2StandingBy:
                         case DuelRoomTableState.Matched:
                         case DuelRoomTableState.Dueling:
                             Console.WriteLine("ResetTableStateIfMatchingOrDueling (" + table.State + ") on table " + Id +

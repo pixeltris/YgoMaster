@@ -542,7 +542,7 @@ namespace YgoMaster
                                 anyBattleReady = true;
                                 if (table.State == DuelRoomTableState.Joinable)
                                 {
-                                    table.State = DuelRoomTableState.Matching;
+                                    table.State = table.Player1 == request.Player ? DuelRoomTableState.P1StandingBy : DuelRoomTableState.P2StandingBy;
                                     table.Seed = MultiplayerSeed != -1 ? (uint)MultiplayerSeed : (uint)rand.Next();
                                     table.Bgm = DuelSettings.GetRandomBgmValue();
                                     table.FirstPlayer = -1;
@@ -785,15 +785,15 @@ namespace YgoMaster
                 DuelRoomTableEntry tableEntry = table.GetEntry(request.Player);
                 if (tableEntry == null || !tableEntry.IsMatchingOrInDuel)
                 {
-                    Utils.LogWarning("[Act_DuelMatching] tableEntry == null || !tableEntry.IsMatchingOrInDuel");
-                    request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
+                    //Utils.LogWarning("[Act_DuelMatching] tableEntry == null || !tableEntry.IsMatchingOrInDuel");
+                    //request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                     return;
                 }
 
                 DuelRoomTableState state = table.State;
-                if (state != DuelRoomTableState.Matching && state != DuelRoomTableState.Matched)
+                if (state != DuelRoomTableState.P1StandingBy && state != DuelRoomTableState.P2StandingBy && state != DuelRoomTableState.Matched)
                 {
-                    Utils.LogWarning("[Act_DuelMatching] state != DuelRoomTableState.Matching && state != DuelRoomTableState.Matched");
+                    Utils.LogWarning("[Act_DuelMatching] state != DuelRoomTableState.P1StandingBy && state != DuelRoomTableState.P2StandingBy && state != DuelRoomTableState.Matched");
                     request.ResultCode = (int)ResultCodes.PvPCode.NOT_FIND_OPPONENT;
                     return;
                 }
@@ -895,7 +895,6 @@ namespace YgoMaster
             }
 
             duelRoom.ResetTableStateIfMatchingOrDueling(request.Player);
-            WriteRoomInfo(request, duelRoom);
         }
 
         void Act_DuelStartWating(GameServerWebRequest request)

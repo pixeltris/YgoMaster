@@ -131,7 +131,7 @@ namespace IL2CPP
                     klass = klass.GetNestedType(signature.Class[i]);
                     if (klass == null)
                     {
-                        Log("Failed to nested type '" + string.Join(".", signature) + "' in assembly '" + signature.Assembly + "'");
+                        Log("Failed to nested type '" + string.Join(".", signature.Class) + "' in assembly '" + signature.Assembly + "'");
                         break;
                     }
                 }

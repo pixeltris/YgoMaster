@@ -2161,6 +2161,7 @@ namespace YgoMaster
                                                         case 10102162:// The Noble Knights of Crimson Flowers
                                                         case 10102163:// The Opening Act of an Apocalypse
                                                         case 10102164:// Treasures of the Cosmic Ocean
+                                                        case 10102165:// Sisters of the Light
                                                         case 10102168:// Fires of Scorching Bonds
                                                             break;
                                                         default:

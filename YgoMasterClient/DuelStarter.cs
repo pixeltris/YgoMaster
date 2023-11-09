@@ -1639,7 +1639,7 @@ namespace YgomGame.DeckBrowser
         static IL2Field fieldOnCompleteSelectDeckCallback;
         static IL2Method methodActionInvoke;
 
-        delegate void Del_SelectDeck(IntPtr thisPtr, int mode, int deckId, int tournamentId, int rentalId);
+        delegate void Del_SelectDeck(IntPtr thisPtr, int mode, int deckId, int eventID);
         static Hook<Del_SelectDeck> hookSelectDeck;
 
         static DeckBrowserViewController()
@@ -1653,7 +1653,7 @@ namespace YgomGame.DeckBrowser
             methodActionInvoke = actionClassInfo.GetMethod("Invoke");
         }
 
-        static void SelectDeck(IntPtr thisPtr, int mode, int deckId, int tournamentId, int rentalId)
+        static void SelectDeck(IntPtr thisPtr, int mode, int deckId, int eventID)
         {
             IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
             IntPtr roomView = YgomSystem.UI.ViewControllerManager.GetViewController(manager, YgomGame.Room.RoomCreateViewController.ClassInfo.IL2Typeof());
@@ -1664,7 +1664,7 @@ namespace YgomGame.DeckBrowser
                 methodActionInvoke.Invoke(fieldOnCompleteSelectDeckCallback.GetValue(thisPtr));
                 return;
             }
-            hookSelectDeck.Original(thisPtr, mode, deckId, tournamentId, rentalId);
+            hookSelectDeck.Original(thisPtr, mode, deckId, eventID);
         }
     }
 }
@@ -2210,6 +2210,8 @@ namespace UnityEngine
         static IL2Method methodGetChild;
         static IL2Method methodGetParent;
         static IL2Method methodSetParent;
+        static IL2Method methodGetPosition;
+        static IL2Method methodSetPosition;
 
         static IL2Class serializedFieldClassInfo;
 
@@ -2221,6 +2223,8 @@ namespace UnityEngine
             methodGetChild = classInfo.GetMethod("GetChild");
             methodGetParent = classInfo.GetProperty("parent").GetGetMethod();
             methodSetParent = classInfo.GetProperty("parent").GetSetMethod();
+            methodGetPosition = classInfo.GetProperty("position").GetGetMethod();
+            methodSetPosition = classInfo.GetProperty("position").GetSetMethod();
 
             serializedFieldClassInfo = Assembler.GetAssembly("UnityEngine.CoreModule").GetClass("SerializeField");
         }
@@ -2246,6 +2250,17 @@ namespace UnityEngine
         {
             Console.WriteLine("set " + thisPtr.ToInt64() + " to " + newParent.ToInt64());
             methodSetParent.Invoke(thisPtr, new IntPtr[] { newParent });
+        }
+
+        public static Vector3 GetPosition(IntPtr thisPtr)
+        {
+            IL2Object result = methodGetPosition.Invoke(thisPtr);
+            return result != null ? result.GetValueRef<Vector3>() : default(Vector3);
+        }
+
+        public static void SetPosition(IntPtr thisPtr, Vector3 position)
+        {
+            methodSetPosition.Invoke(thisPtr, new IntPtr[] { new IntPtr(&position) });
         }
 
         public static void Dump(IntPtr transform, int depth = 0)
@@ -2358,5 +2373,12 @@ namespace UnityEngine
             IL2Object result = methodGetGameObject.Invoke(thisPtr);
             return result != null ? result.ptr : IntPtr.Zero;
         }
+    }
+
+    struct Vector3
+    {
+        public float x;
+        public float y;
+        public float z;
     }
 }
