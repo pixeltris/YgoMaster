@@ -214,7 +214,7 @@ namespace YgoMaster
                 tag = true;
             }
 
-            if (SharedField != -1)
+            if (SharedField != -1 && SharedField != 0)
             {
                 int field = SharedField;
                 if (field == -2)
