@@ -101,6 +101,10 @@ namespace YgoMaster
         /// </summary>
         bool ShowTopics;
         /// <summary>
+        /// Show Custom Text from Settings.json file. (Can be used to identify the Server)
+        /// </summary>
+        string MenuTopicBoxText;
+        /// <summary>
         /// Any card which is given the player can be dismantled
         /// </summary>
         bool DisableNoDismantle;
@@ -374,6 +378,7 @@ namespace YgoMaster
             ProgressiveCardList = Utils.GetValue<bool>(values, "ProgressiveCardList");
             ProgressiveCardRarities = Utils.GetValue<bool>(values, "ProgressiveCardRarities");
             ShowTopics = Utils.GetValue<bool>(values, "ShowTopics");
+            MenuTopicBoxText = Utils.GetValue<string>(values, "MenuTopicBoxText", "YgoMaster");
             DisableNoDismantle = Utils.GetValue<bool>(values, "DisableNoDismantle");
             DisableDeckValidation = Utils.GetValue<bool>(values, "DisableDeckValidation");
             DontUpdateDeckEditTime = Utils.GetValue<bool>(values, "DontUpdateDeckEditTime");

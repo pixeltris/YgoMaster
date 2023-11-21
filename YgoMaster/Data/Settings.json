@@ -1,353 +1,354 @@
 {
-    "BaseIP": "localhost",
-    "BasePort": 4989,
-    "SessionServerPort": 4988,
-    "SessionServerIP": "{BaseIP}",
-    "MultiplayerPvpClientConnectIP": "{SessionServerIP}",
-    "MultiplayerPvpClientConnectPort": 0,// A value of 0 will use SessionServerPort
-    "BindIP": "http://{BaseIP}:{BasePort}/",
-    "MultiplayerEnabled": false,// [WARNING] Only use if you know what you're doing
-    "MultiplayerAllowUserSpecifiedPlayerCode": true,
-    "MultiplayerTokenPrefixSecret": "",
-    "MultiplayerMaxTokensPerIP": 6,
-    "MultiplayerMaxTokensPerIPEx": null,// { "1.1.1.1": 10, "1.1.1.2": 15, }
-    "MultiplayerReleaseTokenIPInHours": 200,
-    "MultiplayerPingTimeoutInSeconds": 90,
-    "MultiplayerPingInSeconds": 20,
-    "MultiplayerNoDelay": true,
-    "MultiplayerNoShuffle": false,
-    "MultiplayerSeed": -1,
-    "MultiplayerCoinFlipPlayerIndex": -1,
-    "MultiplayerCoinFlipCounter": 5,
-    "MultiplayerPvpClientShowConsole": false,
-    "MultiplayerPvpClientKeepConsoleAlive": false,
-    "MultiplayerPvpClientSysActSleepInMilliseconds": 10,
-    "MultiplayerPvpClientSysActCallsPerSleep": 5,
-    "MultiplayerPvpClientDoCommandUserOffset": 14468,
-    "MultiplayerPvpClientRunDialogUserOffset": 14364,
-    "DisableDeckValidation": false,
-    "DontUpdateDeckEditTime": false,
-    "ShowTopics": true,
-    "DeckSlots": 999,
-    "UnlockAllCards": false,// [WARNING] Enabling this permanently wipes your saved cards (all cards are set to 3x without any shine/royal and any newly obtained cards don't save)
-    "UnlockAllItems": false,// [WARNING] Enabling this permanently wipes your saved items
-    "UnlockAllSoloChapters": false,// [WARNING] Enabling this permanently wipes your saved solo progress
-    "SoloRemoveDuelTutorials": false,
-    "SoloDisableNoShuffle": false,
-    "SoloShowGateClearForAllSecretPacks": false,
-    "SoloRewardsInDuelResult": false,
-    "SoloRewardsInDuelResultAreRare": false,
-    "CardCraftableAll": false,
-    "DisableNoDismantle": false,
-    "DisableBanList": false,
-    "ProgressiveCardList": false,
-    "ProgressiveCardRarities": false,
-    "FriendSearchLimit": 100,
-    "FriendOfflineInSeconds": 300,
-    "FriendRefreshInSeconds": 60,
-    "DuelRoomMaxId": 999999,
-    "DuelRoomMaxSearchResults": 1000,
-    "DuelRoomMaxSpectators": 1000,
-    "DuelRoomCommentTimeoutInSeconds": 7,
-    "DuelRoomTableMatchingTimeoutInSeconds": 30,
-    "DuelRoomPvpClientSetupTimeoutInSeconds": 30,
-    "DuelRoomSpectatorCardVisibility": "AllClose",// AllClose, FrontOpen, AllOpen
-    "DuelRoomDefaultTimeIndex": 1,
-    "DuelRoomTimes": [
-        {
-            "Name": "IDS_ROOM_TIME_SHORT",
-            "Time": 150,
-            "AddTimeAtStartOfTurn": 30,
-            "AddTimeAtEndOfTurn": 15
-        },
-        {
-            "Name": "IDS_ROOM_TIME_NORMAL",
-            "Time": 300,
-            "AddTimeAtStartOfTurn": 60,
-            "AddTimeAtEndOfTurn": 30
-        },
-        {
-            "Name": "IDS_ROOM_TIME_LONG",
-            "Time": 600,
-            "AddTimeAtStartOfTurn": 120,
-            "AddTimeAtEndOfTurn": 60
-        },
-        {
-            "Name": "IDS_ROOM_TIME_VERY_LONG",
-            "Time": 900,
-            "AddTimeAtStartOfTurn": 900,
-            "AddTimeAtEndOfTurn": 300
-        },
-        {
-            "Name": "IDS_SYS_IDHACK:∞ ",
-            "Time": 0
-        }
-    ],
-    "DuelReplaySaveForGameModes": [ "SoloSingle", "Room" ],
-    "DuelReplaySaveFileLimit": 50,
-    "DuelReplayMakePublicByDefault": false,
-    "DuelReplayCardVisibility": "FrontOpen",
-    "TradeAllowOtherPlayerToAddYourCards": true,
-    "TradeAllowOtherPlayerToRemoveYourCards": true,
-    "TradeEnterRoomRequestDelayInSeconds": 1.5,
-    "EmoteMaxLength": 1000,
-    "DefaultGems": 2000,
-    "DefaultItems": [
-        1000001,// Rescue Rabbit (AVATAR)
-        1010001,// Duelist (ICON)
-        1030001,// ICON_FRAME01
-        1070001,// Yu-Gi-Oh! Trading Card Game (PROTECTOR)
-        1080001,// Duelist Card Case Red (DECK_CASE)
-        1090001,// Forest (FIELD)
-        1130001,// Blue-Eyes Alternative White Dragon (WALLPAPER)
-        //1120001,// Starting Deck (STRUCTURE)
-    ],
-    "Craft": {
-        // Disabled craft point rollover (as this isn't something in the normal game)
-        //"CraftPointRollover": {
-        //   "Normal": { "at": 1000, "take": 500, "give": 30 },
-        //   "Rare": { "at": 1000, "take": 500, "give": 30 },
-        //   "SuperRare": { "at": 1000, "take": 500, "give": 30 }
-        //},
-        "Craft": {
-            // Cost of crafting cards
-            "Normal": {
-                "Normal": 30,
-                "Shine": 999999
-            },
-            "Rare": {
-                "Normal": 30,
-                "Shine": 999999
-            },
-            "SuperRare": {
-                "Normal": 30,
-                "Shine": 999999,
-                "Royal": 999999
-            },
-            "UltraRare": {
-                "Normal": 30,
-                "Shine": 999999,
-                "Royal": 999999
-            }
-        },
-        "CraftStyleRarity": {
-            // Shine/royal chance when crafting (delete to disable this)
-            "Normal": {
-                "Normal": 90,
-                "Shine": 10
-            },
-            "Rare": {
-                "Normal": 90,
-                "Shine": 10
-            },
-            "SuperRare": {
-                "Normal": 90,
-                "Shine": 9,
-                "Royal": 1
-            },
-            "UltraRare": {
-                "Normal": 90,
-                "Shine": 9,
-                "Royal": 1
-            }
-        },
-        "Dismantle": {
-            // Rewards for dismantling cards
-            "Normal": {
-                "Normal": 10,
-                "Shine": 15
-            },
-            "Rare": {
-                "Normal": 10,
-                "Shine": 15
-            },
-            "SuperRare": {
-                "Normal": 10,
-                "Shine": 15,
-                "Royal": 30
-            },
-            "UltraRare": {
-                "Normal": 10,
-                "Shine": 15,
-                "Royal": 30
-            }
-        }
+  "BaseIP": "localhost",
+  "BasePort": 4989,
+  "SessionServerPort": 4988,
+  "SessionServerIP": "{BaseIP}",
+  "MultiplayerPvpClientConnectIP": "{SessionServerIP}",
+  "MultiplayerPvpClientConnectPort": 0, // A value of 0 will use SessionServerPort
+  "BindIP": "http://{BaseIP}:{BasePort}/",
+  "MultiplayerEnabled": false, // [WARNING] Only use if you know what you're doing
+  "MultiplayerAllowUserSpecifiedPlayerCode": true,
+  "MultiplayerTokenPrefixSecret": "",
+  "MultiplayerMaxTokensPerIP": 6,
+  "MultiplayerMaxTokensPerIPEx": null, // { "1.1.1.1": 10, "1.1.1.2": 15, }
+  "MultiplayerReleaseTokenIPInHours": 200,
+  "MultiplayerPingTimeoutInSeconds": 90,
+  "MultiplayerPingInSeconds": 20,
+  "MultiplayerNoDelay": true,
+  "MultiplayerNoShuffle": false,
+  "MultiplayerSeed": -1,
+  "MultiplayerCoinFlipPlayerIndex": -1,
+  "MultiplayerCoinFlipCounter": 5,
+  "MultiplayerPvpClientShowConsole": false,
+  "MultiplayerPvpClientKeepConsoleAlive": false,
+  "MultiplayerPvpClientSysActSleepInMilliseconds": 10,
+  "MultiplayerPvpClientSysActCallsPerSleep": 5,
+  "MultiplayerPvpClientDoCommandUserOffset": 14468,
+  "MultiplayerPvpClientRunDialogUserOffset": 14364,
+  "DisableDeckValidation": false,
+  "DontUpdateDeckEditTime": false,
+  "ShowTopics": true,
+  "MenuTopicBoxText": "YgoMaster,",
+  "DeckSlots": 999,
+  "UnlockAllCards": false, // [WARNING] Enabling this permanently wipes your saved cards (all cards are set to 3x without any shine/royal and any newly obtained cards don't save)
+  "UnlockAllItems": false, // [WARNING] Enabling this permanently wipes your saved items
+  "UnlockAllSoloChapters": false, // [WARNING] Enabling this permanently wipes your saved solo progress
+  "SoloRemoveDuelTutorials": false,
+  "SoloDisableNoShuffle": false,
+  "SoloShowGateClearForAllSecretPacks": false,
+  "SoloRewardsInDuelResult": false,
+  "SoloRewardsInDuelResultAreRare": false,
+  "CardCraftableAll": false,
+  "DisableNoDismantle": false,
+  "DisableBanList": false,
+  "ProgressiveCardList": false,
+  "ProgressiveCardRarities": false,
+  "FriendSearchLimit": 100,
+  "FriendOfflineInSeconds": 300,
+  "FriendRefreshInSeconds": 60,
+  "DuelRoomMaxId": 999999,
+  "DuelRoomMaxSearchResults": 1000,
+  "DuelRoomMaxSpectators": 1000,
+  "DuelRoomCommentTimeoutInSeconds": 7,
+  "DuelRoomTableMatchingTimeoutInSeconds": 30,
+  "DuelRoomPvpClientSetupTimeoutInSeconds": 30,
+  "DuelRoomSpectatorCardVisibility": "AllClose", // AllClose, FrontOpen, AllOpen
+  "DuelRoomDefaultTimeIndex": 1,
+  "DuelRoomTimes": [
+    {
+      "Name": "IDS_ROOM_TIME_SHORT",
+      "Time": 150,
+      "AddTimeAtStartOfTurn": 30,
+      "AddTimeAtEndOfTurn": 15
     },
-    "DuelRewards": {
-        "ChapterStatusChangedMultiplier": 1.0,
-        "ChapterStatusChangedNoRewards": true,
-        "win": [
-            {
-                "type": "Item",
-                "rate": 0.1,
-                "rare": true,
-            },
-            {
-                "type": "Item",
-                "rate": 0.1,
-                "rare": true,
-            },
-            {
-                "type": "Item",
-                "rate": 0.1,
-                "rare": true,
-            },
-            {
-                "type": "Gem",
-                "value": 200,
-                "rate": 0.01,
-                "rare": true
-            },
-            {
-                "type": "Gem",
-                "min": 70,
-                "max": 120,
-                "rate": 100
-            },
-            {
-                "type": "Gem",
-                "value": 15,
-                "rate": 15
-            },
-            {
-                "type": "Gem",
-                "value": 10,
-                "rate": 10
-            },
-            {
-                "type": "Gem",
-                "value": 5,
-                "rate": 5
-            },
-            {
-                "type": "Gem",
-                "value": 99,
-                "rate": 0.1
-            },
-            {
-                "type": "Card",
-                "cardRate": [90,10],
-                "rate": 50
-            },
-            {
-                "type": "Card",
-                "cardRate": [85,14,0.7,0.1],
-                "cardRare": [false,false,true,true],
-                "rate": 10
-            },
-            {
-                "type": "Card",
-                "cardRate": [60,37,2.5,0.5],
-                "cardRare": [false,false,true,true],
-                "rate": 5
-            },
-        ],
-        "lose": [
-            {
-                "type": "Gem",
-                "min": 5,
-                "max": 20,
-                "rate": 100
-            },
-            {
-                "type": "Gem",
-                "value": 8,
-                "rate": 10
-            },
-            {
-                "type": "Card",
-                "cardRate": [90,9,0.7,0.1],
-                "rate": 10
-            },
-        ]
+    {
+      "Name": "IDS_ROOM_TIME_NORMAL",
+      "Time": 300,
+      "AddTimeAtStartOfTurn": 60,
+      "AddTimeAtEndOfTurn": 30
     },
-    "DuelRoomRewards": {
-        "MinimumTurnsForSurrenderRewardsWin": 0,
-        "MinimumTurnsForSurrenderRewardsLose": 0,
-        "MinimumTurnsForSurrenderRewardsDraw": 0,
-        "win": [
-            {
-                "type": "Item",
-                "rate": 0.1,
-                "rare": true,
-            },
-            {
-                "type": "Item",
-                "rate": 0.1,
-                "rare": true,
-            },
-            {
-                "type": "Item",
-                "rate": 0.1,
-                "rare": true,
-            },
-            {
-                "type": "Gem",
-                "value": 200,
-                "rate": 0.01,
-                "rare": true
-            },
-            {
-                "type": "Gem",
-                "min": 70,
-                "max": 120,
-                "rate": 100
-            },
-            {
-                "type": "Gem",
-                "value": 15,
-                "rate": 15
-            },
-            {
-                "type": "Gem",
-                "value": 10,
-                "rate": 10
-            },
-            {
-                "type": "Gem",
-                "value": 5,
-                "rate": 5
-            },
-            {
-                "type": "Gem",
-                "value": 99,
-                "rate": 0.1
-            },
-            {
-                "type": "Card",
-                "cardRate": [90,10],
-                "rate": 50
-            },
-            {
-                "type": "Card",
-                "cardRate": [85,14,0.7,0.1],
-                "cardRare": [false,false,true,true],
-                "rate": 10
-            },
-            {
-                "type": "Card",
-                "cardRate": [60,37,2.5,0.5],
-                "cardRare": [false,false,true,true],
-                "rate": 5
-            },
-        ],
-        "lose": [
-            {
-                "type": "Gem",
-                "min": 5,
-                "max": 20,
-                "rate": 100
-            },
-            {
-                "type": "Gem",
-                "value": 8,
-                "rate": 10
-            },
-            {
-                "type": "Card",
-                "cardRate": [90,9,0.7,0.1],
-                "rate": 10
-            },
-        ]
+    {
+      "Name": "IDS_ROOM_TIME_LONG",
+      "Time": 600,
+      "AddTimeAtStartOfTurn": 120,
+      "AddTimeAtEndOfTurn": 60
+    },
+    {
+      "Name": "IDS_ROOM_TIME_VERY_LONG",
+      "Time": 900,
+      "AddTimeAtStartOfTurn": 900,
+      "AddTimeAtEndOfTurn": 300
+    },
+    {
+      "Name": "IDS_SYS_IDHACK:∞ ",
+      "Time": 0
     }
+  ],
+  "DuelReplaySaveForGameModes": [ "SoloSingle", "Room" ],
+  "DuelReplaySaveFileLimit": 50,
+  "DuelReplayMakePublicByDefault": false,
+  "DuelReplayCardVisibility": "FrontOpen",
+  "TradeAllowOtherPlayerToAddYourCards": true,
+  "TradeAllowOtherPlayerToRemoveYourCards": true,
+  "TradeEnterRoomRequestDelayInSeconds": 1.5,
+  "EmoteMaxLength": 1000,
+  "DefaultGems": 2000,
+  "DefaultItems": [
+    1000001, // Rescue Rabbit (AVATAR)
+    1010001, // Duelist (ICON)
+    1030001, // ICON_FRAME01
+    1070001, // Yu-Gi-Oh! Trading Card Game (PROTECTOR)
+    1080001, // Duelist Card Case Red (DECK_CASE)
+    1090001, // Forest (FIELD)
+    1130001 // Blue-Eyes Alternative White Dragon (WALLPAPER)
+    //1120001,// Starting Deck (STRUCTURE)
+  ],
+  "Craft": {
+    // Disabled craft point rollover (as this isn't something in the normal game)
+    //"CraftPointRollover": {
+    //   "Normal": { "at": 1000, "take": 500, "give": 30 },
+    //   "Rare": { "at": 1000, "take": 500, "give": 30 },
+    //   "SuperRare": { "at": 1000, "take": 500, "give": 30 }
+    //},
+    "Craft": {
+      // Cost of crafting cards
+      "Normal": {
+        "Normal": 30,
+        "Shine": 999999
+      },
+      "Rare": {
+        "Normal": 30,
+        "Shine": 999999
+      },
+      "SuperRare": {
+        "Normal": 30,
+        "Shine": 999999,
+        "Royal": 999999
+      },
+      "UltraRare": {
+        "Normal": 30,
+        "Shine": 999999,
+        "Royal": 999999
+      }
+    },
+    "CraftStyleRarity": {
+      // Shine/royal chance when crafting (delete to disable this)
+      "Normal": {
+        "Normal": 90,
+        "Shine": 10
+      },
+      "Rare": {
+        "Normal": 90,
+        "Shine": 10
+      },
+      "SuperRare": {
+        "Normal": 90,
+        "Shine": 9,
+        "Royal": 1
+      },
+      "UltraRare": {
+        "Normal": 90,
+        "Shine": 9,
+        "Royal": 1
+      }
+    },
+    "Dismantle": {
+      // Rewards for dismantling cards
+      "Normal": {
+        "Normal": 10,
+        "Shine": 15
+      },
+      "Rare": {
+        "Normal": 10,
+        "Shine": 15
+      },
+      "SuperRare": {
+        "Normal": 10,
+        "Shine": 15,
+        "Royal": 30
+      },
+      "UltraRare": {
+        "Normal": 10,
+        "Shine": 15,
+        "Royal": 30
+      }
+    }
+  },
+  "DuelRewards": {
+    "ChapterStatusChangedMultiplier": 1.0,
+    "ChapterStatusChangedNoRewards": true,
+    "win": [
+      {
+        "type": "Item",
+        "rate": 0.1,
+        "rare": true
+      },
+      {
+        "type": "Item",
+        "rate": 0.1,
+        "rare": true
+      },
+      {
+        "type": "Item",
+        "rate": 0.1,
+        "rare": true
+      },
+      {
+        "type": "Gem",
+        "value": 200,
+        "rate": 0.01,
+        "rare": true
+      },
+      {
+        "type": "Gem",
+        "min": 70,
+        "max": 120,
+        "rate": 100
+      },
+      {
+        "type": "Gem",
+        "value": 15,
+        "rate": 15
+      },
+      {
+        "type": "Gem",
+        "value": 10,
+        "rate": 10
+      },
+      {
+        "type": "Gem",
+        "value": 5,
+        "rate": 5
+      },
+      {
+        "type": "Gem",
+        "value": 99,
+        "rate": 0.1
+      },
+      {
+        "type": "Card",
+        "cardRate": [ 90, 10 ],
+        "rate": 50
+      },
+      {
+        "type": "Card",
+        "cardRate": [ 85, 14, 0.7, 0.1 ],
+        "cardRare": [ false, false, true, true ],
+        "rate": 10
+      },
+      {
+        "type": "Card",
+        "cardRate": [ 60, 37, 2.5, 0.5 ],
+        "cardRare": [ false, false, true, true ],
+        "rate": 5
+      }
+    ],
+    "lose": [
+      {
+        "type": "Gem",
+        "min": 5,
+        "max": 20,
+        "rate": 100
+      },
+      {
+        "type": "Gem",
+        "value": 8,
+        "rate": 10
+      },
+      {
+        "type": "Card",
+        "cardRate": [ 90, 9, 0.7, 0.1 ],
+        "rate": 10
+      }
+    ]
+  },
+  "DuelRoomRewards": {
+    "MinimumTurnsForSurrenderRewardsWin": 0,
+    "MinimumTurnsForSurrenderRewardsLose": 0,
+    "MinimumTurnsForSurrenderRewardsDraw": 0,
+    "win": [
+      {
+        "type": "Item",
+        "rate": 0.1,
+        "rare": true
+      },
+      {
+        "type": "Item",
+        "rate": 0.1,
+        "rare": true
+      },
+      {
+        "type": "Item",
+        "rate": 0.1,
+        "rare": true
+      },
+      {
+        "type": "Gem",
+        "value": 200,
+        "rate": 0.01,
+        "rare": true
+      },
+      {
+        "type": "Gem",
+        "min": 70,
+        "max": 120,
+        "rate": 100
+      },
+      {
+        "type": "Gem",
+        "value": 15,
+        "rate": 15
+      },
+      {
+        "type": "Gem",
+        "value": 10,
+        "rate": 10
+      },
+      {
+        "type": "Gem",
+        "value": 5,
+        "rate": 5
+      },
+      {
+        "type": "Gem",
+        "value": 99,
+        "rate": 0.1
+      },
+      {
+        "type": "Card",
+        "cardRate": [ 90, 10 ],
+        "rate": 50
+      },
+      {
+        "type": "Card",
+        "cardRate": [ 85, 14, 0.7, 0.1 ],
+        "cardRare": [ false, false, true, true ],
+        "rate": 10
+      },
+      {
+        "type": "Card",
+        "cardRate": [ 60, 37, 2.5, 0.5 ],
+        "cardRare": [ false, false, true, true ],
+        "rate": 5
+      }
+    ],
+    "lose": [
+      {
+        "type": "Gem",
+        "min": 5,
+        "max": 20,
+        "rate": 100
+      },
+      {
+        "type": "Gem",
+        "value": 8,
+        "rate": 10
+      },
+      {
+        "type": "Card",
+        "cardRate": [ 90, 9, 0.7, 0.1 ],
+        "rate": 10
+      }
+    ]
+  }
 }

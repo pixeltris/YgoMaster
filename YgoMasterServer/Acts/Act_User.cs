@@ -216,7 +216,7 @@ namespace YgoMaster
                             { "pattern", TopicsBannerPatern.NOTIFY },
                             { "prefArgsJson", new Dictionary<string, object>() {
                                 { "BackImage", "Images/Notification/System/Notice001" },
-                                { "Title", "YgoMaster" },//"<color=#EEE>YgoMaster</color>",
+                                { "Title", MenuTopicBoxText },//"<color=#EEE>YgoMaster</color>",
                             }}
                         }},
                     }
