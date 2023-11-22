@@ -1,0 +1,35 @@
+{
+  "Title": "YgoMaster",
+  "Pattern": "1",
+  "Color": "#FFFFFF",
+  "BackImage": "Images/Notification/System/Notice001",
+  "Contents": [
+    {
+      "tp": "H1",
+      "text": "About"
+    },
+    {
+      "tp": "Text",
+      "text": "Play \"Yu-Gi-Oh! Master Duel\" without an internet connection.\n\nProgress is not shared with the live game.",
+      "indent": -1
+    },
+    {
+      "tp": "H1",
+      "text": "Documentation"
+    },
+    {
+      "tp": "Text",
+      "text": "https://github.com/pixeltris/YgoMaster",
+      "indent": -1
+    },
+    {
+      "tp": "H1",
+      "text": "Issues"
+    },
+    {
+      "tp": "Text",
+      "text": "https://github.com/pixeltris/YgoMaster/issues",
+      "indent": -1
+    }
+  ]
+}

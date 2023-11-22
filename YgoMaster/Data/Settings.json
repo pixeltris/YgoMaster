@@ -28,7 +28,6 @@
   "DisableDeckValidation": false,
   "DontUpdateDeckEditTime": false,
   "ShowTopics": true,
-  "MenuTopicBoxText": "YgoMaster,",
   "DeckSlots": 999,
   "UnlockAllCards": false, // [WARNING] Enabling this permanently wipes your saved cards (all cards are set to 3x without any shine/royal and any newly obtained cards don't save)
   "UnlockAllItems": false, // [WARNING] Enabling this permanently wipes your saved items
