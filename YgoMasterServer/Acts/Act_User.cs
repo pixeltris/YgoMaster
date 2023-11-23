@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
+using System.Runtime.InteropServices;
 
 namespace YgoMaster
 {
@@ -164,80 +166,13 @@ namespace YgoMaster
             request.Response["TDeckList"] = null;// Tournament deck list?
             request.Response["EXHDeck"] = new object[0];// Exhibition deck list?
             request.Response["EXHDeckList"] = null;// Exhibition deck list?
-            // TODO: Move this information into a data file
+
             string lang = !string.IsNullOrEmpty(request.Player.Lang) ? request.Player.Lang : "en_US";
-            Dictionary<string, object> body = new Dictionary<string,object>()
-            {
-                { "contents", new List<object>() {
-                    new Dictionary<string, object>()
-                    {
-                        { "tp", "H1" },
-                        { "text", new Dictionary<string, object>() { { lang,  "About" } } },
-                    },
-                    new Dictionary<string, object>()
-                    {
-                        { "tp", "Text" },
-                        { "text", new Dictionary<string, object>() { { lang,  "Play \"Yu-Gi-Oh! Master Duel\" without an internet connection.\n\nProgress is not shared with the live game." } } },
-                        { "indent", -1 },
-                    },
-                    new Dictionary<string, object>()
-                    {
-                        { "tp", "H1" },
-                        { "text", new Dictionary<string, object>() { { lang,  "Documentation" } } },
-                    },
-                    new Dictionary<string, object>()
-                    {
-                        { "tp", "Text" },
-                        { "text", new Dictionary<string, object>() { { lang,  "https://github.com/pixeltris/YgoMaster" } } },
-                        { "indent", -1 },
-                    },
-                    new Dictionary<string, object>()
-                    {
-                        { "tp", "H1" },
-                        { "text", new Dictionary<string, object>() { { lang,  "Issues" } } },
-                    },
-                    new Dictionary<string, object>()
-                    {
-                        { "tp", "Text" },
-                        { "text", new Dictionary<string, object>() { { lang,  "https://github.com/pixeltris/YgoMaster/issues" } } },
-                        { "indent", -1 },
-                    },
-                }}
-            };
+            string NotificationPath = Path.Combine(dataDirectory, "Notifications");
+
             if (ShowTopics)
             {
-                request.Response["Topics"] = new List<object>()
-                {
-                    new Dictionary<string, object>() {
-                        { "sort", 1591200 },// 0 / 1591200 / omitted
-                        { "body", MiniJSON.Json.Serialize(body) },
-                        { "banner", new Dictionary<string, object>() {
-                            { "prefPath", "Prefabs/Notification/Topics/BannerNotify" },
-                            { "pattern", TopicsBannerPatern.NOTIFY },
-                            { "prefArgsJson", new Dictionary<string, object>() {
-                                { "BackImage", "Images/Notification/System/Notice001" },
-                                { "Title", "YgoMaster" },//"<color=#EEE>YgoMaster</color>",
-                            }}
-                        }},
-                    }
-                    /*new Dictionary<string, object>() {
-                        { "sort", 1591200 },// 0 / 1591200 / omitted
-                        { "body", @"{""buttons"":[{""label"":{""en_US"":""Purchase Gems""},""url"":""duel:push?GameMode=9"",""shortcut"":""Sub1""}],""contents"":[{""tp"":""H1"",""text"":{""en_US"":""To commemorate the game's release, we're currently having a special Gems sale!""}},{""tp"":""Text"",""text"":{""en_US"":""Check out the Purchase Gems page for an exclusive Gem Pack.nEach player can purchase up to 3.nThis is a deal you do not want to miss!""},""indent"":-1},{""tp"":""Spacer"",""size"":""M"",""indent"":-1},{""tp"":""Text"",""text"":{""en_US"":""<color=#00D2FF>*You can also go to the Purchase Gems page by pressing the Gem icon in the center of the top of the Home screen.</color>""},""indent"":-1}]}" },
-                        { "banner", new Dictionary<string, object>() {
-                            { "image", "Images/Notification/Shop/Gem001" },
-                            //{ "image", "" },
-                            { "pattern", TopicsBannerPatern.GEM },
-                            //{ "image_text", "" }
-                            { "image_text", new string[] {// Either null or 4 entries
-                                "Sale underway!\nDon't miss out!",
-                                "Jan 19 01:00 - Mar 31 04:59",
-                                "",
-                                ""
-                            }},
-                            { "is_coming_soon", false }
-                        }},
-                    }*/
-                };
+                request.Response["Topics"] = ProcessJsonNotificationsFiles(NotificationPath);
             }
             else
             {
@@ -274,6 +209,70 @@ namespace YgoMaster
                 "Room.rule_list",
                 "Room.holding_rule_list",
                 "Room.common");
+        }
+
+        static List<object> ProcessJsonNotificationsFiles(string directoryPath)
+        {
+            var responseTopics = new List<object>();
+
+            // Ensure the directory exists
+            if (Directory.Exists(directoryPath))
+            {
+                // Get all JSON files in the directory
+                //string[] jsonFiles = Directory.GetFiles(directoryPath, "*.json");
+                List<string> jsonFiles = new List<string>(Directory.GetFiles(directoryPath, "*.json"));
+
+
+                foreach (var jsonFile in jsonFiles)
+                    {
+                        // Read JSON data from the file
+                        string jsonData = File.ReadAllText(jsonFile);
+
+                        // Deserialize JSON data
+                        var jsonObject = MiniJSON.Json.Deserialize(jsonData) as Dictionary<string, object>;
+
+                        // Get the value of the "Title" key
+                        var title = jsonObject["Title"] as string;
+                        // Get the value of the "BackImage" key
+                        var imagePath = jsonObject["BackImage"] as string;
+                        // Get sort value key
+                        var sort = jsonObject["Sort"];
+
+                        // Get and Set the Pattern Value from key
+                        TopicsBannerPatern bannerPattern = Utils.GetValue<TopicsBannerPatern>(jsonObject, "Pattern");
+
+                        // Get the value of the "Contents" key
+                        var contents = jsonObject["Contents"] as List<object>;
+                        // Get Contents Key
+                        var serializedJson = "{\"contents\":" + MiniJSON.Json.Serialize(contents)+"}";
+
+
+                        // Create the body variable
+                        var body = new Dictionary<string, object>()
+                    {
+                        { "sort", sort },
+                        { "body",  serializedJson},
+                        { "banner", new Dictionary<string, object>() {
+                        { "prefPath", "Prefabs/Notification/Topics/BannerNotify" },
+                        { "pattern", bannerPattern },
+                        { "prefArgsJson", new Dictionary<string, object>() {
+                            { "BackImage", imagePath },
+                            { "Title", title },
+                        }}
+                    }},
+                };
+
+                        // Add the body to the response Topics
+                        responseTopics.Add(body);
+                    }
+
+            }
+            else
+            {
+                Console.WriteLine("Error: Notification Directory does not exist.");
+            }
+
+            return responseTopics;
         }
 
         void Act_EventNotifyGetList(GameServerWebRequest request)
