@@ -222,9 +222,8 @@ namespace YgoMaster
                 //string[] jsonFiles = Directory.GetFiles(directoryPath, "*.json");
                 List<string> jsonFiles = new List<string>(Directory.GetFiles(directoryPath, "*.json"));
 
-                if (jsonFiles != null)
-                {
-                    foreach (var jsonFile in jsonFiles)
+
+                foreach (var jsonFile in jsonFiles)
                     {
                         // Read JSON data from the file
                         string jsonData = File.ReadAllText(jsonFile);
@@ -234,13 +233,13 @@ namespace YgoMaster
 
                         // Get the value of the "Title" key
                         var title = jsonObject["Title"] as string;
-                        // Get the value of the "Color" key
-                        var colorText = jsonObject["Color"] as string;
                         // Get the value of the "BackImage" key
                         var imagePath = jsonObject["BackImage"] as string;
-                        // Get pattern value and enum value
-                        var patternInt = jsonObject["Pattern"];
-                        TopicsBannerPatern bannerPattern = (TopicsBannerPatern)Enum.ToObject(typeof(TopicsBannerPatern), patternInt);
+                        // Get sort value key
+                        var sort = jsonObject["Sort"];
+
+                        // Get and Set the Pattern Value from key
+                        TopicsBannerPatern bannerPattern = Utils.GetValue<TopicsBannerPatern>(jsonObject, "Pattern");
 
                         // Get the value of the "Contents" key
                         var contents = jsonObject["Contents"] as List<object>;
@@ -251,14 +250,14 @@ namespace YgoMaster
                         // Create the body variable
                         var body = new Dictionary<string, object>()
                     {
-                        { "sort", 1591200 },
+                        { "sort", sort },
                         { "body",  serializedJson},
                         { "banner", new Dictionary<string, object>() {
                         { "prefPath", "Prefabs/Notification/Topics/BannerNotify" },
                         { "pattern", bannerPattern },
                         { "prefArgsJson", new Dictionary<string, object>() {
                             { "BackImage", imagePath },
-                            { "Title", $"<color={colorText}>{title}</color>" },
+                            { "Title", title },
                         }}
                     }},
                 };
@@ -266,12 +265,7 @@ namespace YgoMaster
                         // Add the body to the response Topics
                         responseTopics.Add(body);
                     }
-                }
-                else
-                {
-                    // Handle the case where no JSON files are found
-                    Console.WriteLine("No JSON files found in: " + directoryPath);
-                }
+
             }
             else
             {
