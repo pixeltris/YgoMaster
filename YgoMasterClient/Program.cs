@@ -767,7 +767,7 @@ namespace YgoMasterClient
 
                                                     using (TextWriter tw = File.CreateText("updatediff.cs"))
                                                     {
-                                                        tw.WriteLine("// Client version " + assembly.GetClass("Version", "YgomSystem.Utility").GetField("APP_COMMON_VERSION").GetValue().GetValueObj<string>());
+                                                        tw.WriteLine("// Client version " + assembly.GetClass("Version", "YgomSystem.Utility").GetProperty("AppVersion").GetGetMethod().Invoke().GetValueObj<string>());
                                                         tw.WriteLine("// This file is generated using the 'updatediff' command in YgoMasterClient. This information is used to determine changes between client versions which impact YgoMaster.");
                                                         tw.WriteLine("// Run the command, diff against the old file, and use the changes to update code.");
                                                         tw.WriteLine();
@@ -1646,8 +1646,18 @@ namespace Steamworks
         static IL2Class classInfo;
         static IL2Method methodIsOverlayEnabled;
 
+        delegate IntPtr Del_GetIPCountry();
+        static Hook<Del_GetIPCountry> hookGetIPCountry;
         delegate csbool Del_IsOverlayEnabled();
         static Hook<Del_IsOverlayEnabled> hookIsOverlayEnabled;
+        delegate csbool Del_ShowGamepadTextInput(int eInputMode, int eLineInputMode, IntPtr pchDescription, uint unCharMax, IntPtr pchExistingText);
+        static Hook<Del_ShowGamepadTextInput> hookShowGamepadTextInput;
+        delegate csbool Del_GetEnteredGamepadTextInput(IntPtr pchText, uint cchText);
+        static Hook<Del_GetEnteredGamepadTextInput> hookGetEnteredGamepadTextInput;
+        delegate csbool Del_IsSteamRunningOnSteamDeck();
+        static Hook<Del_IsOverlayEnabled> hookIsSteamRunningOnSteamDeck;
+        delegate csbool Del_ShowFloatingGamepadTextInput(int eKeyboardMode, int nTextFieldXPosition, int nTextFieldYPosition, int nTextFieldWidth, int nTextFieldHeight);
+        static Hook<Del_ShowFloatingGamepadTextInput> hookShowFloatingGamepadTextInput;
 
         static SteamUtils()
         {
@@ -1659,10 +1669,40 @@ namespace Steamworks
             classInfo = assembly.GetClass("SteamUtils", "Steamworks");
             methodIsOverlayEnabled = classInfo.GetMethod("IsOverlayEnabled");
 
+            hookGetIPCountry = new Hook<Del_GetIPCountry>(GetIPCountry, classInfo.GetMethod("GetIPCountry"));
             hookIsOverlayEnabled = new Hook<Del_IsOverlayEnabled>(IsOverlayEnabled, methodIsOverlayEnabled);
+            hookShowGamepadTextInput = new Hook<Del_ShowGamepadTextInput>(ShowGamepadTextInput, classInfo.GetMethod("ShowGamepadTextInput"));
+            hookGetEnteredGamepadTextInput = new Hook<Del_GetEnteredGamepadTextInput>(GetEnteredGamepadTextInput, classInfo.GetMethod("GetEnteredGamepadTextInput"));
+            hookIsSteamRunningOnSteamDeck = new Hook<Del_IsOverlayEnabled>(IsSteamRunningOnSteamDeck, classInfo.GetMethod("IsSteamRunningOnSteamDeck"));
+            hookShowFloatingGamepadTextInput = new Hook<Del_ShowFloatingGamepadTextInput>(ShowFloatingGamepadTextInput, classInfo.GetMethod("ShowFloatingGamepadTextInput"));
+        }
+
+        static IntPtr GetIPCountry()
+        {
+            return IntPtr.Zero;
         }
 
         static csbool IsOverlayEnabled()
+        {
+            return false;
+        }
+
+        static csbool ShowGamepadTextInput(int eInputMode, int eLineInputMode, IntPtr pchDescription, uint unCharMax, IntPtr pchExistingText)
+        {
+            return false;
+        }
+
+        static csbool GetEnteredGamepadTextInput(IntPtr pchText, uint cchText)
+        {
+            return false;
+        }
+
+        static csbool IsSteamRunningOnSteamDeck()
+        {
+            return false;
+        }
+
+        static csbool ShowFloatingGamepadTextInput(int eKeyboardMode, int nTextFieldXPosition, int nTextFieldYPosition, int nTextFieldWidth, int nTextFieldHeight)
         {
             return false;
         }
