@@ -66,7 +66,7 @@ namespace IL2CPP
             {
                 result.Append("static ");
             }
-            result.Append(ReturnType.Name + " " + Name + "(" + string.Join(", ", GetParameters().Select(x => x.Type.Name + " " + x.Name)) + ")");
+            result.Append(ReturnType.Name + " " + Name + "(" + string.Join(", ", GetParameters().Select(x => x.Type.Name.Replace(" ", string.Empty).Replace("\r", string.Empty).Replace("\n", string.Empty) + " " + x.Name)) + ")");
             return result.ToString();
         }
 
