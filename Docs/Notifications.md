@@ -1,7 +1,7 @@
 # Menu Notifications
 
-Home notifications are now available from v1.4.0. These are shown to the user on the main menu screen of the game and are refreshed everytime the menu is loaded.
-![image](https://github.com/SideswipeeZ/YgoMaster/assets/20016930/f15c1a98-6bcd-4615-bebc-b4b3adb42645)
+Home notifications are now available from v1.40. These are shown to the user on the main menu screen of the game and are refreshed everytime the menu is loaded.
+![image](Pics/custom_notification1.png).
 
 ## Usage
 
