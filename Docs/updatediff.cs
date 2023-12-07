@@ -1,4 +1,4 @@
-// Client version 1.7.2
+// Client version 1.7.3
 // This file is generated using the 'updatediff' command in YgoMasterClient. This information is used to determine changes between client versions which impact YgoMaster.
 // Run the command, diff against the old file, and use the changes to update code.
 
@@ -1648,6 +1648,21 @@ enum RoomCode
     ERR_LIMIT_REGULATION_PERIOD,
     ERR_HOST_CLIENT_VERSION,
 }
+enum SeasonPtCode
+{
+    NONE,
+    ERROR,
+    FATAL,
+    CRITICAL,
+    INVALID_PARAM = 4700,
+    TEAM_UNIQUE_ID,
+    TEAM_NOT_EXIST,
+    TEAM_INVALID,
+    ALREADY_DISBAND,
+    ALREADY_DISBANDED,
+    TEAM_OUT_OF_TERM,
+    TEAM_EXIST,
+}
 enum ServerStatus
 {
     NORMAL,
@@ -1782,6 +1797,7 @@ enum UserCode
     XBOX_CROSS_PLAY,
     ERR_NG_WORD,
     ERR_NAME_LENGTH,
+    ERR_ACCOUNT_OWN,
 }
 enum VersusCode
 {
@@ -2099,6 +2115,14 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Certification_detail(System.Int32 _certification_id_)
 //public static YgomSystem.Network.Handle Certification_get_academic_exam(System.Int32 _certification_id_, System.Int32 _grade_id_)
 //public static YgomSystem.Network.Handle Certification_check_quiz_answers(System.Int32[] _answers_)
+//public static YgomSystem.Network.Handle SeasonPt_id_search(System.Int32 _idx_, System.Int64 _pcode_)
+//public static YgomSystem.Network.Handle SeasonPt_info(System.Boolean _is_back_)
+//public static YgomSystem.Network.Handle SeasonPt_team_create(System.Int64 _member1_pcode_, System.Int64 _member2_pcode_, System.Int32 _region_)
+//public static YgomSystem.Network.Handle SeasonPt_team_disband(System.Int32 _unique_id_)
+//public static YgomSystem.Network.Handle SeasonPt_team_member_status(System.Int32 _unique_id_, System.Int32 _action_)
+//public static YgomSystem.Network.Handle SeasonPt_team_search(System.Int32 _unique_id_)
+//public static YgomSystem.Network.Handle SeasonPt_get_record(System.Boolean _is_own_, System.Int32 _unique_id_)
+//public static YgomSystem.Network.Handle SeasonPt_get_ranking()
 //public System.Void .ctor()
 //==================================
 // duel.dll functions (Engine)

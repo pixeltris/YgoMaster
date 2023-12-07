@@ -2147,27 +2147,16 @@ namespace YgoMaster
                                         {
                                             if (shopName == "PackShop")
                                             {
-                                                if (itemData.ContainsKey("limitdate") && Utils.GetValue<int>(itemData, "packType") != 2 &&
-                                                    Utils.GetValue<int>(itemData, "targetCategory") != 2)
+                                                int packId = Utils.GetValue<int>(itemData, "packId");
+                                                int targetId = Utils.GetValue<int>(itemData, "targetId");
+                                                const int basePackShopId = 10000000;
+                                                if (targetId != 0)
                                                 {
-                                                    switch (shopId)
-                                                    {
-                                                        case 10102156:// The Trap in the Wicked Castle
-                                                        case 10102157:// Guardian of the Sacred Summit
-                                                        case 10102158:// The Ultimate Traditional Art
-                                                        case 10102159:// Guided by Fate
-                                                        case 10102160:// Beastly Claws of Terror
-                                                        case 10102161:// Beetle Troops Roll Out
-                                                        case 10102162:// The Noble Knights of Crimson Flowers
-                                                        case 10102163:// The Opening Act of an Apocalypse
-                                                        case 10102164:// Treasures of the Cosmic Ocean
-                                                        case 10102165:// Sisters of the Light
-                                                        case 10102168:// Fires of Scorching Bonds
-                                                            break;
-                                                        default:
-                                                            // Ignore time limited packs as they overwrite the previous secret
-                                                            continue;
-                                                    }
+                                                    shopId = basePackShopId + targetId;
+                                                }
+                                                else if (packId != 0)
+                                                {
+                                                    shopId = basePackShopId + packId;
                                                 }
 
                                                 ShopPackType packType = Utils.GetValue<ShopPackType>(itemData, "packType");
