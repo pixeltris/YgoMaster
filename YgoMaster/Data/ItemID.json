@@ -90,7 +90,7 @@
     1001020,//A New Life - Galatea
     //1001021,//coming soon
     1001022,//Cross-Sheep
-    //1001023,//coming soon
+    1001023,//Hungry Burger
     //1001024,//
     //1001025,//
     //1001026,//
@@ -149,7 +149,7 @@
     //1002029,//
     //1002030,//
     1003001,//Gaia The Fierce Knight
-    //1003002,//coming soon
+    1003002,//Tri-Brigade Shuraig the Ominous Omen
     //1003003,//
     //1003004,//
     //1003005,//
@@ -208,12 +208,12 @@
     1010046,//I:P Masquerena
     1010047,//Promethean Princess, Bestower of Flames
     1010048,//Vanquish Soul Razen
-    //1010049,//coming soon
+    1010049,//Hungry Burger
     //1010050,//coming soon
     //1010051,//coming soon
-    //1010052,//coming soon
-    //1010053,//coming soon
-    //1010054,//coming soon
+    1010052,//Slifer the Sky Dragon
+    1010053,//The Winged Dragon of Ra
+    1010054,//Obelisk the Tormentor
     1010055,//Question
     //1010056,//
     //1010057,//
@@ -242,9 +242,9 @@
     1011020,//DC 2023 OCT Gold Finalist
     1011021,//DC 2023 OCT Silver Finalist
     1011022,//DC 2023 OCT Bronze Finalist
-    //1011023,//coming soon
-    //1011024,//coming soon
-    //1011025,//coming soon
+    1011023,//DC 2023 DEC Gold Finalist
+    1011024,//DC 2023 DEC Silver Finalist
+    1011025,//DC 2023 DEC Bronze Finalist
     //1011026,//
     //1011027,//
     //1011028,//
@@ -473,12 +473,12 @@
     1020079,//WCS 2023 Top 8
     1020080,//MD Proficiency Test Grade 10
     1020081,//Ritual Festival 2023
-    //1020082,//
-    //1020083,//
-    //1020084,//
-    //1020085,//
-    //1020086,//
-    //1020087,//
+    1020082,//DC 2023 DEC Top 10
+    1020083,//DC 2023 DEC Top 100
+    1020084,//DC 2023 DEC Top 500
+    1020085,//DC 2023 DEC Top 1000
+    1020086,//DC 2023 DEC Top 10000
+    1020087,//DC 2023 DEC 2nd Stage Duelist
     //1020088,//
     //1020089,//
     //1020090,//
@@ -516,7 +516,7 @@
     1030020,//Yellow Frame
     1030021,//Master Frame
     1030022,//Pink Frame
-    //1030023,//coming soon
+    1030023,//Orange Frame
     //1030024,//
     //1030025,//
     1030026,//Link Master Frame
@@ -588,7 +588,7 @@
     1032002,//Celebration of Spring Breeze
     1032003,//Tropical Seaside
     1032004,//Night festival in Costume
-    //1032005,//coming soon
+    1032005,//Frost Frame
     //1032006,//
     //1032007,//
     //1032008,//
@@ -680,10 +680,10 @@
     1070062,//Promethean Princess, Bestower of Flames
     1070063,//Firewall Dragon Singularity
     1070064,//Stake your Soul!
-    //1070065,//coming soon
-    //1070066,//coming soon
+    1070065,//Live☆Twin Ki-sikil Frost
+    1070066,//Albion the Sanctifire Dragon
     //1070067,//coming soon
-    //1070068,//coming soon
+    1070068,//Slifer the Sky Dragon
     //1070069,//coming soon
     //1070070,//coming soon
     //1070071,//coming soon
@@ -839,7 +839,7 @@
     1073001,//WCS 2023 Party Favor
     1073002,//WCS 2023 Celebration
     1073003,//DC 2023 OCT Celebration
-    //1073004,//coming soon
+    1073004,//DC 2023 DEC Celebration
     //1073005,//
     //1073006,//
     //1073007,//
@@ -950,7 +950,7 @@
     1090018,//Memories of an Ancient Duel
     1090019,//Dogmatika Cathedral
     1090020,//Archfiend Palabyrinth
-    //1090021,//coming soon
+    1090021,//The Revived Sky Temple
     //1090022,//
     //1090023,//
     //1090024,//
@@ -1002,7 +1002,7 @@
     1100018,//Memories of an Ancient Duel
     1100019,//Dogmatika Cathedral
     1100020,//Archfiend Palabyrinth
-    //1100021,//coming soon
+    1100021,//The Revived Sky Temple
     //1100022,//
     //1100023,//
     //1100024,//
@@ -1094,7 +1094,7 @@
     1110018,//Memories of an Ancient Duel
     1110019,//Dogmatika Cathedral
     1110020,//Archfiend Palabyrinth
-    //1110021,//coming soon
+    1110021,//The Revived Sky Temple
     //1110022,//
     //1110023,//
     //1110024,//
@@ -1229,10 +1229,10 @@
     1130023,//WCS2023 "Legendary Magician of Dark"
     1130024,//WCS2023 "Legendary Dragon of White"
     1130025,//Vanquish Soul Caesar Valius
-    //1130026,//coming soon
-    //1130027,//coming soon
+    1130026,//Branded Fusion
+    1130027,//New Frontier
     //1130028,//coming soon
-    //1130029,//coming soon
+    1130029,//Gift Exchange
     //1130030,//coming soon
     //1130031,//coming soon
     //1130032,//coming soon

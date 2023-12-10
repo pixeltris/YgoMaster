@@ -1,7 +1,3 @@
-## Enabling the client console
-
-- In `ClientSettings.json` set `ShowConsole` to `true` and run the client.
-
 ## Logging requirements
 
 - Download Fiddler Classic https://www.telerik.com/download/fiddler (install to `C:/Program Files (x86)/Fiddler/` as the YgoMasterFiddler project file uses this path)
@@ -66,3 +62,7 @@ For shop pack odds...
 - In the client console run `updatediff` which will create `updatediff.cs` in the game folder.
 - Run a diff against that file and `/Docs/updatediff.cs`. Update relevant code throughout YgoMaster based on the changes and then insert the new `updatediff.cs`.
 - After client updates uncomment `ReflectionValidator.ValidateDump()` in `Program.cs` and check the output. Then re-comment it, uncomment `ReflectionValidator.IsDumping = true;` and run again to update `ReflectionDump.json` (after fixing any broken code from the previous step).
+
+## Enabling the client console
+
+- In `ClientSettings.json` set `ShowConsole` to `true` and run the YgoMasterClient.
