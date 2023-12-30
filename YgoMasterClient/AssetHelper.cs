@@ -110,6 +110,7 @@ namespace YgoMasterClient
         static IL2Class objectClassInfo;// Object (UnityEngine)
         static IL2Method methodGetName;
         static IL2Method methodSetName;
+        static IL2Method methodSetTexture;// Material
 
         // mscorlib
         static IL2Method methodReadAllBytes;// File
@@ -288,6 +289,7 @@ namespace YgoMasterClient
             objectClassInfo = coreModuleAssembly.GetClass("Object");
             methodGetName = objectClassInfo.GetProperty("name").GetGetMethod();
             methodSetName = objectClassInfo.GetProperty("name").GetSetMethod();
+            methodSetTexture = coreModuleAssembly.GetClass("Material", "UnityEngine").GetMethod("SetTexture", x => x.GetParameters()[0].Name == "name");// Material
 
             IL2Assembly mscorlibAssembly = Assembler.GetAssembly("mscorlib");
             IL2Class fileClassInfo = mscorlibAssembly.GetClass("File");
@@ -480,22 +482,55 @@ namespace YgoMasterClient
                     }
                     methodResourceCtor.Invoke(resourcePtr);
 
-                    ResourceType resourceType = GetResourceType();
-                    IL2Array<IntPtr> assetsArray = new IL2Array<IntPtr>(2, objectClassInfo);
-                    if (assetsArray.ptr == IntPtr.Zero)
+                    IL2Array<IntPtr> assetsArray = null;
+                    if (loadPath.StartsWith("Protector/"))
                     {
-                        Console.WriteLine("Array alloc failed");
-                        return false;
+                        string extraImg = Path.Combine(Path.GetDirectoryName(customTexturePath), Path.GetFileNameWithoutExtension(customTexturePath) + "_1.png");
+                        bool isDuluxe = File.Exists(extraImg);
+                        IntPtr existingAssetPath = new IL2String("Protector/tcg/" + (isDuluxe ? "2001" : "0001") + "/PMat").ptr;
+                        hookLoadImmediate.Original(thisPtr, existingAssetPath, IntPtr.Zero, IntPtr.Zero, false);
+                        IntPtr workPathPtr = IntPtr.Zero;
+                        IntPtr existingAssetResourcePtr = hookGetResource.Original(thisPtr, existingAssetPath, (IntPtr)(&workPathPtr));
+                        if (existingAssetResourcePtr == IntPtr.Zero)
+                        {
+                            return false;
+                        }
+                        IL2Object assetsArrayObj = methodGetAssets.Invoke(existingAssetResourcePtr);
+                        if (assetsArrayObj == null)
+                        {
+                            return false;
+                        }
+                        assetsArray = new IL2Array<IntPtr>(assetsArrayObj.ptr);
+                        assetsArray[0] = UnityEngine.UnityObject.Instantiate(assetsArray[0]);
+
+                        string assetName = Path.GetFileNameWithoutExtension(customTexturePath);
+                        IntPtr newTextureAsset = TextureFromPNG(customTexturePath, assetName);
+                        methodSetTexture.Invoke(assetsArray[0], new IntPtr[] { new IL2String("_MainTex").ptr, newTextureAsset });
+                        if (isDuluxe)
+                        {
+                            string assetName2 = Path.GetFileNameWithoutExtension(extraImg);
+                            IntPtr newTextureAsset2 = TextureFromPNG(extraImg, assetName2);
+                            methodSetTexture.Invoke(assetsArray[0], new IntPtr[] { new IL2String("_MainTex2").ptr, newTextureAsset2 });
+                        }
                     }
-
-                    string assetName = Path.GetFileNameWithoutExtension(customTexturePath);
-                    IntPtr newTextureAsset = TextureFromPNG(customTexturePath, assetName);
-                    assetsArray[0] = newTextureAsset;
-
-                    IntPtr newSpriteAsset = SpriteFromTexture(newTextureAsset, assetName);
-                    if (newSpriteAsset != IntPtr.Zero)
+                    else
                     {
-                        assetsArray[1] = newSpriteAsset;
+                        assetsArray = new IL2Array<IntPtr>(2, objectClassInfo);
+                        if (assetsArray.ptr == IntPtr.Zero)
+                        {
+                            Console.WriteLine("Array alloc failed");
+                            return false;
+                        }
+
+                        string assetName = Path.GetFileNameWithoutExtension(customTexturePath);
+                        IntPtr newTextureAsset = TextureFromPNG(customTexturePath, assetName);
+                        assetsArray[0] = newTextureAsset;
+
+                        IntPtr newSpriteAsset = SpriteFromTexture(newTextureAsset, assetName);
+                        if (newSpriteAsset != IntPtr.Zero)
+                        {
+                            assetsArray[1] = newSpriteAsset;
+                        }
                     }
 
                     // TODO: Remove what is not required (and/or directly set them via k__BackingField entries)

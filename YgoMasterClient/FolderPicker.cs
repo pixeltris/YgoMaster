@@ -58,7 +58,8 @@ public class FolderPicker
         var dialog = (IFileOpenDialog)new FileOpenDialog();
         if (!string.IsNullOrEmpty(InputPath))
         {
-            if (CheckHr(SHCreateItemFromParsingName(InputPath, null, typeof(IShellItem).GUID, out var item), throwOnError) != 0)
+            IShellItem item;
+            if (CheckHr(SHCreateItemFromParsingName(InputPath, null, typeof(IShellItem).GUID, out item), throwOnError) != 0)
                 return null;
 
             dialog.SetFolder(item);
@@ -99,15 +100,19 @@ public class FolderPicker
         if (CheckHr(hr, throwOnError) != 0)
             return null;
 
-        if (CheckHr(dialog.GetResults(out var items), throwOnError) != 0)
+        IShellItemArray items;
+        if (CheckHr(dialog.GetResults(out items), throwOnError) != 0)
             return null;
 
-        items.GetCount(out var count);
+        int count;
+        items.GetCount(out count);
         for (var i = 0; i < count; i++)
         {
-            items.GetItemAt(i, out var item);
-            CheckHr(item.GetDisplayName(SIGDN.SIGDN_DESKTOPABSOLUTEPARSING, out var path), throwOnError);
-            CheckHr(item.GetDisplayName(SIGDN.SIGDN_DESKTOPABSOLUTEEDITING, out var name), throwOnError);
+            IShellItem item;
+            items.GetItemAt(i, out item);
+            string path, name;
+            CheckHr(item.GetDisplayName(SIGDN.SIGDN_DESKTOPABSOLUTEPARSING, out path), throwOnError);
+            CheckHr(item.GetDisplayName(SIGDN.SIGDN_DESKTOPABSOLUTEEDITING, out name), throwOnError);
             if (path != null || name != null)
             {
                 _resultPaths.Add(path);
