@@ -1126,7 +1126,7 @@ namespace YgoMaster
                 player.Code = code;
             }
             player.Token = Utils.GetValue<string>(data, "Token");
-            player.Name = Utils.GetValue<string>(data, "Name", "Duelist");
+            player.Name = Utils.GetValue<string>(data, "Name", DuelSettings.DefaultNamePlayer);
             player.Rank = Utils.GetValue<int>(data, "Rank", (int)StandardRank.ROOKIE);
             player.Rate = Utils.GetValue<int>(data, "Rate", (StandardRank)player.Rank == StandardRank.ROOKIE ? 2 : 5);
             player.Level = Utils.GetValue<int>(data, "Level", 1);
