@@ -291,6 +291,30 @@ namespace YgoMaster
                 return;
             }
 
+            string clientDataDir = Path.Combine(dataDirectory, "ClientData");
+            string clientSettingsFile = Path.Combine(clientDataDir, "ClientSettings.json");
+            if (File.Exists(clientSettingsFile))
+            {
+                Dictionary<string, object> clientValues = MiniJSON.Json.DeserializeStripped(File.ReadAllText(clientSettingsFile)) as Dictionary<string, object>;
+                if (clientValues != null)
+                {
+                    string clientSettingsTextFile = Utils.GetValue<string>(clientValues, "ClientSettingsTextFile");
+                    if (!string.IsNullOrEmpty(clientSettingsTextFile))
+                    {
+                        clientSettingsTextFile = Path.Combine(clientDataDir, clientSettingsTextFile);
+                        if (File.Exists(clientSettingsTextFile))
+                        {
+                            Dictionary<string, object> clientTextValues = MiniJSON.Json.DeserializeStripped(File.ReadAllText(clientSettingsTextFile)) as Dictionary<string, object>;
+                            if (clientTextValues != null)
+                            {
+                                DuelSettings.DefaultNamePlayer = Utils.GetValue<string>(clientTextValues, "CustomTextDuelSettingsDefaultNamePlayer");
+                                DuelSettings.DefaultNameCPU = Utils.GetValue<string>(clientTextValues, "CustomTextDuelSettingsDefaultNameCPU");
+                            }
+                        }
+                    }
+                }
+            }
+
             ItemID.Load(dataDirectory);
             YdkHelper.LoadIdMap(dataDirectory);
 

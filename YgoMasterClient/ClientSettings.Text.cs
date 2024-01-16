@@ -650,6 +650,9 @@ namespace YgoMasterClient
 
             CustomTextEmotesListHeader = Utils.GetValue<string>(data, "CustomTextEmotesListHeader");
 
+            DuelSettings.DefaultNamePlayer = Utils.GetValue<string>(data, "CustomTextDuelSettingsDefaultNamePlayer");
+            DuelSettings.DefaultNameCPU = Utils.GetValue<string>(data, "CustomTextDuelSettingsDefaultNameCPU");
+
             return true;
         }
     }

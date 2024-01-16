@@ -127,5 +127,8 @@
     
     "CustomTextDuelInvite": "{name} ({code}) sent you a duel invite",
     
-    "CustomTextEmotesListHeader": "Emotes"
+    "CustomTextEmotesListHeader": "Emotes",
+
+    "CustomTextDuelSettingsDefaultNamePlayer": "Duelist",
+    "CustomTextDuelSettingsDefaultNameCPU": "CPU",
 }

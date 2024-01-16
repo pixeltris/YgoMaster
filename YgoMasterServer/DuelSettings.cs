@@ -13,6 +13,9 @@ namespace YgoMaster
     // TODO: Maybe just change this code to be Dictionary<string, object> rather than listing all entries (but keep Deck)
     class DuelSettings
     {
+        public static string DefaultNamePlayer = "Duelist";
+        public static string DefaultNameCPU = "CPU";
+
 #pragma warning disable 0169
 #pragma warning disable 0649
         public const int PlayerIndex = 0;
@@ -37,6 +40,9 @@ namespace YgoMaster
 
         // Used by custom duel starter to select random field / synced parts
         public int SharedField;
+
+        public List<string> PreserveP1ForLoanerDeck { get; private set; }
+        public List<string> PreserveP1ForMyDeck { get; private set; }
 
         static string[] ignoreZero = { "life", "hnum" };
 
@@ -140,6 +146,37 @@ namespace YgoMaster
             for (int i = 0; i < Deck.Length; i++)
             {
                 Deck[i] = new DeckInfo();
+            }
+        }
+
+        public void SetP1Name(bool isMyDeck, string value)
+        {
+            List<string> preserve = isMyDeck ? PreserveP1ForMyDeck : PreserveP1ForLoanerDeck;
+            if (preserve != null && preserve.Contains("NAME"))
+            {
+                return;
+            }
+            name[PlayerIndex] = value;
+        }
+
+        public void SetP1ItemValue(bool isMyDeck, ItemID.Category itemCategory, int value)
+        {
+            List<string> preserve = isMyDeck ? PreserveP1ForMyDeck : PreserveP1ForLoanerDeck;
+            if (preserve != null && preserve.Contains(itemCategory.ToString()))
+            {
+                return;
+            }
+            // TODO: Support DECK_CASE (this involves modifying the Deck accessory entries)
+            switch (itemCategory)
+            {
+                case ItemID.Category.AVATAR: avatar[PlayerIndex] = value; break;
+                case ItemID.Category.ICON: icon[PlayerIndex] = value; break;
+                case ItemID.Category.ICON_FRAME: icon_frame[PlayerIndex] = value; break;
+                case ItemID.Category.PROTECTOR: sleeve[PlayerIndex] = value; break;
+                case ItemID.Category.FIELD: mat[PlayerIndex] = value; break;
+                case ItemID.Category.FIELD_OBJ: duel_object[PlayerIndex] = value; break;
+                case ItemID.Category.AVATAR_HOME: avatar_home[PlayerIndex] = value; break;
+                case ItemID.Category.WALLPAPER: wallpaper[PlayerIndex] = value; break;
             }
         }
 
@@ -274,7 +311,7 @@ namespace YgoMaster
                         case 2: isCPU = MyPartnerType == 1; break;
                         case 3: isCPU = OpponentPartnerType == 0 || OpponentPartnerType == 2; break;
                     }
-                    name[i] = isCPU ? "CPU" : "Duelist";
+                    name[i] = isCPU ? DefaultNameCPU : DefaultNamePlayer;
                 }
             }
 

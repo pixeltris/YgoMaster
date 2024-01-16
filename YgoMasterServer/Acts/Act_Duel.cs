@@ -148,17 +148,17 @@ namespace YgoMaster
                     if (deck != null)
                     {
                         duelSettings.Deck[DuelSettings.PlayerIndex].CopyFrom(deck);
-                        duelSettings.avatar_home[DuelSettings.PlayerIndex] = deck.Accessory.AvBase;
-                        duelSettings.sleeve[DuelSettings.PlayerIndex] = deck.Accessory.Sleeve;
-                        duelSettings.mat[DuelSettings.PlayerIndex] = deck.Accessory.Field;
-                        duelSettings.duel_object[DuelSettings.PlayerIndex] = deck.Accessory.FieldObj;
+                        duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.AVATAR_HOME, deck.Accessory.AvBase);
+                        duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.PROTECTOR, deck.Accessory.Sleeve);
+                        duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.FIELD, deck.Accessory.Field);
+                        duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.FIELD_OBJ, deck.Accessory.FieldObj);
                         duelSettings.story_deck_id[DuelSettings.PlayerIndex] = 0;
                     }
                 }
-                duelSettings.avatar[DuelSettings.PlayerIndex] = player.AvatarId;
-                duelSettings.icon[DuelSettings.PlayerIndex] = player.IconId;
-                duelSettings.icon_frame[DuelSettings.PlayerIndex] = player.IconFrameId;
-                duelSettings.wallpaper[DuelSettings.PlayerIndex] = player.Wallpaper;
+                duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.AVATAR, player.AvatarId);
+                duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.ICON, player.IconId);
+                duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.ICON_FRAME, player.IconFrameId);
+                duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.WALLPAPER, player.Wallpaper);
             }
             return duelSettings;
         }
@@ -216,7 +216,7 @@ namespace YgoMaster
                     }
                     if (!duelSettings.IsCustomDuel || string.IsNullOrEmpty(duelSettings.name[DuelSettings.PlayerIndex]))
                     {
-                        duelSettings.name[DuelSettings.PlayerIndex] = request.Player.Name;
+                        duelSettings.SetP1Name(duel.IsMyDeck, request.Player.Name);
                     }
                     if (!duelSettings.IsCustomDuel || duelSettings.RandSeed == 0)
                     {
