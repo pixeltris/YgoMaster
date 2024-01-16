@@ -60,6 +60,7 @@ namespace YgoMasterClient
         public static bool PvpDuelTapSyncEnabled;
         public static float EmoteDurationInSeconds;
         public static GameLauncherMode LaunchMode;
+        public static List<int> BrokenItems;
 
         public static string FilePath
         {
@@ -151,6 +152,7 @@ namespace YgoMasterClient
             PvpDuelTapSyncEnabled = Utils.GetValue<bool>(data, "PvpDuelTapSyncEnabled");
             EmoteDurationInSeconds = Utils.GetValue<float>(data, "EmoteDurationInSeconds");
             LaunchMode = Utils.GetValue<GameLauncherMode>(data, "LaunchMode");
+            BrokenItems = Utils.GetIntList(data, "BrokenItems");
 
             return LoadText();
         }

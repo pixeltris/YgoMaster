@@ -104,7 +104,7 @@
     "Namespace": "YgomGame.Duel",
     "Class": [
       "DuelHUD",
-      "<PrepareToDuelProcess>d__128"
+      "<PrepareToDuelProcess>d__130"
     ],
     "Type": "Method",
     "Name": "MoveNext",
@@ -1924,7 +1924,7 @@
     ],
     "Type": "Method",
     "Name": "ShowText",
-    "Signature": "public System.Void ShowText(System.String text, UnityEngine.Transform targetRT, System.Boolean isforui, System.Boolean followTarget)"
+    "Signature": "public System.Boolean ShowText(System.String text, UnityEngine.Transform targetRT, System.Boolean isforui, System.Boolean followTarget)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2646,6 +2646,16 @@
     "Type": "Property",
     "Name": "name",
     "Signature": "public System.String"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Material"
+    ],
+    "Type": "Method",
+    "Name": "SetTexture",
+    "Signature": "public System.Void SetTexture(System.String name, UnityEngine.Texture value)"
   },
   {
     "Assembly": "mscorlib",

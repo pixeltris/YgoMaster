@@ -208,12 +208,14 @@ namespace YgoMaster
 
                     UpdateValue(PvpOperationType.DLL_DuelComGetCommandMask, (int)Pvp.DLL_DuelComGetCommandMask(player, pos, 0), player, pos, 0);
                     UpdateValue(PvpOperationType.DLL_DuelComGetTextIDOfThisCommand, (int)Pvp.DLL_DuelComGetTextIDOfThisCommand(player, pos, 0), player, pos, 0);
+                    UpdateValue(PvpOperationType.DLL_DuelComGetTextIDOfThisSummon, (int)Pvp.DLL_DuelComGetTextIDOfThisSummon(player, pos, 0), player, pos, 0);
 
                     int numCards = UpdateValue(PvpOperationType.DLL_DuelGetCardNum, Pvp.DLL_DuelGetCardNum(player, pos), player, pos);
                     for (int index = 0; index <= numCards; index++)
                     {
                         int commandMask = UpdateValue(PvpOperationType.DLL_DuelComGetCommandMask, (int)Pvp.DLL_DuelComGetCommandMask(player, pos, index), player, pos, index);
                         UpdateValue(PvpOperationType.DLL_DuelComGetTextIDOfThisCommand, (int)Pvp.DLL_DuelComGetTextIDOfThisCommand(player, pos, index), player, pos, index);
+                        UpdateValue(PvpOperationType.DLL_DuelComGetTextIDOfThisSummon, (int)Pvp.DLL_DuelComGetTextIDOfThisSummon(player, pos, index), player, pos, index);
 
                         int uid = UpdateValue(PvpOperationType.DLL_DuelGetCardUniqueID, Pvp.DLL_DuelGetCardUniqueID(player, pos, index), player, pos, index);
 
@@ -1228,6 +1230,8 @@ namespace YgoMaster
         [DllImport(DllName)]
         public static extern uint DLL_DuelComGetTextIDOfThisCommand(int player, int position, int index);
         [DllImport(DllName)]
+        public static extern uint DLL_DuelComGetTextIDOfThisSummon(int player, int position, int index);
+        [DllImport(DllName)]
         public static extern void DLL_DuelComMovePhase(int phase);
         [DllImport(DllName)]
         public static extern int DLL_DuelDlgCanYesNoSkip();
@@ -1471,6 +1475,7 @@ namespace YgoMaster
         DLL_DUELCOMGetPosMaskOfThisHand,
         DLL_DUELCOMGetRecommendSide,
         DLL_DuelComGetTextIDOfThisCommand,
+        DLL_DuelComGetTextIDOfThisSummon,
         DLL_DuelComMovePhase,
         DLL_DuelDlgCanYesNoSkip,
         DLL_DuelDlgGetMixData,

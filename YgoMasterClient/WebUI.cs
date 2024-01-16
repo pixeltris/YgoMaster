@@ -778,7 +778,7 @@ namespace YgomGame.Settings
 {
     unsafe static class SettingsUtil
     {
-        delegate void Del_SetResolution(int param);
+        delegate void Del_SetResolution(int width, int height);
         static Hook<Del_SetResolution> hookSetResolution;
 
         static SettingsUtil()
@@ -788,9 +788,9 @@ namespace YgomGame.Settings
             hookSetResolution = new Hook<Del_SetResolution>(SetResolution, classInfo.GetMethod("SetResolution"));
         }
 
-        static void SetResolution(int param)
+        static void SetResolution(int width, int height)
         {
-            hookSetResolution.Original(param);
+            hookSetResolution.Original(width, height);
             YgomGame.Credit.CreditViewController.OnResolutionChanged();
         }
     }

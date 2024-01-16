@@ -372,6 +372,11 @@ namespace YgoMasterClient
                                         {
                                             case "itemid":// Creates json for values in IDS_ITEM (all item ids)
                                                 {
+                                                    bool dumpInvalid = false;
+                                                    if (splitted.Length > 1)
+                                                    {
+                                                        bool.TryParse(splitted[1], out dumpInvalid);
+                                                    }
                                                     Dictionary<YgomGame.Utility.ItemUtil.Category, List<string>> categories = new Dictionary<YgomGame.Utility.ItemUtil.Category, List<string>>();
                                                     IL2Class classInfo = classInfo = Assembler.GetAssembly("Assembly-CSharp").GetClass("IDS_ITEM", "YgomGame.TextIDs");
                                                     IL2Field[] fields = classInfo.GetFields();
@@ -379,7 +384,8 @@ namespace YgoMasterClient
                                                     {
                                                         string fieldName = field.Name;
                                                         int id;
-                                                        if (fieldName.StartsWith("ID") && int.TryParse(fieldName.Substring(2), out id))
+                                                        if (fieldName.StartsWith("ID") && int.TryParse(fieldName.Substring(2), out id) &&
+                                                            (ClientSettings.BrokenItems == null || !ClientSettings.BrokenItems.Contains(id)))
                                                         {
                                                             string name = YgomGame.Utility.ItemUtil.GetItemName(id);
                                                             YgomGame.Utility.ItemUtil.Category cat = YgomGame.Utility.ItemUtil.GetCategoryFromID(id);
@@ -388,6 +394,10 @@ namespace YgoMasterClient
                                                                 categories[cat] = new List<string>();
                                                             }
                                                             bool invalid = string.IsNullOrEmpty(name) || name == "deleted" || name == "coming soon" || name.StartsWith("ICON_FRAME");
+                                                            if (invalid && !dumpInvalid)
+                                                            {
+                                                                continue;
+                                                            }
                                                             string prefix = "    " + (invalid ? "//" : "");
                                                             categories[cat].Add(prefix + id + ",//" + name);
                                                         }

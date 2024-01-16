@@ -39,6 +39,8 @@ namespace YgoMasterClient
         static Hook<Del_DLL_DUELCOMGetRecommendSide> hookDLL_DUELCOMGetRecommendSide;
         delegate uint Del_DLL_DuelComGetTextIDOfThisCommand(int player, int position, int index);
         static Hook<Del_DLL_DuelComGetTextIDOfThisCommand> hookDLL_DuelComGetTextIDOfThisCommand;
+        delegate uint Del_DLL_DuelComGetTextIDOfThisSummon(int player, int position, int index);
+        static Hook<Del_DLL_DuelComGetTextIDOfThisSummon> hookDLL_DuelComGetTextIDOfThisSummon;
         delegate int Del_DLL_DuelDlgCanYesNoSkip();
         static Hook<Del_DLL_DuelDlgCanYesNoSkip> hookDLL_DuelDlgCanYesNoSkip;
         delegate int Del_DLL_DuelDlgGetMixNum();
@@ -254,6 +256,7 @@ namespace YgoMasterClient
             hookDLL_DUELCOMGetPosMaskOfThisHand = new Hook<Del_DLL_DUELCOMGetPosMaskOfThisHand>(DLL_DUELCOMGetPosMaskOfThisHand, PInvoke.GetProcAddress(lib, "DLL_DUELCOMGetPosMaskOfThisHand"));
             hookDLL_DUELCOMGetRecommendSide = new Hook<Del_DLL_DUELCOMGetRecommendSide>(DLL_DUELCOMGetRecommendSide, PInvoke.GetProcAddress(lib, "DLL_DUELCOMGetRecommendSide"));
             hookDLL_DuelComGetTextIDOfThisCommand = new Hook<Del_DLL_DuelComGetTextIDOfThisCommand>(DLL_DuelComGetTextIDOfThisCommand, PInvoke.GetProcAddress(lib, "DLL_DuelComGetTextIDOfThisCommand"));
+            hookDLL_DuelComGetTextIDOfThisSummon = new Hook<Del_DLL_DuelComGetTextIDOfThisSummon>(DLL_DuelComGetTextIDOfThisSummon, PInvoke.GetProcAddress(lib, "DLL_DuelComGetTextIDOfThisSummon"));
             hookDLL_DuelDlgCanYesNoSkip = new Hook<Del_DLL_DuelDlgCanYesNoSkip>(DLL_DuelDlgCanYesNoSkip, PInvoke.GetProcAddress(lib, "DLL_DuelDlgCanYesNoSkip"));
             hookDLL_DuelDlgGetMixNum = new Hook<Del_DLL_DuelDlgGetMixNum>(DLL_DuelDlgGetMixNum, PInvoke.GetProcAddress(lib, "DLL_DuelDlgGetMixNum"));
             hookDLL_DuelDlgGetMixType = new Hook<Del_DLL_DuelDlgGetMixType>(DLL_DuelDlgGetMixType, PInvoke.GetProcAddress(lib, "DLL_DuelDlgGetMixType"));
@@ -520,6 +523,18 @@ namespace YgoMasterClient
             else
             {
                 return hookDLL_DuelComGetTextIDOfThisCommand.Original(player, position, index);
+            }
+        }
+
+        static uint DLL_DuelComGetTextIDOfThisSummon(int player, int position, int index)
+        {
+            if (IsPvpDuel)
+            {
+                return (uint)pvpEngineState.GetValue(PvpOperationType.DLL_DuelComGetTextIDOfThisSummon, player, position, index);
+            }
+            else
+            {
+                return hookDLL_DuelComGetTextIDOfThisSummon.Original(player, position, index);
             }
         }
 

@@ -2159,7 +2159,23 @@ namespace YgoMaster
                                                     shopId = basePackShopId + packId;
                                                 }
 
+                                                // Temp hacky fix for free pulls on some re-released packs with alt card art
+                                                // TODO: Remove this and provide a better shop dumper (unlock all secrets at present time, dump entire shop into one file)
+                                                if ((shopId == 10002152 && Path.GetFileName(file) == "Shop-2023-03-15.json") ||
+                                                    (shopId == 10002078 && Path.GetFileName(file) == "Shop-2023-03-15.json"))
+                                                {
+                                                    continue;
+                                                }
+
                                                 ShopPackType packType = Utils.GetValue<ShopPackType>(itemData, "packType");
+                                                if (packType == ShopPackType.None)
+                                                {
+                                                    packType = Utils.GetValue<ShopPackType>(itemData, "targetCategory");
+                                                    if (packType == ShopPackType.None)
+                                                    {
+                                                        Utils.LogWarning("No pack type for " + shopId + " in " + file);
+                                                    }
+                                                }
                                                 if (packType == ShopPackType.Secret)
                                                 {
                                                     packShopSecretsOnly[shopId] = itemData;

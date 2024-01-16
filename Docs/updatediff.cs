@@ -1,4 +1,4 @@
-// Client version 1.7.3
+// Client version 1.8.0
 // This file is generated using the 'updatediff' command in YgoMasterClient. This information is used to determine changes between client versions which impact YgoMaster.
 // Run the command, diff against the old file, and use the changes to update code.
 
@@ -1263,6 +1263,7 @@ enum AccountCode
     PASSWD_LOCK = 1190,
     PASSWD_LOCK_INCORRECT,
     PASSWD_LOCK_EXPIRED,
+    DEEPLINK_TITLE_BACK,
 }
 enum BillingCode
 {
@@ -1507,6 +1508,22 @@ enum GachaCode
     ERR_OUT_OF_TERM,
     ERR_MISSING_REQUIRED_ITEMS,
 }
+enum InvitationCode
+{
+    NONE,
+    ERROR,
+    FATAL,
+    CRITICAL,
+    ERR_INVALID_PARAM = 4800,
+    ERR_OUT_OF_TERM,
+    ERR_ALREADY_RECEIVED,
+    ERR_INVALID_CODE,
+    ERR_REQUESTED_MULTIPLE,
+    ERR_FAILED_FOR_THRESHOLD,
+    ERR_SELF_INVITE_CODE_SENT,
+    ERR_RETRY_SEND_CODE_AGAIN,
+    ERR_OUT_OF_SEND_CODE_PERIOD,
+}
 enum ItemCode
 {
     NONE,
@@ -1712,6 +1729,15 @@ enum StructureCode
     INVALID_PARAM = 2200,
     ALREADY_FIRST_SET,
 }
+enum TdyCode
+{
+    NONE,
+    ERROR,
+    FATAL,
+    CRITICAL,
+    INVALID_PARAM = 4600,
+    ERR_OUT_OF_TERM,
+}
 enum TeamCode
 {
     NONE,
@@ -1798,6 +1824,7 @@ enum UserCode
     ERR_NG_WORD,
     ERR_NAME_LENGTH,
     ERR_ACCOUNT_OWN,
+    BLOCK_USER,
 }
 enum VersusCode
 {
@@ -1835,7 +1862,7 @@ enum WcsCode
 //public static YgomSystem.Network.Handle System_toggle_crossplay()
 //public static YgomSystem.Network.Handle Account_create(System.Int32 _agreement_type_, System.String[] _agree_info_, System.Int32 _country_, System.Collections.Generic.Dictionary<System.String,System.Object> _enquete_results_)
 //public static YgomSystem.Network.Handle Account_create(System.String _auth_session_, System.Int32 _agreement_type_, System.String[] _agree_info_, System.Int32 _country_, System.Collections.Generic.Dictionary<System.String,System.Object> _enquete_results_)
-//public static YgomSystem.Network.Handle Account_auth()
+//public static YgomSystem.Network.Handle Account_auth(System.Collections.Generic.Dictionary<System.String,System.Object> _opt_)
 //public static YgomSystem.Network.Handle Account_auth(System.String _auth_session_, System.Boolean _valid_steam_overlay_)
 //public static YgomSystem.Network.Handle Account_auth(System.String _auth_session_)
 //public static YgomSystem.Network.Handle Account_auth(System.String _auth_session_, System.Int32 _label_)
@@ -1988,7 +2015,7 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Billing_PS_in_complete_item_check()
 //public static YgomSystem.Network.Handle Billing_history(System.String _month_, System.Int32 _page_, System.Int32 _page_count_)
 //public static YgomSystem.Network.Handle Cgdb_deck_search_init()
-//public static YgomSystem.Network.Handle Cgdb_deck_search(System.Int32 _typeCode_, System.Int32[] _categoryList_, System.Int32[] _tagList_, System.Int32[] _cardIdList_, System.String _keyword_, System.Int32 _sortCode_, System.Int32 _sizePerPage_, System.Int32 _requestPageNo_)
+//public static YgomSystem.Network.Handle Cgdb_deck_search(System.Int32 _typeCode_, System.Int32[] _categoryList_, System.Int32[] _tagList_, System.Int32[] _cardIdList_, System.String _keyword_, System.String _deckCode_, System.Int32 _sortCode_, System.Int32 _sizePerPage_, System.Int32 _requestPageNo_)
 //public static YgomSystem.Network.Handle Cgdb_deck_search_detail(System.String _targetId_, System.Int32 _deckNo_)
 //public static YgomSystem.Network.Handle Cgdb_mydeck_search(System.String _userToken_, System.Int32 _sortCode_, System.Int32 _sizePerPage_, System.Int32 _requestPageNo_)
 //public static YgomSystem.Network.Handle Cgdb_mydeck_search_detail(System.String _userToken_, System.Int32 _deckNo_)
@@ -2020,6 +2047,7 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Duelpass_bulk_receive(System.Int32 _season_id_, System.Int32[] _reward_id_list_)
 //public static YgomSystem.Network.Handle DuelLive_replay_list(System.Int32 _menu_id_, System.Int32 _section_id_)
 //public static YgomSystem.Network.Handle DuelLive_replay_duel(System.Int32 _menu_id_, System.Int32 _idx_)
+//public static YgomSystem.Network.Handle DuelLive_get_replay_deck(System.Int32 _menu_id_, System.Int32 _idx_, System.Int32 _myid_)
 //public static YgomSystem.Network.Handle Enquete_get_questions(System.Int32 _enquete_id_)
 //public static YgomSystem.Network.Handle Enquete_send_answers(System.Int32 _enquete_id_, System.Collections.Generic.Dictionary<System.String,System.Object> _results_)
 //public static YgomSystem.Network.Handle RankEvent_detail(System.Int32 _rank_event_id_)
@@ -2115,6 +2143,7 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Certification_detail(System.Int32 _certification_id_)
 //public static YgomSystem.Network.Handle Certification_get_academic_exam(System.Int32 _certification_id_, System.Int32 _grade_id_)
 //public static YgomSystem.Network.Handle Certification_check_quiz_answers(System.Int32[] _answers_)
+//public static YgomSystem.Network.Handle Tdy_detail()
 //public static YgomSystem.Network.Handle SeasonPt_id_search(System.Int32 _idx_, System.Int64 _pcode_)
 //public static YgomSystem.Network.Handle SeasonPt_info(System.Boolean _is_back_)
 //public static YgomSystem.Network.Handle SeasonPt_team_create(System.Int64 _member1_pcode_, System.Int64 _member2_pcode_, System.Int32 _region_)
@@ -2123,6 +2152,9 @@ enum WcsCode
 //public static YgomSystem.Network.Handle SeasonPt_team_search(System.Int32 _unique_id_)
 //public static YgomSystem.Network.Handle SeasonPt_get_record(System.Boolean _is_own_, System.Int32 _unique_id_)
 //public static YgomSystem.Network.Handle SeasonPt_get_ranking()
+//public static YgomSystem.Network.Handle Invitation_send_code(System.Int32 _invitation_id_, System.String _send_code_, System.String _check_code_)
+//public static YgomSystem.Network.Handle Invitation_get_info_for_invitee(System.Int32 _invitation_id_)
+//public static YgomSystem.Network.Handle Invitation_get_info_for_inviter(System.Int32 _invitation_id_)
 //public System.Void .ctor()
 //==================================
 // duel.dll functions (Engine)
@@ -2145,6 +2177,7 @@ enum WcsCode
 //static System.UInt32 DLL_DUELCOMGetPosMaskOfThisHand(System.Int32 player, System.Int32 index, System.Int32 commandId)
 //static System.Int32 DLL_DUELCOMGetRecommendSide()
 //static System.UInt32 DLL_DuelComGetTextIDOfThisCommand(System.Int32 player, System.Int32 position, System.Int32 index)
+//static System.UInt32 DLL_DuelComGetTextIDOfThisSummon(System.Int32 player, System.Int32 position, System.Int32 index)
 //static System.Void DLL_DuelComMovePhase(System.Int32 phase)
 //static System.Int32 DLL_DuelDlgCanYesNoSkip()
 //static System.Int32 DLL_DuelDlgGetMixData(System.Int32 index)

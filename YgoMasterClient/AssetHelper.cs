@@ -482,7 +482,7 @@ namespace YgoMasterClient
                     }
                     methodResourceCtor.Invoke(resourcePtr);
 
-                    IL2Array<IntPtr> assetsArray = null;
+                    IL2Array<IntPtr> assetsArray;
                     if (loadPath.StartsWith("Protector/"))
                     {
                         string extraImg = Path.Combine(Path.GetDirectoryName(customTexturePath), Path.GetFileNameWithoutExtension(customTexturePath) + "_1.png");
@@ -495,13 +495,14 @@ namespace YgoMasterClient
                         {
                             return false;
                         }
-                        IL2Object assetsArrayObj = methodGetAssets.Invoke(existingAssetResourcePtr);
-                        if (assetsArrayObj == null)
+                        IL2Object existingAssetsArrayObj = methodGetAssets.Invoke(existingAssetResourcePtr);
+                        if (existingAssetsArrayObj == null)
                         {
                             return false;
                         }
-                        assetsArray = new IL2Array<IntPtr>(assetsArrayObj.ptr);
-                        assetsArray[0] = UnityEngine.UnityObject.Instantiate(assetsArray[0]);
+                        IL2Array<IntPtr> existingAssetsArray = new IL2Array<IntPtr>(existingAssetsArrayObj.ptr);
+                        assetsArray = new IL2Array<IntPtr>(1, objectClassInfo);
+                        assetsArray[0] = UnityEngine.UnityObject.Instantiate(existingAssetsArray[0]);
 
                         string assetName = Path.GetFileNameWithoutExtension(customTexturePath);
                         IntPtr newTextureAsset = TextureFromPNG(customTexturePath, assetName);

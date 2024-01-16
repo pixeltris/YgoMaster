@@ -89,6 +89,13 @@ namespace IL2CPP
                     { "Signature", signature.Signature },
                 });
             }
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(GetDumpPath()));
+            }
+            catch
+            {
+            }
             File.WriteAllText(GetDumpPath(), MiniJSON.Json.Serialize(json));
             Console.WriteLine("Dumped to '" + GetDumpPath() + "'");
         }
