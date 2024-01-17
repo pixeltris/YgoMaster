@@ -111,6 +111,9 @@ namespace YgoMasterClient
         static IL2Method methodGetName;
         static IL2Method methodSetName;
         static IL2Method methodSetTexture;// Material
+        static IL2Method methodSetFloat;
+        static IL2Method methodSetInt;
+        static IL2Method methodSetColor;
 
         // mscorlib
         static IL2Method methodReadAllBytes;// File
@@ -289,7 +292,11 @@ namespace YgoMasterClient
             objectClassInfo = coreModuleAssembly.GetClass("Object");
             methodGetName = objectClassInfo.GetProperty("name").GetGetMethod();
             methodSetName = objectClassInfo.GetProperty("name").GetSetMethod();
-            methodSetTexture = coreModuleAssembly.GetClass("Material", "UnityEngine").GetMethod("SetTexture", x => x.GetParameters()[0].Name == "name");// Material
+            IL2Class materialClassInfo = coreModuleAssembly.GetClass("Material", "UnityEngine");// Material
+            methodSetTexture = materialClassInfo.GetMethod("SetTexture", x => x.GetParameters()[0].Name == "name");
+            methodSetFloat = materialClassInfo.GetMethod("SetFloat", x => x.GetParameters()[0].Name == "name");
+            methodSetInt = materialClassInfo.GetMethod("SetInt", x => x.GetParameters()[0].Name == "name");
+            methodSetColor = materialClassInfo.GetMethod("SetColor", x => x.GetParameters()[0].Name == "name");
 
             IL2Assembly mscorlibAssembly = Assembler.GetAssembly("mscorlib");
             IL2Class fileClassInfo = mscorlibAssembly.GetClass("File");
@@ -485,9 +492,26 @@ namespace YgoMasterClient
                     IL2Array<IntPtr> assetsArray;
                     if (loadPath.StartsWith("Protector/"))
                     {
+                        string baseMat = null;
+                        const string baseMatKey = "BaseMat";
+                        string settingsFile = Path.Combine(Path.GetDirectoryName(customTexturePath), Path.GetFileNameWithoutExtension(customTexturePath) + ".json");
+                        Dictionary<string, object> settingsValues = null;
+                        if (File.Exists(settingsFile))
+                        {
+                            settingsValues = MiniJSON.Json.DeserializeStripped(File.ReadAllText(settingsFile)) as Dictionary<string, object>;
+                            if (settingsValues != null)
+                            {
+                                baseMat = YgoMaster.Utils.GetValue<int>(settingsValues, baseMatKey).ToString().PadLeft(4, '0');
+                            }
+                        }
+
                         string extraImg = Path.Combine(Path.GetDirectoryName(customTexturePath), Path.GetFileNameWithoutExtension(customTexturePath) + "_1.png");
                         bool isDuluxe = File.Exists(extraImg);
-                        IntPtr existingAssetPath = new IL2String("Protector/tcg/" + (isDuluxe ? "2001" : "0001") + "/PMat").ptr;
+                        if (string.IsNullOrEmpty(baseMat))
+                        {
+                            baseMat = (isDuluxe ? "2001" : "0005");
+                        }
+                        IntPtr existingAssetPath = new IL2String("Protector/tcg/" + baseMat + "/PMat").ptr;
                         hookLoadImmediate.Original(thisPtr, existingAssetPath, IntPtr.Zero, IntPtr.Zero, false);
                         IntPtr workPathPtr = IntPtr.Zero;
                         IntPtr existingAssetResourcePtr = hookGetResource.Original(thisPtr, existingAssetPath, (IntPtr)(&workPathPtr));
@@ -512,6 +536,47 @@ namespace YgoMasterClient
                             string assetName2 = Path.GetFileNameWithoutExtension(extraImg);
                             IntPtr newTextureAsset2 = TextureFromPNG(extraImg, assetName2);
                             methodSetTexture.Invoke(assetsArray[0], new IntPtr[] { new IL2String("_MainTex2").ptr, newTextureAsset2 });
+                        }
+
+                        if (settingsValues != null)
+                        {
+                            foreach (KeyValuePair<string, object> entry in settingsValues)
+                            {
+                                if (entry.Key == baseMatKey || entry.Value == null)
+                                {
+                                    continue;
+                                }
+                                TypeCode typeCode = Type.GetTypeCode(entry.Value.GetType());
+                                switch (typeCode)
+                                {
+                                    case TypeCode.Double:
+                                        {
+                                            float val = Convert.ToSingle(entry.Value);
+                                            methodSetFloat.Invoke(assetsArray[0], new IntPtr[] { new IL2String(entry.Key).ptr, new IntPtr(&val) });
+                                        }
+                                        break;
+                                    case TypeCode.Int64:
+                                        {
+                                            int val = Convert.ToInt32(entry.Value);
+                                            methodSetInt.Invoke(assetsArray[0], new IntPtr[] { new IL2String(entry.Key).ptr, new IntPtr(&val) });
+                                        }
+                                        break;
+                                    case TypeCode.String:
+                                        {
+                                            string[] splitted = (entry.Value as string).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                            float* color = stackalloc float[4];
+                                            if (splitted.Length > 0) float.TryParse(splitted[0], out color[0]);
+                                            if (splitted.Length > 1) float.TryParse(splitted[1], out color[1]);
+                                            if (splitted.Length > 2) float.TryParse(splitted[2], out color[2]);
+                                            if (splitted.Length > 3) float.TryParse(splitted[3], out color[3]);
+                                            methodSetColor.Invoke(assetsArray[0], new IntPtr[] { new IL2String(entry.Key).ptr, new IntPtr(color) });
+                                        }
+                                        break;
+                                    default:
+                                        Console.WriteLine("Unsupported type " + typeCode + " in material value setter");
+                                        break;
+                                }
+                            }
                         }
                     }
                     else

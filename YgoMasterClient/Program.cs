@@ -415,7 +415,7 @@ namespace YgoMasterClient
                                                     Console.WriteLine("Done");
                                                 }
                                                 break;
-                                            case "itemid-enum":// Creates enums for values in IDS_ITEM (all item ids)
+                                            case "itemid_enum":// Creates enums for values in IDS_ITEM (all item ids)
                                                 {
                                                     Dictionary<YgomGame.Utility.ItemUtil.Category, List<string>> categories = new Dictionary<YgomGame.Utility.ItemUtil.Category, List<string>>();
                                                     IL2Class classInfo = classInfo = Assembler.GetAssembly("Assembly-CSharp").GetClass("IDS_ITEM", "YgomGame.TextIDs");
