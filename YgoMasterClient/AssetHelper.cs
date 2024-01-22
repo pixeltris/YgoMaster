@@ -448,7 +448,9 @@ namespace YgoMasterClient
                 if (newTexture != IntPtr.Zero)
                 {
                     int textureWidth = 2, textureHeight = 2;
-                    methodTexture2DCtor.Invoke(newTexture, new IntPtr[] { new IntPtr(&textureWidth), new IntPtr(&textureHeight) });
+                    int textureFormat = 4;// RGBA32
+                    bool mipChain = false;
+                    methodTexture2DCtor2.Invoke(newTexture, new IntPtr[] { new IntPtr(&textureWidth), new IntPtr(&textureHeight), new IntPtr(&textureFormat), new IntPtr(&mipChain) });
                     methodLoadImage.Invoke(new IntPtr[] { newTexture, bytes.ptr });
                     if (!string.IsNullOrEmpty(assetName))
                     {
@@ -460,7 +462,7 @@ namespace YgoMasterClient
             return IntPtr.Zero;
         }
 
-        static IntPtr SpriteFromTexture(IntPtr texture, string assetName)
+        static IntPtr SpriteFromTexture(IntPtr texture, string assetName, Rect rect = default(Rect))
         {
             if (texture == IntPtr.Zero)
             {
@@ -468,7 +470,10 @@ namespace YgoMasterClient
             }
             int width = methodGetWidth.Invoke(texture).GetValueRef<int>();
             int height = methodGetHeight.Invoke(texture).GetValueRef<int>();
-            Rect rect = new Rect(0, 0, width, height);
+            if (rect.Equals(default(Rect)))
+            {
+                rect = new Rect(0, 0, width, height);
+            }
             float pixelsPerUnit = GetResourceType() == ResourceType.HighEnd_HD ? 100 : 50;
             Vector2 pivot = new Vector2(0.5f, 0.5f);
             IL2Object newSpriteAsset = methodSpriteCreate.Invoke(
@@ -845,7 +850,23 @@ namespace YgoMasterClient
                         IntPtr newTextureAsset = TextureFromPNG(customAssetPath, assetName);
                         assetsArray[0] = newTextureAsset;
 
-                        IntPtr newSpriteAsset = SpriteFromTexture(newTextureAsset, assetName);
+                        Rect rect = default(Rect);
+
+                        // Card packs have some weird artifacting if the sprite isn't the correct size
+                        // NOTE: Explicitly check for "CardPackTex" to allow for custom images which ignore this code
+                        if (loadPath.StartsWith("Images/CardPack/") && loadPath.Contains("CardPackTex"))
+                        {
+                            if (loadPath.Contains("/SD/"))
+                            {
+                                rect = new Rect(2.292893f, 0, 250.4142f, 512);
+                            }
+                            else
+                            {
+                                rect = new Rect(7.292893f, 0, 496.4142f, 1024);
+                            }
+                        }
+
+                        IntPtr newSpriteAsset = SpriteFromTexture(newTextureAsset, assetName, rect);
                         if (newSpriteAsset != IntPtr.Zero)
                         {
                             assetsArray[1] = newSpriteAsset;
