@@ -1001,6 +1001,9 @@ namespace YgoMasterClient
                                                     Console.WriteLine("Done");
                                                 }
                                                 break;
+                                            case "unityplayerupdate":// Updates UnityPlayer.dll function addresses based on the provided PDB
+                                                UnityPlayerPdb.Update();
+                                                break;
                                         }
                                     }
                                     catch (Exception e)

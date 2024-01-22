@@ -52,7 +52,7 @@ namespace YgomGame.Credit
         static IntPtr rawImage;
         static IntPtr texture;
         static IntPtr colors;
-        static IntPtr colorsGcHandle;
+        static uint colorsGcHandle;
         static bool isTransitioning;
         static TransitionType activeTransitionType;
         static AssetHelper.Vector2 lastMousePos;
@@ -220,11 +220,11 @@ namespace YgomGame.Credit
             texture = IntPtr.Zero;
             colors = IntPtr.Zero;
             isTransitioning = false;
-            if (colorsGcHandle != IntPtr.Zero)
+            if (colorsGcHandle != 0)
             {
                 Import.Handler.il2cpp_gchandle_free(colorsGcHandle);
             }
-            colorsGcHandle = IntPtr.Zero;
+            colorsGcHandle = 0;
             IsHacked = false;
             Console.WriteLine("OnBack");
             return methodBaseOnBack.Invoke(thisPtr).GetValueRef<csbool>();
@@ -491,7 +491,7 @@ namespace YgomGame.Credit
 
         static void SetTexture(uint width, uint height)
         {
-            if (colorsGcHandle != IntPtr.Zero)
+            if (colorsGcHandle != 0)
             {
                 Import.Handler.il2cpp_gchandle_free(colorsGcHandle);
             }

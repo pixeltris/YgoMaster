@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 using IL2CPP;
+using System.Diagnostics;
 
 namespace YgoMasterClient
 {
@@ -39,7 +40,7 @@ namespace YgoMasterClient
 
         public static void InitGameModuleBaseAddress()
         {
-            foreach (System.Diagnostics.ProcessModule module in System.Diagnostics.Process.GetCurrentProcess().Modules)
+            foreach (ProcessModule module in Process.GetCurrentProcess().Modules)
             {
                 if (module.ModuleName.Equals("GameAssembly.dll", StringComparison.OrdinalIgnoreCase))
                 {
@@ -75,6 +76,24 @@ namespace YgoMasterClient
 
         [DllImport(dllName)]
         public static extern void CreateVSyncHook(IntPtr funcPtr);
+
+        [DllImport(dllName)]
+        public static extern int lib_mp3dec_ex_t_sizeof();
+
+        [DllImport(dllName)]
+        public static extern int lib_mp3dec_ex_open_w(IntPtr dec, [MarshalAs(UnmanagedType.LPWStr)] string file_name, int flags);
+
+        [DllImport(dllName)]
+        public static extern int lib_mp3dec_ex_seek(IntPtr dec, ulong position);
+
+        [DllImport(dllName)]
+        public static extern int lib_mp3dec_ex_get_info(IntPtr dec, out ulong samples, out int channels, out int hz);
+
+        [DllImport(dllName)]
+        public static extern int lib_mp3dec_ex_read(IntPtr dec, float[] buf, int samples);
+
+        [DllImport(dllName)]
+        public static extern void lib_mp3dec_ex_close(IntPtr dec);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         public static extern int SetDllDirectoryW(string lpPathName);

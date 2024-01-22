@@ -81,6 +81,8 @@ namespace YgomGame.Duel
 
         delegate void Del_InitEngineStep(IntPtr thisPtr);
         static Hook<Del_InitEngineStep> hookInitEngineStep;
+        delegate void Del_EvalEachSteps(IntPtr thisPtr);
+        static Hook<Del_EvalEachSteps> hookEvalEachSteps;
 
         public static IntPtr Instance
         {
@@ -148,12 +150,22 @@ namespace YgomGame.Duel
             fieldReplayRealtime = classInfo.GetField("replayRealtime");
             methodGetDuelHUD = classInfo.GetProperty("duelHUD").GetGetMethod();
             hookInitEngineStep = new Hook<Del_InitEngineStep>(InitEngineStep, classInfo.GetMethod("InitEngineStep"));
+            hookEvalEachSteps = new Hook<Del_EvalEachSteps>(EvalEachSteps, classInfo.GetMethod("EvalEachSteps"));
         }
 
         static void InitEngineStep(IntPtr thisPtr)
         {
             hookInitEngineStep.Original(thisPtr);
             DuelDll.OnInitEngineStep();
+        }
+
+        static void EvalEachSteps(IntPtr thisPtr)
+        {
+            if (AssetHelper.IsLoadingCustomAsset && Step == DuelClientStep.WaitLoadSound + 1)
+            {
+                return;
+            }
+            hookEvalEachSteps.Original(thisPtr);
         }
 
         public static void SetDuelSpeed(DuelSpeed duelSpeed)

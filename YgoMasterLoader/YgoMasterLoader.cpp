@@ -14,6 +14,12 @@
 #pragma comment(lib, "legacy_stdio_definitions.lib")
 #endif
 
+#if WITH_MINIMP3
+#define MINIMP3_FLOAT_OUTPUT
+#define MINIMP3_IMPLEMENTATION
+#include "minimp3_ex.h"
+#endif
+
 #include <windows.h>
 #include <wchar.h>
 #include <stdio.h>
@@ -61,42 +67,42 @@ BOOL FileExists(LPCWSTR szPath)
 
 LIBRARY_API MH_STATUS WL_InitHooks()
 {
-	if (!hooksInitialized)
-	{
-		hooksInitialized = TRUE;
-		return MH_Initialize();
-	}
-	return MH_OK;
+    if (!hooksInitialized)
+    {
+        hooksInitialized = TRUE;
+        return MH_Initialize();
+    }
+    return MH_OK;
 }
 
 LIBRARY_API MH_STATUS WL_HookFunction(LPVOID target, LPVOID detour, LPVOID* original)
 {
-	MH_STATUS status = MH_CreateHook(target, detour, original);
-	if (status == MH_OK)
-	{
-		return MH_EnableHook(target);
-	}
-	return status;
+    MH_STATUS status = MH_CreateHook(target, detour, original);
+    if (status == MH_OK)
+    {
+        return MH_EnableHook(target);
+    }
+    return status;
 }
 
 LIBRARY_API MH_STATUS WL_CreateHook(LPVOID target, LPVOID detour, LPVOID* original)
 {
-	return MH_CreateHook(target, detour, original);
+    return MH_CreateHook(target, detour, original);
 }
 
 LIBRARY_API MH_STATUS WL_RemoveHook(LPVOID target)
 {
-	return MH_RemoveHook(target);
+    return MH_RemoveHook(target);
 }
 
 LIBRARY_API MH_STATUS WL_EnableHook(LPVOID target)
 {
-	return MH_EnableHook(target);
+    return MH_EnableHook(target);
 }
 
 LIBRARY_API MH_STATUS WL_DisableHook(LPVOID target)
 {
-	return MH_DisableHook(target);
+    return MH_DisableHook(target);
 }
 
 LIBRARY_API MH_STATUS WL_EnableAllHooks(BOOL enable)
@@ -224,6 +230,40 @@ LIBRARY_API void CreateVSyncHook(void* funcPtr)
     MH_CreateHook(funcPtr, &Hook_SetVSyncCount, (LPVOID*)&Original_SetVSyncCount);
     MH_EnableHook(funcPtr);
 }
+
+#if WITH_MINIMP3
+LIBRARY_API int lib_mp3dec_ex_t_sizeof()
+{
+    return (int)sizeof(mp3dec_ex_t);
+}
+
+LIBRARY_API int lib_mp3dec_ex_open_w(mp3dec_ex_t* dec, const wchar_t* file_name, int flags)
+{
+    return mp3dec_ex_open_w(dec, file_name, flags);
+}
+
+LIBRARY_API int lib_mp3dec_ex_seek(mp3dec_ex_t* dec, uint64_t position)
+{
+    return mp3dec_ex_seek(dec, position);
+}
+
+LIBRARY_API void lib_mp3dec_ex_get_info(mp3dec_ex_t* dec, OUT uint64_t* samples, OUT int* channels, OUT int* hz)
+{
+    *samples = dec->samples;
+    *channels = dec->info.channels;
+    *hz = dec->info.hz;
+}
+
+LIBRARY_API int lib_mp3dec_ex_read(mp3dec_ex_t* dec, float* buf, int samples)
+{
+    return (int)mp3dec_ex_read(dec, buf, (size_t)samples);
+}
+
+LIBRARY_API void lib_mp3dec_ex_close(mp3dec_ex_t* dec)
+{
+    mp3dec_ex_close(dec);
+}
+#endif
 
 int CreateHooks()
 {

@@ -61,6 +61,9 @@ namespace YgoMasterClient
         public static float EmoteDurationInSeconds;
         public static GameLauncherMode LaunchMode;
         public static List<int> BrokenItems;
+        public static uint UnityPlayerRVA_AudioClip_CUSTOM_Construct_Internal;
+        public static uint UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound;
+        public static uint UnityPlayerRVA_AudioClip_CUSTOM_SetData;
 
         public static string FilePath
         {
@@ -153,6 +156,9 @@ namespace YgoMasterClient
             EmoteDurationInSeconds = Utils.GetValue<float>(data, "EmoteDurationInSeconds");
             LaunchMode = Utils.GetValue<GameLauncherMode>(data, "LaunchMode");
             BrokenItems = Utils.GetIntList(data, "BrokenItems");
+            UnityPlayerRVA_AudioClip_CUSTOM_Construct_Internal = Utils.GetValue<uint>(data, "UnityPlayerRVA_AudioClip_CUSTOM_Construct_Internal");
+            UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound = Utils.GetValue<uint>(data, "UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound");
+            UnityPlayerRVA_AudioClip_CUSTOM_SetData = Utils.GetValue<uint>(data, "UnityPlayerRVA_AudioClip_CUSTOM_SetData");
 
             return LoadText();
         }

@@ -33,9 +33,9 @@ namespace IL2CPP
         public static class Handler
         {
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
-            public extern static IntPtr il2cpp_gchandle_new(IntPtr obj, bool pinned);
+            public extern static uint il2cpp_gchandle_new(IntPtr obj, bool pinned);
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
-            public extern static void il2cpp_gchandle_free(IntPtr handle);
+            public extern static void il2cpp_gchandle_free(uint gchandle);
         }
         
         public static class Exception

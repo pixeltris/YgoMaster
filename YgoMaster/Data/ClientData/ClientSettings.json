@@ -49,4 +49,7 @@
     "EmoteDurationInSeconds": 4.0,
     "LaunchMode": "Detours",
     "BrokenItems": [],
+    "UnityPlayerRVA_AudioClip_CUSTOM_Construct_Internal": 11190752,
+    "UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound": 11191216,
+    "UnityPlayerRVA_AudioClip_CUSTOM_SetData": 11190080,
 }

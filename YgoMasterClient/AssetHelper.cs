@@ -5,11 +5,34 @@ using System.Text;
 using IL2CPP;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Threading;
 
 namespace YgoMasterClient
 {
     unsafe static partial class AssetHelper
     {
+        [ThreadStatic]
+        static float[] audioBufferTLS;
+        static IntPtr audioBufferIL2CPP;
+        static Dictionary<string, List<CustomAssetLoadRequest>> customAssetLoadRequests = new Dictionary<string, List<CustomAssetLoadRequest>>();
+        struct CustomAssetLoadRequest
+        {
+            public IntPtr CompleteHandler;
+            public uint GcHandle;
+        }
+
+        public static bool IsLoadingCustomAsset
+        {
+            get
+            {
+                lock (customAssetLoadRequests)
+                {
+                    return customAssetLoadRequests.Count > 0;
+                }
+            }
+        }
+        public static bool IsQuitting { get; private set; }
+
         // TODO: Put these definitions into nested classes (or just use more explicit names)
 
         // YgomSystem.Utility.DeviceInfo
@@ -117,6 +140,22 @@ namespace YgoMasterClient
 
         // mscorlib
         static IL2Method methodReadAllBytes;// File
+
+        // UnityEngine.AudioClip
+        delegate IntPtr Del_AudioClip_CUSTOM_Construct_Internal();
+        static Del_AudioClip_CUSTOM_Construct_Internal AudioClip_CUSTOM_Construct_Internal;
+        delegate void Del_AudioClip_CUSTOM_CreateUserSound(IntPtr thisPtr, IntPtr name, int lengthSamples, int channels, int frequency, csbool stream);
+        static Del_AudioClip_CUSTOM_CreateUserSound AudioClip_CUSTOM_CreateUserSound;
+        delegate csbool Del_AudioClip_CUSTOM_SetData(IntPtr clip, IntPtr data, int numsamples, int samplesOffset);
+        static Del_AudioClip_CUSTOM_SetData AudioClip_CUSTOM_SetData;
+        //class ScriptingBackendNativeObjectPtrOpaque * __cdecl AudioClip_CUSTOM_Construct_Internal(void)
+        //void __cdecl AudioClip_CUSTOM_CreateUserSound(class ScriptingBackendNativeObjectPtrOpaque *,class ScriptingBackendNativeStringPtrOpaque *,int,int,int,unsigned char)
+        //unsigned char __cdecl AudioClip_CUSTOM_SetData(class ScriptingBackendNativeObjectPtrOpaque *,class ScriptingBackendNativeArrayPtrOpaque *,int,int)
+        //unsigned char __cdecl AudioClip_CUSTOM_GetData(class ScriptingBackendNativeObjectPtrOpaque *,class ScriptingBackendNativeArrayPtrOpaque *,int,int)
+        //unsigned char __cdecl AudioClip_CUSTOM_LoadAudioData(class ScriptingBackendNativeObjectPtrOpaque *)
+        //unsigned char __cdecl AudioClip_CUSTOM_UnloadAudioData(class ScriptingBackendNativeObjectPtrOpaque *)
+        //class ScriptingBackendNativeStringPtrOpaque * __cdecl AudioClip_CUSTOM_GetName(class ScriptingBackendNativeObjectPtrOpaque *)
+        //void * __cdecl DownloadHandlerAudioClip_CUSTOM_Create(class ScriptingBackendNativeObjectPtrOpaque *,class ScriptingBackendNativeStringPtrOpaque *,enum FMOD_SOUND_TYPE)
 
         [StructLayout(LayoutKind.Sequential)]
         public struct Vector2
@@ -302,8 +341,21 @@ namespace YgoMasterClient
             IL2Class fileClassInfo = mscorlibAssembly.GetClass("File");
             methodReadAllBytes = fileClassInfo.GetMethod("ReadAllBytes");
 
+            long unityPlayer = PInvoke.GetModuleHandle("UnityPlayer.dll").ToInt64();
+            AudioClip_CUSTOM_Construct_Internal = (Del_AudioClip_CUSTOM_Construct_Internal)Marshal.GetDelegateForFunctionPointer((IntPtr)(unityPlayer + ClientSettings.UnityPlayerRVA_AudioClip_CUSTOM_Construct_Internal), typeof(Del_AudioClip_CUSTOM_Construct_Internal));
+            AudioClip_CUSTOM_CreateUserSound = (Del_AudioClip_CUSTOM_CreateUserSound)Marshal.GetDelegateForFunctionPointer((IntPtr)(unityPlayer + ClientSettings.UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound), typeof(Del_AudioClip_CUSTOM_CreateUserSound));
+            AudioClip_CUSTOM_SetData = (Del_AudioClip_CUSTOM_SetData)Marshal.GetDelegateForFunctionPointer((IntPtr)(unityPlayer + ClientSettings.UnityPlayerRVA_AudioClip_CUSTOM_SetData), typeof(Del_AudioClip_CUSTOM_SetData));
+
+            coreModuleAssembly.GetClass("Application", "UnityEngine").GetMethod("add_quitting")
+                .Invoke(new IntPtr[] { UnityEngine.Events._UnityAction.CreateAction(OnQuitting) }) ;
+
             InitSolo();
         }
+
+        static Action OnQuitting = () =>
+        {
+            IsQuitting = true;
+        };
 
         // Load a texture / sprite https://forum.unity.com/threads/generating-sprites-dynamically-from-png-or-jpeg-files-in-c.343735
         // Save a texture https://github.com/sinai-dev/UniverseLib/blob/6e1654b9bc822cde06d3a845182e86e861878d14/src/Runtime/TextureHelper.cs#L100-L151
@@ -463,19 +515,53 @@ namespace YgoMasterClient
                 return false;
             }
             string loadPath = ConvertAssetPath(path);
-            string customTexturePath = Path.Combine(Program.ClientDataDir, loadPath + ".png");
-            if (File.Exists(customTexturePath))
+            string customAssetPath = null;
+            bool isAudioClip = false;
+            if (loadPath.StartsWith("Sound/AudioClip") && AudioLoader.Available)
+            {
+                isAudioClip = true;
+                foreach (string format in AudioLoader.SupportedFormats)
+                {
+                    customAssetPath = Path.Combine(Program.ClientDataDir, loadPath + format);
+                    if (File.Exists(customAssetPath))
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                customAssetPath = Path.Combine(Program.ClientDataDir, loadPath + ".png");
+            }
+            if (customAssetPath != null && File.Exists(customAssetPath))
             {
                 uint crc = methodGetCrc.Invoke(new IntPtr[] { pathPtr }).GetValueRef<uint>();
+                result = crc;
                 if (resourceDictionary.ContainsKey((int)crc))
                 {
                     IntPtr resourcePtr = resourceDictionary[(int)crc];
                     int refCount = methodGetRefCount.Invoke(resourcePtr).GetValueRef<int>();
                     refCount++;
                     methodSetRefCount.Invoke(resourcePtr, new IntPtr[] { new IntPtr(&refCount) });
-                    result = crc;
                     if (completeHandler != IntPtr.Zero)
                     {
+                        lock (customAssetLoadRequests)
+                        {
+                            List<CustomAssetLoadRequest> loadRequests;
+                            if (customAssetLoadRequests.TryGetValue(path, out loadRequests))
+                            {
+                                if (loadRequests == null)
+                                {
+                                    customAssetLoadRequests[path] = loadRequests = new List<CustomAssetLoadRequest>();
+                                }
+                                loadRequests.Add(new CustomAssetLoadRequest()
+                                {
+                                    CompleteHandler = completeHandler,
+                                    GcHandle = Import.Handler.il2cpp_gchandle_new(completeHandler, true)
+                                });
+                                return true;
+                            }
+                        }
                         methodInvoke.Invoke(completeHandler, new IntPtr[] { pathPtr });
                     }
                     return true;
@@ -489,12 +575,179 @@ namespace YgoMasterClient
                     }
                     methodResourceCtor.Invoke(resourcePtr);
 
+                    // TODO: Remove what is not required (and/or directly set them via k__BackingField entries)
+                    int resType = (int)ResourceManager_Resource_Type.LocalFile;
+                    int queueId = (int)ResourceManager_ReqType.Default;
+                    int refCount = 1;
+                    IntPtr[] arg = new IntPtr[1];
+                    arg[0] = new IntPtr(&resType); methodSetRefCount.Invoke(resourcePtr, arg);
+                    arg[0] = new IntPtr(&refCount); methodSetResType.Invoke(resourcePtr, arg);
+                    arg[0] = systemTypeInstance; methodSetSystemType.Invoke(resourcePtr, arg);
+                    arg[0] = new IntPtr(&queueId); methodSetQueueId.Invoke(resourcePtr, arg);
+                    arg[0] = pathPtr; methodSetPath.Invoke(resourcePtr, arg);
+                    arg[0] = new IL2String(loadPath).ptr; methodSetLoadPath.Invoke(resourcePtr, arg);
+                    resourceDictionary.Add((int)crc, resourcePtr);
+
                     IL2Array<IntPtr> assetsArray;
-                    if (loadPath.StartsWith("Protector/"))
+                    if (isAudioClip)
+                    {
+                        assetsArray = new IL2Array<IntPtr>(1, objectClassInfo);
+
+                        uint assetsArrayGcHandle = Import.Handler.il2cpp_gchandle_new(assetsArray.ptr, true);
+                        uint resourcePtrHandle = Import.Handler.il2cpp_gchandle_new(resourcePtr, true);
+                        uint completeHandlerHandle = Import.Handler.il2cpp_gchandle_new(completeHandler, true);
+
+                        lock (customAssetLoadRequests)
+                        {
+                            customAssetLoadRequests[path] = null;
+                        }
+                        ThreadPool.QueueUserWorkItem((o) =>
+                        {
+                            float volume = 1;
+                            bool hasCustomVolume = false;
+                            try
+                            {
+                                string volumeFile = Path.Combine(Path.GetDirectoryName(customAssetPath), Path.GetFileNameWithoutExtension(customAssetPath) + ".txt");
+                                if (File.Exists(volumeFile))
+                                {
+                                    using (StreamReader reader = File.OpenText(volumeFile))
+                                    {
+                                        if (float.TryParse(reader.ReadLine(), out volume))
+                                        {
+                                            hasCustomVolume = true;
+                                        }
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                            }
+
+                            string name = Path.GetFileNameWithoutExtension(customAssetPath);
+                            AutoResetEvent waitForMainThread = new AutoResetEvent(false);
+
+                            // TODO: Make this buffer bigger depending on file size?
+                            // NOTE: 2048*2048 = 4MB which might be overkill for sound effects
+                            int bufferSize = 2048 * 2048;//128;
+                            if (audioBufferTLS == null)
+                            {
+                                audioBufferTLS = new float[bufferSize];
+                            }
+                            float[] buffer = audioBufferTLS;
+                            
+                            IAudioLoader audioLoader = AudioLoader.CreateInstance();
+                            AudioInfo info = audioLoader != null ? audioLoader.Open(customAssetPath) : null;
+                            if (info == null)
+                            {
+                                if (audioLoader != null)
+                                {
+                                    audioLoader.Close();
+                                }
+                                Win32Hooks.Invoke(() =>
+                                {
+                                    if (IsQuitting)
+                                    {
+                                        return;
+                                    }
+                                    FinishLoad(assetsArray, resourcePtr, path, completeHandler);
+                                });
+                                return;
+                            }
+
+                            IntPtr audioClip = IntPtr.Zero;
+                            uint audioClipGcHandle = 0;
+                            //IL2Array<float> data = null;
+                            //uint dataGcHandle = 0;
+                            Win32Hooks.Invoke(() =>
+                            {
+                                if (IsQuitting)
+                                {
+                                    return;
+                                }
+                                if (audioBufferIL2CPP == IntPtr.Zero)
+                                {
+                                    // As we're working on a single thread we can save having to create garbage by
+                                    // creating one float array and reusing it
+                                    audioBufferIL2CPP = new IL2Array<float>(bufferSize, IL2SystemClass.Float).ptr;
+                                    Import.Handler.il2cpp_gchandle_new(audioBufferIL2CPP, true);
+                                }
+                                audioClip = AudioClip_CUSTOM_Construct_Internal();
+                                AudioClip_CUSTOM_CreateUserSound(audioClip, new IL2String(name).ptr, info.LengthSamples / info.Channels, info.Channels, info.SampleRate, false);
+                                audioClipGcHandle = Import.Handler.il2cpp_gchandle_new(audioClip, true);
+                                //data = new IL2Array<float>(buffer.Length, IL2SystemClass.Float);
+                                //dataGcHandle = Import.Handler.il2cpp_gchandle_new(data.ptr, true);
+                                waitForMainThread.Set();
+                            });
+                            waitForMainThread.WaitOne();
+
+                            int index = 0;
+                            int dataLen = bufferSize;
+                            while (index < info.LengthSamples)
+                            {
+                                int read = audioLoader.Read(buffer);
+
+                                if (read == 0)
+                                    break;
+
+                                if (hasCustomVolume)
+                                {
+                                    for (int i = 0; i < buffer.Length; i++)
+                                    {
+                                        buffer[i] *= volume;
+                                    }
+                                }
+
+                                Win32Hooks.Invoke(() =>
+                                {
+                                    if (IsQuitting)
+                                    {
+                                        return;
+                                    }
+                                    if (index + bufferSize >= info.LengthSamples)
+                                    {
+                                        dataLen = info.LengthSamples - index;
+                                        //Import.Handler.il2cpp_gchandle_free(dataGcHandle);
+                                        //data = new IL2Array<float>(buffer.Length, IL2SystemClass.Float);
+                                        //dataGcHandle = Import.Handler.il2cpp_gchandle_new(data.ptr, true);
+                                    }
+
+                                    //Marshal.Copy(buffer, 0, (IntPtr)((long*)data.ptr + 4), dataLen);
+                                    //AudioClip_CUSTOM_SetData(audioClip, data.ptr, dataLen / info.Channels, index / info.Channels);
+
+                                    Marshal.Copy(buffer, 0, (IntPtr)((long*)audioBufferIL2CPP + 4), dataLen);
+                                    AudioClip_CUSTOM_SetData(audioClip, audioBufferIL2CPP, dataLen / info.Channels, index / info.Channels);
+
+                                    waitForMainThread.Set();
+                                });
+                                waitForMainThread.WaitOne();
+
+                                index += read;
+                            }
+
+                            Win32Hooks.Invoke(() =>
+                            {
+                                if (IsQuitting)
+                                {
+                                    return;
+                                }
+                                assetsArray[0] = audioClip;
+                                FinishLoad(assetsArray, resourcePtr, path, completeHandler);
+                                Import.Handler.il2cpp_gchandle_free(audioClipGcHandle);
+                                //Import.Handler.il2cpp_gchandle_free(dataGcHandle);
+                                Import.Handler.il2cpp_gchandle_free(completeHandlerHandle);
+                                Import.Handler.il2cpp_gchandle_free(resourcePtrHandle);
+                                Import.Handler.il2cpp_gchandle_free(assetsArrayGcHandle);
+                            });
+
+                            audioLoader.Close();
+                        });
+                        return true;
+                    }
+                    else if (loadPath.StartsWith("Protector/"))
                     {
                         string baseMat = null;
                         const string baseMatKey = "BaseMat";
-                        string settingsFile = Path.Combine(Path.GetDirectoryName(customTexturePath), Path.GetFileNameWithoutExtension(customTexturePath) + ".json");
+                        string settingsFile = Path.Combine(Path.GetDirectoryName(customAssetPath), Path.GetFileNameWithoutExtension(customAssetPath) + ".json");
                         Dictionary<string, object> settingsValues = null;
                         if (File.Exists(settingsFile))
                         {
@@ -505,7 +758,7 @@ namespace YgoMasterClient
                             }
                         }
 
-                        string extraImg = Path.Combine(Path.GetDirectoryName(customTexturePath), Path.GetFileNameWithoutExtension(customTexturePath) + "_1.png");
+                        string extraImg = Path.Combine(Path.GetDirectoryName(customAssetPath), Path.GetFileNameWithoutExtension(customAssetPath) + "_1.png");
                         bool isDuluxe = File.Exists(extraImg);
                         if (string.IsNullOrEmpty(baseMat))
                         {
@@ -528,8 +781,8 @@ namespace YgoMasterClient
                         assetsArray = new IL2Array<IntPtr>(1, objectClassInfo);
                         assetsArray[0] = UnityEngine.UnityObject.Instantiate(existingAssetsArray[0]);
 
-                        string assetName = Path.GetFileNameWithoutExtension(customTexturePath);
-                        IntPtr newTextureAsset = TextureFromPNG(customTexturePath, assetName);
+                        string assetName = Path.GetFileNameWithoutExtension(customAssetPath);
+                        IntPtr newTextureAsset = TextureFromPNG(customAssetPath, assetName);
                         methodSetTexture.Invoke(assetsArray[0], new IntPtr[] { new IL2String("_MainTex").ptr, newTextureAsset });
                         if (isDuluxe)
                         {
@@ -588,8 +841,8 @@ namespace YgoMasterClient
                             return false;
                         }
 
-                        string assetName = Path.GetFileNameWithoutExtension(customTexturePath);
-                        IntPtr newTextureAsset = TextureFromPNG(customTexturePath, assetName);
+                        string assetName = Path.GetFileNameWithoutExtension(customAssetPath);
+                        IntPtr newTextureAsset = TextureFromPNG(customAssetPath, assetName);
                         assetsArray[0] = newTextureAsset;
 
                         IntPtr newSpriteAsset = SpriteFromTexture(newTextureAsset, assetName);
@@ -599,31 +852,39 @@ namespace YgoMasterClient
                         }
                     }
 
-                    // TODO: Remove what is not required (and/or directly set them via k__BackingField entries)
-                    bool done = true;
-                    int resType = (int)ResourceManager_Resource_Type.LocalFile;
-                    int queueId = (int)ResourceManager_ReqType.Default;
-                    int refCount = 1;
-                    IntPtr[] arg = new IntPtr[1];
-                    arg[0] = new IntPtr(&resType); methodSetRefCount.Invoke(resourcePtr, arg);
-                    arg[0] = new IntPtr(&refCount); methodSetResType.Invoke(resourcePtr, arg);
-                    arg[0] = systemTypeInstance; methodSetSystemType.Invoke(resourcePtr, arg);
-                    arg[0] = new IntPtr(&queueId); methodSetQueueId.Invoke(resourcePtr, arg);
-                    arg[0] = pathPtr; methodSetPath.Invoke(resourcePtr, arg);
-                    arg[0] = new IL2String(loadPath).ptr; methodSetLoadPath.Invoke(resourcePtr, arg);
-                    arg[0] = new IntPtr(&done); methodSetDone.Invoke(resourcePtr, arg);
-                    arg[0] = assetsArray.ptr; methodSetAssets.Invoke(resourcePtr, arg);
-
-                    resourceDictionary.Add((int)crc, resourcePtr);
-                    result = crc;
-                    if (completeHandler != IntPtr.Zero)
-                    {
-                        methodInvoke.Invoke(completeHandler, new IntPtr[] { pathPtr });
-                    }
+                    FinishLoad(assetsArray, resourcePtr, new IL2String(pathPtr).ToString(), completeHandler);
                     return true;
                 }
             }
             return false;
+        }
+
+        static void FinishLoad(IL2Array<IntPtr> assetsArray, IntPtr resourcePtr, string path, IntPtr completeHandler)
+        {
+            IntPtr pathPtr = new IL2String(path).ptr;
+            bool done = true;
+            IntPtr[] arg = new IntPtr[1];
+            arg[0] = assetsArray.ptr; methodSetAssets.Invoke(resourcePtr, arg);
+            arg[0] = new IntPtr(&done); methodSetDone.Invoke(resourcePtr, arg);
+
+            if (completeHandler != IntPtr.Zero)
+            {
+                methodInvoke.Invoke(completeHandler, new IntPtr[] { pathPtr });
+            }
+
+            lock (customAssetLoadRequests)
+            {
+                List<CustomAssetLoadRequest> requests;
+                if (customAssetLoadRequests.TryGetValue(path, out requests) && requests != null)
+                {
+                    foreach (CustomAssetLoadRequest request in requests)
+                    {
+                        methodInvoke.Invoke(request.CompleteHandler, new IntPtr[] { pathPtr });
+                        Import.Handler.il2cpp_gchandle_free(request.GcHandle);
+                    }
+                }
+                customAssetLoadRequests.Remove(path);
+            }
         }
 
         static uint Load(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify)
