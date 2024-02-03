@@ -8,7 +8,7 @@ You may see some variation of the above error or infinite loading screens, corru
 
 Fully update your game. If you have multiple folders inside of LocalData, you need to make sure they are ALL updated or delete the ones which aren't updated.
 
-YgoMaster picks the first valid folder it finds in LocalData. There is no way for YgoMaster to know which is the updated folder.
+You may need to fully open the game with Steam multiple times. Some updates have additional data downloads the second time you open the game.
 
 ## 2) Language setting missmatch
 

@@ -131,4 +131,6 @@
 
     "CustomTextDuelSettingsDefaultNamePlayer": "Duelist",
     "CustomTextDuelSettingsDefaultNameCPU": "CPU",
+
+    "CustomTextFileLoadErrorEx": "How to fix this error:\ngithub.com/pixeltris/YgoMaster/blob/master/Docs/FileLoadError.md\n\n",
 }

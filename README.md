@@ -31,15 +31,15 @@ Offline Yu-Gi-Oh! Master Duel (PC)
 - Download the latest release from https://github.com/pixeltris/YgoMaster/releases
 - Copy the `YgoMaster` folder (the folder, not the contents of the folder) into the game folder
 - Run `YgoMasterClient.exe` (this should also auto run `YgoMaster.exe`, if it doesn't manually run it)
+- *If you see file load error popups, infinite loading screens, corrupt screens, etc [follow these instructions](Docs/FileLoadError.md)*
 
 Additionally...
 
-- [Run on Linux](Docs/Linux.md)
-- *If you see errors, infinite loading screens, corrupt screens, etc [follow these instructions](Docs/FileLoadError.md)*
 - [It's recommended that you tailor the server settings to your preferences](Docs/Settings.md)
 - Download [VG.TCG.Decks.7z](https://github.com/pixeltris/YgoMaster/releases/download/v1.4/VG.TCG.Decks.7z) for ~6000 decks from the YGO video games
 - The custom duel starter UI can be accessed via the DUEL button on the home screen
 - When updating copy your `/YgoMaster/Data/Players/` folder
+- [How to run on Linux](Docs/Linux.md)
 
 ## Compiling from source
 

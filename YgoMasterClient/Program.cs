@@ -1277,6 +1277,11 @@ namespace YgomSystem.Utility
                             {
                                 return new IL2String(customText).ptr;
                             }
+                            if (fullString == "IDS_SYS.FATAL_FILE_ERROR")
+                            {
+                                IntPtr result = hookGetTextEnum.Original(textEnum, richTextEx, methodInstance);
+                                return new IL2String(ClientSettings.CustomTextFileLoadErrorEx + new IL2String(result).ToString()).ptr;
+                            }
                         }
                     }
                 }
