@@ -14,7 +14,6 @@ YgoMaster/*.exp
 YgoMaster/*.lib
 YgoMaster/*.exe
 YgoMaster/*.dll
-!YgoMaster/bass.dll
 YgoMaster/Ultralight
 masterduel_Data/*
 

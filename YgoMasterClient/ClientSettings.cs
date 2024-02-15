@@ -64,6 +64,15 @@ namespace YgoMasterClient
         public static uint UnityPlayerRVA_AudioClip_CUSTOM_Construct_Internal;
         public static uint UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound;
         public static uint UnityPlayerRVA_AudioClip_CUSTOM_SetData;
+        public static bool WallpaperDisabled;
+        public static bool WallpaperCycleEnabled;
+        public static bool WallpaperCycleOnEveryHomeVisit;
+        public static float WallpaperCycleDelayInSeconds;
+        public static float WallpaperCycleFadeWaitInSeconds;
+        public static bool CustomBackgroundEnabled;
+        public static bool CustomBackgroundBehindParticles;
+        public static float CustomBackgroundFadeHideInSeconds;
+        public static float CustomBackgroundFadeShowInSeconds;
 
         public static string FilePath
         {
@@ -159,6 +168,15 @@ namespace YgoMasterClient
             UnityPlayerRVA_AudioClip_CUSTOM_Construct_Internal = Utils.GetValue<uint>(data, "UnityPlayerRVA_AudioClip_CUSTOM_Construct_Internal");
             UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound = Utils.GetValue<uint>(data, "UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound");
             UnityPlayerRVA_AudioClip_CUSTOM_SetData = Utils.GetValue<uint>(data, "UnityPlayerRVA_AudioClip_CUSTOM_SetData");
+            WallpaperDisabled = Utils.GetValue<bool>(data, "WallpaperDisabled");
+            WallpaperCycleEnabled = Utils.GetValue<bool>(data, "WallpaperCycleEnabled");
+            WallpaperCycleOnEveryHomeVisit = Utils.GetValue<bool>(data, "WallpaperCycleOnEveryHomeVisit");
+            WallpaperCycleDelayInSeconds = Utils.GetValue<float>(data, "WallpaperCycleDelayInSeconds");
+            WallpaperCycleFadeWaitInSeconds = Utils.GetValue<float>(data, "WallpaperCycleFadeWaitInSeconds");
+            CustomBackgroundEnabled = Utils.GetValue<bool>(data, "CustomBackgroundEnabled");
+            CustomBackgroundBehindParticles = Utils.GetValue<bool>(data, "CustomBackgroundBehindParticles");
+            CustomBackgroundFadeHideInSeconds = Utils.GetValue<float>(data, "CustomBackgroundFadeHideInSeconds");
+            CustomBackgroundFadeShowInSeconds = Utils.GetValue<float>(data, "CustomBackgroundFadeShowInSeconds");
 
             return LoadText();
         }

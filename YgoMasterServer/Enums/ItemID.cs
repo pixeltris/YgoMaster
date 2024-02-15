@@ -105,7 +105,7 @@ namespace YgoMaster
             int[] items;
             if (Values.TryGetValue(category, out items) && items.Length > 0)
             {
-                return (int)items.GetValue(rand.Next(items.Length));
+                return items[rand.Next(items.Length)];
             }
             return 0;
         }

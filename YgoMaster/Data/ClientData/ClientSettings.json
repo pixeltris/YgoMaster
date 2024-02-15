@@ -52,4 +52,14 @@
     "UnityPlayerRVA_AudioClip_CUSTOM_Construct_Internal": 11190752,
     "UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound": 11191216,
     "UnityPlayerRVA_AudioClip_CUSTOM_SetData": 11190080,
+    "WallpaperDisabled": false,
+    "WallpaperCycleEnabled": false,
+    "WallpaperCycleOnEveryHomeVisit": true,
+    "WallpaperCycleDelayInSeconds": 60,
+    "WallpaperCycleFadeWaitInSeconds": 0.2,
+    "CustomBackgroundEnabled": false,
+    "CustomBackgroundBehindParticles": false,
+    "CustomBackgroundFadeHideInSeconds": 0.2,
+    "CustomBackgroundFadeShowInSeconds": 0.5,
+	
 }

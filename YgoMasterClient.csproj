@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="YgoMasterClient\CustomBackground.cs" />
     <Compile Include="YgoMasterClient\AudioLoader.cs" />
     <Compile Include="YgoMasterClient\FolderPicker.cs" />
     <Compile Include="YgoMasterClient\DuelDll.ProxyFunctions.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="YgoMasterClient\DeckEditorUtils.cs" />
     <Compile Include="YgoMasterClient\Ultralight.cs" />
     <Compile Include="YgoMasterClient\UnityPlayerPdb.cs" />
+    <Compile Include="YgoMasterClient\WallpaperCycle.cs" />
     <Compile Include="YgoMasterClient\WebUI.cs" />
     <Compile Include="YgoMasterServer\DuelSettings.cs" />
     <Compile Include="YgoMasterServer\Enums\Card.cs" />

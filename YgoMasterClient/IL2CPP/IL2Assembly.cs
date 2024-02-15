@@ -10,11 +10,13 @@ namespace IL2CPP
     {
 
         public string Name { get; private set; }
-        private List<IL2Class> ClassList = new List<IL2Class>();
+        private IL2Class[] ClassList;
         internal IL2Assembly(IntPtr ptr) : base(ptr)
         {
             base.ptr = ptr;
             Name = Path.GetFileNameWithoutExtension(Marshal.PtrToStringAnsi(Import.Image.il2cpp_image_get_name(ptr)));
+
+            List<IL2Class> classes = new List<IL2Class>();
 
             // Map out Classes
             uint count = Import.Image.il2cpp_image_get_class_count(ptr);
@@ -22,12 +24,14 @@ namespace IL2CPP
             {
                 IL2Class klass = new IL2Class(Import.Image.il2cpp_image_get_class(ptr, i));
                 if (klass.DeclaringType == null)
-                    ClassList.Add(klass);
+                    classes.Add(klass);
             }
+
+            ClassList = classes.ToArray();
         }
         public IL2Class[] GetClasses()
         {
-            return ClassList.ToArray();
+            return ClassList;
         }
         public IL2Class[] GetClasses(IL2BindingFlags flags)
         {

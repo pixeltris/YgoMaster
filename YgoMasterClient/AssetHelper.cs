@@ -6,6 +6,7 @@ using IL2CPP;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Threading;
+using YgoMaster;
 
 namespace YgoMasterClient
 {
@@ -19,6 +20,24 @@ namespace YgoMasterClient
         {
             public IntPtr CompleteHandler;
             public uint GcHandle;
+        }
+
+        enum AssetType
+        {
+            None,
+            Audio,
+            Image,
+            Protector,
+            IconFrame,
+            Wallpaper
+        }
+
+        enum TweenClassType
+        {
+            TweenAlpha,
+            TweenPosition,
+            TweenRotation,
+            TweenScale
         }
 
         public static bool IsLoadingCustomAsset
@@ -48,14 +67,15 @@ namespace YgoMasterClient
         static IL2Method methodExists;
         static IL2Method methodGetResource;
         static IL2Method methodGetAsset;
+        static IL2Method methodUnload;
         static IL2Field fieldResourceDictionary;
         static IL2Field fieldResourceManagerInstance;
 
         delegate IntPtr Del_GetResource(IntPtr thisPtr, IntPtr pathPtr, IntPtr workPathPtr);
         static Hook<Del_GetResource> hookGetResource;
-        delegate uint Del_Load(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInterface, IntPtr completeHandler, bool disableErrorNotify);
+        delegate uint Del_Load(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInterface, IntPtr completeHandler, csbool disableErrorNotify);
         static Hook<Del_Load> hookLoad;
-        delegate uint Del_LoadImmediate(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInterface, IntPtr completeHandler, bool disableErrorNotify);
+        delegate uint Del_LoadImmediate(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInterface, IntPtr completeHandler, csbool disableErrorNotify);
         static Hook<Del_LoadImmediate> hookLoadImmediate;
 
         static IntPtr resourceMangerInstance;
@@ -125,7 +145,9 @@ namespace YgoMasterClient
         static IL2Class monoBehaviourClassInfo;// MonoBehaviour
         static IL2Class gameObjectClassInfo;// GameObject
         static IL2Method methodGetComponentInChildren;
+        static IL2Method methodGetComponent;
         static IL2Class imageClassInfo;// Image
+        static IntPtr imageClassType;
         static IL2Method methodGetSprite;
         static IL2Method methodSetSprite;
         static IL2Class rectClassInfo;// Rect
@@ -137,6 +159,25 @@ namespace YgoMasterClient
         static IL2Method methodSetFloat;
         static IL2Method methodSetInt;
         static IL2Method methodSetColor;
+        static IntPtr rectTransformClassType;// RectTransform
+        static IL2Method rectTransformSetSizeDelta;
+
+        // YgomSystem.UI.Tween
+        static Dictionary<TweenClassType, IL2Class> tweenClassInfos = new Dictionary<TweenClassType, IL2Class>();
+        static IL2Class tweenClassInfo;
+        static IL2Field tweenLabel;
+        static IL2Field tweenAlphaFrom;
+        static IL2Field tweenAlphaTo;
+        static IL2Field tweenAlphaIsRecursive;
+        static IL2Field tweenPositionFrom;
+        static IL2Field tweenPositionTo;
+        static IL2Field tweenRotationFrom;
+        static IL2Field tweenRotationTo;
+        static IL2Field tweenRotationQuaternionLerp;
+        static IL2Field tweenScaleFrom;
+        static IL2Field tweenScaleTo;
+
+        static IL2Method methodAddQuitting;
 
         // mscorlib
         static IL2Method methodReadAllBytes;// File
@@ -257,6 +298,7 @@ namespace YgoMasterClient
             methodExists = resourceManagerClassInfo.GetMethod("Exists");
             methodGetResource = resourceManagerClassInfo.GetMethod("getResource", x => x.GetParameters().Length == 2 && x.GetParameters()[0].Name == "path");
             methodGetAsset = resourceManagerClassInfo.GetMethod("GetAsset");
+            methodUnload = resourceManagerClassInfo.GetMethod("unload", x => x.GetParameters()[0].Name == "path");
             fieldResourceDictionary = resourceManagerClassInfo.GetField("resourceDictionary");
             fieldResourceManagerInstance = resourceManagerClassInfo.GetField("s_instance");
             hookGetResource = new Hook<Del_GetResource>(GetResource, methodGetResource);
@@ -323,7 +365,9 @@ namespace YgoMasterClient
             monoBehaviourClassInfo = coreModuleAssembly.GetClass("MonoBehaviour");// MonoBehaviour
             gameObjectClassInfo = coreModuleAssembly.GetClass("GameObject");// GameObject
             methodGetComponentInChildren = gameObjectClassInfo.GetMethod("GetComponentInChildren", x => x.GetParameters().Length == 2);
+            methodGetComponent = gameObjectClassInfo.GetMethod("GetComponent", x => x.GetParameters().Length == 1 && x.GetParameters()[0].Type.Name == typeof(Type).FullName);
             imageClassInfo = uiAssembly.GetClass("Image");// Image
+            imageClassType = imageClassInfo.IL2Typeof();
             methodGetSprite = imageClassInfo.GetProperty("sprite").GetGetMethod();
             methodSetSprite = imageClassInfo.GetProperty("sprite").GetSetMethod();
             rectClassInfo = coreModuleAssembly.GetClass("Rect");// Rect
@@ -336,6 +380,34 @@ namespace YgoMasterClient
             methodSetFloat = materialClassInfo.GetMethod("SetFloat", x => x.GetParameters()[0].Name == "name");
             methodSetInt = materialClassInfo.GetMethod("SetInt", x => x.GetParameters()[0].Name == "name");
             methodSetColor = materialClassInfo.GetMethod("SetColor", x => x.GetParameters()[0].Name == "name");
+            IL2Class rectTransformClassInfo = coreModuleAssembly.GetClass("RectTransform", "UnityEngine");
+            rectTransformClassType = rectTransformClassInfo.IL2Typeof();
+            rectTransformSetSizeDelta = rectTransformClassInfo.GetProperty("sizeDelta").GetSetMethod();
+
+            tweenClassInfo = assembly.GetClass("Tween", "YgomSystem.UI");
+            tweenLabel = tweenClassInfo.GetField("label");
+            
+            IL2Class tweenAlphaClassInfo = assembly.GetClass("TweenAlpha", "YgomSystem.UI");
+            tweenClassInfos[TweenClassType.TweenAlpha] = tweenAlphaClassInfo;
+            tweenAlphaFrom = tweenAlphaClassInfo.GetField("from");
+            tweenAlphaTo = tweenAlphaClassInfo.GetField("to");
+            tweenAlphaIsRecursive = tweenAlphaClassInfo.GetField("isRecusive");
+
+            IL2Class tweenPositionClassInfo = assembly.GetClass("TweenPosition", "YgomSystem.UI");
+            tweenClassInfos[TweenClassType.TweenPosition] = tweenPositionClassInfo;
+            tweenPositionFrom = tweenPositionClassInfo.GetField("from");
+            tweenPositionTo = tweenPositionClassInfo.GetField("to");
+
+            IL2Class tweenRotationClassInfo = assembly.GetClass("TweenRotation", "YgomSystem.UI");
+            tweenClassInfos[TweenClassType.TweenRotation] = tweenRotationClassInfo;
+            tweenRotationFrom = tweenRotationClassInfo.GetField("from");
+            tweenRotationTo = tweenRotationClassInfo.GetField("to");
+            tweenRotationQuaternionLerp = tweenRotationClassInfo.GetField("quaternionLerp");
+
+            IL2Class tweenScaleClassInfo = assembly.GetClass("TweenScale", "YgomSystem.UI");
+            tweenClassInfos[TweenClassType.TweenScale] = tweenScaleClassInfo;
+            tweenScaleFrom = tweenScaleClassInfo.GetField("from");
+            tweenScaleTo = tweenScaleClassInfo.GetField("to");
 
             IL2Assembly mscorlibAssembly = Assembler.GetAssembly("mscorlib");
             IL2Class fileClassInfo = mscorlibAssembly.GetClass("File");
@@ -346,9 +418,12 @@ namespace YgoMasterClient
             AudioClip_CUSTOM_CreateUserSound = (Del_AudioClip_CUSTOM_CreateUserSound)Marshal.GetDelegateForFunctionPointer((IntPtr)(unityPlayer + ClientSettings.UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound), typeof(Del_AudioClip_CUSTOM_CreateUserSound));
             AudioClip_CUSTOM_SetData = (Del_AudioClip_CUSTOM_SetData)Marshal.GetDelegateForFunctionPointer((IntPtr)(unityPlayer + ClientSettings.UnityPlayerRVA_AudioClip_CUSTOM_SetData), typeof(Del_AudioClip_CUSTOM_SetData));
 
-            coreModuleAssembly.GetClass("Application", "UnityEngine").GetMethod("add_quitting")
-                .Invoke(new IntPtr[] { UnityEngine.Events._UnityAction.CreateAction(OnQuitting) }) ;
+            methodAddQuitting = coreModuleAssembly.GetClass("Application", "UnityEngine").GetMethod("add_quitting");
+        }
 
+        public static void Init()
+        {
+            methodAddQuitting.Invoke(new IntPtr[] { UnityEngine.Events._UnityAction.CreateAction(OnQuitting) });
             InitSolo();
         }
 
@@ -462,7 +537,7 @@ namespace YgoMasterClient
             return IntPtr.Zero;
         }
 
-        static IntPtr SpriteFromTexture(IntPtr texture, string assetName, Rect rect = default(Rect))
+        static IntPtr SpriteFromTexture(IntPtr texture, string assetName, Rect rect = default(Rect), float pixelsPerUnit = 0)
         {
             if (texture == IntPtr.Zero)
             {
@@ -474,7 +549,10 @@ namespace YgoMasterClient
             {
                 rect = new Rect(0, 0, width, height);
             }
-            float pixelsPerUnit = GetResourceType() == ResourceType.HighEnd_HD ? 100 : 50;
+            if (pixelsPerUnit == 0)
+            {
+                pixelsPerUnit = GetResourceType() == ResourceType.HighEnd_HD ? 100 : 50;
+            }
             Vector2 pivot = new Vector2(0.5f, 0.5f);
             IL2Object newSpriteAsset = methodSpriteCreate.Invoke(
                 new IntPtr[] { texture, new IntPtr(&rect), new IntPtr(&pivot), new IntPtr(&pixelsPerUnit) });
@@ -486,14 +564,26 @@ namespace YgoMasterClient
             return IntPtr.Zero;
         }
 
-        static IntPtr SpriteFromPNG(string filePath, string assetName)
+        public static IntPtr SpriteFromPNG(string filePath, string assetName, Rect rect = default(Rect), float pixelsPerUnit = 0)
         {
             IntPtr newTextureAsset = TextureFromPNG(filePath, assetName);
             if (newTextureAsset != IntPtr.Zero)
             {
-                return SpriteFromTexture(newTextureAsset, assetName);
+                return SpriteFromTexture(newTextureAsset, assetName, rect, pixelsPerUnit);
             }
             return IntPtr.Zero;
+        }
+
+        public static IntPtr GetSpriteTexture(IntPtr sprite)
+        {
+            IL2Object result = methodGetTexture.Invoke(sprite);
+            return result != null ? result.ptr : IntPtr.Zero;
+        }
+
+        public static void GetTextureSize(IntPtr texture, out int width, out int height)
+        {
+            width = methodGetWidth.Invoke(texture).GetValueRef<int>();
+            height = methodGetHeight.Invoke(texture).GetValueRef<int>();
         }
 
         static bool TryLoadCustomFile(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, out uint result)
@@ -521,10 +611,10 @@ namespace YgoMasterClient
             }
             string loadPath = ConvertAssetPath(path);
             string customAssetPath = null;
-            bool isAudioClip = false;
+            AssetType assetType = AssetType.Image;
             if (loadPath.StartsWith("Sound/AudioClip") && AudioLoader.Available)
             {
-                isAudioClip = true;
+                assetType = AssetType.Audio;
                 foreach (string format in AudioLoader.SupportedFormats)
                 {
                     customAssetPath = Path.Combine(Program.ClientDataDir, loadPath + format);
@@ -536,7 +626,22 @@ namespace YgoMasterClient
             }
             else
             {
-                customAssetPath = Path.Combine(Program.ClientDataDir, loadPath + ".png");
+                string extension = ".png";
+                if (path.StartsWith("WallPaper/") && path.Contains("<_CARD_ILLUST_>/Front"))
+                {
+                    assetType = AssetType.Wallpaper;
+                    extension = ".json";
+                }
+                else if (path.Contains("/ProfileFrameMat"))
+                {
+                    loadPath = Path.Combine(loadPath, "Mat");
+                    assetType = AssetType.IconFrame;
+                }
+                else if (loadPath.StartsWith("Protector/"))
+                {
+                    assetType = AssetType.Protector;
+                }
+                customAssetPath = Path.Combine(Program.ClientDataDir, loadPath + extension);
             }
             if (customAssetPath != null && File.Exists(customAssetPath))
             {
@@ -580,304 +685,665 @@ namespace YgoMasterClient
                     }
                     methodResourceCtor.Invoke(resourcePtr);
 
-                    // TODO: Remove what is not required (and/or directly set them via k__BackingField entries)
                     int resType = (int)ResourceManager_Resource_Type.LocalFile;
                     int queueId = (int)ResourceManager_ReqType.Default;
                     int refCount = 1;
                     IntPtr[] arg = new IntPtr[1];
-                    arg[0] = new IntPtr(&resType); methodSetRefCount.Invoke(resourcePtr, arg);
-                    arg[0] = new IntPtr(&refCount); methodSetResType.Invoke(resourcePtr, arg);
+                    arg[0] = new IntPtr(&refCount); methodSetRefCount.Invoke(resourcePtr, arg);
+                    arg[0] = new IntPtr(&resType); methodSetResType.Invoke(resourcePtr, arg);
                     arg[0] = systemTypeInstance; methodSetSystemType.Invoke(resourcePtr, arg);
                     arg[0] = new IntPtr(&queueId); methodSetQueueId.Invoke(resourcePtr, arg);
                     arg[0] = pathPtr; methodSetPath.Invoke(resourcePtr, arg);
                     arg[0] = new IL2String(loadPath).ptr; methodSetLoadPath.Invoke(resourcePtr, arg);
                     resourceDictionary.Add((int)crc, resourcePtr);
 
-                    IL2Array<IntPtr> assetsArray;
-                    if (isAudioClip)
+                    switch (assetType)
                     {
-                        assetsArray = new IL2Array<IntPtr>(1, objectClassInfo);
-
-                        uint assetsArrayGcHandle = Import.Handler.il2cpp_gchandle_new(assetsArray.ptr, true);
-                        uint resourcePtrHandle = Import.Handler.il2cpp_gchandle_new(resourcePtr, true);
-                        uint completeHandlerHandle = Import.Handler.il2cpp_gchandle_new(completeHandler, true);
-
-                        lock (customAssetLoadRequests)
-                        {
-                            customAssetLoadRequests[path] = null;
-                        }
-                        ThreadPool.QueueUserWorkItem((o) =>
-                        {
-                            float volume = 1;
-                            bool hasCustomVolume = false;
-                            try
-                            {
-                                string volumeFile = Path.Combine(Path.GetDirectoryName(customAssetPath), Path.GetFileNameWithoutExtension(customAssetPath) + ".txt");
-                                if (File.Exists(volumeFile))
-                                {
-                                    using (StreamReader reader = File.OpenText(volumeFile))
-                                    {
-                                        if (float.TryParse(reader.ReadLine(), out volume))
-                                        {
-                                            hasCustomVolume = true;
-                                        }
-                                    }
-                                }
-                            }
-                            catch
-                            {
-                            }
-
-                            string name = Path.GetFileNameWithoutExtension(customAssetPath);
-                            AutoResetEvent waitForMainThread = new AutoResetEvent(false);
-
-                            // TODO: Make this buffer bigger depending on file size?
-                            // NOTE: 2048*2048 = 4MB which might be overkill for sound effects
-                            int bufferSize = 2048 * 2048;//128;
-                            if (audioBufferTLS == null)
-                            {
-                                audioBufferTLS = new float[bufferSize];
-                            }
-                            float[] buffer = audioBufferTLS;
-                            
-                            IAudioLoader audioLoader = AudioLoader.CreateInstance();
-                            AudioInfo info = audioLoader != null ? audioLoader.Open(customAssetPath) : null;
-                            if (info == null)
-                            {
-                                if (audioLoader != null)
-                                {
-                                    audioLoader.Close();
-                                }
-                                Win32Hooks.Invoke(() =>
-                                {
-                                    if (IsQuitting)
-                                    {
-                                        return;
-                                    }
-                                    FinishLoad(assetsArray, resourcePtr, path, completeHandler);
-                                });
-                                return;
-                            }
-
-                            IntPtr audioClip = IntPtr.Zero;
-                            uint audioClipGcHandle = 0;
-                            //IL2Array<float> data = null;
-                            //uint dataGcHandle = 0;
-                            Win32Hooks.Invoke(() =>
-                            {
-                                if (IsQuitting)
-                                {
-                                    return;
-                                }
-                                if (audioBufferIL2CPP == IntPtr.Zero)
-                                {
-                                    // As we're working on a single thread we can save having to create garbage by
-                                    // creating one float array and reusing it
-                                    audioBufferIL2CPP = new IL2Array<float>(bufferSize, IL2SystemClass.Float).ptr;
-                                    Import.Handler.il2cpp_gchandle_new(audioBufferIL2CPP, true);
-                                }
-                                audioClip = AudioClip_CUSTOM_Construct_Internal();
-                                AudioClip_CUSTOM_CreateUserSound(audioClip, new IL2String(name).ptr, info.LengthSamples / info.Channels, info.Channels, info.SampleRate, false);
-                                audioClipGcHandle = Import.Handler.il2cpp_gchandle_new(audioClip, true);
-                                //data = new IL2Array<float>(buffer.Length, IL2SystemClass.Float);
-                                //dataGcHandle = Import.Handler.il2cpp_gchandle_new(data.ptr, true);
-                                waitForMainThread.Set();
-                            });
-                            waitForMainThread.WaitOne();
-
-                            int index = 0;
-                            int dataLen = bufferSize;
-                            while (index < info.LengthSamples)
-                            {
-                                int read = audioLoader.Read(buffer);
-
-                                if (read == 0)
-                                    break;
-
-                                if (hasCustomVolume)
-                                {
-                                    for (int i = 0; i < buffer.Length; i++)
-                                    {
-                                        buffer[i] *= volume;
-                                    }
-                                }
-
-                                Win32Hooks.Invoke(() =>
-                                {
-                                    if (IsQuitting)
-                                    {
-                                        return;
-                                    }
-                                    if (index + bufferSize >= info.LengthSamples)
-                                    {
-                                        dataLen = info.LengthSamples - index;
-                                        //Import.Handler.il2cpp_gchandle_free(dataGcHandle);
-                                        //data = new IL2Array<float>(buffer.Length, IL2SystemClass.Float);
-                                        //dataGcHandle = Import.Handler.il2cpp_gchandle_new(data.ptr, true);
-                                    }
-
-                                    //Marshal.Copy(buffer, 0, (IntPtr)((long*)data.ptr + 4), dataLen);
-                                    //AudioClip_CUSTOM_SetData(audioClip, data.ptr, dataLen / info.Channels, index / info.Channels);
-
-                                    Marshal.Copy(buffer, 0, (IntPtr)((long*)audioBufferIL2CPP + 4), dataLen);
-                                    AudioClip_CUSTOM_SetData(audioClip, audioBufferIL2CPP, dataLen / info.Channels, index / info.Channels);
-
-                                    waitForMainThread.Set();
-                                });
-                                waitForMainThread.WaitOne();
-
-                                index += read;
-                            }
-
-                            Win32Hooks.Invoke(() =>
-                            {
-                                if (IsQuitting)
-                                {
-                                    return;
-                                }
-                                assetsArray[0] = audioClip;
-                                FinishLoad(assetsArray, resourcePtr, path, completeHandler);
-                                Import.Handler.il2cpp_gchandle_free(audioClipGcHandle);
-                                //Import.Handler.il2cpp_gchandle_free(dataGcHandle);
-                                Import.Handler.il2cpp_gchandle_free(completeHandlerHandle);
-                                Import.Handler.il2cpp_gchandle_free(resourcePtrHandle);
-                                Import.Handler.il2cpp_gchandle_free(assetsArrayGcHandle);
-                            });
-
-                            audioLoader.Close();
-                        });
-                        return true;
+                        case AssetType.Audio:
+                            LoadCustomAudio(thisPtr, pathPtr, systemTypeInstance, completeHandler, disableErrorNotify, path, loadPath, customAssetPath, resourcePtr);
+                            break;
+                        case AssetType.Image:
+                            LoadCustomImage(thisPtr, pathPtr, systemTypeInstance, completeHandler, disableErrorNotify, path, loadPath, customAssetPath, resourcePtr);
+                            break;
+                        case AssetType.Protector:
+                            LoadCustomMaterial(thisPtr, pathPtr, systemTypeInstance, completeHandler, disableErrorNotify, path, loadPath, customAssetPath, resourcePtr, assetType);
+                            break;
+                        case AssetType.IconFrame:
+                            LoadCustomMaterial(thisPtr, pathPtr, systemTypeInstance, completeHandler, disableErrorNotify, path, loadPath, customAssetPath, resourcePtr, assetType);
+                            break;
+                        case AssetType.Wallpaper:
+                            LoadCustomWallpaper(thisPtr, pathPtr, systemTypeInstance, completeHandler, disableErrorNotify, path, loadPath, customAssetPath, resourcePtr);
+                            break;
                     }
-                    else if (loadPath.StartsWith("Protector/"))
-                    {
-                        string baseMat = null;
-                        const string baseMatKey = "BaseMat";
-                        string settingsFile = Path.Combine(Path.GetDirectoryName(customAssetPath), Path.GetFileNameWithoutExtension(customAssetPath) + ".json");
-                        Dictionary<string, object> settingsValues = null;
-                        if (File.Exists(settingsFile))
-                        {
-                            settingsValues = MiniJSON.Json.DeserializeStripped(File.ReadAllText(settingsFile)) as Dictionary<string, object>;
-                            if (settingsValues != null)
-                            {
-                                baseMat = YgoMaster.Utils.GetValue<int>(settingsValues, baseMatKey).ToString().PadLeft(4, '0');
-                            }
-                        }
-
-                        string extraImg = Path.Combine(Path.GetDirectoryName(customAssetPath), Path.GetFileNameWithoutExtension(customAssetPath) + "_1.png");
-                        bool isDuluxe = File.Exists(extraImg);
-                        if (string.IsNullOrEmpty(baseMat))
-                        {
-                            baseMat = (isDuluxe ? "2001" : "0005");
-                        }
-                        IntPtr existingAssetPath = new IL2String("Protector/tcg/" + baseMat + "/PMat").ptr;
-                        hookLoadImmediate.Original(thisPtr, existingAssetPath, IntPtr.Zero, IntPtr.Zero, false);
-                        IntPtr workPathPtr = IntPtr.Zero;
-                        IntPtr existingAssetResourcePtr = hookGetResource.Original(thisPtr, existingAssetPath, (IntPtr)(&workPathPtr));
-                        if (existingAssetResourcePtr == IntPtr.Zero)
-                        {
-                            return false;
-                        }
-                        IL2Object existingAssetsArrayObj = methodGetAssets.Invoke(existingAssetResourcePtr);
-                        if (existingAssetsArrayObj == null)
-                        {
-                            return false;
-                        }
-                        IL2Array<IntPtr> existingAssetsArray = new IL2Array<IntPtr>(existingAssetsArrayObj.ptr);
-                        assetsArray = new IL2Array<IntPtr>(1, objectClassInfo);
-                        assetsArray[0] = UnityEngine.UnityObject.Instantiate(existingAssetsArray[0]);
-
-                        string assetName = Path.GetFileNameWithoutExtension(customAssetPath);
-                        IntPtr newTextureAsset = TextureFromPNG(customAssetPath, assetName);
-                        methodSetTexture.Invoke(assetsArray[0], new IntPtr[] { new IL2String("_MainTex").ptr, newTextureAsset });
-                        if (isDuluxe)
-                        {
-                            string assetName2 = Path.GetFileNameWithoutExtension(extraImg);
-                            IntPtr newTextureAsset2 = TextureFromPNG(extraImg, assetName2);
-                            methodSetTexture.Invoke(assetsArray[0], new IntPtr[] { new IL2String("_MainTex2").ptr, newTextureAsset2 });
-                        }
-
-                        if (settingsValues != null)
-                        {
-                            foreach (KeyValuePair<string, object> entry in settingsValues)
-                            {
-                                if (entry.Key == baseMatKey || entry.Value == null)
-                                {
-                                    continue;
-                                }
-                                TypeCode typeCode = Type.GetTypeCode(entry.Value.GetType());
-                                switch (typeCode)
-                                {
-                                    case TypeCode.Double:
-                                        {
-                                            float val = Convert.ToSingle(entry.Value);
-                                            methodSetFloat.Invoke(assetsArray[0], new IntPtr[] { new IL2String(entry.Key).ptr, new IntPtr(&val) });
-                                        }
-                                        break;
-                                    case TypeCode.Int64:
-                                        {
-                                            int val = Convert.ToInt32(entry.Value);
-                                            methodSetInt.Invoke(assetsArray[0], new IntPtr[] { new IL2String(entry.Key).ptr, new IntPtr(&val) });
-                                        }
-                                        break;
-                                    case TypeCode.String:
-                                        {
-                                            string[] splitted = (entry.Value as string).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                                            float* color = stackalloc float[4];
-                                            if (splitted.Length > 0) float.TryParse(splitted[0], out color[0]);
-                                            if (splitted.Length > 1) float.TryParse(splitted[1], out color[1]);
-                                            if (splitted.Length > 2) float.TryParse(splitted[2], out color[2]);
-                                            if (splitted.Length > 3) float.TryParse(splitted[3], out color[3]);
-                                            methodSetColor.Invoke(assetsArray[0], new IntPtr[] { new IL2String(entry.Key).ptr, new IntPtr(color) });
-                                        }
-                                        break;
-                                    default:
-                                        Console.WriteLine("Unsupported type " + typeCode + " in material value setter");
-                                        break;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        assetsArray = new IL2Array<IntPtr>(2, objectClassInfo);
-                        if (assetsArray.ptr == IntPtr.Zero)
-                        {
-                            Console.WriteLine("Array alloc failed");
-                            return false;
-                        }
-
-                        string assetName = Path.GetFileNameWithoutExtension(customAssetPath);
-                        IntPtr newTextureAsset = TextureFromPNG(customAssetPath, assetName);
-                        assetsArray[0] = newTextureAsset;
-
-                        Rect rect = default(Rect);
-
-                        // Card packs have some weird artifacting if the sprite isn't the correct size
-                        // NOTE: Explicitly check for "CardPackTex" to allow for custom images which ignore this code
-                        if (loadPath.StartsWith("Images/CardPack/") && loadPath.Contains("CardPackTex"))
-                        {
-                            if (loadPath.Contains("/SD/"))
-                            {
-                                rect = new Rect(2.292893f, 0, 250.4142f, 512);
-                            }
-                            else
-                            {
-                                rect = new Rect(7.292893f, 0, 496.4142f, 1024);
-                            }
-                        }
-
-                        IntPtr newSpriteAsset = SpriteFromTexture(newTextureAsset, assetName, rect);
-                        if (newSpriteAsset != IntPtr.Zero)
-                        {
-                            assetsArray[1] = newSpriteAsset;
-                        }
-                    }
-
-                    FinishLoad(assetsArray, resourcePtr, new IL2String(pathPtr).ToString(), completeHandler);
                     return true;
                 }
             }
             return false;
+        }
+
+        static void LoadCustomAudio(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, string path, string loadPath, string customAssetPath, IntPtr resourcePtr)
+        {
+            IL2Array<IntPtr> assetsArray = new IL2Array<IntPtr>(1, objectClassInfo);
+
+            uint assetsArrayGcHandle = Import.Handler.il2cpp_gchandle_new(assetsArray.ptr, true);
+            uint resourcePtrHandle = Import.Handler.il2cpp_gchandle_new(resourcePtr, true);
+            uint completeHandlerHandle = Import.Handler.il2cpp_gchandle_new(completeHandler, true);
+
+            lock (customAssetLoadRequests)
+            {
+                customAssetLoadRequests[path] = null;
+            }
+            ThreadPool.QueueUserWorkItem((o) =>
+            {
+                float volume = 1;
+                bool hasCustomVolume = false;
+                try
+                {
+                    string volumeFile = Path.Combine(Path.GetDirectoryName(customAssetPath), Path.GetFileNameWithoutExtension(customAssetPath) + ".txt");
+                    if (File.Exists(volumeFile))
+                    {
+                        using (StreamReader reader = File.OpenText(volumeFile))
+                        {
+                            if (float.TryParse(reader.ReadLine(), out volume))
+                            {
+                                hasCustomVolume = true;
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                }
+
+                string name = Path.GetFileNameWithoutExtension(customAssetPath);
+                AutoResetEvent waitForMainThread = new AutoResetEvent(false);
+
+                // TODO: Make this buffer bigger depending on file size?
+                // NOTE: 2048*2048 = 4MB which might be overkill for sound effects
+                int bufferSize = 2048 * 2048;//128;
+                if (audioBufferTLS == null)
+                {
+                    audioBufferTLS = new float[bufferSize];
+                }
+                float[] buffer = audioBufferTLS;
+
+                IAudioLoader audioLoader = AudioLoader.CreateInstance();
+                AudioInfo info = audioLoader != null ? audioLoader.Open(customAssetPath) : null;
+                if (info == null)
+                {
+                    if (audioLoader != null)
+                    {
+                        audioLoader.Close();
+                    }
+                    Win32Hooks.Invoke(() =>
+                    {
+                        if (IsQuitting)
+                        {
+                            return;
+                        }
+                        FinishLoad(assetsArray, resourcePtr, path, completeHandler);
+                    });
+                    return;
+                }
+
+                IntPtr audioClip = IntPtr.Zero;
+                uint audioClipGcHandle = 0;
+                //IL2Array<float> data = null;
+                //uint dataGcHandle = 0;
+                Win32Hooks.Invoke(() =>
+                {
+                    if (IsQuitting)
+                    {
+                        return;
+                    }
+                    if (audioBufferIL2CPP == IntPtr.Zero)
+                    {
+                        // As we're working on a single thread we can save having to create garbage by
+                        // creating one float array and reusing it
+                        audioBufferIL2CPP = new IL2Array<float>(bufferSize, IL2SystemClass.Float).ptr;
+                        Import.Handler.il2cpp_gchandle_new(audioBufferIL2CPP, true);
+                    }
+                    audioClip = AudioClip_CUSTOM_Construct_Internal();
+                    AudioClip_CUSTOM_CreateUserSound(audioClip, new IL2String(name).ptr, info.LengthSamples / info.Channels, info.Channels, info.SampleRate, false);
+                    audioClipGcHandle = Import.Handler.il2cpp_gchandle_new(audioClip, true);
+                    //data = new IL2Array<float>(buffer.Length, IL2SystemClass.Float);
+                    //dataGcHandle = Import.Handler.il2cpp_gchandle_new(data.ptr, true);
+                    waitForMainThread.Set();
+                });
+                waitForMainThread.WaitOne();
+
+                int index = 0;
+                int dataLen = bufferSize;
+                while (index < info.LengthSamples)
+                {
+                    int read = audioLoader.Read(buffer);
+
+                    if (read == 0)
+                        break;
+
+                    if (hasCustomVolume)
+                    {
+                        for (int i = 0; i < buffer.Length; i++)
+                        {
+                            buffer[i] *= volume;
+                        }
+                    }
+
+                    Win32Hooks.Invoke(() =>
+                    {
+                        if (IsQuitting)
+                        {
+                            return;
+                        }
+                        if (index + bufferSize >= info.LengthSamples)
+                        {
+                            dataLen = info.LengthSamples - index;
+                            //Import.Handler.il2cpp_gchandle_free(dataGcHandle);
+                            //data = new IL2Array<float>(buffer.Length, IL2SystemClass.Float);
+                            //dataGcHandle = Import.Handler.il2cpp_gchandle_new(data.ptr, true);
+                        }
+
+                        //Marshal.Copy(buffer, 0, (IntPtr)((long*)data.ptr + 4), dataLen);
+                        //AudioClip_CUSTOM_SetData(audioClip, data.ptr, dataLen / info.Channels, index / info.Channels);
+
+                        Marshal.Copy(buffer, 0, (IntPtr)((long*)audioBufferIL2CPP + 4), dataLen);
+                        AudioClip_CUSTOM_SetData(audioClip, audioBufferIL2CPP, dataLen / info.Channels, index / info.Channels);
+
+                        waitForMainThread.Set();
+                    });
+                    waitForMainThread.WaitOne();
+
+                    index += read;
+                }
+
+                Win32Hooks.Invoke(() =>
+                {
+                    if (IsQuitting)
+                    {
+                        return;
+                    }
+                    assetsArray[0] = audioClip;
+                    FinishLoad(assetsArray, resourcePtr, path, completeHandler);
+                    Import.Handler.il2cpp_gchandle_free(audioClipGcHandle);
+                    //Import.Handler.il2cpp_gchandle_free(dataGcHandle);
+                    Import.Handler.il2cpp_gchandle_free(completeHandlerHandle);
+                    Import.Handler.il2cpp_gchandle_free(resourcePtrHandle);
+                    Import.Handler.il2cpp_gchandle_free(assetsArrayGcHandle);
+                });
+
+                audioLoader.Close();
+            });
+        }
+
+        static void LoadCustomImage(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, string path, string loadPath, string customAssetPath, IntPtr resourcePtr)
+        {
+            IL2Array<IntPtr> assetsArray = new IL2Array<IntPtr>(2, objectClassInfo);
+            if (assetsArray.ptr == IntPtr.Zero)
+            {
+                return;
+            }
+
+            string assetName = Path.GetFileNameWithoutExtension(customAssetPath);
+            IntPtr newTextureAsset = TextureFromPNG(customAssetPath, assetName);
+            assetsArray[0] = newTextureAsset;
+
+            Rect rect = default(Rect);
+
+            // Card packs have some weird artifacting if the sprite isn't the correct size
+            // NOTE: Explicitly check for "CardPackTex" to allow for custom images which ignore this code
+            if (loadPath.StartsWith("Images/CardPack/") && loadPath.Contains("CardPackTex"))
+            {
+                if (loadPath.Contains("/SD/"))
+                {
+                    rect = new Rect(2.292893f, 0, 250.4142f, 512);
+                }
+                else
+                {
+                    rect = new Rect(7.292893f, 0, 496.4142f, 1024);
+                }
+            }
+
+            IntPtr newSpriteAsset = SpriteFromTexture(newTextureAsset, assetName, rect);
+            if (newSpriteAsset != IntPtr.Zero)
+            {
+                assetsArray[1] = newSpriteAsset;
+            }
+
+            FinishLoad(assetsArray, resourcePtr, path, completeHandler);
+        }
+
+        static void LoadCustomMaterial(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, string path, string loadPath, string customAssetPath, IntPtr resourcePtr, AssetType assetType)
+        {
+            string baseMat = null;
+            const string baseMatKey = "BaseMat";
+            string dir = Path.GetDirectoryName(customAssetPath);
+            string settingsFile = Path.Combine(dir, Path.GetFileNameWithoutExtension(customAssetPath) + ".json");
+            Dictionary<string, object> settings = null;
+            if (File.Exists(settingsFile))
+            {
+                settings = MiniJSON.Json.DeserializeStripped(File.ReadAllText(settingsFile)) as Dictionary<string, object>;
+                if (settings != null)
+                {
+                    baseMat = Utils.GetValue<int>(settings, baseMatKey).ToString().PadLeft(4, '0');
+                }
+            }
+
+            bool isDuluxe = false;
+            string extraImg = Path.Combine(dir, Path.GetFileNameWithoutExtension(customAssetPath) + "_1.png");
+
+            IntPtr existingAssetPath;
+            if (assetType == AssetType.Protector)
+            {
+                isDuluxe = File.Exists(extraImg);
+                if (string.IsNullOrEmpty(baseMat))
+                {
+                    baseMat = (isDuluxe ? "2001" : "0005");
+                }
+                existingAssetPath = new IL2String("Protector/tcg/" + baseMat + "/PMat").ptr;
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(baseMat))
+                {
+                    baseMat = "1030001";
+                }
+                existingAssetPath = new IL2String("Images/ProfileFrame/ProfileFrameMat" + baseMat).ptr;
+            }
+            hookLoadImmediate.Original(thisPtr, existingAssetPath, IntPtr.Zero, IntPtr.Zero, false);
+            IntPtr workPathPtr = IntPtr.Zero;
+            IntPtr existingAssetResourcePtr = hookGetResource.Original(thisPtr, existingAssetPath, (IntPtr)(&workPathPtr));
+            bool force = false;
+            methodUnload.Invoke(thisPtr, new IntPtr[] { existingAssetPath, new IntPtr(&force) });
+            if (existingAssetResourcePtr == IntPtr.Zero)
+            {
+                return;
+            }
+            IL2Object existingAssetsArrayObj = methodGetAssets.Invoke(existingAssetResourcePtr);
+            if (existingAssetsArrayObj == null)
+            {
+                return;
+            }
+            IL2Array<IntPtr> existingAssetsArray = new IL2Array<IntPtr>(existingAssetsArrayObj.ptr);
+            if (existingAssetsArray.Length == 0)
+            {
+                return;
+            }
+            IntPtr existingObj = existingAssetsArray[0];
+            if (existingObj == IntPtr.Zero)
+            {
+                return;
+            }
+            IL2Array<IntPtr> assetsArray = new IL2Array<IntPtr>(1, objectClassInfo);
+            assetsArray[0] = UnityEngine.UnityObject.Instantiate(existingObj);
+
+            string assetName = Path.GetFileNameWithoutExtension(customAssetPath);
+            IntPtr newTextureAsset = TextureFromPNG(customAssetPath, assetName);
+            methodSetTexture.Invoke(assetsArray[0], new IntPtr[] { new IL2String("_MainTex").ptr, newTextureAsset });
+            if (isDuluxe)
+            {
+                string assetName2 = Path.GetFileNameWithoutExtension(extraImg);
+                IntPtr newTextureAsset2 = TextureFromPNG(extraImg, assetName2);
+                methodSetTexture.Invoke(assetsArray[0], new IntPtr[] { new IL2String("_MainTex2").ptr, newTextureAsset2 });
+            }
+
+            if (settings != null)
+            {
+                foreach (KeyValuePair<string, object> entry in settings)
+                {
+                    if (entry.Key == baseMatKey || entry.Value == null)
+                    {
+                        continue;
+                    }
+                    TypeCode typeCode = Type.GetTypeCode(entry.Value.GetType());
+                    switch (typeCode)
+                    {
+                        case TypeCode.Double:
+                            {
+                                float val = Convert.ToSingle(entry.Value);
+                                methodSetFloat.Invoke(assetsArray[0], new IntPtr[] { new IL2String(entry.Key).ptr, new IntPtr(&val) });
+                            }
+                            break;
+                        case TypeCode.Int64:
+                            {
+                                int val = Convert.ToInt32(entry.Value);
+                                methodSetInt.Invoke(assetsArray[0], new IntPtr[] { new IL2String(entry.Key).ptr, new IntPtr(&val) });
+                            }
+                            break;
+                        case TypeCode.String:
+                            {
+                                string[] splitted = (entry.Value as string).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                if (splitted.Length == 4)
+                                {
+                                    float* color = stackalloc float[4];
+                                    if (splitted.Length > 0) float.TryParse(splitted[0], out color[0]);
+                                    if (splitted.Length > 1) float.TryParse(splitted[1], out color[1]);
+                                    if (splitted.Length > 2) float.TryParse(splitted[2], out color[2]);
+                                    if (splitted.Length > 3) float.TryParse(splitted[3], out color[3]);
+                                    methodSetColor.Invoke(assetsArray[0], new IntPtr[] { new IL2String(entry.Key).ptr, new IntPtr(color) });
+                                }
+                                else if (splitted.Length > 0)
+                                {
+                                    string imageFile = Path.Combine(dir, splitted[0] + ".png");
+                                    if (File.Exists(imageFile))
+                                    {
+                                        IntPtr tex = TextureFromPNG(imageFile, splitted[0]);
+                                        methodSetTexture.Invoke(assetsArray[0], new IntPtr[] { new IL2String(entry.Key).ptr, tex });
+                                    }
+                                }
+                            }
+                            break;
+                        default:
+                            Console.WriteLine("Unsupported type " + typeCode + " in material value setter");
+                            break;
+                    }
+                }
+            }
+
+            FinishLoad(assetsArray, resourcePtr, path, completeHandler);
+        }
+
+        static void LoadCustomWallpaper(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, string path, string loadPath, string customAssetPath, IntPtr resourcePtr)
+        {
+            Dictionary<string, object> settings = MiniJSON.Json.DeserializeStripped(File.ReadAllText(customAssetPath)) as Dictionary<string, object>;
+            if (settings == null)
+            {
+                return;
+            }
+            int baseId = Utils.GetValue<int>(settings, "Base");
+            if (baseId == 0)
+            {
+                return;
+            }
+            string baseIdString = baseId.ToString().PadLeft(4, '0');
+            string idString = Path.GetFileNameWithoutExtension(customAssetPath).Replace("Front", string.Empty);
+            IL2Array<IntPtr> assetsArray = new IL2Array<IntPtr>(1, objectClassInfo);
+            IntPtr existingAssetPath = new IL2String("WallPaper/WallPaper" + baseIdString + "/<_CARD_ILLUST_>/Front" + baseIdString).ptr;
+            hookLoadImmediate.Original(thisPtr, existingAssetPath, IntPtr.Zero, IntPtr.Zero, false);
+            IntPtr workPathPtr = IntPtr.Zero;
+            IntPtr existingAssetResourcePtr = hookGetResource.Original(thisPtr, existingAssetPath, (IntPtr)(&workPathPtr));
+            bool force = false;
+            methodUnload.Invoke(thisPtr, new IntPtr[] { existingAssetPath, new IntPtr(&force) });
+            if (existingAssetResourcePtr == IntPtr.Zero)
+            {
+                return;
+            }
+            IL2Object existingAssetsArrayObj = methodGetAssets.Invoke(existingAssetResourcePtr);
+            if (existingAssetsArrayObj == null)
+            {
+                return;
+            }
+            IL2Array<IntPtr> existingAssetsArray = new IL2Array<IntPtr>(existingAssetsArrayObj.ptr);
+            if (existingAssetsArray.Length == 0)
+            {
+                return;
+            }
+            IntPtr existingObj = existingAssetsArray[0];
+            if (existingObj == IntPtr.Zero)
+            {
+                return;
+            }
+            assetsArray[0] = existingObj;
+            for (int i = 0; i < assetsArray.Length; i++)
+            {
+                IntPtr obj = assetsArray[i];
+                if (obj == IntPtr.Zero) continue;
+                IntPtr type = Import.Object.il2cpp_object_get_class(obj);
+                if (type == gameObjectClassInfo.ptr)
+                {
+                    assetsArray[0] = obj = UnityEngine.UnityObject.Instantiate(obj);
+                    List<Dictionary<string, object>> objSettingsList = Utils.GetDictionaryCollection(settings, "GameObjects");
+                    if (objSettingsList != null)
+                    {
+                        LoadCustomWallpaperGameObjects(customAssetPath, baseIdString, idString, obj, obj, objSettingsList);
+                    }
+                }
+            }
+
+            FinishLoad(assetsArray, resourcePtr, path, completeHandler);
+        }
+
+        static void LoadCustomWallpaperGameObjects(string customAssetPath, string baseIdString, string idString, IntPtr rootObj, IntPtr parentObj, List<Dictionary<string, object>> objSettingsList)
+        {
+            foreach (Dictionary<string, object> objSettings in objSettingsList)
+            {
+                string objName = Utils.GetValue<string>(objSettings, "Name");
+                if (string.IsNullOrWhiteSpace(objName))
+                {
+                    continue;
+                }
+                objName = objName.Replace("{BASEID}", baseIdString).Replace("{ID}", idString);
+                IntPtr obj = UnityEngine.GameObject.FindGameObjectByName(parentObj, objName, false, false);
+                if (obj == IntPtr.Zero)
+                {
+                    if (obj == IntPtr.Zero)
+                    {
+                        obj = UnityEngine.GameObject.New();
+                    }
+                    UnityEngine.Transform.SetParent(UnityEngine.GameObject.GetTranform(obj), UnityEngine.GameObject.GetTranform(parentObj));
+                    UnityEngine.UnityObject.SetName(obj, objName);
+                }
+                if (Utils.GetValue<bool>(objSettings, "Disable"))
+                {
+                    UnityEngine.GameObject.SetActive(obj, false);
+                }
+                else if (Utils.GetValue<bool>(objSettings, "Destroy"))
+                {
+                    UnityEngine.Transform.SetParent(UnityEngine.GameObject.GetTranform(obj), IntPtr.Zero);
+                    UnityEngine.UnityObject.Destroy(obj);
+                }
+                else
+                {
+                    string imageFile = Utils.GetValue<string>(objSettings, "Image");
+                    if (!string.IsNullOrWhiteSpace(imageFile))
+                    {
+                        imageFile = Path.Combine(Path.GetDirectoryName(customAssetPath), imageFile.Replace("{ID}", idString) + ".png");
+                    }
+                    if (File.Exists(imageFile))
+                    {
+                        IL2Object image = methodGetComponent.Invoke(obj, new IntPtr[] { imageClassInfo.IL2Typeof() });
+                        if (image == null)
+                        {
+                            IntPtr imagePtr = UnityEngine.GameObject.AddComponent(obj, imageClassType);
+                            if (imagePtr != IntPtr.Zero)
+                            {
+                                image = new IL2Object(imagePtr);
+                            }
+                        }
+                        if (image != null)
+                        {
+                            IntPtr sprite = SpriteFromPNG(imageFile, Path.GetFileNameWithoutExtension(imageFile));
+                            if (sprite != IntPtr.Zero)
+                            {
+                                methodSetSprite.Invoke(image.ptr, new IntPtr[] { sprite });
+                                IL2Object texture = methodGetTexture.Invoke(sprite);
+                                if (texture != null)
+                                {
+                                    int width = methodGetWidth.Invoke(texture.ptr).GetValueRef<int>();
+                                    int height = methodGetHeight.Invoke(texture.ptr).GetValueRef<int>();
+                                    int overrideWidth, overrideHeight;
+                                    if (Utils.TryGetValue(objSettings, "Width", out overrideWidth) && overrideWidth > 0)
+                                    {
+                                        width = overrideWidth;
+                                    }
+                                    if (Utils.TryGetValue(objSettings, "Height", out overrideHeight) && overrideHeight > 0)
+                                    {
+                                        height = overrideHeight;
+                                    }
+                                    float scale = Utils.GetValue<float>(objSettings, "Scale");
+                                    if (scale > 0)
+                                    {
+                                        width = (int)(width * scale);
+                                        height = (int)(height * scale);
+                                    }
+                                    IntPtr rectTransform = UnityEngine.GameObject.GetComponent(obj, rectTransformClassType);
+                                    Vector2 sizeDelta = new Vector2(width, height);
+                                    rectTransformSetSizeDelta.Invoke(rectTransform, new IntPtr[] { new IntPtr(&sizeDelta) });
+                                }
+                            }
+                        }
+                    }
+
+                    IntPtr[] components = UnityEngine.GameObject.GetComponents(obj);
+                    List<KeyValuePair<IntPtr, string>> tweenComponents = new List<KeyValuePair<IntPtr, string>>();
+                    List<Dictionary<string, object>> tweenSettingsList = Utils.GetDictionaryCollection(objSettings, "Tween");
+                    if (tweenSettingsList.Count > 0)
+                    {
+                        foreach (IntPtr component in components)
+                        {
+                            IntPtr klass = Import.Object.il2cpp_object_get_class(component);
+                            while (klass != IntPtr.Zero && klass != tweenClassInfo.ptr)
+                            {
+                                klass = Import.Class.il2cpp_class_get_parent(klass);
+                            }
+                            if (klass != IntPtr.Zero)
+                            {
+                                tweenComponents.Add(new KeyValuePair<IntPtr, string>(Import.Object.il2cpp_object_get_class(component), tweenLabel.GetValue(component).GetValueObj<string>()));
+                            }
+                        }
+                    }
+
+                    if (objSettings.ContainsKey("Offset"))
+                    {
+                        UnityEngine.Vector3 offset = GetVector3(objSettings, "Offset");
+
+                        IntPtr showComponent = components.FirstOrDefault(x =>
+                            Import.Object.il2cpp_object_get_class(x) == tweenClassInfos[TweenClassType.TweenPosition].ptr &&
+                            tweenLabel.GetValue(x).GetValueObj<string>() == "Show");
+
+                        IntPtr loopComponent = components.FirstOrDefault(x =>
+                            Import.Object.il2cpp_object_get_class(x) == tweenClassInfos[TweenClassType.TweenPosition].ptr &&
+                            tweenLabel.GetValue(x).GetValueObj<string>() == "Loop");
+
+                        for (int i = 0; i < 2; i++)
+                        {
+                            IntPtr component = i == 0 ? showComponent : loopComponent;
+                            if (component != IntPtr.Zero)
+                            {
+                                UnityEngine.Vector3 from = tweenPositionFrom.GetValue(component).GetValueRef<UnityEngine.Vector3>();
+                                UnityEngine.Vector3 to = tweenPositionTo.GetValue(component).GetValueRef<UnityEngine.Vector3>();
+                                from.x += offset.x;
+                                from.y += offset.y;
+                                from.z += offset.z;
+                                to.x += offset.x;
+                                to.y += offset.y;
+                                to.z += offset.z;
+                                tweenPositionFrom.SetValue(component, new IntPtr(&from));
+                                tweenPositionTo.SetValue(component, new IntPtr(&to));
+                            }
+                        }
+                    }
+
+                    foreach (Dictionary<string, object> tweenSettings in tweenSettingsList)
+                    {
+                        TweenClassType tweenType = Utils.GetValue<TweenClassType>(tweenSettings, "Type");
+                        IL2Class componentClassInfo;
+                        tweenClassInfos.TryGetValue(tweenType, out componentClassInfo);
+                        if (componentClassInfo == null)
+                        {
+                            continue;
+                        }
+
+                        string label = Utils.GetValue<string>(tweenSettings, "Label");
+                        IntPtr component = components.FirstOrDefault(x =>
+                            Import.Object.il2cpp_object_get_class(x) == componentClassInfo.ptr &&
+                            tweenLabel.GetValue(x).GetValueObj<string>() == label);
+                        if (component == IntPtr.Zero)
+                        {
+                            continue;
+                        }
+
+                        switch (tweenType)
+                        {
+                            case TweenClassType.TweenAlpha:
+                                {
+                                    float from;
+                                    if (Utils.TryGetValue(tweenSettings, "From", out from))
+                                    {
+                                        tweenAlphaFrom.SetValue(component, new IntPtr(&from));
+                                    }
+                                    float to;
+                                    if (Utils.TryGetValue(tweenSettings, "To", out to))
+                                    {
+                                        tweenAlphaTo.SetValue(component, new IntPtr(&to));
+                                    }
+                                    bool isRecusive;
+                                    if (Utils.TryGetValue(tweenSettings, "IsRecursive", out isRecusive))
+                                    {
+                                        tweenAlphaIsRecursive.SetValue(component, new IntPtr(&isRecusive));
+                                    }
+                                }
+                                break;
+                            case TweenClassType.TweenPosition:
+                                {
+                                    UnityEngine.Vector3 from = GetVector3(tweenSettings, "From");
+                                    UnityEngine.Vector3 to = GetVector3(tweenSettings, "To");
+                                    tweenPositionFrom.SetValue(component, new IntPtr(&from));
+                                    tweenPositionTo.SetValue(component, new IntPtr(&to));
+                                }
+                                break;
+                            case TweenClassType.TweenRotation:
+                                {
+                                    UnityEngine.Vector3 from = GetVector3(tweenSettings, "From");
+                                    UnityEngine.Vector3 to = GetVector3(tweenSettings, "To");
+                                    tweenRotationFrom.SetValue(component, new IntPtr(&from));
+                                    tweenRotationTo.SetValue(component, new IntPtr(&to));
+                                    bool quaternionLerp;
+                                    if (Utils.TryGetValue(tweenSettings, "QuaternionLerp", out quaternionLerp))
+                                    {
+                                        tweenRotationQuaternionLerp.SetValue(component, new IntPtr(&quaternionLerp));
+                                    }
+                                }
+                                break;
+                            case TweenClassType.TweenScale:
+                                {
+                                    UnityEngine.Vector3 from = GetVector3(tweenSettings, "From");
+                                    UnityEngine.Vector3 to = GetVector3(tweenSettings, "To");
+                                    tweenScaleFrom.SetValue(component, new IntPtr(&from));
+                                    tweenScaleTo.SetValue(component, new IntPtr(&to));
+                                }
+                                break;
+                        }
+                    }
+
+                    bool targetSiblingBefore = true;
+                    string targetSiblingName = Utils.GetValue<string>(objSettings, "Before");
+                    if (string.IsNullOrEmpty(targetSiblingName))
+                    {
+                        targetSiblingName = Utils.GetValue<string>(objSettings, "After");
+                        targetSiblingBefore = false;
+                    }
+                    if (!string.IsNullOrEmpty(targetSiblingName))
+                    {
+                        IntPtr targetSibling = UnityEngine.GameObject.FindGameObjectByName(parentObj, targetSiblingName.Replace("{BASEID}", baseIdString), false, false);
+                        if (targetSibling != IntPtr.Zero)
+                        {
+                            IntPtr transform = UnityEngine.GameObject.GetTranform(obj);
+                            IntPtr targetSiblingTransform = UnityEngine.GameObject.GetTranform(targetSibling);
+                            int index = UnityEngine.Transform.GetSiblingIndex(targetSiblingTransform);
+                            UnityEngine.Transform.SetSiblingIndex(transform, targetSiblingBefore ? index : index + 1);
+                        }
+                    }
+
+                    List<object> childObjSettingsList;
+                    if (Utils.TryGetValue(objSettings, "Children", out childObjSettingsList))
+                    {
+                        LoadCustomWallpaperGameObjects(customAssetPath, baseIdString, idString, rootObj, obj, childObjSettingsList.Select(x => (Dictionary<string, object>)x).ToList());
+                    }
+                }
+            }
+        }
+
+        static UnityEngine.Vector3 GetVector3(Dictionary<string, object> settings, string key)
+        {
+            UnityEngine.Vector3 result = default(UnityEngine.Vector3);
+            Dictionary<string, object> resultJson = Utils.GetDictionary(settings, key);
+            if (resultJson != null)
+            {
+                result.x = Utils.GetValue<float>(resultJson, "X");
+                result.y = Utils.GetValue<float>(resultJson, "Y");
+                result.z = Utils.GetValue<float>(resultJson, "Z");
+            }
+            return result;
         }
 
         static void FinishLoad(IL2Array<IntPtr> assetsArray, IntPtr resourcePtr, string path, IntPtr completeHandler)
@@ -908,7 +1374,7 @@ namespace YgoMasterClient
             }
         }
 
-        static uint Load(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify)
+        static uint Load(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInstance, IntPtr completeHandler, csbool disableErrorNotify)
         {
             if (ClientSettings.AssetHelperLog && path != IntPtr.Zero)
             {
@@ -926,7 +1392,7 @@ namespace YgoMasterClient
             return hookLoad.Original(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify);
         }
 
-        static uint LoadImmediate(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify)
+        static uint LoadImmediate(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInstance, IntPtr completeHandler, csbool disableErrorNotify)
         {
             if (ClientSettings.AssetHelperLog && path != IntPtr.Zero)
             {
@@ -950,6 +1416,12 @@ namespace YgoMasterClient
             LoadImmediate(mgr, new IL2String(path).ptr, IntPtr.Zero, IntPtr.Zero, false);
             IL2Object result = methodGetAsset.Invoke(mgr, new IntPtr[] { new IL2String(path).ptr, IntPtr.Zero });
             return result != null ? result.ptr : IntPtr.Zero;
+        }
+
+        public static void Unload(string path, bool force = false)
+        {
+            IntPtr mgr = fieldResourceManagerInstance.GetValue().ptr;
+            methodUnload.Invoke(mgr, new IntPtr[] { new IL2String(path).ptr, new IntPtr(&force) });
         }
 
         public static byte[] GetBytesDecryptionData(string path)
@@ -1015,11 +1487,7 @@ namespace YgoMasterClient
                             {
                                 try
                                 {
-                                    Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
-                                }
-                                catch { }
-                                try
-                                {
+                                    Utils.TryCreateDirectory(Path.GetDirectoryName(fullPath));
                                     File.WriteAllBytes(fullPath, buffer);
                                 }
                                 catch { }
@@ -1082,11 +1550,7 @@ namespace YgoMasterClient
                                     {
                                         try
                                         {
-                                            Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
-                                        }
-                                        catch { }
-                                        try
-                                        {
+                                            Utils.TryCreateDirectory(Path.GetDirectoryName(fullPath));
                                             File.WriteAllBytes(fullPath, buffer);
                                         }
                                         catch { }

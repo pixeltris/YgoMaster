@@ -298,6 +298,8 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomGame.Menu.ActionSheetViewController));
                 nativeTypes.Add(typeof(Win32Hooks));
                 nativeTypes.Add(typeof(AssetHelper));
+                nativeTypes.Add(typeof(WallpaperCycle));
+                nativeTypes.Add(typeof(CustomBackground));
                 nativeTypes.Add(typeof(YgomGame.Utility.ItemUtil));
                 nativeTypes.Add(typeof(YgomSystem.Utility.TextData));
                 nativeTypes.Add(typeof(YgomSystem.Utility.ClientWork));
@@ -308,11 +310,10 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomMiniJSON.Json));
                 nativeTypes.Add(typeof(Steamworks.SteamAPI));
                 nativeTypes.Add(typeof(Steamworks.SteamUtils));
-                // Uncomment the following after an update (extra things which are normally loaded on demand)
-                /*nativeTypes.Add(typeof(UnityEngine.UnityObject));
+                nativeTypes.Add(typeof(UnityEngine.UnityObject));
                 nativeTypes.Add(typeof(UnityEngine.GameObject));
                 nativeTypes.Add(typeof(UnityEngine.Transform));
-                nativeTypes.Add(typeof(UnityEngine.Component));*/
+                nativeTypes.Add(typeof(UnityEngine.Component));
                 // Uncomment the following for easier logging of solo content
                 foreach (Type type in nativeTypes)
                 {
@@ -354,6 +355,10 @@ namespace YgoMasterClient
                             PInvoke.SetWindowTextW(windowHandle, windowTitle.TrimEnd() + windowTitleSuffix);
                         }
                     }
+
+                    YgomSystem.Utility.TextData.LoadCustomTextData();
+                    CustomBackground.Init();
+                    AssetHelper.Init();
                 });
 
                 if (ClientSettings.ShowConsole)
@@ -1004,6 +1009,9 @@ namespace YgoMasterClient
                                             case "unityplayerupdate":// Updates UnityPlayer.dll function addresses based on the provided PDB
                                                 UnityPlayerPdb.Update();
                                                 break;
+                                            case "bgreload":
+                                                CustomBackground.ReloadBg();
+                                                break;
                                         }
                                     }
                                     catch (Exception e)
@@ -1156,8 +1164,6 @@ namespace YgomSystem.Utility
 
             // System.Object.ToString
             methodObjectToString = Assembler.GetAssembly("mscorlib").GetClass("Object", "System").GetMethod("ToString");
-
-            LoadCustomTextData();
         }
 
         public static void LoadCustomTextData()

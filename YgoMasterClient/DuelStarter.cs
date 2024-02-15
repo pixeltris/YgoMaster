@@ -2054,6 +2054,7 @@ namespace UnityEngine
     {
         static IL2Class classInfo;
         static IL2Method methodCtor;
+        static IL2Method methodFind;
         static IL2Method methodGetTransform;
         static IL2Method methodGetComponentsTObject;
         static IL2Method methodGetComponent;
@@ -2066,6 +2067,7 @@ namespace UnityEngine
             IL2Assembly assembly = Assembler.GetAssembly("UnityEngine.CoreModule");
             classInfo = assembly.GetClass("GameObject");
             methodCtor = classInfo.GetMethod(".ctor", x => x.GetParameters().Length == 0);
+            methodFind = classInfo.GetMethod("Find");
             methodGetTransform = classInfo.GetProperty("transform").GetGetMethod();
             methodGetComponentsTObject = classInfo.GetMethod("GetComponents", x => x.GetParameters().Length == 0).MakeGenericMethod(
                 new Type[] { typeof(object) });
@@ -2080,6 +2082,12 @@ namespace UnityEngine
             IntPtr result = Import.Object.il2cpp_object_new(classInfo.ptr);
             methodCtor.Invoke(result);
             return result;
+        }
+
+        public static IntPtr Find(string name)
+        {
+            IL2Object result = methodFind.Invoke(new IntPtr[] { new IL2String(name).ptr });
+            return result != null ? result.ptr : IntPtr.Zero;
         }
 
         public static IntPtr GetTranform(IntPtr thisPtr)
@@ -2111,7 +2119,7 @@ namespace UnityEngine
             return result != null ? result.ptr : IntPtr.Zero;
         }
 
-        public static IntPtr FindGameObjectByName(IntPtr thisPtr, string name, bool reverseSearch = false)
+        public static IntPtr FindGameObjectByName(IntPtr thisPtr, string name, bool reverseSearch = false, bool recursive = true)
         {
             string thisName = UnityObject.GetName(thisPtr);
             if (thisName == name)
@@ -2127,13 +2135,47 @@ namespace UnityEngine
             {
                 IntPtr childTransform = UnityEngine.Transform.GetChild(transform, i);
                 IntPtr childObject = UnityEngine.Component.GetGameObject(childTransform);
-                IntPtr result = FindGameObjectByName(childObject, name);
-                if (result != IntPtr.Zero)
+                if (recursive)
                 {
-                    return result;
+                    IntPtr result = FindGameObjectByName(childObject, name);
+                    if (result != IntPtr.Zero)
+                    {
+                        return result;
+                    }
+                }
+                else
+                {
+                    string childName = UnityObject.GetName(childTransform);
+                    if (childName == name)
+                    {
+                        return childObject;
+                    }
                 }
             }
             return IntPtr.Zero;
+        }
+
+        public static IntPtr FindGameObjectByPath(IntPtr thisPtr, string path)
+        {
+            string[] splitted = path.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            IntPtr obj = thisPtr;
+            if (splitted.Length > 0)
+            {
+                for (int i = 0; i < splitted.Length; i++)
+                {
+                    string objName = splitted[i];
+                    obj = FindGameObjectByName(obj, objName, false, false);
+                    if (obj == IntPtr.Zero)
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                obj = IntPtr.Zero;
+            }
+            return obj;
         }
 
         public static void DestroyChildObjects(IntPtr thisPtr)
@@ -2146,6 +2188,20 @@ namespace UnityEngine
                 IntPtr childObject = UnityEngine.Component.GetGameObject(childTransform);
                 UnityEngine.UnityObject.Destroy(childObject);
             }
+        }
+
+        public static List<IntPtr> GetChildren(IntPtr thisPtr)
+        {
+            List<IntPtr> result = new List<IntPtr>();
+            IntPtr transform = GameObject.GetTranform(thisPtr);
+            int childCount = Transform.GetChildCount(transform);
+            for (int i = 0; i < childCount; i++)
+            {
+                IntPtr childTransform = Transform.GetChild(transform, i);
+                IntPtr childObject = Component.GetGameObject(childTransform);
+                result.Add(childObject);
+            }
+            return result;
         }
 
         public static IntPtr GetParentObject(IntPtr thisPtr)
@@ -2212,6 +2268,10 @@ namespace UnityEngine
         static IL2Method methodSetParent;
         static IL2Method methodGetPosition;
         static IL2Method methodSetPosition;
+        static IL2Method methodSetLocalPosition;
+        static IL2Method methodSetLocalScale;
+        static IL2Method methodGetSiblingIndex;
+        static IL2Method methodSetSiblingIndex;
 
         static IL2Class serializedFieldClassInfo;
 
@@ -2225,6 +2285,10 @@ namespace UnityEngine
             methodSetParent = classInfo.GetProperty("parent").GetSetMethod();
             methodGetPosition = classInfo.GetProperty("position").GetGetMethod();
             methodSetPosition = classInfo.GetProperty("position").GetSetMethod();
+            methodSetLocalPosition = classInfo.GetProperty("localPosition").GetSetMethod();
+            methodSetLocalScale = classInfo.GetProperty("localScale").GetSetMethod();
+            methodGetSiblingIndex = classInfo.GetMethod("GetSiblingIndex");
+            methodSetSiblingIndex = classInfo.GetMethod("SetSiblingIndex");
 
             serializedFieldClassInfo = Assembler.GetAssembly("UnityEngine.CoreModule").GetClass("SerializeField");
         }
@@ -2248,7 +2312,6 @@ namespace UnityEngine
 
         public static void SetParent(IntPtr thisPtr, IntPtr newParent)
         {
-            Console.WriteLine("set " + thisPtr.ToInt64() + " to " + newParent.ToInt64());
             methodSetParent.Invoke(thisPtr, new IntPtr[] { newParent });
         }
 
@@ -2261,6 +2324,26 @@ namespace UnityEngine
         public static void SetPosition(IntPtr thisPtr, Vector3 position)
         {
             methodSetPosition.Invoke(thisPtr, new IntPtr[] { new IntPtr(&position) });
+        }
+
+        public static void SetLocalPosition(IntPtr thisPtr, Vector3 position)
+        {
+            methodSetLocalPosition.Invoke(thisPtr, new IntPtr[] { new IntPtr(&position) });
+        }
+
+        public static void SetLocalScale(IntPtr thisPtr, Vector3 scale)
+        {
+            methodSetLocalScale.Invoke(thisPtr, new IntPtr[] { new IntPtr(&scale) });
+        }
+
+        public static int GetSiblingIndex(IntPtr thisPtr)
+        {
+            return methodGetSiblingIndex.Invoke(thisPtr).GetValueRef<int>();
+        }
+
+        public static void SetSiblingIndex(IntPtr thisPtr, int index)
+        {
+            methodSetSiblingIndex.Invoke(thisPtr, new IntPtr[] { new IntPtr(&index) });
         }
 
         public static void Dump(IntPtr transform, int depth = 0)
@@ -2380,5 +2463,12 @@ namespace UnityEngine
         public float x;
         public float y;
         public float z;
+        
+        public Vector3(float x, float y, float z)
+        {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
     }
 }
