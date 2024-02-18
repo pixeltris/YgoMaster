@@ -63,6 +63,7 @@ namespace YgoMaster
         Dictionary<int, int> CardRare;
         List<int> CardCraftable;
         bool CardCraftableAll;
+        Dictionary<string, object> TitleLoop;
         Dictionary<string, object> Regulation;
         Dictionary<string, object> RegulationIcon;
         Dictionary<string, object> RegulationInfo;
@@ -502,6 +503,12 @@ namespace YgoMaster
             if (File.Exists(regulationInfoFile))
             {
                 RegulationInfo = MiniJSON.Json.DeserializeStripped(File.ReadAllText(regulationInfoFile)) as Dictionary<string, object>;
+            }
+            
+            string TitleLoopFile = Path.Combine(dataDirectory, "TitleLoop.json");
+            if (File.Exists(TitleLoopFile))
+            {
+                TitleLoop = MiniJSON.Json.DeserializeStripped(File.ReadAllText(TitleLoopFile)) as Dictionary<string, object>;
             }
 
             string regulationFile = Path.Combine(dataDirectory, "Regulation.json");
