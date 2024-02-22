@@ -439,6 +439,14 @@ namespace YgoMaster
                                     {
                                         File.WriteAllText(Path.Combine(updateDir, "RegulationInfo.json"), FormatJson(MiniJSON.Json.Serialize(data["Regulation"])));
                                     }
+                                    if (data.ContainsKey("Server") && data["Server"] as Dictionary<string, object> != null)
+                                    {
+                                        Dictionary<string, object> masterData = data["Server"] as Dictionary<string, object>;
+                                        if (masterData.ContainsKey("TitleLoop") && masterData["TitleLoop"] as Dictionary<string, object> != null)
+                                        {
+                                            File.WriteAllText(Path.Combine(updateDir, "TitleLoop.json"), FormatJson(MiniJSON.Json.Serialize(masterData["TitleLoop"])));
+                                        }
+                                    }
                                     if (data.ContainsKey("Master") && data["Master"] as Dictionary<string, object> != null)
                                     {
                                         Dictionary<string, object> masterData = data["Master"] as Dictionary<string, object>;
