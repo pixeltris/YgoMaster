@@ -14,7 +14,7 @@ Certain logs will be dumped as json into `%USERPROFILE%/Documents/Fiddler2/Captu
 - Go back to the title screen
 - Enter the game and log `/ayk/api/User.home`
 - Copy the following files from `YgoMasterUpdate/` to `YgoMaster/Data/`
-- `CardCraftableList.json`, `CardList.json`, `Regulation.json`, `RegulationIcon.json`, `RegulationInfo.json`, `StructureDecks.json`
+- `CardCraftableList.json`, `CardList.json`, `Regulation.json`, `RegulationIcon.json`, `RegulationInfo.json`, `StructureDecks.json`, `TitleLoop.json`
 
 ## Structure decks
 
