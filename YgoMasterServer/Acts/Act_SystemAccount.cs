@@ -88,7 +88,8 @@ namespace YgoMaster
                     new string[] { "ko-KR", "한국어" },
                     new string[] { "zh-CN", "简体中文" },
                     new string[] { "zh-TW", "繁體中文" },
-                }}
+                }},
+                { "TitleLoop", TitleLoop }
             };
 
             request.Remove("Server");
