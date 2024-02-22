@@ -47,6 +47,21 @@ For shop pack odds...
 
 - Log the odds from clicking the button in-game and copy the data into `ShopPackOdds.json`.
 
+For creating `YgoMaster/Data/ShopDumps/` from scratch...
+
+- Create a new Steam account
+- Complete the tutorial
+- Go to the SOLO screen and enter `solo_clear` into the client console - this will take some time to complete and will complete all solo content
+- Keep buying Master Pack bundles / packs until you have no gems
+- Go to the deck editor and enter `dismantle_all_cards SuperRare UltraRare` into the client console - this will dismantle every SR/UR you own
+- Go to the shop and enter `craft_secrets` into the client console - this will craft every missing secret pack
+- In the shop enter `auto_free_pull` into the client console - this will open every free pull secret pack
+- Re-enter the shop to log `/ayk/api/Shop.get_list`
+- Save the log into `YgoMaster/Data/ShopDumps/Shop-2024-02-22.json` (or whatever the current date is)
+- Get the card list for the Master Pack and save the `/ayk/api/Gacha.get_card_list` log into `YgoMaster/Data/ShopDumps/Gacha-10000001.json`
+- Get the card list for Legacy Pack and save the `/ayk/api/Gacha.get_card_list` log into `YgoMaster/Data/ShopDumps/Gacha-10003001.json`
+- Follow the above `YgoMaster.exe --mergeshops` instructions
+
 ## YdkIds.txt
 
 - In the client console run `carddata` which should create `/Data/ClientDataDump/Card/Data/{CLIENT_VERSION}/`, move and rename the `{CLIENT_VERSION}` folder to `/Data/CardData/`. You must do this while using the `English` language setting.
