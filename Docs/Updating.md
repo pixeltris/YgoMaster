@@ -5,7 +5,7 @@
 - Copy `YgoMaster/YgoMasterFiddler/bin/Debug/YgoMasterFiddler.dll` to `C:/Program Files (x86)/Fiddler/Inspectors/`
 - Run Fiddler, select a game network request and click the two `YgoMaster` tabs (request / response)
 
-Certain logs will be dumped as json into `C:/Program Files (x86)/Fiddler/YgoMasterUpdate/` when the log is clicked and both `YgoMaster` tabs are selected.
+Certain logs will be dumped as json into `%USERPROFILE%/Documents/Fiddler2/Captures/YgoMasterUpdate/` when the log is clicked and both `YgoMaster` tabs are selected.
 
 *Obtain all logs from the Steam version of the game. Not YgoMaster.*
 

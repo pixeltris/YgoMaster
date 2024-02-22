@@ -147,12 +147,13 @@ namespace YgoMaster
 
     static class YgoMasterInspectorHelper
     {
-        const string updateDir = "YgoMasterUpdate";
+        static string updateDir = "YgoMasterUpdate";
         
         static YgoMasterInspectorHelper()
         {
             try
             {
+                updateDir = Path.Combine(CONFIG.GetPath("Captures"), updateDir);
                 Directory.CreateDirectory(updateDir);
             }
             catch {}
