@@ -43,6 +43,8 @@
     1000026,//Spright Blue
     1000027,//Unchained Abomination
     1000029,//Souleating Oviraptor
+    1000032,//Elemental HERO Flame Wingman
+    1000033,//Blue-Eyes Chaos MAX Dragon
     1001001,//Instant Fusion
     1001002,//Noble Arms - Caliburn
     1001003,//Book of Moon
@@ -64,6 +66,7 @@
     1001020,//A New Life - Galatea
     1001022,//Cross-Sheep
     1001023,//Hungry Burger
+    1001024,//Eldlixir
     1002001,//Soccer Ball
     1002002,//Basketball
     1002003,//Record Player
@@ -134,6 +137,11 @@
     1010053,//The Winged Dragon of Ra
     1010054,//Obelisk the Tormentor
     1010055,//Question
+    1010056,//The Legend of Duelist QUARTER CENTURY
+    1010057,//Yu-Gi-Oh! Card Game 25th Anniversary
+    1010058,//Blue-Eyes White Dragon
+    1010059,//Diabellstar the Black Witch
+    1010060,//Sinful Spoils of Subversion - Snake-Eye
     1010064,//Rikka Princess
     1010065,//S-Force Nightchaser
     1011001,//Soccer Ball
@@ -201,6 +209,7 @@
     1012038,//Vendread Battlelord
     1012039,//Vendread Chimera
     1012040,//Legendary Six Samurai - Shi En
+    1012041,//Yoko, the Graceful Mayakashi
     1012042,//Ghostrick Alucard
     1012043,//Genex Controller
     1012044,//Myutant GB-88
@@ -213,6 +222,7 @@
     1012051,//Teardrop the Rikka Queen
     1012052,//Subterror Behemoth Speleogeist
     1012053,//Monk of the Tenyi
+    1012055,//Eldlich the Golden Lord
     1013001,//PawaPuro
     1013002,//Memories of Intersecting Duels
   ],
@@ -304,6 +314,9 @@
     1020086,//DC 2023 DEC Top 10000
     1020087,//DC 2023 DEC 2nd Stage Duelist
     1020088,//Theme Chronicle 2024
+    1020089,//The Bond of Duelists
+    1020090,//Acceleration 2024
+    1020091,//Synchro x Link Festival 2024
   ],
   "ICON_FRAME": [
     1030001,//Beginner's Frame
@@ -324,17 +337,21 @@
     1030016,//Icon Frame - EARTH
     1030017,//Icon Frame - WATER
     1030018,//Icon Frame - FIRE
+    1030019,//Icon Frame - WIND
     1030020,//Yellow Frame
     1030021,//Master Frame
     1030022,//Pink Frame
     1030023,//Orange Frame
+    1030025,//Mint Frame
     1030026,//Link Master Frame
+    1030027,//The Legend of Duelist  QUARTER CENTURY Frame
     1031001,//The Path of the Blue Sky Striker
     1031002,//The Path of the Red Sky Striker
     1031003,//Magic Cylinder
     1031004,//Dark Magical Circle
     1031005,//Evil Eye of Selene
     1031006,//Polymerization
+    1031007,//Blue-Eyes White Dragon
     1032001,//Festive Ornament
     1032002,//Celebration of Spring Breeze
     1032003,//Tropical Seaside
@@ -410,6 +427,11 @@
     1070066,//Albion the Sanctifire Dragon
     1070067,//Gold Pride
     1070068,//Slifer the Sky Dragon
+    1070069,//WANTED: Seeker of Sinful Spoils
+    1070070,//Blue-Eyes White Dragon
+    1070076,//The Iris Swordsoul
+    1070077,//Crimson Dragon
+    1070078,//Emperor Charles the Great
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -424,6 +446,7 @@
     1071012,//Giant Beetrooper Invincible Atlas
     1071013,//Revendread Slayer
     1071014,//Ghostrick Alucard
+    1071015,//Yoko, the Graceful Mayakashi
     1071016,//Legendary Six Samurai - Shi En
     1071017,//Genex Controller
     1071018,//Myutant Ultimus
@@ -434,6 +457,7 @@
     1071023,//Teardrop the Rikka Queen
     1071024,//Subterror Behemoth Speleogeist
     1071025,//Draco Masters of the Tenyi
+    1071027,//Eldlixir of Black Awakening
     1072001,//Sky Striker Conversion: Flaming Wings of Destruction
     1072002,//Chaos Xyz Evolution －Galactic Gathering of Dragons－
     1073001,//WCS 2023 Party Favor
@@ -464,6 +488,8 @@
     1080021,//Spiral Spear Strike
     1080022,//Blackwing's Pride
     1080023,//Hidden Arts of Shadows
+    1080024,//Blue-Eyes Max
+    1080025,//Sword of Souls
     1082001,//Xyz Black
     1082002,//The Millennium Puzzle
     1082003,//Duelist Card Case Blue
@@ -472,8 +498,11 @@
     1082006,//Card Case - EARTH
     1082007,//Card Case - WATER
     1082008,//Card Case - FIRE
+    1082009,//Card Case - WIND
     1082010,//Gold Pride
     1082011,//2024 Card Case
+    1082012,//President's Briefcase
+    1082013,//Magicians of Bonds and Unity
   ],
   "FIELD": [
     1090001,//Forest
@@ -497,6 +526,7 @@
     1090019,//Dogmatika Cathedral
     1090020,//Archfiend Palabyrinth
     1090021,//The Revived Sky Temple
+    1090025,//Blue-Eyes Mausoleum
     1092001,//Colosseum
     1092002,//WCS
   ],
@@ -522,6 +552,7 @@
     1100019,//Dogmatika Cathedral
     1100020,//Archfiend Palabyrinth
     1100021,//The Revived Sky Temple
+    1100025,//Blue-Eyes Mausoleum
     1101001,//Trap Hole
     1101002,//Magical Hats
     1101003,//Summon Limit
@@ -559,6 +590,7 @@
     1110019,//Dogmatika Cathedral
     1110020,//Archfiend Palabyrinth
     1110021,//The Revived Sky Temple
+    1110025,//Blue-Eyes Mausoleum
     1111001,//Destiny Board
     1111002,//Bug Matrix
     1111003,//Shien's Dojo
@@ -605,6 +637,8 @@
     1120021,//Spiral Spear Strike
     1120022,//Blackwing's Pride
     1120023,//Hidden Arts of Shadows
+    1120024,//Blue-Eyes Max
+    1120025,//Sword of Souls
   ],
   "WALLPAPER": [
     1130001,//Blue-Eyes Alternative White Dragon
@@ -637,6 +671,10 @@
     1130028,//Gold Pride - Star Leon
     1130029,//Gift Exchange
     1130030,//Onikuji
+    1130032,//Blue-Eyes White Dragon
+    1130037,//Mamemaki
+    1130039,//Snake-Eyes Flamberge Dragon
+    1130040,//Flawless Perfection of the Tenyi
     1130041,//Number 41: Bagooska the Terribly Tired Tapir
   ],
   "PACK_TICKET": [

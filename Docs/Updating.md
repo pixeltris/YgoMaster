@@ -36,6 +36,7 @@ Certain logs will be dumped as json into `%USERPROFILE%/Documents/Fiddler2/Captu
 - Click `SHOP` to log `/ayk/api/Shop.get_list`
 - Rename the `YgoMasterUpdate/Shop.json` log to the update date and copy it into `YgoMaster/Data/ShopDumps/`
 - In game select `Master Pack` and click `Cards included in this pack`. Manually copy the response of `/ayk/api/Gacha.get_card_list` into `Data/ShopDumps/Gacha-10000001.json`
+- In game select `Legacy Pack` and click `Cards included in this pack`. Manually copy the response of `/ayk/api/Gacha.get_card_list` into `Data/ShopDumps/Gacha-10003001.json`
 - Run the `YgoMaster.exe --mergeshops` command to merge `/Data/ShopDumps/` into `/Data/AllShopsMerged.json`. Copy out what is needed. For some shops like 3001 you'll need to manually fix up the shop price (and maybe the card list as well?).
 - Zip up your `ShopDumps` folder and update the link at the top of this section. Then delete your `ShopDumps` folder.
 

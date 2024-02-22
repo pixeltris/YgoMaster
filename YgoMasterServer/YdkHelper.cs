@@ -94,8 +94,13 @@ namespace YgoMaster
                         string possibleJson = line.Substring(line.IndexOf(customYdkHeader) + customYdkHeader.Length).Trim();
                         try
                         {
-                            deck.FromDictionaryEx(MiniJSON.Json.Deserialize(possibleJson) as Dictionary<string, object>);
-                            return;
+                            // We only want the accessory data from this section
+                            DeckInfo tempDeck = new DeckInfo();
+                            tempDeck.FromDictionaryEx(MiniJSON.Json.Deserialize(possibleJson) as Dictionary<string, object>);
+                            deck.Accessory.CopyFrom(tempDeck.Accessory);
+                            deck.DisplayCards.CopyFrom(tempDeck.DisplayCards);
+                            deck.TimeCreated = tempDeck.TimeCreated;
+                            deck.TimeEdited = tempDeck.TimeEdited;
                         }
                         catch
                         {

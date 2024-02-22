@@ -787,12 +787,64 @@ namespace YgoMaster
                                 }
                             }
                             break;
-                        case "--get-cids":
+                        case "--get-cids":// Gets a list of card ids for a given deck filename
                             {
                                 DeckInfo deck = new DeckInfo();
                                 deck.File = args[++i];
                                 deck.Load();
                                 File.WriteAllText("cids.txt", string.Join(",", deck.GetAllCards()));
+                            }
+                            break;
+                        case "--missing-solo":// Logs which chapters are missing from /SoloDuels/
+                            if (SoloData != null)
+                            {
+                                List<int> chapterIds = new List<int>();
+                                Dictionary<string, object> allChapterData = Utils.GetDictionary(SoloData, "chapter");
+                                Dictionary<string, object> allGateData = Utils.GetDictionary(SoloData, "gate");
+                                if (allChapterData != null && allGateData != null)
+                                {
+                                    foreach (KeyValuePair<string, object> gateChapterData in allChapterData)
+                                    {
+                                        Dictionary<string, object> chapters = gateChapterData.Value as Dictionary<string, object>;
+                                        int gateId;
+                                        if (!int.TryParse(gateChapterData.Key, out gateId) || chapters == null)
+                                        {
+                                            continue;
+                                        }
+                                        foreach (KeyValuePair<string, object> chapter in chapters)
+                                        {
+                                            Dictionary<string, object> chapterData = chapter.Value as Dictionary<string, object>;
+                                            int chapterId;
+                                            if (!int.TryParse(chapter.Key, out chapterId) || chapterData == null)
+                                            {
+                                                continue;
+                                            }
+
+                                            Dictionary<string, object> gateData = Utils.GetDictionary(allGateData, gateId.ToString());
+                                            bool isGoal = Utils.GetValue<int>(gateData, "clear_chapter") == chapterId;
+
+                                            bool isScenario = !string.IsNullOrWhiteSpace(Utils.GetValue<string>(chapterData, "begin_sn"));
+                                            bool isLock = Utils.GetValue<int>(chapterData, "unlock_id") != 0;
+
+                                            int myDeckSetId = Utils.GetValue<int>(chapterData, "mydeck_set_id");
+                                            int loanerDeckSetId = Utils.GetValue<int>(chapterData, "set_id");
+                                            if (!isGoal && !isScenario && !isLock && (myDeckSetId != 0 || loanerDeckSetId != 0))
+                                            {
+                                                chapterIds.Add(chapterId);
+                                            }
+                                        }
+                                    }
+                                }
+                                List<int> chaptersOnDisk = new List<int>();
+                                foreach (string file in Directory.GetFiles(Path.Combine(dataDirectory, "SoloDuels")))
+                                {
+                                    int chapterId;
+                                    if (int.TryParse(Path.GetFileNameWithoutExtension(file), out chapterId))
+                                    {
+                                        chaptersOnDisk.Add(chapterId);
+                                    }
+                                }
+                                Console.WriteLine("Missing chapters: " + string.Join(",", chapterIds.Except(chaptersOnDisk)));
                             }
                             break;
                         default:
