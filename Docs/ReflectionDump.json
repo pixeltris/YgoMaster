@@ -83,6 +83,16 @@
     "Assembly": "Assembly-CSharp",
     "Namespace": "YgomGame.Duel",
     "Class": [
+      "DuelClient"
+    ],
+    "Type": "Method",
+    "Name": "EvalEachSteps",
+    "Signature": "System.Void EvalEachSteps()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
       "CameraShaker"
     ],
     "Type": "Method",
@@ -2152,6 +2162,16 @@
     "Class": [
       "ResourceManager"
     ],
+    "Type": "Method",
+    "Name": "unload",
+    "Signature": "System.Void unload(System.String path, System.Boolean force)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem",
+    "Class": [
+      "ResourceManager"
+    ],
     "Type": "Field",
     "Name": "resourceDictionary",
     "Signature": "ResourceManager"
@@ -2608,6 +2628,16 @@
     "Signature": "public UnityEngine.Component GetComponentInChildren(System.Type type, System.Boolean includeInactive)"
   },
   {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "GameObject"
+    ],
+    "Type": "Method",
+    "Name": "GetComponent",
+    "Signature": "public UnityEngine.Component GetComponent(System.Type type)"
+  },
+  {
     "Assembly": "UnityEngine.UI",
     "Namespace": "UnityEngine.UI",
     "Class": [
@@ -2658,6 +2688,156 @@
     "Signature": "public System.Void SetTexture(System.String name, UnityEngine.Texture value)"
   },
   {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Material"
+    ],
+    "Type": "Method",
+    "Name": "SetFloat",
+    "Signature": "public System.Void SetFloat(System.String name, System.Single value)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Material"
+    ],
+    "Type": "Method",
+    "Name": "SetInt",
+    "Signature": "public System.Void SetInt(System.String name, System.Int32 value)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Material"
+    ],
+    "Type": "Method",
+    "Name": "SetColor",
+    "Signature": "public System.Void SetColor(System.String name, UnityEngine.Color value)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "RectTransform"
+    ],
+    "Type": "Property",
+    "Name": "sizeDelta",
+    "Signature": "public UnityEngine.Vector2"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "Tween"
+    ],
+    "Type": "Field",
+    "Name": "label",
+    "Signature": "public Tween"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenAlpha"
+    ],
+    "Type": "Field",
+    "Name": "from",
+    "Signature": "public TweenAlpha"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenAlpha"
+    ],
+    "Type": "Field",
+    "Name": "to",
+    "Signature": "public TweenAlpha"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenAlpha"
+    ],
+    "Type": "Field",
+    "Name": "isRecusive",
+    "Signature": "public TweenAlpha"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenPosition"
+    ],
+    "Type": "Field",
+    "Name": "from",
+    "Signature": "public TweenPosition"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenPosition"
+    ],
+    "Type": "Field",
+    "Name": "to",
+    "Signature": "public TweenPosition"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenRotation"
+    ],
+    "Type": "Field",
+    "Name": "from",
+    "Signature": "public TweenRotation"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenRotation"
+    ],
+    "Type": "Field",
+    "Name": "to",
+    "Signature": "public TweenRotation"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenRotation"
+    ],
+    "Type": "Field",
+    "Name": "quaternionLerp",
+    "Signature": "public TweenRotation"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenScale"
+    ],
+    "Type": "Field",
+    "Name": "from",
+    "Signature": "public TweenScale"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenScale"
+    ],
+    "Type": "Field",
+    "Name": "to",
+    "Signature": "public TweenScale"
+  },
+  {
     "Assembly": "mscorlib",
     "Namespace": "System.IO",
     "Class": [
@@ -2666,6 +2846,16 @@
     "Type": "Method",
     "Name": "ReadAllBytes",
     "Signature": "public static System.Byte[] ReadAllBytes(System.String path)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Application"
+    ],
+    "Type": "Method",
+    "Name": "add_quitting",
+    "Signature": "public static System.Void add_quitting(System.Action value)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2785,6 +2975,136 @@
     "Type": "Field",
     "Name": "uvRectSizeOther",
     "Signature": "public ThumbSetting"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "HomeViewController"
+    ],
+    "Type": "Method",
+    "Name": "Update",
+    "Signature": "System.Void Update()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "HomeViewController"
+    ],
+    "Type": "Method",
+    "Name": "OnTransitionStart",
+    "Signature": "public System.Void OnTransitionStart(YgomSystem.UI.ViewController.TransitionType type)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "HomeViewController"
+    ],
+    "Type": "Method",
+    "Name": "NotificationStackRemove",
+    "Signature": "public System.Void NotificationStackRemove()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "HomeViewController"
+    ],
+    "Type": "Method",
+    "Name": "UpdateWallpaper",
+    "Signature": "System.Void UpdateWallpaper()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "HomeViewController"
+    ],
+    "Type": "Field",
+    "Name": "currentWallpaperGo",
+    "Signature": "HomeViewController"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.Utility",
+    "Class": [
+      "ClientWorkUtil"
+    ],
+    "Type": "Method",
+    "Name": "GetUserWallpaper",
+    "Signature": "public static System.Int32 GetUserWallpaper(System.Int32 defaultValue)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "Tween"
+    ],
+    "Type": "Method",
+    "Name": "TargetPlayLabel",
+    "Signature": "public static System.Void TargetPlayLabel(UnityEngine.GameObject target, System.String _label, System.Boolean includeChildren, System.Boolean wakeup)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "OutGameBGManager"
+    ],
+    "Type": "Method",
+    "Name": "Initialize",
+    "Signature": "System.Void Initialize()"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Renderer"
+    ],
+    "Type": "Property",
+    "Name": "sortingOrder",
+    "Signature": "public System.Int32"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Renderer"
+    ],
+    "Type": "Property",
+    "Name": "sortingOrder",
+    "Signature": "public System.Int32"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "SpriteRenderer"
+    ],
+    "Type": "Property",
+    "Name": "color",
+    "Signature": "public UnityEngine.Color"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "SpriteRenderer"
+    ],
+    "Type": "Property",
+    "Name": "sprite",
+    "Signature": "public UnityEngine.Sprite"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "OutGameBGManager"
+    ],
+    "Type": "Field",
+    "Name": "m_BackRoot",
+    "Signature": "OutGameBGManager"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3105,5 +3425,245 @@
     "Type": "Method",
     "Name": "ShowFloatingGamepadTextInput",
     "Signature": "public static System.Boolean ShowFloatingGamepadTextInput(Steamworks.EFloatingGamepadTextInputMode eKeyboardMode, System.Int32 nTextFieldXPosition, System.Int32 nTextFieldYPosition, System.Int32 nTextFieldWidth, System.Int32 nTextFieldHeight)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Object"
+    ],
+    "Type": "Property",
+    "Name": "name",
+    "Signature": "public System.String"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Object"
+    ],
+    "Type": "Method",
+    "Name": "Instantiate",
+    "Signature": "public static UnityEngine.Object Instantiate(UnityEngine.Object original)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Object"
+    ],
+    "Type": "Method",
+    "Name": "Instantiate",
+    "Signature": "public static UnityEngine.Object Instantiate(UnityEngine.Object original, UnityEngine.Transform parent)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Object"
+    ],
+    "Type": "Method",
+    "Name": "Destroy",
+    "Signature": "public static System.Void Destroy(UnityEngine.Object obj, System.Single t)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "GameObject"
+    ],
+    "Type": "Method",
+    "Name": ".ctor",
+    "Signature": "public System.Void .ctor()"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "GameObject"
+    ],
+    "Type": "Method",
+    "Name": "Find",
+    "Signature": "public static UnityEngine.GameObject Find(System.String name)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "GameObject"
+    ],
+    "Type": "Property",
+    "Name": "transform",
+    "Signature": "public UnityEngine.Transform"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "GameObject"
+    ],
+    "Type": "Method",
+    "Name": "GetComponents",
+    "Signature": "public T[] GetComponents()"
+  },
+  {
+    "Assembly": "mscorlib",
+    "Namespace": "System.Reflection",
+    "Class": [
+      "MonoMethod"
+    ],
+    "Type": "Method",
+    "Name": "MakeGenericMethod",
+    "Signature": "public System.Reflection.MethodInfo MakeGenericMethod(System.Type[] methodInstantiation)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "GameObject"
+    ],
+    "Type": "Method",
+    "Name": "GetComponent",
+    "Signature": "public UnityEngine.Component GetComponent(System.Type type)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "GameObject"
+    ],
+    "Type": "Method",
+    "Name": "AddComponent",
+    "Signature": "public UnityEngine.Component AddComponent(System.Type componentType)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "GameObject"
+    ],
+    "Type": "Property",
+    "Name": "activeSelf",
+    "Signature": "public System.Boolean"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "GameObject"
+    ],
+    "Type": "Method",
+    "Name": "SetActive",
+    "Signature": "public System.Void SetActive(System.Boolean value)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Transform"
+    ],
+    "Type": "Property",
+    "Name": "childCount",
+    "Signature": "public System.Int32"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Transform"
+    ],
+    "Type": "Method",
+    "Name": "GetChild",
+    "Signature": "public UnityEngine.Transform GetChild(System.Int32 index)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Transform"
+    ],
+    "Type": "Property",
+    "Name": "parent",
+    "Signature": "public UnityEngine.Transform"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Transform"
+    ],
+    "Type": "Property",
+    "Name": "parent",
+    "Signature": "public UnityEngine.Transform"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Transform"
+    ],
+    "Type": "Property",
+    "Name": "position",
+    "Signature": "public UnityEngine.Vector3"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Transform"
+    ],
+    "Type": "Property",
+    "Name": "position",
+    "Signature": "public UnityEngine.Vector3"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Transform"
+    ],
+    "Type": "Property",
+    "Name": "localPosition",
+    "Signature": "public UnityEngine.Vector3"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Transform"
+    ],
+    "Type": "Property",
+    "Name": "localScale",
+    "Signature": "public UnityEngine.Vector3"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Transform"
+    ],
+    "Type": "Method",
+    "Name": "GetSiblingIndex",
+    "Signature": "public System.Int32 GetSiblingIndex()"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Transform"
+    ],
+    "Type": "Method",
+    "Name": "SetSiblingIndex",
+    "Signature": "public System.Void SetSiblingIndex(System.Int32 index)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Component"
+    ],
+    "Type": "Property",
+    "Name": "gameObject",
+    "Signature": "public UnityEngine.GameObject"
   }
 ]

@@ -419,12 +419,14 @@ namespace YgoMasterClient
             AudioClip_CUSTOM_SetData = (Del_AudioClip_CUSTOM_SetData)Marshal.GetDelegateForFunctionPointer((IntPtr)(unityPlayer + ClientSettings.UnityPlayerRVA_AudioClip_CUSTOM_SetData), typeof(Del_AudioClip_CUSTOM_SetData));
 
             methodAddQuitting = coreModuleAssembly.GetClass("Application", "UnityEngine").GetMethod("add_quitting");
+
+            InitSoloTypes();
         }
 
         public static void Init()
         {
             methodAddQuitting.Invoke(new IntPtr[] { UnityEngine.Events._UnityAction.CreateAction(OnQuitting) });
-            InitSolo();
+            LoadSoloData();
         }
 
         static Action OnQuitting = () =>

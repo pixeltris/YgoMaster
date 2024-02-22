@@ -48,6 +48,25 @@ namespace YgoMasterClient
             public Vector2 UvRectSizeOther;
         }
 
+        static void InitSoloTypes()
+        {
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            soloCardThumbSettingsClassInfo = assembly.GetClass("SoloCardThumbSettings");
+            fieldGateMap = soloCardThumbSettingsClassInfo.GetField("m_GateMap");
+            fieldChapterMap = soloCardThumbSettingsClassInfo.GetField("m_ChapterMap");
+            settingMapClassInfo = soloCardThumbSettingsClassInfo.GetNestedType("SettingMap");
+            fieldThumbMapSettings = settingMapClassInfo.GetField("m_Settings");
+            fieldThumbMapSettingsMap = settingMapClassInfo.GetField("m_SettingsMap");
+            thumbSettingClassInfo = soloCardThumbSettingsClassInfo.GetNestedType("ThumbSetting");
+            thumbSettingCtor = thumbSettingClassInfo.GetMethod(".ctor");
+            fieldThumbSettingId = thumbSettingClassInfo.GetField("id");
+            fieldThumbSettingMrk = thumbSettingClassInfo.GetField("mrk");
+            fieldThumbSettingUvRectPos = thumbSettingClassInfo.GetField("uvRectPos");
+            fieldThumbSettingUvRectSize = thumbSettingClassInfo.GetField("uvRectSize");
+            fieldThumbSettingUvRectPosOther = thumbSettingClassInfo.GetField("uvRectPosOther");
+            fieldThumbSettingUvRectSizeOther = thumbSettingClassInfo.GetField("uvRectSizeOther");
+        }
+
         public static void LoadSoloData()
         {
             SoloGates.Clear();
@@ -122,27 +141,6 @@ namespace YgoMasterClient
             {
                 InjectSoloThumbs(soloThumbsPtr);
             }
-        }
-
-        static void InitSolo()
-        {
-            LoadSoloData();
-
-            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
-            soloCardThumbSettingsClassInfo = assembly.GetClass("SoloCardThumbSettings");
-            fieldGateMap = soloCardThumbSettingsClassInfo.GetField("m_GateMap");
-            fieldChapterMap = soloCardThumbSettingsClassInfo.GetField("m_ChapterMap");
-            settingMapClassInfo = soloCardThumbSettingsClassInfo.GetNestedType("SettingMap");
-            fieldThumbMapSettings = settingMapClassInfo.GetField("m_Settings");
-            fieldThumbMapSettingsMap = settingMapClassInfo.GetField("m_SettingsMap");
-            thumbSettingClassInfo = soloCardThumbSettingsClassInfo.GetNestedType("ThumbSetting");
-            thumbSettingCtor = thumbSettingClassInfo.GetMethod(".ctor");
-            fieldThumbSettingId = thumbSettingClassInfo.GetField("id");
-            fieldThumbSettingMrk = thumbSettingClassInfo.GetField("mrk");
-            fieldThumbSettingUvRectPos = thumbSettingClassInfo.GetField("uvRectPos");
-            fieldThumbSettingUvRectSize = thumbSettingClassInfo.GetField("uvRectSize");
-            fieldThumbSettingUvRectPosOther = thumbSettingClassInfo.GetField("uvRectPosOther");
-            fieldThumbSettingUvRectSizeOther = thumbSettingClassInfo.GetField("uvRectSizeOther");
         }
 
         static void InjectSoloThumb(IntPtr thumb, SoloGateCardEntry data)
