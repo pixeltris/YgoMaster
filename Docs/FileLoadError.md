@@ -1,6 +1,6 @@
 # Loading errors
 
-![Alt text](Pics/LoadError.png)
+![Alt text](Pics/LoadError.jpg)
 
 You may see some variation of the above error or infinite loading screens, corrupt screens, etc. There are a few reasons this might happen.
 

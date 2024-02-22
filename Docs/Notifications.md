@@ -1,7 +1,7 @@
 # Menu Notifications
 
 Home notifications are now available from v1.40. These are shown to the user on the main menu screen of the game and are refreshed everytime the menu is loaded.
-![image](Pics/custom_notification1.png).
+![image](Pics/custom_notification1.jpg).
 
 ## Usage
 

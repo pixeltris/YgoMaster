@@ -61,10 +61,10 @@ Running `Build.bat` is the equivilant of:
 
 ## Screenshots
 
-![Alt text](Docs/Pics/ss1.png)
-![Alt text](Docs/Pics/ss2.png)
-![Alt text](Docs/Pics/ss3.png)
-![Alt text](Docs/Pics/ss4.png)
-![Alt text](Docs/Pics/ss5.png)
-![Alt text](Docs/Pics/ss6.png)
-![Alt text](Docs/Pics/ss7.png)
+![Alt text](Docs/Pics/ss1.jpg)
+![Alt text](Docs/Pics/ss2.jpg)
+![Alt text](Docs/Pics/ss3.jpg)
+![Alt text](Docs/Pics/ss4.jpg)
+![Alt text](Docs/Pics/ss5.jpg)
+![Alt text](Docs/Pics/ss6.jpg)
+![Alt text](Docs/Pics/ss7.jpg)
