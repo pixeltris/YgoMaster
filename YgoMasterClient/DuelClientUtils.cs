@@ -161,7 +161,8 @@ namespace YgomGame.Duel
 
         static void EvalEachSteps(IntPtr thisPtr)
         {
-            if (AssetHelper.IsLoadingCustomAsset && Step == DuelClientStep.WaitLoadSound + 1)
+            DuelClientStep step = (DuelClientStep)Import.Field.il2cpp_field_get_value_object_ref<int>(fieldStep.ptr, thisPtr);
+            if (AssetHelper.IsLoadingCustomAsset && step == DuelClientStep.WaitLoadSound + 1)
             {
                 return;
             }

@@ -205,6 +205,12 @@ namespace IL2CPP
             public extern static int il2cpp_field_get_offset(IntPtr field);
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
             public extern static bool il2cpp_field_has_attribute(IntPtr field, IntPtr attr_class);
+
+            public static T il2cpp_field_get_value_object_ref<T>(IntPtr field, IntPtr obj) where T : struct
+            {
+                IntPtr result = il2cpp_field_get_value_object(field, obj);
+                return result == IntPtr.Zero ? default(T) : NativeUtils.PtrToStruct<T>(result + 0x10);
+            }
         }
     }
 }

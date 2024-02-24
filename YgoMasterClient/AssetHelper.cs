@@ -690,6 +690,19 @@ namespace YgoMasterClient
                     int resType = (int)ResourceManager_Resource_Type.LocalFile;
                     int queueId = (int)ResourceManager_ReqType.Default;
                     int refCount = 1;
+                    if (assetType == AssetType.Audio && path.Contains("/BGM_DUEL_"))
+                    {
+                        // They load BGM audio like this:
+                        // ~ Loading screen ~
+                        // Load(BGM_DUEL_XXX)
+                        // Unload(BGM_DUEL_XXX)
+                        // ~ In-duel ~
+                        // Load(BGM_DUEL_XXX)
+                        
+                        // If the audio doesn't load fast enough on that second Load call then the audio wont play.
+                        // To fix this we force the BGM to stay loaded by increasing the ref count by 1 (will stay loaded forever)
+                        refCount++;
+                    }
                     IntPtr[] arg = new IntPtr[1];
                     arg[0] = new IntPtr(&refCount); methodSetRefCount.Invoke(resourcePtr, arg);
                     arg[0] = new IntPtr(&resType); methodSetResType.Invoke(resourcePtr, arg);
