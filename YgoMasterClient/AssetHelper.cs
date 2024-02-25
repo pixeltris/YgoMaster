@@ -690,7 +690,7 @@ namespace YgoMasterClient
                     int resType = (int)ResourceManager_Resource_Type.LocalFile;
                     int queueId = (int)ResourceManager_ReqType.Default;
                     int refCount = 1;
-                    if (assetType == AssetType.Audio && path.Contains("/BGM_DUEL_"))
+                    if (assetType == AssetType.Audio && path.Contains("/BGM_"))
                     {
                         // They load BGM audio like this:
                         // ~ Loading screen ~
