@@ -588,7 +588,7 @@ namespace YgoMasterClient
             height = methodGetHeight.Invoke(texture).GetValueRef<int>();
         }
 
-        static bool TryLoadCustomFile(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, out uint result)
+        static bool TryLoadCustomFile(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, out uint result, bool loadImmediate)
         {
             result = 0;
             if (resourceMangerInstance != thisPtr)
@@ -697,10 +697,11 @@ namespace YgoMasterClient
                         // Load(BGM_DUEL_XXX)
                         // Unload(BGM_DUEL_XXX)
                         // ~ In-duel ~
-                        // Load(BGM_DUEL_XXX)
-                        
-                        // If the audio doesn't load fast enough on that second Load call then the audio wont play.
-                        // To fix this we force the BGM to stay loaded by increasing the ref count by 1 (will stay loaded forever)
+                        // LoadImmediate(BGM_DUEL_XXX)
+
+                        // The LoadImmediate call would result in slow loading of custom audio due to the previous Unload.
+                        // To fix this we force the BGM to stay loaded by increasing the ref count by 1 (will stay loaded forever).
+                        // TODO: Instead of this we could skip the first Unload call then manually call Unload when the duel ends
                         refCount++;
                     }
                     IntPtr[] arg = new IntPtr[1];
@@ -715,7 +716,7 @@ namespace YgoMasterClient
                     switch (assetType)
                     {
                         case AssetType.Audio:
-                            LoadCustomAudio(thisPtr, pathPtr, systemTypeInstance, completeHandler, disableErrorNotify, path, loadPath, customAssetPath, resourcePtr);
+                            LoadCustomAudio(thisPtr, pathPtr, systemTypeInstance, completeHandler, disableErrorNotify, path, loadPath, customAssetPath, resourcePtr, false);//loadImmediate);
                             break;
                         case AssetType.Image:
                             LoadCustomImage(thisPtr, pathPtr, systemTypeInstance, completeHandler, disableErrorNotify, path, loadPath, customAssetPath, resourcePtr);
@@ -736,7 +737,7 @@ namespace YgoMasterClient
             return false;
         }
 
-        static void LoadCustomAudio(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, string path, string loadPath, string customAssetPath, IntPtr resourcePtr)
+        static void LoadCustomAudio(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, string path, string loadPath, string customAssetPath, IntPtr resourcePtr, bool loadImmediate)
         {
             IL2Array<IntPtr> assetsArray = new IL2Array<IntPtr>(1, objectClassInfo);
 
@@ -744,11 +745,13 @@ namespace YgoMasterClient
             uint resourcePtrHandle = Import.Handler.il2cpp_gchandle_new(resourcePtr, true);
             uint completeHandlerHandle = Import.Handler.il2cpp_gchandle_new(completeHandler, true);
 
-            lock (customAssetLoadRequests)
+            Action<Action> invokeImmediate = (Action action) =>
             {
-                customAssetLoadRequests[path] = null;
-            }
-            ThreadPool.QueueUserWorkItem((o) =>
+                action();
+            };
+            Action<Action> invoke = loadImmediate ? invokeImmediate : Win32Hooks.Invoke;
+
+            WaitCallback work = (o) =>
             {
                 float volume = 1;
                 bool hasCustomVolume = false;
@@ -790,7 +793,7 @@ namespace YgoMasterClient
                     {
                         audioLoader.Close();
                     }
-                    Win32Hooks.Invoke(() =>
+                    invoke(() =>
                     {
                         if (IsQuitting)
                         {
@@ -805,7 +808,7 @@ namespace YgoMasterClient
                 uint audioClipGcHandle = 0;
                 //IL2Array<float> data = null;
                 //uint dataGcHandle = 0;
-                Win32Hooks.Invoke(() =>
+                invoke(() =>
                 {
                     if (IsQuitting)
                     {
@@ -844,7 +847,7 @@ namespace YgoMasterClient
                         }
                     }
 
-                    Win32Hooks.Invoke(() =>
+                    invoke(() =>
                     {
                         if (IsQuitting)
                         {
@@ -871,7 +874,7 @@ namespace YgoMasterClient
                     index += read;
                 }
 
-                Win32Hooks.Invoke(() =>
+                invoke(() =>
                 {
                     if (IsQuitting)
                     {
@@ -887,7 +890,20 @@ namespace YgoMasterClient
                 });
 
                 audioLoader.Close();
-            });
+            };
+
+            lock (customAssetLoadRequests)
+            {
+                customAssetLoadRequests[path] = null;
+            }
+            if (loadImmediate)
+            {
+                work(null);
+            }
+            else
+            {
+                ThreadPool.QueueUserWorkItem(work);
+            }
         }
 
         static void LoadCustomImage(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, string path, string loadPath, string customAssetPath, IntPtr resourcePtr)
@@ -1400,7 +1416,7 @@ namespace YgoMasterClient
                 disableErrorNotify = true;
             }
             uint result;
-            if (TryLoadCustomFile(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify, out result))
+            if (TryLoadCustomFile(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify, out result, false))
             {
                 return result;
             }
@@ -1411,14 +1427,14 @@ namespace YgoMasterClient
         {
             if (ClientSettings.AssetHelperLog && path != IntPtr.Zero)
             {
-                Console.WriteLine(new IL2String(path).ToString());
+                Console.WriteLine(new IL2String(path).ToString() + " (LoadImmediate)");
             }
             if (ClientSettings.AssetHelperDisableFileErrorPopup)
             {
                 disableErrorNotify = true;
             }
             uint result;
-            if (TryLoadCustomFile(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify, out result))
+            if (TryLoadCustomFile(thisPtr, path, systemTypeInstance, completeHandler, disableErrorNotify, out result, true))
             {
                 return result;
             }
