@@ -516,7 +516,7 @@ namespace YgoMasterClient
             return null;
         }
 
-        static IntPtr TextureFromPNG(string filePath, string assetName)
+        static IntPtr TextureFromPNG(string filePath, string assetName, bool mipChain = true)
         {
             IL2Object bytes = methodReadAllBytes.Invoke(new IntPtr[] { new IL2String(filePath).ptr });
             if (bytes != null)
@@ -526,7 +526,6 @@ namespace YgoMasterClient
                 {
                     int textureWidth = 2, textureHeight = 2;
                     int textureFormat = 4;// RGBA32
-                    bool mipChain = false;
                     methodTexture2DCtor2.Invoke(newTexture, new IntPtr[] { new IntPtr(&textureWidth), new IntPtr(&textureHeight), new IntPtr(&textureFormat), new IntPtr(&mipChain) });
                     methodLoadImage.Invoke(new IntPtr[] { newTexture, bytes.ptr });
                     if (!string.IsNullOrEmpty(assetName))
@@ -914,11 +913,8 @@ namespace YgoMasterClient
                 return;
             }
 
-            string assetName = Path.GetFileNameWithoutExtension(customAssetPath);
-            IntPtr newTextureAsset = TextureFromPNG(customAssetPath, assetName);
-            assetsArray[0] = newTextureAsset;
-
             Rect rect = default(Rect);
+            bool mipChain = true;
 
             // Card packs have some weird artifacting if the sprite isn't the correct size
             // NOTE: Explicitly check for "CardPackTex" to allow for custom images which ignore this code
@@ -932,7 +928,12 @@ namespace YgoMasterClient
                 {
                     rect = new Rect(7.292893f, 0, 496.4142f, 1024);
                 }
+                mipChain = false;
             }
+
+            string assetName = Path.GetFileNameWithoutExtension(customAssetPath);
+            IntPtr newTextureAsset = TextureFromPNG(customAssetPath, assetName, mipChain);
+            assetsArray[0] = newTextureAsset;
 
             IntPtr newSpriteAsset = SpriteFromTexture(newTextureAsset, assetName, rect);
             if (newSpriteAsset != IntPtr.Zero)
