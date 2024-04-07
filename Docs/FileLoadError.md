@@ -18,16 +18,17 @@ You may need to fully open the game with Steam multiple times. Some updates have
 
 You may need to repeat this step multiple times (fully reopening with Steam, and copying the folder over to `00000000` until it works).
 
-## 3) Alternative solutions
+## 3) Changing language
 
-You can try the following steps:
-1. Launch the game via Steam and change the language to English.
-2. Launch the game again via Steam to ensure all language files are fully downloaded.
-3. Next, load the game using YgoMaster (the game should start normally at this point).
-4. Change the language settings to your desired language, for example, Chinese, from within the game.
-5. Return to the startup page; you should receive a prompt indicating a file loading error.
-6. Subsequently, launch the game via Steam and change the language to Chinese.
-7. Once all language files are fully downloaded, you should be able to load the game using YgoMaster.
+To change the language of the game you will need to set the language on the Steam version of the game, reopen the game using Steam, then follow the above `LocalSave` steps, and then finally open YgoMaster. If this doesn't work you can try the following which is an example of setting the language to Chinese:
+
+- Launch the game via Steam and change the language to English.
+- Launch the game again via Steam to ensure all language files are fully downloaded.
+- Next, load the game using YgoMaster (the game should start normally at this point).
+- Change the language settings to your desired language, for example, Chinese, from within the game.
+- Return to the startup page; you should receive a prompt indicating a file loading error.
+- Subsequently, launch the game via Steam and change the language to Chinese.
+- Once all language files are fully downloaded, you should be able to load the game using YgoMaster.
 
 ## Note
 
