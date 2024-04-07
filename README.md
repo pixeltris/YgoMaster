@@ -58,6 +58,7 @@ Running `Build.bat` is the equivilant of:
 - https://www.nexusmods.com/yugiohmasterduel/articles/3 - modding guide
 - https://github.com/SethPDA/MasterDuel-Modding/wiki - modding guide
 - https://github.com/crazydoomy/MD-Replay-Editor - save / load replays
+- https://code.mycard.moe/sherry_chaos/MDPro3 - forked YGOPro2 with Master Duel assets
 
 ## Screenshots
 

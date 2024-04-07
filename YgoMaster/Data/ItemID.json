@@ -45,6 +45,7 @@
     1000029,//Souleating Oviraptor
     1000032,//Elemental HERO Flame Wingman
     1000033,//Blue-Eyes Chaos MAX Dragon
+    1000041,//Number 41: Bagooska the Terribly Tired Tapir
     1001001,//Instant Fusion
     1001002,//Noble Arms - Caliburn
     1001003,//Book of Moon
@@ -142,6 +143,8 @@
     1010058,//Blue-Eyes White Dragon
     1010059,//Diabellstar the Black Witch
     1010060,//Sinful Spoils of Subversion - Snake-Eye
+    1010061,//Magicians of Bonds and Unity
+    1010062,//Dragon of Pride and Soul
     1010064,//Rikka Princess
     1010065,//S-Force Nightchaser
     1011001,//Soccer Ball
@@ -169,6 +172,9 @@
     1011023,//DC 2023 DEC Gold Finalist
     1011024,//DC 2023 DEC Silver Finalist
     1011025,//DC 2023 DEC Bronze Finalist
+    1011026,//DC 2024 MAR Gold Finalist
+    1011027,//DC 2024 MAR Silver Finalist
+    1011028,//DC 2024 MAR Bronze Finalist
     1012001,//X-Krawler Synaphysis
     1012002,//Mekk-Knight Spectrum Supreme
     1012003,//Knightmare Gryphon
@@ -222,9 +228,11 @@
     1012051,//Teardrop the Rikka Queen
     1012052,//Subterror Behemoth Speleogeist
     1012053,//Monk of the Tenyi
+    1012054,//Commander Gottoms, Swordmaster
     1012055,//Eldlich the Golden Lord
     1013001,//PawaPuro
     1013002,//Memories of Intersecting Duels
+    1013003,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
   ],
   "PROFILE_TAG": [
     1020001,//Beginner Duelist
@@ -317,6 +325,12 @@
     1020089,//The Bond of Duelists
     1020090,//Acceleration 2024
     1020091,//Synchro x Link Festival 2024
+    1020092,//DC 2024 MAR Top 10
+    1020093,//DC 2024 MAR Top 100
+    1020094,//DC 2024 MAR Top 500
+    1020095,//DC 2024 MAR Top 1000
+    1020096,//DC 2024 MAR Top 10000
+    1020097,//DC 2024 MAR 2nd Stage Duelist
   ],
   "ICON_FRAME": [
     1030001,//Beginner's Frame
@@ -429,9 +443,15 @@
     1070068,//Slifer the Sky Dragon
     1070069,//WANTED: Seeker of Sinful Spoils
     1070070,//Blue-Eyes White Dragon
+    1070071,//Magicians of Bonds and Unity
+    1070072,//Dragon of Pride and Soul
+    1070074,//Tearlaments Perlegia
     1070076,//The Iris Swordsoul
     1070077,//Crimson Dragon
     1070078,//Emperor Charles the Great
+    1070085,//Traptrix Sera
+    1070086,//Dark Magician Girl
+    1070087,//Diabellstar the Black Witch
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -457,6 +477,7 @@
     1071023,//Teardrop the Rikka Queen
     1071024,//Subterror Behemoth Speleogeist
     1071025,//Draco Masters of the Tenyi
+    1071026,//Commander Gottoms, Swordmaster
     1071027,//Eldlixir of Black Awakening
     1072001,//Sky Striker Conversion: Flaming Wings of Destruction
     1072002,//Chaos Xyz Evolution －Galactic Gathering of Dragons－
@@ -464,6 +485,7 @@
     1073002,//WCS 2023 Celebration
     1073003,//DC 2023 OCT Celebration
     1073004,//DC 2023 DEC Celebration
+    1073005,//DC 2024 MAR Celebration
   ],
   "DECK_CASE": [
     1080001,//Duelist Card Case Red
@@ -672,7 +694,11 @@
     1130029,//Gift Exchange
     1130030,//Onikuji
     1130032,//Blue-Eyes White Dragon
+    1130033,//Magicians of Bonds and Unity
+    1130034,//Dragon of Pride and Soul
+    1130035,//Promethean Princess, Bestower of Flames
     1130037,//Mamemaki
+    1130038,//Red Dragon Archfiend
     1130039,//Snake-Eyes Flamberge Dragon
     1130040,//Flawless Perfection of the Tenyi
     1130041,//Number 41: Bagooska the Terribly Tired Tapir

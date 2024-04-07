@@ -28,7 +28,7 @@ Certain logs will be dumped as json into `%USERPROFILE%/Documents/Fiddler2/Captu
 - Log `/ayk/api/Duel.begin` for each duel (**loaner deck only**)
 - Copy all files in `YgoMasterUpdate/SoloDuels/` to `YgoMaster/Data/SoloDuels/`
 
-*Enable the hidden client setting `AlwaysWin` to win duels on the live game by surrendering to log this data faster.*
+*To log this data faster add `"AlwaysWin": true` to `ClientSettings.json` to win duels on the live game by surrendering.*
 
 ## Shop
 
@@ -68,17 +68,24 @@ For creating `YgoMaster/Data/ShopDumps/` from scratch...
 - In the client console run `carddata` which should create `/Data/ClientDataDump/Card/Data/{CLIENT_VERSION}/`, move and rename the `{CLIENT_VERSION}` folder to `/Data/CardData/`. You must do this while using the `English` language setting.
 - Run `YgoMaster.exe --updateydk` to update `YdkIds.txt`.
 
+## PvP card data
+
+- To update PvP card data you must follow the above YdkIds.txt instructions. If you don't do this any newly added cards wont function correctly in PvP as the duel engine requires `/Data/CardData/` being up to date.
+
 ## ItemID.json
 
 - In the client console run `itemid` which will create `ItemID.json` in the game folder.
 - Copy it over to `/Data/` and remove any invalid entries (some make the client crash / are blank).
 
-## Misc
+## Enabling the client console
+
+- In `ClientSettings.json` set `ShowConsole` to `true` and run the YgoMasterClient.
+- You will probably want to inject into the live version of the game while doing this. See [LiveMods.md](LiveMods.md). This is a requirement if you want to complete solo with the `AlwaysWin` setting.
+
+## Client updates
+
+Client updates typically occur every few months (see https://steamdb.info/depot/1449853/manifests/). Client changes often break YgoMaster and this requires coding knowledge to fix. The following can be used to get some insight about the changes to the client:
 
 - In the client console run `updatediff` which will create `updatediff.cs` in the game folder.
 - Run a diff against that file and `/Docs/updatediff.cs`. Update relevant code throughout YgoMaster based on the changes and then insert the new `updatediff.cs`.
 - After client updates uncomment `ReflectionValidator.ValidateDump()` in `Program.cs` and check the output. Then re-comment it, uncomment `ReflectionValidator.IsDumping = true;` and run again to update `ReflectionDump.json` (after fixing any broken code from the previous step).
-
-## Enabling the client console
-
-- In `ClientSettings.json` set `ShowConsole` to `true` and run the YgoMasterClient.
