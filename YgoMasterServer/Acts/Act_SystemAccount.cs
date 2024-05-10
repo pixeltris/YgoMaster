@@ -92,7 +92,7 @@ namespace YgoMaster
                 { "TitleLoop", TitleLoop }
             };
 
-            request.Remove("Server");
+            //request.Remove("Server");// Removed v1.9.0 as this will wipe urls which are set client side
             request.Remove("Response");
             request.Remove("Download");
         }

@@ -58,11 +58,15 @@ namespace UnityEngine.Events
             var obj = Import.Object.il2cpp_object_new(klass.ptr);
             if (instance == null || (typeof(T) == typeof(IntPtr) && (IntPtr)(object)instance == IntPtr.Zero))
             {
+                // Il2CppDelegate / System.Delegate
+                // https://github.com/knah/Il2CppAssemblyUnhollower/commit/c10c9994b07851e21b242e1cf9b6488d9aaacd1e // U2021.2.0+ info
                 var runtimeStaticMethod = Marshal.AllocHGlobal(8);
                 *(IntPtr*)runtimeStaticMethod = function.Method.MethodHandle.GetFunctionPointer();
-                *((IntPtr*)obj + 2) = function.Method.MethodHandle.GetFunctionPointer();
-                *((IntPtr*)obj + 4) = IntPtr.Zero;
-                *((IntPtr*)obj + 5) = runtimeStaticMethod;
+                *((IntPtr*)obj + 2) = function.Method.MethodHandle.GetFunctionPointer();//method_ptr
+                *((IntPtr*)obj + 3) = function.Method.MethodHandle.GetFunctionPointer();//invoke_impl //required U2021.2.0+
+                *((IntPtr*)obj + 4) = IntPtr.Zero;//m_target
+                *((IntPtr*)obj + 5) = runtimeStaticMethod;//method
+                //*((IntPtr*)obj + 8) = runtimeStaticMethod;//method_code //required? U2021.2.0+
                 return obj;
             }
 

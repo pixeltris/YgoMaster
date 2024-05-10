@@ -1231,6 +1231,7 @@ namespace YgoMaster
             }
             duelSettings.SetRequiredDefaults();
             request.Player.ActiveDuelSettings.CopyFrom(duelSettings);
+            request.Player.ActiveDuelSettings.PvpChoice = table.CoinFlipPlayerIndex;
             request.Player.ActiveDuelSettings.HasSavedReplay = false;
             request.Player.ActiveDuelSettings.DuelBeginTime = Utils.GetEpochTime();
 

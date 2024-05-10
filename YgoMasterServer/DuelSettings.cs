@@ -105,6 +105,7 @@ namespace YgoMaster
         public int turn;
         public int MaxTurn;
         public bool open;// Is public / private duel replay
+        public int PvpChoice;// 1.9.0 - Shows which player won the coin flip (NOTE: Name is actually "Choice" but we only want it on relays / spectator duels)
         public int[] xuid { get; private set; }
         public string[] online_id { get; private set; }
         public bool[] is_same_os { get; private set; }
@@ -419,7 +420,8 @@ namespace YgoMaster
                 object obj;
                 if (data.TryGetValue(field.Name, out obj))
                 {
-                    field.SetValue(this, Convert.ChangeType(obj, field.FieldType));
+                    object value = obj == null && field.FieldType.IsValueType ? Activator.CreateInstance(field.FieldType) : Convert.ChangeType(obj, field.FieldType);
+                    field.SetValue(this, value);
                 }
             }
 
@@ -768,6 +770,14 @@ namespace YgoMaster
             if (!data.ContainsKey("xuid")) data["xuid"] = new int[2];
             if (!data.ContainsKey("online_id")) data["online_id"] = new int[2];
             if (!data.ContainsKey("is_same_os")) data["is_same_os"] = new bool[2];
+            if (duelSettings.PvpChoice >= 0)
+            {
+                data["Choice"] = duelSettings.PvpChoice;
+            }
+            else
+            {
+                data["Choice"] = null;
+            }
             return data;
         }
 

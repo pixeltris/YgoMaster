@@ -174,6 +174,39 @@ namespace IL2CPP
             {
                 return null;
             }
+            IL2Object genericMethodInfo = makeGenericMethod.Invoke(monoMethodInfo, new IntPtr[] { intPtrArrayPtr });
+            if (genericMethodInfo == null)
+            {
+                return null;
+            }
+            IL2Object monoMethod = mhandleField.GetValue(genericMethodInfo.ptr);
+            if (monoMethod == null)
+            {
+                return null;
+            }
+            IntPtr result = Import.Method.il2cpp_method_get_from_reflection(monoMethod.ptr);
+            if (result == IntPtr.Zero)
+            {
+                return null;
+            }
+            return new IL2Method(result);
+        }
+        private IL2Method MakeGenericMethodInternal(IntPtr[] intPtrs)
+        {
+            if (intPtrs == null || intPtrs.Length == 0)
+            {
+                return null;
+            }
+            IntPtr intPtrArrayPtr = intPtrs.ArrayToIntPtr(Assembler.GetAssembly("mscorlib").GetClass("Type", "System"));
+            if (intPtrArrayPtr == IntPtr.Zero)
+            {
+                return null;
+            }
+            IntPtr monoMethodInfo = Import.Method.il2cpp_method_get_object(ptr, this.ReflectedType.ptr);
+            if (monoMethodInfo == IntPtr.Zero)
+            {
+                return null;
+            }
             IL2Method makeGenericMethodMethod = monoMethodClassInfo.GetMethod("MakeGenericMethod");
             if (makeGenericMethodMethod == null)
             {
@@ -193,5 +226,7 @@ namespace IL2CPP
         }
 
         static IL2Class monoMethodClassInfo = Assembler.GetAssembly("mscorlib").GetClass("MonoMethod", "System.Reflection");
+        static IL2Method makeGenericMethod = Assembler.GetAssembly("mscorlib").GetClass("RuntimeMethodInfo", "System.Reflection").GetMethod("MakeGenericMethod");
+        static IL2Field mhandleField = Assembler.GetAssembly("mscorlib").GetClass("RuntimeMethodInfo", "System.Reflection").GetField("mhandle");
     }
 }

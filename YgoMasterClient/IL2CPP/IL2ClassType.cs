@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace IL2CPP
@@ -14,7 +15,7 @@ namespace IL2CPP
 
         public string Name
         {
-            get { return Import.Object.il2cpp_type_get_name(ptr); }
+            get { return Marshal.PtrToStringAnsi(Import.Object.il2cpp_type_get_name(ptr)); }
         }
     }
 }

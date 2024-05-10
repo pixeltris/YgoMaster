@@ -311,8 +311,10 @@ namespace YgomSystem.Network
         static IL2Method methodGetCommand;
         static IL2Field fieldCode;
 
-        delegate void Del_Complete(IntPtr thisPtr);
-        static Hook<Del_Complete> hookComplete;
+        static IL2Field fieldRequest;
+        static IL2Method methodIsCompleted;
+        delegate void Del_CommandEvent(IntPtr command, IntPtr handle);
+        static Hook<Del_CommandEvent> hookCommandEvent;
 
         static RequestStructure()
         {
@@ -320,12 +322,25 @@ namespace YgomSystem.Network
             IL2Class classInfo = assembly.GetClass("NetworkMain").GetNestedType("RequestStructure");
             methodGetCommand = classInfo.GetProperty("Command").GetGetMethod();
             fieldCode = classInfo.GetField("code");
-            hookComplete = new Hook<Del_Complete>(Complete, classInfo.GetMethod("Complete"));
+
+            hookCommandEvent = new Hook<Del_CommandEvent>(CommandEvent, assembly.GetClass("Request", "YgomSystem.Network").GetMethod("CommandEvent"));
+            IL2Class handleClassInfo = assembly.GetClass("Handle", "YgomSystem.Network");
+            fieldRequest = handleClassInfo.GetField("m_Request");
+            methodIsCompleted = handleClassInfo.GetMethod("IsCompleted");
         }
 
         public static void SetCode(IntPtr thisPtr, int code)
         {
             fieldCode.SetValue(thisPtr, new IntPtr(&code));
+        }
+
+        static void CommandEvent(IntPtr command, IntPtr handle)
+        {
+            if (methodIsCompleted.Invoke(handle).GetValueRef<csbool>())
+            {
+                Complete(fieldRequest.GetValue(handle).ptr);
+            }
+            hookCommandEvent.Original(command, handle);
         }
 
         static void Complete(IntPtr thisPtr)
@@ -413,7 +428,6 @@ namespace YgomSystem.Network
                     }
                 }
             }
-            hookComplete.Original(thisPtr);
         }
     }
 
@@ -590,20 +604,22 @@ namespace YgomGame.Room
         static IL2Class templateInfoClass;
         static IL2Class labelInfoClass;
         static IL2Method labelInfoCtor;
-        
-        static IL2Class buttonInfoClass;
-        static IL2Method buttonInfoCtor;
-        static IL2Field buttonTitle;
-        static IL2Field buttonCurrentSetting;
-        static IL2Field buttonSettingStrings;
 
-        static IL2Class stringClass;
-        static IL2Class intClass;
+        static IL2Class buttonInfoBaseClass;
+        static IL2Field buttonInfoBaseTitle;
+        static IL2Method buttonInfoBaseValueText;
+        static IL2Class buttonStringInfoClass;
+        static IL2Method buttonStringInfoCtor;
+        static IL2Property buttonStringInfoCurrentValue;
+        static IL2Class buttonBoolValueInfoClass;
+        static IL2Method buttonBoolValueInfoCtor;
+        static IL2Property buttonBoolValueInfoCurrentValue;
+        static IL2Method buttonBoolValueInfoSwitchValue;
 
         delegate void Del_OnCreatedView(IntPtr thisPtr);
         static Hook<Del_OnCreatedView> hookOnCreatedView;
-        delegate void Del_SetData(IntPtr thisPtr);
-        static Hook<Del_SetData> hookSetData;
+        delegate void Del_SetupData(IntPtr thisPtr);
+        static Hook<Del_SetupData> hookSetupData;
         delegate void Del_CallAPIRoomCreate(IntPtr thisPtr);
         static Hook<Del_CallAPIRoomCreate> hookCallAPIRoomCreate;
         delegate void Del_OnClick(IntPtr thisPtr);
@@ -612,6 +628,8 @@ namespace YgomGame.Room
         static IntPtr activeViewController;
         static IntPtr activeButton;
         static DuelSettingsManager duelSettingsManager = new DuelSettingsManager();
+
+        static Dictionary<IntPtr, string[]> buttonsActionSheets = new Dictionary<IntPtr, string[]>();
 
         public static bool IsNextInstanceHacked = false;
         public static bool IsHacked
@@ -642,23 +660,25 @@ namespace YgomGame.Room
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             ClassInfo = assembly.GetClass("RoomCreateViewController", "YgomGame.Room");
             hookOnCreatedView = new Hook<Del_OnCreatedView>(OnCreatedView, ClassInfo.GetMethod("OnCreatedView"));
-            hookSetData = new Hook<Del_SetData>(SetData, ClassInfo.GetMethod("SetData"));
+            hookSetupData = new Hook<Del_SetupData>(SetupData, ClassInfo.GetMethod("SetupData"));
             hookCallAPIRoomCreate = new Hook<Del_CallAPIRoomCreate>(CallAPIRoomCreate, ClassInfo.GetMethod("CallAPIRoomCreate"));
             fieldInfos = ClassInfo.GetField("infos");
             fieldIsv = ClassInfo.GetField("isv");
             templateInfoClass = ClassInfo.GetNestedType("TemplateInfo");
             labelInfoClass = ClassInfo.GetNestedType("LabelInfo");
             labelInfoCtor = labelInfoClass.GetMethod(".ctor");
-            buttonInfoClass = ClassInfo.GetNestedType("ButtonInfo");
-            buttonInfoCtor = buttonInfoClass.GetMethod(".ctor");
-            hookOnClick = new Hook<Del_OnClick>(OnClick, buttonInfoClass.GetMethod("ProcessOnClicked"));//"OnClick"));//v1.2.0 needed to change to ProcessOnClicked (OnClick RVA was used multiple times)
-            buttonTitle = buttonInfoClass.GetField("title");
-            buttonCurrentSetting = buttonInfoClass.GetField("currentSetting");
-            buttonSettingStrings = buttonInfoClass.GetField("settingStrings");
+            buttonInfoBaseClass = ClassInfo.GetNestedType("ButtonInfoBase");
+            buttonInfoBaseTitle = buttonInfoBaseClass.GetField("title");
+            buttonInfoBaseValueText = buttonInfoBaseClass.GetProperty("valueText").GetGetMethod();
+            hookOnClick = new Hook<Del_OnClick>(OnClick, buttonInfoBaseClass.GetMethod("OnClick"));
+            buttonStringInfoClass = ClassInfo.GetNestedType("ButtonStringInfo");
+            buttonStringInfoCtor = buttonStringInfoClass.GetMethod(".ctor");
+            buttonStringInfoCurrentValue = buttonStringInfoClass.GetProperty("currentValue");
+            buttonBoolValueInfoClass = ClassInfo.GetNestedType("ButtonBoolValueInfo");
+            buttonBoolValueInfoCtor = buttonBoolValueInfoClass.GetMethod(".ctor");
+            buttonBoolValueInfoCurrentValue = buttonBoolValueInfoClass.GetProperty("currentValue");
+            buttonBoolValueInfoSwitchValue = buttonBoolValueInfoClass.GetMethod("SwitchValue");
             bindingTextType = CastUtils.IL2Typeof("BindingTextMeshProUGUI", "YgomSystem.UI", "Assembly-CSharp");
-
-            stringClass = Assembler.GetAssembly("mscorlib").GetClass("String", "System");
-            intClass = Assembler.GetAssembly("mscorlib").GetClass("Int32", "System");
         }
 
         static void OnCreatedView(IntPtr thisPtr)
@@ -695,7 +715,7 @@ namespace YgomGame.Room
             }
         }
 
-        static void SetData(IntPtr thisPtr)
+        static void SetupData(IntPtr thisPtr)
         {
             if (IsHacked)
             {
@@ -703,7 +723,7 @@ namespace YgomGame.Room
             }
             else
             {
-                hookSetData.Original(thisPtr);
+                hookSetupData.Original(thisPtr);
             }
         }
 
@@ -731,65 +751,53 @@ namespace YgomGame.Room
             return newLabel;
         }
 
-        static IntPtr AddButton(IL2ListExplicit infosList, IntPtr isv, string title, string[] settings, bool isActionSheet = true, int defaultSetting = 0)
+        static IntPtr AddButtonString(IL2ListExplicit infosList, string settingLabel, string title, string[] actionSheet)
         {
-            IL2Array<IntPtr> stringsArray = new IL2Array<IntPtr>(settings != null ? settings.Length : 0, stringClass);
-            IL2Array<int> intArray = new IL2Array<int>(settings != null ? settings.Length : 0, intClass);
-            for (int i = 0; i < settings.Length; i++)
+            IntPtr newButton = Import.Object.il2cpp_object_new(buttonStringInfoClass.ptr);
+            buttonStringInfoCtor.Invoke(newButton, new IntPtr[]
             {
-                stringsArray[i] = new IL2String(settings[i]).ptr;
-                intArray[i] = i;
-            }
-            IntPtr newButton = Import.Object.il2cpp_object_new(buttonInfoClass.ptr);
-            buttonInfoCtor.Invoke(newButton, new IntPtr[]
-            {
-                isv, new IL2String(string.Empty).ptr, new IL2String(title).ptr, stringsArray.ptr, intArray.ptr,
-                new IntPtr(&isActionSheet), new IntPtr(&defaultSetting)
+                new IL2String(settingLabel).ptr,
+                new IL2String(title).ptr,
+                new IL2String(actionSheet == null ? "    " : actionSheet[0]).ptr
             });
             infosList.Add(newButton);
+            if (actionSheet != null)
+            {
+                buttonsActionSheets[newButton] = actionSheet;
+            }
             return newButton;
         }
 
-        static IntPtr AddButtonOnOff(IL2ListExplicit infosList, IntPtr isv, string title, bool isOn)
+        static IntPtr AddButtonBool(IL2ListExplicit infosList, string settingLabel, string title, bool defaultValue)
         {
-            return AddButton(infosList, isv, title, new string[]
+            IntPtr newButton = Import.Object.il2cpp_object_new(buttonBoolValueInfoClass.ptr);
+            buttonBoolValueInfoCtor.Invoke(newButton, new IntPtr[]
             {
-                ClientSettings.CustomTextOn,
-                ClientSettings.CustomTextOff
-            }, false, isOn ? 0 : 1);
-        }
-
-        static IntPtr AddButtonYesNo(IL2ListExplicit infosList, IntPtr isv, string title, bool isYes)
-        {
-            return AddButton(infosList, isv, title, new string[]
-            {
-                ClientSettings.CustomTextYes,
-                ClientSettings.CustomTextNo
-            }, false, isYes ? 0 : 1);
-        }
-
-        static IntPtr AddButtonTrueFalse(IL2ListExplicit infosList, IntPtr isv, string title, bool isTrue)
-        {
-            return AddButton(infosList, isv, title, new string[]
-            {
-                ClientSettings.CustomTextTrue,
-                ClientSettings.CustomTextFalse
-            }, false, isTrue ? 0 : 1);
-        }
-
-        static IntPtr AddButton(IL2ListExplicit infosList, IntPtr isv, string title)
-        {
-            return AddButton(infosList, isv, title, new string[] { string.Empty, string.Empty }, false);
+                new IL2String(settingLabel).ptr,
+                new IL2String(title).ptr,
+                new IntPtr(&defaultValue)
+            });
+            infosList.Add(newButton);
+            return newButton;
         }
 
         static void OnClick(IntPtr buttonPtr)
         {
             if (IsHacked)
             {
-                activeButton = buttonPtr;
-                if (duelSettingsManager.HandleButtonClick(buttonPtr))
+                // NOTE: This type checking is required as the OnClick RVA is shared with multiple functions
+                IntPtr klass = Import.Object.il2cpp_object_get_class(buttonPtr);
+                while (klass != IntPtr.Zero && klass != buttonInfoBaseClass.ptr)
                 {
-                    return;
+                    klass = Import.Class.il2cpp_class_get_parent(klass);
+                }
+                if (klass != IntPtr.Zero)
+                {
+                    activeButton = buttonPtr;
+                    if (duelSettingsManager.HandleButtonClick(buttonPtr))
+                    {
+                        return;
+                    }
                 }
             }
             hookOnClick.Original.Invoke(buttonPtr);
@@ -1019,18 +1027,18 @@ namespace YgomGame.Room
 
             string GetButtonValueString(IntPtr buttonPtr)
             {
-                IL2Array<IntPtr> strings = new IL2Array<IntPtr>(buttonSettingStrings.GetValue(buttonPtr).ptr);
-                int settingIndex = buttonCurrentSetting.GetValue(buttonPtr).GetValueRef<int>();
-                if (settingIndex < strings.Length)
-                {
-                    return new IL2String(strings[settingIndex]).ToString();
-                }
-                return null;
+                return new IL2String(buttonInfoBaseValueText.Invoke(buttonPtr).ptr).ToString();
             }
 
-            int GetButtonIndex(IntPtr buttonPtr)
+            int GetButtonValueStringIndex(IntPtr buttonPtr)
             {
-                return buttonCurrentSetting.GetValue(buttonPtr).GetValueRef<int>();
+                string value = GetButtonValueString(buttonPtr);
+                string[] actionSheet;
+                if (buttonsActionSheets.TryGetValue(buttonPtr, out actionSheet))
+                {
+                    return Array.IndexOf(actionSheet, value);
+                }
+                return -1;
             }
 
             int GetButtonValueI32(IntPtr buttonPtr, int defaultValue = -1)
@@ -1053,44 +1061,35 @@ namespace YgomGame.Room
 
             bool GetButtonValueBool(IntPtr buttonPtr)
             {
-                return GetButtonIndex(buttonPtr) == 0;
+                return buttonBoolValueInfoCurrentValue.GetGetMethod().Invoke(buttonPtr).GetValueRef<csbool>();
+            }
+
+            void SetButtonValueBool(IntPtr buttonPtr, bool value)
+            {
+                buttonBoolValueInfoCurrentValue.GetSetMethod().Invoke(buttonPtr, new IntPtr[] { new IntPtr(&value) });
+            }
+
+            void SetButtonValueString(IntPtr buttonPtr, string value)
+            {
+                string[] actionSheet;
+                if (value == null && buttonsActionSheets.TryGetValue(buttonPtr, out actionSheet) && actionSheet.Length > 0)
+                {
+                    value = actionSheet[0];
+                }
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    value = "    ";
+                }
+                buttonStringInfoCurrentValue.GetSetMethod().Invoke(buttonPtr, new IntPtr[] { new IL2String(value).ptr });
             }
 
             void SetButtonIndex(IntPtr buttonPtr, int index)
             {
-                IL2Array<IntPtr> strings = new IL2Array<IntPtr>(buttonSettingStrings.GetValue(buttonPtr).ptr);
-                if (index >= strings.Length)
+                string[] actionSheet;
+                if (buttonsActionSheets.TryGetValue(buttonPtr, out actionSheet) && index >= 0 && index < actionSheet.Length)
                 {
-                    index = strings.Length - 1;
+                    SetButtonValueString(buttonPtr, actionSheet[index]);
                 }
-                if (index >= 0)
-                {
-                    buttonCurrentSetting.SetValue(buttonPtr, new IntPtr(&index));
-                }
-            }
-
-            void SetButtonIndexFromBool(IntPtr buttonPtr, bool value)
-            {
-                SetButtonIndex(buttonPtr, value ? 0 : 1);
-            }
-
-            void SetButtonIndexFromString(IntPtr buttonPtr, string value)
-            {
-                int index = 0;
-                if (!string.IsNullOrEmpty(value))
-                {
-                    IL2Array<IntPtr> strings = new IL2Array<IntPtr>(buttonSettingStrings.GetValue(buttonPtr).ptr);
-                    int len = strings.Length;
-                    for (int i = 0; i < len; i++)
-                    {
-                        if (new IL2String(strings[i]).ToString() == value)
-                        {
-                            index = i;
-                            break;
-                        }
-                    }
-                }
-                SetButtonIndex(buttonPtr, index);
             }
 
             void SetButtonIndexFromI32(IntPtr buttonPtr, int value)
@@ -1106,15 +1105,18 @@ namespace YgomGame.Room
                 }
                 else if (value != -1)
                 {
-                    IL2Array<IntPtr> strings = new IL2Array<IntPtr>(buttonSettingStrings.GetValue(buttonPtr).ptr);
-                    int len = strings.Length;
-                    for (int i = 0; i < len; i++)
+                    string[] actionSheet;
+                    if (buttonsActionSheets.TryGetValue(buttonPtr, out actionSheet))
                     {
-                        int itemI32;
-                        if (int.TryParse(new IL2String(strings[i]).ToString(), out itemI32) && itemI32 == value)
+                        int len = actionSheet.Length;
+                        for (int i = 0; i < len; i++)
                         {
-                            index = i;
-                            break;
+                            int itemI32;
+                            if (int.TryParse(new IL2String(actionSheet[i]).ToString(), out itemI32) && itemI32 == value)
+                            {
+                                index = i;
+                                break;
+                            }
                         }
                     }
                 }
@@ -1129,14 +1131,17 @@ namespace YgomGame.Room
                     string name = YgomGame.Utility.ItemUtil.GetItemName(itemId);
                     if (!string.IsNullOrEmpty(name))
                     {
-                        IL2Array<IntPtr> strings = new IL2Array<IntPtr>(buttonSettingStrings.GetValue(buttonPtr).ptr);
-                        int len = strings.Length;
-                        for (int i = 0; i < len; i++)
+                        string[] actionSheet;
+                        if (buttonsActionSheets.TryGetValue(buttonPtr, out actionSheet))
                         {
-                            if (new IL2String(strings[i]).ToString() == name)
+                            int len = actionSheet.Length;
+                            for (int i = 0; i < len; i++)
                             {
-                                index = i;
-                                break;
+                                if (new IL2String(actionSheet[i]).ToString() == name)
+                                {
+                                    index = i;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -1198,10 +1203,10 @@ namespace YgomGame.Room
                 Enum.TryParse<DuelLimitedType>(GetButtonValueString(buttons.Limit), out limitedType);
                 settings.Limit = (int)limitedType;
                 settings.BgmsFromValue(GetButtonValueI32(buttons.BGM));
-                settings.MyType = GetButtonValueBool(buttons.Player1) ? 0 : 1;
-                //settings.OpponentType = GetButtonValueBool(buttons.Player2) ? 1 : 2;
-                //settings.MyPartnerType = GetButtonValueBool(buttons.Player3) ? 0 : 1;
-                //settings.OpponentPartnerType = GetButtonValueBool(buttons.Player4) ? 1 : 2;
+                settings.MyType = GetButtonValueStringIndex(buttons.Player1) == 0 ? 0 : 1;
+                //settings.OpponentType = GetButtonValueIndex(buttons.Player2) == 0 ? 1 : 2;
+                //settings.MyPartnerType = GetButtonValueIndex(buttons.Player3) == 0 ? 0 : 1;
+                //settings.OpponentPartnerType = GetButtonValueIndex(buttons.Player4) == 0 ? 1 : 2;
                 SetTeamValue(GetButtonValueI32(buttons.LP1), settings.life, 0, 2, false);
                 SetTeamValue(GetButtonValueI32(buttons.LP2), settings.life, 1, 3, false);
                 SetTeamValue(GetButtonValueI32(buttons.Hand1), settings.hnum, 0, 2, false);
@@ -1245,17 +1250,17 @@ namespace YgomGame.Room
                 SetButtonIndexFromI32(buttons.LifePoints, settings.AreAllEqual(settings.life) ? settings.life[0] : -1);
                 SetButtonIndexFromI32(buttons.Hand, settings.AreAllEqual(settings.hnum) ? settings.hnum[0] : -1);
                 SetButtonIndexFromItemId(buttons.Field, settings.SharedField);
-                SetButtonIndexFromString(buttons.DuelType, ((DuelType)settings.Type).ToString());
-                SetButtonIndexFromString(buttons.Seed, settings.RandSeed == 0 ? null : settings.RandSeed.ToString());
-                SetButtonIndexFromBool(buttons.Shuffle, !settings.noshuffle);
-                SetButtonIndexFromString(buttons.Cpu, settings.cpu == int.MaxValue ? null : settings.cpu.ToString());
-                SetButtonIndexFromString(buttons.CpuFlag, settings.cpuflag);
-                SetButtonIndexFromString(buttons.Limit, ((DuelLimitedType)settings.Limit).ToString());
+                SetButtonValueString(buttons.DuelType, ((DuelType)settings.Type).ToString());
+                SetButtonValueString(buttons.Seed, settings.RandSeed == 0 ? null : settings.RandSeed.ToString());
+                SetButtonValueBool(buttons.Shuffle, !settings.noshuffle);
+                SetButtonValueString(buttons.Cpu, settings.cpu == int.MaxValue ? null : settings.cpu.ToString());
+                SetButtonValueString(buttons.CpuFlag, settings.cpuflag);
+                SetButtonValueString(buttons.Limit, ((DuelLimitedType)settings.Limit).ToString());
                 SetButtonIndexFromI32(buttons.BGM, settings.GetBgmValue());
-                SetButtonIndexFromBool(buttons.Player1, settings.MyType == 0);
-                //SetButtonIndexFromBool(buttons.Player2, settings.OpponentType == 1);
-                //SetButtonIndexFromBool(buttons.Player3, settings.MyPartnerType == 0);
-                //SetButtonIndexFromBool(buttons.Player4, settings.OpponentPartnerType == 1);
+                SetButtonIndex(buttons.Player1, settings.MyType == 0 ? 0 : 1);
+                //SetButtonIndex(buttons.Player2, settings.OpponentType == 1 ? 0 : 1);
+                //SetButtonIndex(buttons.Player3, settings.MyPartnerType == 0 ? 0 : 1);
+                //SetButtonIndex(buttons.Player4, settings.OpponentPartnerType == 1 ? 0 : 1);
                 SetButtonIndexFromI32(buttons.LP1, settings.AreAllEqual(settings.life) ? -1 : settings.life[0]);
                 SetButtonIndexFromI32(buttons.LP2, settings.AreAllEqual(settings.life) ? -1 : settings.life[1]);
                 SetButtonIndexFromI32(buttons.Hand1, settings.AreAllEqual(settings.hnum) ? -1 : settings.hnum[0]);
@@ -1287,6 +1292,7 @@ namespace YgomGame.Room
                 {
                     settings = new DuelSettings();
                 }
+                buttonsActionSheets.Clear();
                 buttons = new Buttons();
                 IL2ListExplicit infosList = new IL2ListExplicit(IntPtr.Zero, templateInfoClass, true);
                 fieldInfos.SetValue(viewController, infosList.ptr);
@@ -1348,58 +1354,58 @@ namespace YgomGame.Room
                 }
 
                 AddLabel(infosList, ClientSettings.CustomTextDuelStarterDecks);
-                AddDeckDetailsButton(infosList, isv, 0);
-                AddDeckDetailsButton(infosList, isv, 1);
-                //AddDeckDetailsButton(infosList, isv, 2);
-                //AddDeckDetailsButton(infosList, isv, 3);
-                buttons.LoadDeckFrom = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterLoadDeckFrom, new string[]
+                AddDeckDetailsButton(infosList, 0);
+                AddDeckDetailsButton(infosList, 1);
+                //AddDeckDetailsButton(infosList, 2);
+                //AddDeckDetailsButton(infosList, 3);
+                buttons.LoadDeckFrom = AddButtonString(infosList, "LoadDeckFrom", ClientSettings.CustomTextDuelStarterLoadDeckFrom, new string[]
                 {
                     ClientSettings.CustomTextDuelStarterLoadDeckFromGame,
                     ClientSettings.CustomTextDuelStarterLoadDeckFromFile,
                     ClientSettings.CustomTextDuelStarterLoadDeckFromFolder
                 });
                 AddLabel(infosList, ClientSettings.CustomTextDuelStarterSettings);
-                buttons.StartingPlayer = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterStartingPlayer, new string[] { ClientSettings.CustomTextRandom, "1", "2"/*, "3", "4"*/ });
-                buttons.LifePoints = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterLifePoints, lpStrings);
-                buttons.Hand = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterHand, handStrings);
-                buttons.Field = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterField, GetItemNames(ItemID.Category.FIELD).Values.ToArray());
-                buttons.DuelType = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterDuelType, duelType.ToArray());
+                buttons.StartingPlayer = AddButtonString(infosList, "StartingPlayer", ClientSettings.CustomTextDuelStarterStartingPlayer, new string[] { ClientSettings.CustomTextRandom, "1", "2"/*, "3", "4"*/ });
+                buttons.LifePoints = AddButtonString(infosList, "LifePoints", ClientSettings.CustomTextDuelStarterLifePoints, lpStrings);
+                buttons.Hand = AddButtonString(infosList, "Hand", ClientSettings.CustomTextDuelStarterHand, handStrings);
+                buttons.Field = AddButtonString(infosList, "Field", ClientSettings.CustomTextDuelStarterField, GetItemNames(ItemID.Category.FIELD).Values.ToArray());
+                buttons.DuelType = AddButtonString(infosList, "DuelType", ClientSettings.CustomTextDuelStarterDuelType, duelType.ToArray());
                 AddLabel(infosList, ClientSettings.CustomTextDuelStarterAdvancedSettings);
-                buttons.Seed = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterSeed, seedStrings.ToArray());
-                buttons.Shuffle = AddButtonYesNo(infosList, isv, ClientSettings.CustomTextDuelStarterShuffle, true);
-                buttons.Cpu = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterCpu, cpuParamStrings.ToArray());
-                buttons.CpuFlag = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterCpuFlag, cpuFlagStrings.ToArray());
-                buttons.Limit = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterLimit, limitedTypeStrings.ToArray());
-                buttons.BGM = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterBGM, bgmStrings.ToArray());
-                buttons.Player1 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterP1, new string[] { ClientSettings.CustomTextDuelStarterPlayer, ClientSettings.CustomTextDuelStarterCPU }, false, 0);
-                //buttons.Player2 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterP2, new string[] { ClientSettings.CustomTextDuelStarterPlayer, ClientSettings.CustomTextDuelStarterCPU }, false, 1);
-                //buttons.Player3 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterP3, new string[] { ClientSettings.CustomTextDuelStarterPlayer, ClientSettings.CustomTextDuelStarterCPU }, false, 1);
-                //buttons.Player4 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterP4, new string[] { ClientSettings.CustomTextDuelStarterPlayer, ClientSettings.CustomTextDuelStarterCPU }, false, 1);
-                buttons.LP1 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterLP1, lpStrings);
-                buttons.LP2 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterLP2, lpStrings);
-                buttons.Hand1 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterHand1, handStrings);
-                buttons.Hand2 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterHand2, handStrings);
-                buttons.Sleeve1 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterSleeve1, GetItemNames(ItemID.Category.PROTECTOR).Values.ToArray());
-                buttons.Sleeve2 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterSleeve2, GetItemNames(ItemID.Category.PROTECTOR).Values.ToArray());
-                buttons.Field1 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterField1, GetItemNames(ItemID.Category.FIELD).Values.ToArray());
-                buttons.Field2 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterField2, GetItemNames(ItemID.Category.FIELD).Values.ToArray());
-                buttons.FieldPart1 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterFieldPart1, GetItemNames(ItemID.Category.FIELD_OBJ).Values.ToArray());
-                buttons.FieldPart2 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterFieldPart2, GetItemNames(ItemID.Category.FIELD_OBJ).Values.ToArray());
-                buttons.Mate1 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterMate1, GetItemNames(ItemID.Category.AVATAR, true).Values.ToArray());
-                buttons.Mate2 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterMate2, GetItemNames(ItemID.Category.AVATAR, true).Values.ToArray());
-                buttons.MateBase1 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterMateBase1, GetItemNames(ItemID.Category.AVATAR_HOME, true).Values.ToArray());
-                buttons.MateBase2 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterMateBase2, GetItemNames(ItemID.Category.AVATAR_HOME, true).Values.ToArray());
-                buttons.Icon1 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterIcon1, GetItemNames(ItemID.Category.ICON).Values.ToArray());
-                buttons.Icon2 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterIcon2, GetItemNames(ItemID.Category.ICON).Values.ToArray());
-                buttons.IconFrame1 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterIconFrame1, GetItemNames(ItemID.Category.ICON_FRAME).Values.ToArray());
-                buttons.IconFrame2 = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterIconFrame2, GetItemNames(ItemID.Category.ICON_FRAME).Values.ToArray());
+                buttons.Seed = AddButtonString(infosList, "Seed", ClientSettings.CustomTextDuelStarterSeed, seedStrings.ToArray());
+                buttons.Shuffle = AddButtonBool(infosList, "Shuffle", ClientSettings.CustomTextDuelStarterShuffle, true);
+                buttons.Cpu = AddButtonString(infosList, "Cpu", ClientSettings.CustomTextDuelStarterCpu, cpuParamStrings.ToArray());
+                buttons.CpuFlag = AddButtonString(infosList, "CpuFlag", ClientSettings.CustomTextDuelStarterCpuFlag, cpuFlagStrings.ToArray());
+                buttons.Limit = AddButtonString(infosList, "Limit", ClientSettings.CustomTextDuelStarterLimit, limitedTypeStrings.ToArray());
+                buttons.BGM = AddButtonString(infosList, "BGM", ClientSettings.CustomTextDuelStarterBGM, bgmStrings.ToArray());
+                buttons.Player1 = AddButtonString(infosList, "Player1", ClientSettings.CustomTextDuelStarterP1, new string[] { ClientSettings.CustomTextDuelStarterPlayer, ClientSettings.CustomTextDuelStarterCPU });
+                //buttons.Player2 = AddButtonString(infosList, "Player2", ClientSettings.CustomTextDuelStarterP2, new string[] { ClientSettings.CustomTextDuelStarterPlayer, ClientSettings.CustomTextDuelStarterCPU });
+                //buttons.Player3 = AddButtonString(infosList, "Player3", ClientSettings.CustomTextDuelStarterP3, new string[] { ClientSettings.CustomTextDuelStarterPlayer, ClientSettings.CustomTextDuelStarterCPU });
+                //buttons.Player4 = AddButtonString(infosList, "Player4", ClientSettings.CustomTextDuelStarterP4, new string[] { ClientSettings.CustomTextDuelStarterPlayer, ClientSettings.CustomTextDuelStarterCPU });
+                buttons.LP1 = AddButtonString(infosList, "LP1", ClientSettings.CustomTextDuelStarterLP1, lpStrings);
+                buttons.LP2 = AddButtonString(infosList, "LP2", ClientSettings.CustomTextDuelStarterLP2, lpStrings);
+                buttons.Hand1 = AddButtonString(infosList, "Hand1", ClientSettings.CustomTextDuelStarterHand1, handStrings);
+                buttons.Hand2 = AddButtonString(infosList, "Hand2", ClientSettings.CustomTextDuelStarterHand2, handStrings);
+                buttons.Sleeve1 = AddButtonString(infosList, "Sleeve1", ClientSettings.CustomTextDuelStarterSleeve1, GetItemNames(ItemID.Category.PROTECTOR).Values.ToArray());
+                buttons.Sleeve2 = AddButtonString(infosList, "Sleeve2", ClientSettings.CustomTextDuelStarterSleeve2, GetItemNames(ItemID.Category.PROTECTOR).Values.ToArray());
+                buttons.Field1 = AddButtonString(infosList, "Field1", ClientSettings.CustomTextDuelStarterField1, GetItemNames(ItemID.Category.FIELD).Values.ToArray());
+                buttons.Field2 = AddButtonString(infosList, "Field2", ClientSettings.CustomTextDuelStarterField2, GetItemNames(ItemID.Category.FIELD).Values.ToArray());
+                buttons.FieldPart1 = AddButtonString(infosList, "FieldPart1", ClientSettings.CustomTextDuelStarterFieldPart1, GetItemNames(ItemID.Category.FIELD_OBJ).Values.ToArray());
+                buttons.FieldPart2 = AddButtonString(infosList, "FieldPart2", ClientSettings.CustomTextDuelStarterFieldPart2, GetItemNames(ItemID.Category.FIELD_OBJ).Values.ToArray());
+                buttons.Mate1 = AddButtonString(infosList, "Mate1", ClientSettings.CustomTextDuelStarterMate1, GetItemNames(ItemID.Category.AVATAR, true).Values.ToArray());
+                buttons.Mate2 = AddButtonString(infosList, "Mate2", ClientSettings.CustomTextDuelStarterMate2, GetItemNames(ItemID.Category.AVATAR, true).Values.ToArray());
+                buttons.MateBase1 = AddButtonString(infosList, "MateBase1", ClientSettings.CustomTextDuelStarterMateBase1, GetItemNames(ItemID.Category.AVATAR_HOME, true).Values.ToArray());
+                buttons.MateBase2 = AddButtonString(infosList, "MateBase2", ClientSettings.CustomTextDuelStarterMateBase2, GetItemNames(ItemID.Category.AVATAR_HOME, true).Values.ToArray());
+                buttons.Icon1 = AddButtonString(infosList, "Icon1", ClientSettings.CustomTextDuelStarterIcon1, GetItemNames(ItemID.Category.ICON).Values.ToArray());
+                buttons.Icon2 = AddButtonString(infosList, "Icon2", ClientSettings.CustomTextDuelStarterIcon2, GetItemNames(ItemID.Category.ICON).Values.ToArray());
+                buttons.IconFrame1 = AddButtonString(infosList, "IconFrame1", ClientSettings.CustomTextDuelStarterIconFrame1, GetItemNames(ItemID.Category.ICON_FRAME).Values.ToArray());
+                buttons.IconFrame2 = AddButtonString(infosList, "IconFrame2", ClientSettings.CustomTextDuelStarterIconFrame2, GetItemNames(ItemID.Category.ICON_FRAME).Values.ToArray());
                 AddLabel(infosList, ClientSettings.CustomTextDuelStarterLoadSave);
-                buttons.LoadIncludingDecks = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterLoadIncludingDecks);
-                buttons.Load = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterLoad);
-                buttons.Save = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterSave);
+                buttons.LoadIncludingDecks = AddButtonString(infosList, "LoadIncludingDecks", ClientSettings.CustomTextDuelStarterLoadIncludingDecks, null);
+                buttons.Load = AddButtonString(infosList, "Load", ClientSettings.CustomTextDuelStarterLoad, null);
+                buttons.Save = AddButtonString(infosList, "Save", ClientSettings.CustomTextDuelStarterSave, null);
                 AddLabel(infosList, ClientSettings.CustomTextDuelStarterExta);
-                buttons.OpenDeckEditor = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterOpenDeckEditor);
-                buttons.ClearAllDecks = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterClearSelectedDecks);
+                buttons.OpenDeckEditor = AddButtonString(infosList, "OpenDeckEditor", ClientSettings.CustomTextDuelStarterOpenDeckEditor, null);
+                buttons.ClearAllDecks = AddButtonString(infosList, "ClearAllDecks", ClientSettings.CustomTextDuelStarterClearSelectedDecks, null);
 
                 if (!hasExistingSetting)
                 {
@@ -1422,139 +1428,161 @@ namespace YgomGame.Room
                 }
             }
 
-            void AddDeckDetailsButton(IL2ListExplicit infosList, IntPtr isv, int deckIndex)
+            void AddDeckDetailsButton(IL2ListExplicit infosList, int deckIndex)
             {
                 // NOTE: Changed from string.Empty to "   " as I think there's a bug with empty strings in IL2String
                 DeckInfo deckInfo = settings.Deck[deckIndex];
-                IntPtr button = AddButton(infosList, isv, ClientSettings.CustomTextDuelStarterDeck + (deckIndex + 1), new string[] { "   " });//string.Empty });
+                IntPtr button = AddButtonString(infosList, "deck" + (deckIndex + 1), ClientSettings.CustomTextDuelStarterDeck + (deckIndex + 1), new string[] { "   " });//string.Empty });
                 buttons.Decks[button] = deckInfo;
             }
 
             public bool HandleButtonClick(IntPtr buttonPtr)
             {
-                IL2Object titleObj = buttonTitle.GetValue(buttonPtr);
-                if (titleObj != null)
+                if (buttonPtr == buttons.ClearAllDecks)
                 {
-                    if (buttonPtr == buttons.ClearAllDecks)
+                    foreach (KeyValuePair<IntPtr, DeckInfo> deck in buttons.Decks)
                     {
-                        foreach (KeyValuePair<IntPtr, DeckInfo> deck in buttons.Decks)
+                        deck.Value.Clear();
+                        UpdateDeckName(deck.Key, deck.Value);
+                    }
+                    UpdateData();
+                }
+                else if (buttonPtr == buttons.OpenDeckEditor)
+                {
+                    IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
+                    YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "DeckEdit/DeckSelect");
+                }
+                else if (buttonPtr == buttons.LoadIncludingDecks)
+                {
+                    Load(includeDecks: true);
+                    UpdateData();
+                }
+                else if (buttonPtr == buttons.Load)
+                {
+                    Load(includeDecks: false);
+                    UpdateData();
+                }
+                else if (buttonPtr == buttons.Save)
+                {
+                    Save();
+                    UpdateData();
+                }
+                else if (buttonPtr == buttons.Shuffle)
+                {
+                    buttonBoolValueInfoSwitchValue.Invoke(buttonPtr);
+                    UpdateData();
+                }
+                else
+                {
+                    DeckInfo deck;
+                    if (buttons.Decks.TryGetValue(buttonPtr, out deck))
+                    {
+                        int loadDeckFrom = Array.IndexOf(buttonsActionSheets[buttons.LoadDeckFrom], GetButtonValueString(buttons.LoadDeckFrom));
+                        switch (loadDeckFrom)
                         {
-                            deck.Value.Clear();
-                            UpdateDeckName(deck.Key, deck.Value);
-                        }
-                        UpdateData();
-                    }
-                    else if (buttonPtr == buttons.OpenDeckEditor)
-                    {
-                        IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
-                        YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "DeckEdit/DeckSelect");
-                    }
-                    else if (buttonPtr == buttons.LoadIncludingDecks)
-                    {
-                        Load(includeDecks: true);
-                        UpdateData();
-                    }
-                    else if (buttonPtr == buttons.Load)
-                    {
-                        Load(includeDecks: false);
-                        UpdateData();
-                    }
-                    else if (buttonPtr == buttons.Save)
-                    {
-                        Save();
-                        UpdateData();
-                    }
-                    else
-                    {
-                        DeckInfo deck;
-                        if (buttons.Decks.TryGetValue(buttonPtr, out deck))
-                        {
-                            int loadDeckFrom = buttonCurrentSetting.GetValue(buttons.LoadDeckFrom).GetValueRef<int>();
-                            switch (loadDeckFrom)
-                            {
-                                case 0:// Game
-                                    {
-                                        IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
-                                        YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "DeckEdit/DeckSelect",
-                                            new Dictionary<string, object>()
-                                            {
-                                                { "GameMode", (int)9 }// SoloSingle
-                                            });
-                                    }
-                                    break;
-                                case 1:// File
-                                    {
-                                        OpenFileDialog ofd = new OpenFileDialog();
-                                        ofd.Filter =
-                                            "JSON (*.json)|*.json" +
-                                            "|YDK (*.ydk)|*.ydk" +
-                                            "|JSON / YDK (*.json;*.ydk)|*.json;*.ydk" +
-                                            "|All Files (*.*)|*.*";
-                                        ofd.FilterIndex = 3;
-                                        ofd.RestoreDirectory = true;
-                                        if (ofd.ShowDialog() == DialogResult.OK && File.Exists(ofd.FileName))
+                            case 0:// Game
+                                {
+                                    IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
+                                    YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "DeckEdit/DeckSelect",
+                                        new Dictionary<string, object>()
                                         {
-                                            try
+                                            { "GameMode", (int)9 }// SoloSingle
+                                        });
+                                }
+                                break;
+                            case 1:// File
+                                {
+                                    OpenFileDialog ofd = new OpenFileDialog();
+                                    ofd.Filter =
+                                        "JSON (*.json)|*.json" +
+                                        "|YDK (*.ydk)|*.ydk" +
+                                        "|JSON / YDK (*.json;*.ydk)|*.json;*.ydk" +
+                                        "|All Files (*.*)|*.*";
+                                    ofd.FilterIndex = 3;
+                                    ofd.RestoreDirectory = true;
+                                    if (ofd.ShowDialog() == DialogResult.OK && File.Exists(ofd.FileName))
+                                    {
+                                        try
+                                        {
+                                            string extension = Path.GetExtension(ofd.FileName).ToLowerInvariant();
+                                            switch (extension)
                                             {
-                                                string extension = Path.GetExtension(ofd.FileName).ToLowerInvariant();
-                                                switch (extension)
-                                                {
-                                                    case ".ydk":
-                                                        deck.Clear();
-                                                        deck.File = ofd.FileName;
-                                                        YdkHelper.LoadDeck(deck);
-                                                        break;
-                                                    case ".json":
-                                                        deck.Clear();
-                                                        deck.File = ofd.FileName;
-                                                        deck.FromDictionaryEx(MiniJSON.Json.DeserializeStripped(
-                                                            File.ReadAllText(ofd.FileName)) as Dictionary<string, object>);
-                                                        break;
-                                                    default:
-                                                        deck.Clear();
-                                                        break;
-                                                }
-                                                UpdateDeckName(buttonPtr, deck);
-                                                UpdateData();
+                                                case ".ydk":
+                                                    deck.Clear();
+                                                    deck.File = ofd.FileName;
+                                                    YdkHelper.LoadDeck(deck);
+                                                    break;
+                                                case ".json":
+                                                    deck.Clear();
+                                                    deck.File = ofd.FileName;
+                                                    deck.FromDictionaryEx(MiniJSON.Json.DeserializeStripped(
+                                                        File.ReadAllText(ofd.FileName)) as Dictionary<string, object>);
+                                                    break;
+                                                default:
+                                                    deck.Clear();
+                                                    break;
                                             }
-                                            catch (Exception e)
-                                            {
-                                                Console.WriteLine("Load deck failed '" + ofd.FileName + "' exception: " + e);
-                                            }
-                                        }
-                                    }
-                                    break;
-                                case 2:// Folder (random deck)
-                                    {
-                                        string decksDir = Path.Combine(Program.LocalPlayerSaveDataDir, "Decks");
-                                        Utils.TryCreateDirectory(decksDir);
-
-                                        if (deck.IsRandomDeckPath)
-                                        {
-                                            decksDir = deck.File;
-                                        }
-
-                                        /*FolderBrowserDialog fbd = new FolderBrowserDialog();
-                                        fbd.SelectedPath = decksDir;
-                                        if (fbd.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(fbd.SelectedPath) && Directory.Exists(fbd.SelectedPath))*/
-                                        FolderPicker fbd = new FolderPicker();
-                                        fbd.InputPath = decksDir;
-                                        if (fbd.ShowDialog() == true)
-                                        {
-                                            DirectoryInfo directoryInfo = new DirectoryInfo(fbd.ResultPath);//fbd.SelectedPath);
-                                            deck.Clear();
-                                            deck.File = directoryInfo.FullName;
                                             UpdateDeckName(buttonPtr, deck);
                                             UpdateData();
                                         }
+                                        catch (Exception e)
+                                        {
+                                            Console.WriteLine("Load deck failed '" + ofd.FileName + "' exception: " + e);
+                                        }
                                     }
-                                    break;
-                            }
-                            return true;
+                                }
+                                break;
+                            case 2:// Folder (random deck)
+                                {
+                                    string decksDir = Path.Combine(Program.LocalPlayerSaveDataDir, "Decks");
+                                    Utils.TryCreateDirectory(decksDir);
+
+                                    if (deck.IsRandomDeckPath)
+                                    {
+                                        decksDir = deck.File;
+                                    }
+
+                                    /*FolderBrowserDialog fbd = new FolderBrowserDialog();
+                                    fbd.SelectedPath = decksDir;
+                                    if (fbd.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(fbd.SelectedPath) && Directory.Exists(fbd.SelectedPath))*/
+                                    FolderPicker fbd = new FolderPicker();
+                                    fbd.InputPath = decksDir;
+                                    if (fbd.ShowDialog() == true)
+                                    {
+                                        DirectoryInfo directoryInfo = new DirectoryInfo(fbd.ResultPath);//fbd.SelectedPath);
+                                        deck.Clear();
+                                        deck.File = directoryInfo.FullName;
+                                        UpdateDeckName(buttonPtr, deck);
+                                        UpdateData();
+                                    }
+                                }
+                                break;
+                        }
+                        return true;
+                    }
+                    else
+                    {
+                        // TODO: Ensure this is a ButtonStringInfo
+                        string[] actionSheet;
+                        if (buttonsActionSheets.TryGetValue(buttonPtr, out actionSheet))
+                        {
+                            string title = new IL2String(buttonInfoBaseTitle.GetValue(buttonPtr).ptr).ToString();
+                            YgomGame.Menu.ActionSheetViewController.Open(title, actionSheet, OnClickActionSheetMenuItem);
                         }
                     }
                 }
                 return false;
+            }
+
+            static Action<IntPtr, int> OnClickActionSheetMenuItem = OnClickActionSheetMenuItemImpl;
+            static void OnClickActionSheetMenuItemImpl(IntPtr ctx, int index)
+            {
+                string[] actionSheet;
+                if (buttonsActionSheets.TryGetValue(activeButton, out actionSheet) && index >= 0 && index < actionSheet.Length)
+                {
+                    duelSettingsManager.SetButtonValueString(activeButton, actionSheet[index]);
+                    UpdateData();
+                }
             }
 
             public void UpdateDeck(IntPtr buttonPtr, int deckId)
@@ -1608,8 +1636,7 @@ namespace YgomGame.Room
 
             void UpdateDeckName(IntPtr buttonPtr, DeckInfo deck)
             {
-                IL2Array<IntPtr> strings = new IL2Array<IntPtr>(buttonSettingStrings.GetValue(buttonPtr).ptr);
-                strings[0] = new IL2String(GetDeckName(deck)).ptr;
+                buttonStringInfoCurrentValue.GetSetMethod().Invoke(buttonPtr, new IntPtr[] { new IL2String(GetDeckName(deck)).ptr });
             }
 
             string GetDeckName(DeckInfo deck)

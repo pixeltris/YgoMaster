@@ -485,7 +485,7 @@ namespace YgomSystem.Utility
         // System.Object.ToString
         static IL2Method methodObjectToString;
 
-        delegate IntPtr Del_GetTextString(IntPtr textEnum, bool richTextEx);
+        delegate IntPtr Del_GetTextString(IntPtr textEnum, bool richTextEx, IntPtr methodInstance);
         delegate IntPtr Del_GetTextEnum(int textEnum, bool richTextEx, IntPtr methodInstance);
         delegate csbool Del_ContainsText(IntPtr textEnum, IntPtr methodInstance);
         static Hook<Del_GetTextString> hookGetTextString;
@@ -558,11 +558,12 @@ namespace YgomSystem.Utility
 
         public static string GetText(string id)
         {
-            return new IL2String(GetTextString(new IL2String(id).ptr, false)).ToString();
+            return new IL2String(GetTextString(new IL2String(id).ptr, false, methodGetTextString.ptr)).ToString();
         }
 
-        static IntPtr GetTextString(IntPtr textString, bool richTextEx)
+        static IntPtr GetTextString(IntPtr textString, bool richTextEx, IntPtr methodInstance)
         {
+            // TODO: Confirm textString is of type string as v1.9.0 only has TextData.GetText<object> (no TextData.GetText<string>)
             string inputString = new IL2Object(textString).GetValueObj<string>();
             if (ClientSettings.LogIDs)
             {
@@ -577,7 +578,7 @@ namespace YgomSystem.Utility
             {
                 return new IL2String(customText).ptr;
             }
-            return hookGetTextString.Original(textString, richTextEx);
+            return hookGetTextString.Original(textString, richTextEx, methodInstance);
         }
 
         static IntPtr GetTextEnum(int textEnum, bool richTextEx, IntPtr methodInstance)
@@ -714,6 +715,9 @@ namespace YgomSystem.Utility
         delegate IntPtr Del_GetToken();
         static Hook<Del_GetToken> hookGetToken;
 
+        delegate void Del_ResetData();
+        static Hook<Del_ResetData> hookResetData;
+
         static ClientWorkUtil()
         {
             if (Program.IsLive)
@@ -723,6 +727,7 @@ namespace YgomSystem.Utility
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("ClientWorkUtil", "YgomSystem.Utility");
             hookGetToken = new Hook<Del_GetToken>(GetToken, classInfo.GetMethod("GetToken"));
+            hookResetData = new Hook<Del_ResetData>(ResetData, classInfo.GetMethod("ResetData"));
         }
 
         static IntPtr GetToken()
@@ -733,6 +738,12 @@ namespace YgomSystem.Utility
             }
             return hookGetToken.Original();
         }
+
+        static void ResetData()
+        {
+            hookResetData.Original();
+            YgomSystem.Network.ProtocolHttp.SetUrls();
+        }
     }
 }
 
@@ -740,9 +751,6 @@ namespace YgomSystem.Network
 {
     unsafe static class ProtocolHttp
     {
-        static IL2Class classInfo;
-        static IL2Method methodGetServerDefaultUrl;
-
         delegate void Del_GetServerDefaultUrl(int type, out IntPtr url, out IntPtr pollingUrl);
         static Hook<Del_GetServerDefaultUrl> hookGetServerDefaultUrl;
 
@@ -753,10 +761,8 @@ namespace YgomSystem.Network
                 return;
             }
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
-            classInfo = assembly.GetClass("ProtocolHttp", "YgomSystem.Network");
-            methodGetServerDefaultUrl = classInfo.GetMethod("GetServerDefaultUrl");
-
-            hookGetServerDefaultUrl = new Hook<Del_GetServerDefaultUrl>(GetServerDefaultUrl, methodGetServerDefaultUrl);
+            IL2Class classInfo = assembly.GetClass("ProtocolHttp", "YgomSystem.Network");
+            hookGetServerDefaultUrl = new Hook<Del_GetServerDefaultUrl>(GetServerDefaultUrl, classInfo.GetMethod("GetServerDefaultUrl"));
         }
 
         static void GetServerDefaultUrl(int type, out IntPtr url, out IntPtr pollingUrl)
@@ -765,6 +771,11 @@ namespace YgomSystem.Network
             url = new IL2String(ClientSettings.ServerUrl).ptr;
             pollingUrl = new IL2String(ClientSettings.ServerPollUrl).ptr;
             // But this does...
+            SetUrls();
+        }
+
+        public static void SetUrls()
+        {
             Dictionary<string, object> urls = new Dictionary<string, object>()
             {
                 { "System.info", ClientSettings.ServerUrl },

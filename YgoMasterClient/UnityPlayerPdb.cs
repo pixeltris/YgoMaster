@@ -16,8 +16,8 @@ namespace YgoMasterClient
 {
     static class UnityPlayerPdb
     {
-        // Lastest UnityPlayer.dll build for Master Duel (as of 2024-01-19):
-        // http://symbolserver.unity3d.com/UnityPlayer_Win64_il2cpp_x64.pdb/C65FD8ED2D17402EB0FE3F3231AD253E1/
+        // Lastest UnityPlayer.dll build for Master Duel (as of 2024-05-07):
+        // https://symbolserver.unity3d.com/UnityPlayer_Win64_player_il2cpp_x64.pdb/D7818DF19E8C487798AAA1D28C0B17A61/
 
         // Ways to get the PDB GUID:
         // - Check the symbol info in Visual Studio (attach to process, view modules window and get symbol info from UnityPlayer.dll)
@@ -44,7 +44,7 @@ namespace YgoMasterClient
 
         public static void Update()
         {
-            string pdbFile = "UnityPlayer_Win64_il2cpp_x64.pdb";
+            string pdbFile = "UnityPlayer_Win64_player_il2cpp_x64.pdb";
             if (!File.Exists(pdbFile))
             {
                 Console.WriteLine("Couldn't find '" + pdbFile + "'");
