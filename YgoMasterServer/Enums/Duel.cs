@@ -122,6 +122,9 @@ namespace YgoMaster
         Used,
         Put,
         Normal3,//v1.3.1
+        Cost,//v1.9.0
+        CostSacrifice,//v1.9.0
+        CostDrop,//v1.9.0
     }
 
     /// <summary>
@@ -243,6 +246,8 @@ namespace YgoMaster
         GG,//v1.1.1
         Rabbit,//1.5.X?
         Kyoumei,//1.6.1?
+        Kyouai,//v1.9.0
+        Access,//v1.9.0
         Max
     }
 
@@ -288,7 +293,8 @@ namespace YgoMaster
         ByBattle,
         ByCost,
         ByLost,
-        Recover
+        Recover,
+        ByPay,//v1.9.0
     }
 
     /// <summary>
@@ -476,7 +482,9 @@ namespace YgoMaster
         Vs3on1,
         Survival_1on3 = 256,
         Survival_3on3,
-        Survival_1on2
+        Survival_1on2,
+        NoRandom = 16,//v1.9.0
+        OldRule = 32,//v1.9.0
     }
 
     /// <summary>
@@ -622,6 +630,7 @@ namespace YgoMaster
         RECV,
         TIME,
         TURN,
+        INPUTGUARD,//v1.9.0
         DATA = 50,
         REPLAY = 60,
         TIMEUP = 97,

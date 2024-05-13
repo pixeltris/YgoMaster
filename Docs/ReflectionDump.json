@@ -1,5 +1,25 @@
 [
   {
+    "Assembly": "mscorlib",
+    "Namespace": "System.Reflection",
+    "Class": [
+      "RuntimeMethodInfo"
+    ],
+    "Type": "Method",
+    "Name": "MakeGenericMethod",
+    "Signature": "public System.Reflection.MethodInfo MakeGenericMethod(System.Type[] methodInstantiation)"
+  },
+  {
+    "Assembly": "mscorlib",
+    "Namespace": "System.Reflection",
+    "Class": [
+      "RuntimeMethodInfo"
+    ],
+    "Type": "Field",
+    "Name": "mhandle",
+    "Signature": "public RuntimeMethodInfo"
+  },
+  {
     "Assembly": "Assembly-CSharp",
     "Namespace": "YgomGame.Duel",
     "Class": [
@@ -507,8 +527,8 @@
       "RoomCreateViewController"
     ],
     "Type": "Method",
-    "Name": "SetData",
-    "Signature": "System.Void SetData()"
+    "Name": "SetupData",
+    "Signature": "System.Void SetupData()"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -556,55 +576,88 @@
     "Namespace": "YgomGame.Room",
     "Class": [
       "RoomCreateViewController",
-      "ButtonInfo"
-    ],
-    "Type": "Method",
-    "Name": ".ctor",
-    "Signature": "public System.Void .ctor(YgomSystem.UI.InfinityScroll.InfinityScrollView isv, System.String settingLabel, System.String title, System.String[] settingStrings, System.Object[] settings, System.Boolean isActionSheet, System.Int32 defaultSettings)"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Room",
-    "Class": [
-      "RoomCreateViewController",
-      "ButtonInfo"
-    ],
-    "Type": "Method",
-    "Name": "ProcessOnClicked",
-    "Signature": "public System.Void ProcessOnClicked()"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Room",
-    "Class": [
-      "RoomCreateViewController",
-      "ButtonInfo"
+      "ButtonInfoBase"
     ],
     "Type": "Field",
     "Name": "title",
-    "Signature": "public ButtonInfo"
+    "Signature": "public ButtonInfoBase"
   },
   {
     "Assembly": "Assembly-CSharp",
     "Namespace": "YgomGame.Room",
     "Class": [
       "RoomCreateViewController",
-      "ButtonInfo"
+      "ButtonInfoBase"
     ],
-    "Type": "Field",
-    "Name": "currentSetting",
-    "Signature": "public ButtonInfo"
+    "Type": "Property",
+    "Name": "valueText",
+    "Signature": "public System.String"
   },
   {
     "Assembly": "Assembly-CSharp",
     "Namespace": "YgomGame.Room",
     "Class": [
       "RoomCreateViewController",
-      "ButtonInfo"
+      "ButtonInfoBase"
     ],
-    "Type": "Field",
-    "Name": "settingStrings",
-    "Signature": "public ButtonInfo"
+    "Type": "Method",
+    "Name": "OnClick",
+    "Signature": "public System.Void OnClick()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Room",
+    "Class": [
+      "RoomCreateViewController",
+      "ButtonStringInfo"
+    ],
+    "Type": "Method",
+    "Name": ".ctor",
+    "Signature": "public System.Void .ctor(System.String settingLabel, System.String title, System.String defaultValue)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Room",
+    "Class": [
+      "RoomCreateViewController",
+      "ButtonStringInfo"
+    ],
+    "Type": "Property",
+    "Name": "currentValue",
+    "Signature": "public System.String"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Room",
+    "Class": [
+      "RoomCreateViewController",
+      "ButtonBoolValueInfo"
+    ],
+    "Type": "Method",
+    "Name": ".ctor",
+    "Signature": "public System.Void .ctor(System.String settingLabel, System.String title, System.Boolean defaultValue)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Room",
+    "Class": [
+      "RoomCreateViewController",
+      "ButtonBoolValueInfo"
+    ],
+    "Type": "Property",
+    "Name": "currentValue",
+    "Signature": "public System.Boolean"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Room",
+    "Class": [
+      "RoomCreateViewController",
+      "ButtonBoolValueInfo"
+    ],
+    "Type": "Method",
+    "Name": "SwitchValue",
+    "Signature": "public System.Void SwitchValue()"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -836,12 +889,31 @@
     "Assembly": "Assembly-CSharp",
     "Namespace": "YgomSystem.Network",
     "Class": [
-      "NetworkMain",
-      "RequestStructure"
+      "Request"
     ],
     "Type": "Method",
-    "Name": "Complete",
-    "Signature": "public System.Void Complete()"
+    "Name": "CommandEvent",
+    "Signature": "public static System.Void CommandEvent(System.String command, YgomSystem.Network.Handle handle)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.Network",
+    "Class": [
+      "Handle"
+    ],
+    "Type": "Field",
+    "Name": "m_Request",
+    "Signature": "Handle"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.Network",
+    "Class": [
+      "Handle"
+    ],
+    "Type": "Method",
+    "Name": "IsCompleted",
+    "Signature": "public System.Boolean IsCompleted()"
   },
   {
     "Assembly": "Unity.TextMeshPro",
@@ -1377,26 +1449,6 @@
     "Signature": "ProfileViewController"
   },
   {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Menu",
-    "Class": [
-      "ProfileViewController"
-    ],
-    "Type": "Method",
-    "Name": "InitMenuButtons",
-    "Signature": "System.Void InitMenuButtons()"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Menu",
-    "Class": [
-      "ProfileViewController"
-    ],
-    "Type": "Method",
-    "Name": "OnClickBlock",
-    "Signature": "System.Void OnClickBlock()"
-  },
-  {
     "Assembly": "Unity.TextMeshPro",
     "Namespace": "TMPro",
     "Class": [
@@ -1465,16 +1517,6 @@
     "Type": "Method",
     "Name": "Update",
     "Signature": "System.Void Update()"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Mission",
-    "Class": [
-      "MissionViewController"
-    ],
-    "Type": "Method",
-    "Name": "CheckLaunch",
-    "Signature": "static System.Void CheckLaunch(System.Int32 tabId, System.Int32 poolId, System.Action onSuccess, System.Action onFailed)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3157,16 +3199,6 @@
     "Signature": "public static System.String GetText(T TextEnum, System.Boolean richTextEx)"
   },
   {
-    "Assembly": "mscorlib",
-    "Namespace": "System.Reflection",
-    "Class": [
-      "MonoMethod"
-    ],
-    "Type": "Method",
-    "Name": "MakeGenericMethod",
-    "Signature": "public System.Reflection.MethodInfo MakeGenericMethod(System.Type[] methodInstantiation)"
-  },
-  {
     "Assembly": "Assembly-CSharp",
     "Namespace": "YgomSystem.Utility",
     "Class": [
@@ -3177,24 +3209,14 @@
     "Signature": "public static System.String GetText(T TextEnum, System.Boolean richTextEx)"
   },
   {
-    "Assembly": "mscorlib",
-    "Namespace": "System.Reflection",
-    "Class": [
-      "MonoMethod"
-    ],
-    "Type": "Method",
-    "Name": "MakeGenericMethod",
-    "Signature": "public System.Reflection.MethodInfo MakeGenericMethod(System.Type[] methodInstantiation)"
-  },
-  {
     "Assembly": "Assembly-CSharp",
     "Namespace": "YgomSystem.Utility",
     "Class": [
       "TextData"
     ],
     "Type": "Method",
-    "Name": "ParseTextId",
-    "Signature": "public static System.Boolean ParseTextId(System.String fullTextId, System.String& groupId, System.String& textId)"
+    "Name": "ContainsText",
+    "Signature": "public static System.Boolean ContainsText(T TextEnum)"
   },
   {
     "Assembly": "mscorlib",
@@ -3275,6 +3297,16 @@
     "Type": "Method",
     "Name": "GetToken",
     "Signature": "public static System.String GetToken()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.Utility",
+    "Class": [
+      "ClientWorkUtil"
+    ],
+    "Type": "Method",
+    "Name": "ResetData",
+    "Signature": "public static System.Void ResetData()"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3505,16 +3537,6 @@
     "Type": "Method",
     "Name": "GetComponents",
     "Signature": "public T[] GetComponents()"
-  },
-  {
-    "Assembly": "mscorlib",
-    "Namespace": "System.Reflection",
-    "Class": [
-      "MonoMethod"
-    ],
-    "Type": "Method",
-    "Name": "MakeGenericMethod",
-    "Signature": "public System.Reflection.MethodInfo MakeGenericMethod(System.Type[] methodInstantiation)"
   },
   {
     "Assembly": "UnityEngine.CoreModule",

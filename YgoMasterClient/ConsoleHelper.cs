@@ -58,6 +58,10 @@ namespace YgoMasterClient
                                 (ClientSettings.BrokenItems == null || !ClientSettings.BrokenItems.Contains(id)))
                             {
                                 string name = YgomGame.Utility.ItemUtil.GetItemName(id);
+                                if (IsWeirdName(name))
+                                {
+                                    continue;
+                                }
                                 YgomGame.Utility.ItemUtil.Category cat = YgomGame.Utility.ItemUtil.GetCategoryFromID(id);
                                 if (!categories.ContainsKey(cat))
                                 {
@@ -322,7 +326,9 @@ namespace YgoMasterClient
                 case "carddata":// dumps card data
                     {
                         IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
-                        string intIdPath = assembly.GetClass("Content", "YgomGame.Card").GetField("IntIdPath").GetValue().GetValueObj<string>();
+                        IL2Class contentClassInfo = assembly.GetClass("Content", "YgomGame.Card");
+                        IntPtr instance = contentClassInfo.GetField("s_instance").GetValue().ptr;
+                        string intIdPath = contentClassInfo.GetField("IntIdPath").GetValue(instance).GetValueObj<string>();
                         Console.WriteLine("intIdPath: " + intIdPath);
                         string path = intIdPath.Replace("/#/", "/");
                         path = path.Substring(0, path.LastIndexOf('/'));
@@ -480,6 +486,7 @@ namespace YgoMasterClient
                                                     if (field.Name.StartsWith("HOWTOGET_CATEGORY"))
                                                     {
                                                         string str = YgomSystem.Utility.TextData.GetText(idsDeckEditClass.Name + "." + field.Name);
+                                                        str = FixWeirdNameForEnum(str);
                                                         str = str.Replace(" ", string.Empty);
                                                         if (!string.IsNullOrEmpty(str))
                                                         {
@@ -503,6 +510,7 @@ namespace YgoMasterClient
                                                     if (field.Name.StartsWith("DETAIL_"))
                                                     {
                                                         string str = YgomSystem.Utility.TextData.GetText(idsScoreClass.Name + "." + field.Name);
+                                                        str = FixWeirdNameForEnum(str);
                                                         str = str.Replace(" ", string.Empty);
                                                         str = str.Replace("!", string.Empty);
                                                         tw.WriteLine("    " + str + ",");
@@ -1456,6 +1464,27 @@ namespace YgoMasterClient
             {
                 Import.Handler.il2cpp_gchandle_free(handleRef);
             });
+        }
+
+        static bool IsWeirdName(string name)
+        {
+            name = name.Replace("\r", "").Replace("\n", "").Trim();
+            uint val;
+            if (name.StartsWith("(") && name.EndsWith(")") && uint.TryParse(name.Trim('(', ')'), System.Globalization.NumberStyles.HexNumber, null, out val))
+            {
+                //Example: 1001042,//( 8da1a40b )
+                return true;
+            }
+            return false;
+        }
+
+        static string FixWeirdNameForEnum(string name)
+        {
+            if (IsWeirdName(name))
+            {
+                return "_" + name.Trim().Trim('(', ')').Trim();
+            }
+            return name;
         }
 
         [DllImport("user32.dll")]

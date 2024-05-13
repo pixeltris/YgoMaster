@@ -1,4 +1,4 @@
-// Client version 1.8.0
+// Client version 1.9.0
 // This file is generated using the 'updatediff' command in YgoMasterClient. This information is used to determine changes between client versions which impact YgoMaster.
 // Run the command, diff against the old file, and use the changes to update code.
 
@@ -182,6 +182,8 @@ enum PlayMode
     WCS,
     VERSUS,
     WCS_FINAL,
+    RATE,
+    RDC,
 }
 /// <summary>
 /// YgomSystem.Network.ServerStatus
@@ -217,6 +219,8 @@ enum GameMode
     WCS,
     Versus,
     WcsFinal,
+    Rate,
+    RDC,
     Null,
 }
 /// <summary>
@@ -294,6 +298,7 @@ enum HowToObtainCard
     SecretPack,// HOWTOGET_CATEGORY012
     BonusPack,// HOWTOGET_CATEGORY013
     Other,// HOWTOGET_CATEGORY099
+    _a0eee948,// HOWTOGET_CATEGORY011_TEXT
 }
 /// <summary>
 /// IDS_SCORE (IDS_SCORE.DETAIL_XXX)
@@ -507,6 +512,9 @@ enum DuelCardMoveType
     Used,
     Put,
     Normal3,
+    Cost,
+    CostSacrifice,
+    CostDrop,
 }
 /// <summary>
 /// YgomGame.Duel.Engine.CommandBit
@@ -624,6 +632,8 @@ enum DuelCounterType
     GG,
     Rabbit,
     Kyoumei,
+    Kyouai,
+    Access,
     Max,
 }
 /// <summary>
@@ -667,6 +677,7 @@ enum DuelDamageType
     ByCost,
     ByLost,
     Recover,
+    ByPay,
 }
 /// <summary>
 /// YgomGame.Duel.Engine.DialogEffectType
@@ -847,6 +858,8 @@ enum DuelLimitedType
     Survival_1on3 = 256,
     Survival_3on3,
     Survival_1on2,
+    NoRandom = 16,
+    OldRule = 32,
 }
 /// <summary>
 /// YgomGame.Duel.Engine.ListAttribute
@@ -985,6 +998,7 @@ enum DuelPvpCommand
     RECV,
     TIME,
     TURN,
+    INPUTGUARD,
     DATA = 50,
     REPLAY = 60,
     TIMEUP = 97,
@@ -1458,6 +1472,7 @@ enum ErrorCode
     ADDITIONAL_DL,
     ACCOUNT_BAN,
     GOTO_STORE_FOR_TITLE,
+    SESSION_EXPIRED,
 }
 enum EventNotifyCode
 {
@@ -1544,6 +1559,7 @@ enum LoginBonusCode
     ERR_INVALID_TERM,
     ERR_ALREADY_RECEIVED,
     ERR_ALREADY_COMPLETED,
+    ERROR_IN_SHOP_MAINTE,
 }
 enum MissionCode
 {
@@ -1631,6 +1647,24 @@ enum RankEventCode
     INVALID_PARAM = 3600,
     ERR_OUT_OF_TERM,
     ERROR_FIXED_ACCESSORY,
+}
+enum RateDuelCode
+{
+    NONE,
+    ERROR,
+    FATAL,
+    CRITICAL,
+    INVALID_PARAM = 4900,
+    ERR_OUT_OF_TERM,
+}
+enum RdcCode
+{
+    NONE,
+    ERROR,
+    FATAL,
+    CRITICAL,
+    INVALID_PARAM = 3700,
+    ERR_OUT_OF_TERM,
 }
 enum RoomCode
 {
@@ -1847,6 +1881,10 @@ enum WcsCode
     ERR_OUT_OF_TERM,
     ERR_NO_USER_DATA,
     ERR_OUT_OF_CONDITION,
+    ERR_NG_WORD,
+    ERR_NAME_LENGTH,
+    ERR_DECK_CHANGED,
+    ERR_TEAM_REGISTERED,
     ERR_FINAL_INVALID_DATA = 4310,
     ERR_FINAL_ROOM_EMPTY,
     ERR_FINAL_ROOM_RIVAL_LEAVE,
@@ -1950,6 +1988,8 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Mission_get_list()
 //public static YgomSystem.Network.Handle Mission_receive(System.Int32 _pool_id_, System.Int32 _mission_id_, System.Int32 _goal_pos_)
 //public static YgomSystem.Network.Handle Mission_bulk_receive(System.Int32[] _bulk_pool_id_, System.Int32[] _bulk_mission_id_, System.Int32[] _bulk_goal_pos_)
+//public static YgomSystem.Network.Handle PanelMission_get_list()
+//public static YgomSystem.Network.Handle PanelMission_receive(System.Int32 _pool_id_, System.Int32 _mission_id_)
 //public static YgomSystem.Network.Handle PvP_watch_duel(System.Int64 _pcode_, System.Int64 _rapid_)
 //public static YgomSystem.Network.Handle PvP_replay_duel(System.Int64 _pcode_, System.Int64 _did_)
 //public static YgomSystem.Network.Handle PvP_save_replay(System.Int32 _mode_, System.Int64 _did_, System.Int32 _eid_)
@@ -1964,7 +2004,7 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Structure_check_have_structure()
 //public static YgomSystem.Network.Handle Gacha_get_card_list(System.Int32 _card_list_id_)
 //public static YgomSystem.Network.Handle Gacha_get_probability(System.Int32 _gacha_id_, System.Int32 _shop_id_)
-//public static YgomSystem.Network.Handle Shop_get_list(System.Int32 _category_)
+//public static YgomSystem.Network.Handle Shop_get_list(System.Int32 _category_, System.Boolean _no_display_)
 //public static YgomSystem.Network.Handle Shop_purchase(System.Int32 _shop_id_, System.Int32 _price_id_, System.Int32 _count_, System.Collections.Generic.Dictionary<System.String,System.Object> _args_)
 //public static YgomSystem.Network.Handle Shop_visit(System.Int32[] _shop_ids_)
 //public static YgomSystem.Network.Handle Challenge_detail(System.Int32 _mode_, System.Int32 _season_id_)
@@ -1972,6 +2012,8 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Challenge_set_deck(System.Int32 _mode_, System.Int32 _deck_id_)
 //public static YgomSystem.Network.Handle Challenge_duel_history(System.Int32 _mode_, System.Int32 _season_id_)
 //public static YgomSystem.Network.Handle Challenge_reward_list(System.Int32 _mode_, System.Int32 _season_id_)
+//public static YgomSystem.Network.Handle Challenge_set_use_deck(System.Int32 _mode_, System.Int32 _season_id_, System.Int32 _rental_idx_)
+//public static YgomSystem.Network.Handle Challenge_get_rental_deck_list(System.Int32 _mode_, System.Int32 _season_id_, System.Int32 _rental_idx_)
 //public static YgomSystem.Network.Handle Casual_detail()
 //public static YgomSystem.Network.Handle Casual_duel_history()
 //public static YgomSystem.Network.Handle Solo_info(System.Boolean _back_)
@@ -2115,6 +2157,10 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Wcs_check_final_deck_regulation(System.Int32 _wcs_id_)
 //public static YgomSystem.Network.Handle Wcs_complete_final_deck(System.Int32 _wcs_id_)
 //public static YgomSystem.Network.Handle Wcs_unregister_final_deck(System.Int32 _wcs_id_)
+//public static YgomSystem.Network.Handle Wcs_set_final_member_name(System.Int32 _wcs_id_, System.String _name_)
+//public static YgomSystem.Network.Handle Wcs_set_final_member_profile(System.Int32 _wcs_id_, System.Collections.Generic.Dictionary<System.String,System.Object> _param_)
+//public static YgomSystem.Network.Handle Wcs_set_final_team_name(System.Int32 _wcs_id_, System.String _name_)
+//public static YgomSystem.Network.Handle Wcs_set_final_member_status(System.Int32 _wcs_id_, System.Boolean _is_regist_)
 //public static YgomSystem.Network.Handle Versus_detail(System.Int32 _versus_id_, System.Int32 _set_group_id_)
 //public static YgomSystem.Network.Handle Versus_duel_history(System.Int32 _versus_id_)
 //public static YgomSystem.Network.Handle Versus_get_deck_list(System.Int32 _versus_id_, System.Int32 _idx_, System.Boolean _is_empty_get_)
@@ -2152,9 +2198,27 @@ enum WcsCode
 //public static YgomSystem.Network.Handle SeasonPt_team_search(System.Int32 _unique_id_)
 //public static YgomSystem.Network.Handle SeasonPt_get_record(System.Boolean _is_own_, System.Int32 _unique_id_)
 //public static YgomSystem.Network.Handle SeasonPt_get_ranking()
+//public static YgomSystem.Network.Handle SeasonPt_get_result(System.Int32 _season_id_)
 //public static YgomSystem.Network.Handle Invitation_send_code(System.Int32 _invitation_id_, System.String _send_code_, System.String _check_code_)
 //public static YgomSystem.Network.Handle Invitation_get_info_for_invitee(System.Int32 _invitation_id_)
 //public static YgomSystem.Network.Handle Invitation_get_info_for_inviter(System.Int32 _invitation_id_)
+//public static YgomSystem.Network.Handle RateDuel_detail(System.Int32 _season_id_)
+//public static YgomSystem.Network.Handle RateDuel_duel_history(System.Int32 _season_id_)
+//public static YgomSystem.Network.Handle RateDuel_get_ranking(System.Int32 _season_id_)
+//public static YgomSystem.Network.Handle RateDuel_set_use_deck(System.Int32 _season_id_, System.Int32 _rental_idx_)
+//public static YgomSystem.Network.Handle RateDuel_get_rental_deck_list(System.Int32 _season_id_, System.Int32 _rental_idx_)
+//public static YgomSystem.Network.Handle LoginBonusEx_get_info(System.Int32 _login_bonus_id_)
+//public static YgomSystem.Network.Handle LoginBonusEx_get_list()
+//public static YgomSystem.Network.Handle LoginBonusEx_receive(System.Int32 _login_bonus_id_)
+//public static YgomSystem.Network.Handle LoginBonusEx_purchase(System.Int32 _login_bonus_id_, System.Int32 _shop_id_, System.Int32 _price_id_, System.Int32 _num_)
+//public static YgomSystem.Network.Handle LoginBonusEx_get_probability(System.Int32 _gacha_id_, System.Int32 _shop_id_)
+//public static YgomSystem.Network.Handle Rdc_detail(System.Int32 _rid_)
+//public static YgomSystem.Network.Handle Rdc_get_deck_list(System.Int32 _rid_, System.Boolean _is_empty_get_)
+//public static YgomSystem.Network.Handle Rdc_set_deck(System.Int32 _rid_, System.Collections.Generic.Dictionary<System.String,System.Object> _deck_list_, System.Collections.Generic.Dictionary<System.String,System.Object> _accessory_, System.Collections.Generic.Dictionary<System.String,System.Object> _pick_cards_)
+//public static YgomSystem.Network.Handle Rdc_delete_deck(System.Int32 _rid_)
+//public static YgomSystem.Network.Handle Rdc_duel_history(System.Int32 _rid_)
+//public static YgomSystem.Network.Handle Rdc_set_deck_accessory(System.Int32 _rid_, System.Collections.Generic.Dictionary<System.String,System.Object> _param_)
+//public static YgomSystem.Network.Handle Rdc_get_ranking(System.Int32 _rid_)
 //public System.Void .ctor()
 //==================================
 // duel.dll functions (Engine)
