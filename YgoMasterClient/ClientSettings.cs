@@ -210,7 +210,7 @@ namespace YgoMasterClient
             // Each YgoMasterClient needs its own proxy server, attempt to find a free port
             // NOTE: Shuffle to reduce chance of duplicate port being used when opening two clients at the same time
             List<int> portsToCheck = new List<int>();
-            for (int port = BasePort + 1; port <= BasePort + 2; port++)
+            for (int port = BasePort + 1; port <= BasePort + 20; port++)
             {
                 portsToCheck.Add(port);
             }
