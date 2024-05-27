@@ -157,6 +157,11 @@ namespace YgoMasterClient
 
                 //ReflectionValidator.ValidateDump();
 
+                if (!IsLive)
+                {
+                    SimpleProxy.Run();
+                }
+
                 if (!string.IsNullOrEmpty(ClientSettings.MultiplayerToken) &&
                     !string.IsNullOrEmpty(ClientSettings.SessionServerIP) && ClientSettings.SessionServerPort != 0)
                 {
@@ -175,28 +180,7 @@ namespace YgoMasterClient
 
                     new Thread(delegate ()
                     {
-                        string ip = ClientSettings.SessionServerIP;
-                        try
-                        {
-                            ip = ip.Replace("https://", string.Empty).Replace("http://", string.Empty);
-                            if (Uri.CheckHostName(ip) == UriHostNameType.Dns)
-                            {
-                                foreach (IPAddress address in Dns.GetHostAddresses(ip))
-                                {
-                                    if (address.AddressFamily == AddressFamily.InterNetwork)
-                                    {
-                                        ip = address.ToString();
-                                        if (ClientSettings.MultiplayerLogConnectionState)
-                                        {
-                                            Console.WriteLine("Resolved " + ClientSettings.SessionServerIP + " to " + ip);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        catch
-                        {
-                        }
+                        string ip = ClientSettings.ResolveIP(ClientSettings.SessionServerIP);
 
                         while (true)
                         {

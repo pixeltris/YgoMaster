@@ -3,8 +3,8 @@
     "BasePort": 4989,
     "SessionServerPort": 4988,
     "SessionServerIP": "{BaseIP}",
-    "ServerUrl": "http://{BaseIP}:{BasePort}/ygo",
-    "ServerPollUrl": "http://{BaseIP}:{BasePort}/ygo/poll",
+    "ServerUrl": "http://localhost:{ProxyPort}/ygo",
+    "ServerPollUrl": "http://localhost:{ProxyPort}/ygo/poll",
     "MultiplayerToken": "",// [WARNING] Only use this if you know what you're doing
     "MultiplayerPingTimeoutInSeconds": 90,
     "MultiplayerConnectDelayInSeconds": 10,

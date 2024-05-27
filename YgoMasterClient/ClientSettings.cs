@@ -4,11 +4,16 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using YgoMaster;
+using System.Net.Sockets;
+using System.Net;
 
 namespace YgoMasterClient
 {
     static partial class ClientSettings
     {
+        public static string BaseIP;
+        public static int BasePort;
+        public static int ProxyPort;
         public static string SessionServerIP;
         public static int SessionServerPort;
         public static string ServerUrl;
@@ -99,13 +104,15 @@ namespace YgoMasterClient
                 return false;
             }
 
-            string baseIP = Utils.GetValue<string>(data, "BaseIP");
-            int basePort = Utils.GetValue<int>(data, "BasePort");
+            BaseIP = Utils.GetValue<string>(data, "BaseIP");
+            BasePort = Utils.GetValue<int>(data, "BasePort");
+            UpdateProxyPort();
             SessionServerPort = Utils.GetValue<int>(data, "SessionServerPort");
             Func<string, string> FixupUrl = (string str) =>
             {
-                str = str.Replace("{BaseIP}", baseIP);
-                str = str.Replace("{BasePort}", basePort.ToString());
+                str = str.Replace("{BaseIP}", BaseIP);
+                str = str.Replace("{BasePort}", BasePort.ToString());
+                str = str.Replace("{ProxyPort}", ProxyPort.ToString());
                 str = str.Replace("{SessionServerPort}", SessionServerPort.ToString());
                 if (str == "localhost")
                 {
@@ -196,6 +203,67 @@ namespace YgoMasterClient
             catch
             {
             }
+        }
+
+        static void UpdateProxyPort()
+        {
+            // Each YgoMasterClient needs its own proxy server, attempt to find a free port
+            // NOTE: Shuffle to reduce chance of duplicate port being used when opening two clients at the same time
+            List<int> portsToCheck = new List<int>();
+            for (int port = BasePort + 1; port <= BasePort + 2; port++)
+            {
+                portsToCheck.Add(port);
+            }
+            foreach (int port in Utils.Shuffle(Utils.Rand, portsToCheck))
+            {
+                if (IsPortAvailable(port))
+                {
+                    ProxyPort = port;
+                    break;
+                }
+            }
+        }
+
+        static bool IsPortAvailable(int port)
+        {
+            try
+            {
+                TcpListener tcpListener = new TcpListener(IPAddress.Loopback, port);
+                tcpListener.Start();
+                tcpListener.Stop();
+                return true;
+            }
+            catch
+            {
+            }
+            return false;
+        }
+
+        public static string ResolveIP(string nameOrIP)
+        {
+            string ip = nameOrIP;
+            try
+            {
+                ip = ip.Replace("https://", string.Empty).Replace("http://", string.Empty);
+                if (Uri.CheckHostName(ip) == UriHostNameType.Dns)
+                {
+                    foreach (IPAddress address in Dns.GetHostAddresses(ip))
+                    {
+                        if (address.AddressFamily == AddressFamily.InterNetwork)
+                        {
+                            ip = address.ToString();
+                            if (MultiplayerLogConnectionState)
+                            {
+                                Console.WriteLine("Resolved " + nameOrIP + " to " + ip);
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+            return ip;
         }
     }
 }

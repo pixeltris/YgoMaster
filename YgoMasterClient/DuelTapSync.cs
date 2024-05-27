@@ -26,12 +26,12 @@ namespace YgoMasterClient
         static IL2Method methodGetBgUnit;
         static IntPtr nearBgUnit;
         static IntPtr farBgUnit;
+        delegate void Del_PlayEntryAnimation(IntPtr thisPtr);
+        static Hook<Del_PlayEntryAnimation> hookPlayEntryAnimation;
 
         // BgUnit
         static IL2Field fieldActiveCharacter;
         static IL2Field fieldEffectManager;
-        delegate void Del_PlayCharaEntryAnimation(IntPtr thisPtr);
-        static Hook<Del_PlayCharaEntryAnimation> hookPlayCharaEntryAnimation;
 
         // BgEffectManagerInner
         static IL2Field fieldTriggerSettings;
@@ -69,6 +69,8 @@ namespace YgoMasterClient
             IL2Class bgManagerClass = assembly.GetClass("BgManager", "YgomGame.Bg");
             methodGetBgUnit = bgManagerClass.GetMethod("GetBgUnit", x => x.GetParameters()[0].Name == "isMyself");
 
+            hookPlayEntryAnimation = new Hook<Del_PlayEntryAnimation>(PlayEntryAnimation, bgManagerClass.GetMethod("PlayEntryAnimation"));
+
             IL2Class bgEffectManagerInnerClass = assembly.GetClass("BgEffectManagerInner", "YgomGame.Bg");
             fieldTriggerSettings = bgEffectManagerInnerClass.GetField("triggerSettings");
 
@@ -80,7 +82,6 @@ namespace YgoMasterClient
             IL2Class bgUnitClass = assembly.GetClass("BgUnit", "YgomGame.Bg");
             fieldActiveCharacter = bgUnitClass.GetField("activeCharacter");
             fieldEffectManager = bgUnitClass.GetField("effectManager");
-            hookPlayCharaEntryAnimation = new Hook<Del_PlayCharaEntryAnimation>(PlayCharaEntryAnimation, bgUnitClass.GetMethod("PlayCharaEntryAnimation"));
 
             IL2Class characterClass = assembly.GetClass("Character");
             hookPlayTapMotion = new Hook<Del_PlayTapMotion>(PlayTapMotion, characterClass.GetMethod("PlayTapMotion"));
@@ -96,11 +97,11 @@ namespace YgoMasterClient
             });
         }
 
-        static void PlayCharaEntryAnimation(IntPtr thisPtr)
+        static void PlayEntryAnimation(IntPtr thisPtr)
         {
             // NOTE: We hook here to init state because doing so earlier than this point results in
             // clicked characters getting stuck (can't click them normally and can't sync them)
-            hookPlayCharaEntryAnimation.Original(thisPtr);
+            hookPlayEntryAnimation.Original(thisPtr);
             InitState();
         }
 
