@@ -15,8 +15,8 @@ You may need to fully open the game with Steam multiple times. Some updates have
 - Start a Command Prompt with Administrator Permissions.
 - Navigate to and note your MD installation folder path. This will be referred to as `MDPATH` below.
 - Navigate inside your `/LocalData/` folder. There should be at least one folder named with some 8-char combination of random numbers and letters. This will be referred to as `USERFOLDER` below.
-- Copy and run `MKLINK /D  "MDPATH\LocalData\00000000" "MDPATH\LocalData\USERFOLDER"` in the Command Prompt.
-- If successful, it should say `symbolic link created for PATH1 <<===>> PATH2`.
+- Type in and run `MKLINK /D  "MDPATH\LocalData\00000000" "MDPATH\LocalData\USERFOLDER"` in the Command Prompt with appropriate edits for `MDPATH` and `USERFOLDER`.
+- If successful, it should say `symbolic link created for MDPATH\LocalData\00000000 <<===>> MDPATH\LocalData\USERFOLDER`.
 
 ## 3) Changing language
 
