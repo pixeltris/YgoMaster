@@ -10,13 +10,13 @@ Fully update your game. If you have multiple folders inside of LocalData, you ne
 
 You may need to fully open the game with Steam multiple times. Some updates have additional data downloads the second time you open the game.
 
-## 2) LocalSave
+## 2) LocalData
 
-- Navigate to `/Yu-Gi-Oh! Master Duel/LocalSave/`.
-- There should be two folders in `/LocalSave/`; one with a bunch of random letters, and one called `00000000`.
-- Delete the contents of the `00000000` folder, and copy the contents of the random letters folder into the `00000000` folder.
-
-You may need to repeat this step multiple times (fully reopening with Steam, and copying the folder over to `00000000` until it works).
+- Start a Command Prompt with Administrator Permissions.
+- Navigate to and note your MD installation folder path. This will be referred to as `MDPATH` below.
+- Nativate inside your `/LocalData/` folder, there should be at least one folder named with some 8-char combination of random numbers and letters. This will be referred to as `USERFOLDER` below.
+- Copy and run `MKLINK /D  "MDPATH\LocalData\00000000" "MDPATH\LocalData\USERFOLDER"` in the Command Prompt.
+- If successful, it should say `symbolic link created for PATH1 <<===>> PATH2`.
 
 ## 3) Changing language
 
