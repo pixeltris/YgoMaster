@@ -709,9 +709,9 @@ namespace YgoMaster
                 if (chapterData.TryGetValue("unlock_secret", out unlockSecretObj))// custom
                 {
                     List<int> unlockSecretIds = new List<int>();
-                    if (unlockSecretObj is List<int>)
+                    if (unlockSecretObj is List<object>)
                     {
-                        foreach (object idObj in unlockSecretObj as List<int>)
+                        foreach (object idObj in unlockSecretObj as List<object>)
                         {
                             unlockSecretIds.Add((int)Convert.ChangeType(idObj, typeof(int)));
                         }
