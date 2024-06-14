@@ -273,6 +273,7 @@ namespace YgoMaster
         WaitEndNetwork,
         DuelEnd,
         InitTerm,
+        WaitEndViewClose,
         WaitTerm,
         End,
         WaitDestroy,

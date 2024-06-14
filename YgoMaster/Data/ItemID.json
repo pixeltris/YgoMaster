@@ -71,6 +71,7 @@
     1001023,//Hungry Burger
     1001024,//Eldlixir
     1001025,//Naturia Cosmobeet
+    1001028,//Bonfire
     1002001,//Soccer Ball
     1002002,//Basketball
     1002003,//Record Player
@@ -152,6 +153,9 @@
     1010064,//Rikka Princess
     1010065,//S-Force Nightchaser
     1010066,//Mementotlan Ghattic
+    1010067,//Legendary Fire King Ponix
+    1010069,//Number C62: Neo Galaxy-Eyes Prime Photon Dragon
+    1010070,//Galaxy-Eyes Photon Dragon
     1010071,//Ash Blossom & Joyous Spring
     1011001,//Soccer Ball
     1011002,//Trophy
@@ -181,6 +185,9 @@
     1011026,//DC 2024 MAR Gold Finalist
     1011027,//DC 2024 MAR Silver Finalist
     1011028,//DC 2024 MAR Bronze Finalist
+    1011029,//WCS 2024 Qualifiers Gold Finalist
+    1011030,//WCS 2024 Qualifiers Silver Finalist
+    1011031,//WCS 2024 Qualifiers Bronze Finalist
     1012001,//X-Krawler Synaphysis
     1012002,//Mekk-Knight Spectrum Supreme
     1012003,//Knightmare Gryphon
@@ -374,6 +381,7 @@
     1030025,//Mint Frame
     1030026,//Link Master Frame
     1030027,//The Legend of Duelist  QUARTER CENTURY Frame
+    1030028,//Lime Frame
     1030030,//Leodrake's Mane
     1031001,//The Path of the Blue Sky Striker
     1031002,//The Path of the Red Sky Striker
@@ -470,9 +478,11 @@
     1070078,//Emperor Charles the Great
     1070079,//Supreme King Z-ARC
     1070080,//Imsety, Glory of Horus
+    1070081,//Vaalmonica Scelta
     1070085,//Traptrix Sera
     1070086,//Dark Magician Girl
     1070087,//Diabellstar the Black Witch
+    1070088,//Galaxy-Eyes Photon Dragon
     1070089,//Flower Cardian Cherry Blossom with Curtain
     1070090,//Aleister the Invoker of Madness
     1071001,//Crusadia Maximus
@@ -505,11 +515,13 @@
     1071028,//Naturia Leodrake
     1072001,//Sky Striker Conversion: Flaming Wings of Destruction
     1072002,//Chaos Xyz Evolution －Galactic Gathering of Dragons－
+    1072003,//Sky Striker Armor - Black Flash Raiment
     1073001,//WCS 2023 Party Favor
     1073002,//WCS 2023 Celebration
     1073003,//DC 2023 OCT Celebration
     1073004,//DC 2023 DEC Celebration
     1073005,//DC 2024 MAR Celebration
+    1073006,//WCS 2024 Qualifiers Celebration
     1075001,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
   ],
   "DECK_CASE": [
@@ -537,6 +549,7 @@
     1080023,//Hidden Arts of Shadows
     1080024,//Blue-Eyes Max
     1080025,//Sword of Souls
+    1080026,//Origin of the Galaxy
     1082001,//Xyz Black
     1082002,//The Millennium Puzzle
     1082003,//Duelist Card Case Blue
@@ -617,6 +630,7 @@
     1101012,//Twin Twisters
     1101013,//Foolish Burial
     1101016,//Magical Thorn
+    1101025,//Fire King Sanctuary
     1102001,//Colosseum
     1102002,//WCS
   ],
@@ -694,6 +708,7 @@
     1120023,//Hidden Arts of Shadows
     1120024,//Blue-Eyes Max
     1120025,//Sword of Souls
+    1120026,//Origin of the Galaxy
   ],
   "WALLPAPER": [
     1130001,//Blue-Eyes Alternative White Dragon
@@ -737,6 +752,10 @@
     1130039,//Snake-Eyes Flamberge Dragon
     1130040,//Flawless Perfection of the Tenyi
     1130041,//Number 41: Bagooska the Terribly Tired Tapir
+    1130042,//Sky Striker Mobilize - Linkage!
+    1130043,//Stars Align across the Milky Way
+    1130044,//Sacred Fire King Garunix
+    1130047,//Galaxy-Eyes Photon Dragon
   ],
   "PACK_TICKET": [
     1140001,//Legacy Pack ticket

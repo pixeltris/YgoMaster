@@ -1,4 +1,4 @@
-// Client version 1.9.0
+// Client version 1.9.3
 // This file is generated using the 'updatediff' command in YgoMasterClient. This information is used to determine changes between client versions which impact YgoMaster.
 // Run the command, diff against the old file, and use the changes to update code.
 
@@ -361,6 +361,7 @@ enum DuelClientStep
     WaitEndNetwork,
     DuelEnd,
     InitTerm,
+    WaitEndViewClose,
     WaitTerm,
     End,
     WaitDestroy,
