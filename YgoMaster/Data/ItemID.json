@@ -46,6 +46,7 @@
     1000030,//Purrely
     1000032,//Elemental HERO Flame Wingman
     1000033,//Blue-Eyes Chaos MAX Dragon
+    1000034,//Scareclaw Light-Heart
     1000041,//Number 41: Bagooska the Terribly Tired Tapir
     1001001,//Instant Fusion
     1001002,//Noble Arms - Caliburn
@@ -71,6 +72,7 @@
     1001023,//Hungry Burger
     1001024,//Eldlixir
     1001025,//Naturia Cosmobeet
+    1001026,//The Fabled Chawa
     1001028,//Bonfire
     1002001,//Soccer Ball
     1002002,//Basketball
@@ -154,6 +156,7 @@
     1010065,//S-Force Nightchaser
     1010066,//Mementotlan Ghattic
     1010067,//Legendary Fire King Ponix
+    1010068,//Super Polymerization
     1010069,//Number C62: Neo Galaxy-Eyes Prime Photon Dragon
     1010070,//Galaxy-Eyes Photon Dragon
     1010071,//Ash Blossom & Joyous Spring
@@ -188,6 +191,10 @@
     1011029,//WCS 2024 Qualifiers Gold Finalist
     1011030,//WCS 2024 Qualifiers Silver Finalist
     1011031,//WCS 2024 Qualifiers Bronze Finalist
+    1011032,//Xyz Cup Gold Finalist
+    1011033,//Xyz Cup Silver Finalist
+    1011034,//Xyz CupR Bronze Finalist
+    1011042,//Xyz Cup Champion
     1012001,//X-Krawler Synaphysis
     1012002,//Mekk-Knight Spectrum Supreme
     1012003,//Knightmare Gryphon
@@ -244,6 +251,7 @@
     1012054,//Commander Gottoms, Swordmaster
     1012055,//Eldlich the Golden Lord
     1012056,//Naturia Leodrake
+    1012058,//Fabled Leviathan
     1012061,//Cyber Dragon
     1012062,//Evil★Twins Ki-sikil & Lil-la
     1012063,//Eldlixir of White Destiny
@@ -397,7 +405,9 @@
     1032004,//Night festival in Costume
     1032005,//Frost Frame
     1032006,//Flurry of Cherry Blossoms
+    1032007,//Neon Sign
     1033001,//WCS 2023 Party Favor
+    1033003,//Overlay Unit
   ],
   "PROTECTOR": [
     1070001,//Yu-Gi-Oh! Trading Card Game
@@ -479,6 +489,9 @@
     1070079,//Supreme King Z-ARC
     1070080,//Imsety, Glory of Horus
     1070081,//Vaalmonica Scelta
+    1070082,//Yubel - The Loving Defender Forever
+    1070083,//Centur-Ion Primera
+    1070084,//Dragon Master Magia
     1070085,//Traptrix Sera
     1070086,//Dark Magician Girl
     1070087,//Diabellstar the Black Witch
@@ -513,6 +526,7 @@
     1071026,//Commander Gottoms, Swordmaster
     1071027,//Eldlixir of Black Awakening
     1071028,//Naturia Leodrake
+    1071029,//Fabled Leviathan
     1072001,//Sky Striker Conversion: Flaming Wings of Destruction
     1072002,//Chaos Xyz Evolution －Galactic Gathering of Dragons－
     1072003,//Sky Striker Armor - Black Flash Raiment
@@ -522,6 +536,7 @@
     1073004,//DC 2023 DEC Celebration
     1073005,//DC 2024 MAR Celebration
     1073006,//WCS 2024 Qualifiers Celebration
+    1073007,//Xyz Cup Celebration
     1075001,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
   ],
   "DECK_CASE": [
@@ -588,6 +603,7 @@
     1090020,//Archfiend Palabyrinth
     1090021,//The Revived Sky Temple
     1090022,//Pyroxene Cave
+    1090023,//Pressured Planet Wraitsoth
     1090025,//Blue-Eyes Mausoleum
     1092001,//Colosseum
     1092002,//WCS
@@ -615,6 +631,7 @@
     1100020,//Archfiend Palabyrinth
     1100021,//The Revived Sky Temple
     1100022,//Pyroxene Cave
+    1100023,//Pressured Planet Wraitsoth
     1100025,//Blue-Eyes Mausoleum
     1101001,//Trap Hole
     1101002,//Magical Hats
@@ -657,6 +674,7 @@
     1110020,//Archfiend Palabyrinth
     1110021,//The Revived Sky Temple
     1110022,//Pyroxene Cave
+    1110023,//Pressured Planet Wraitsoth
     1110025,//Blue-Eyes Mausoleum
     1111001,//Destiny Board
     1111002,//Bug Matrix
@@ -755,6 +773,8 @@
     1130042,//Sky Striker Mobilize - Linkage!
     1130043,//Stars Align across the Milky Way
     1130044,//Sacred Fire King Garunix
+    1130045,//Dark Hole Dragon
+    1130046,//Kingyo Sukui
     1130047,//Galaxy-Eyes Photon Dragon
   ],
   "PACK_TICKET": [
