@@ -15,14 +15,10 @@ Offline Yu-Gi-Oh! Master Duel (PC)
 - YDK / YDKe support
 - Card collection stats / deck editor sub menu improvements
 
-[Some features can be modded into the live game (at your own risk)](Docs/LiveMods.md)
-
 ## Requirements
 
 - .NET Framework 4.0 (or above)
-- The game fully downloaded via Steam (~5GB)
-
-*You must complete the tutorial on Steam to fully download the game.*
+- The game downloaded on Steam (complete the in-game tutorial to download all data)
 
 *YgoMaster is portable. It can be used on any machine without Steam installed (after being fully downloaded).*
 
@@ -37,7 +33,7 @@ Additionally...
 
 - [It's recommended that you tailor the server settings to your preferences](Docs/Settings.md)
 - Download [VG.TCG.Decks.7z](https://github.com/pixeltris/YgoMaster/releases/download/v1.4/VG.TCG.Decks.7z) for ~6000 decks from the YGO video games
-- The custom duel starter UI can be accessed via the DUEL button on the home screen
+- The custom duel starter UI can be accessed using the DUEL button on the home screen
 - When updating copy your `/YgoMaster/Data/Players/` folder
 - [How to run on Linux](Docs/Linux.md)
 
