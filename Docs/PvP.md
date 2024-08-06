@@ -46,6 +46,10 @@ WAN is harder to set up. You probably want to start by setting up on the same PC
 
 Once LAN is working (ideally with two computers two test it on). You can try setting up WAN by changing the client connection IP to to the WAN IP (in addition to the steps outlined above in "Setting Up WAN" section). If LAN works, but WAN does not. It may be a router port forwading issue.
 
+## Linux
+
+See [Linux.md](Linux.md)
+
 ## Notes
 
 - Only one PC needs to make changes to `Settings.json` and run `YgoMaster.exe` as it's the server. All PCs must edit `ClientSettings.json` and run `YgoMasterClient.exe`

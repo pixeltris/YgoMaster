@@ -205,8 +205,14 @@ namespace YgoMaster
                 if (!string.IsNullOrEmpty(actsHeader) && context.Request.ContentLength64 <= maxContentLength)
                 {
                     requestBuffer = new byte[context.Request.ContentLength64];
-                    int readBytes = context.Request.InputStream.Read(requestBuffer, 0, requestBuffer.Length);
-                    if (readBytes == requestBuffer.Length)
+                    int readBytes = 1;
+                    int offset = 0;
+                    while (readBytes > 0)
+                    {
+                        readBytes = context.Request.InputStream.Read(requestBuffer, offset, requestBuffer.Length - offset);
+                        offset += readBytes;
+                    }
+                    if (offset == requestBuffer.Length)
                     {
                         string sessionToken;
                         Dictionary<string, object> vals = Deserialize(requestBuffer, out sessionToken);
@@ -510,10 +516,7 @@ namespace YgoMaster
                     }
                     else
                     {
-                        if (context.Request.InputStream.Read(requestBuffer, 0, 1) != 0)
-                        {
-                            throw new Exception("TODO: A proper chunked reader");
-                        }
+                        throw new Exception("WARNING: Read " + offset + " / " + context.Request.ContentLength64 + " bytes");
                     }
                 }
             }

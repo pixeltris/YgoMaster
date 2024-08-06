@@ -72,6 +72,11 @@ namespace YgoMasterClient
                     byte[] data = GetRecievedData(ar);
                     if (data != null)
                     {
+                        if (data.Length == 0)
+                        {
+                            Close();
+                            return;
+                        }
                         Socket otherSocket = socket == ServerSocket ? ClientSocket : ServerSocket;
                         int offset = 0;
                         while (offset < data.Length)
