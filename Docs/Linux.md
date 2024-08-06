@@ -7,6 +7,13 @@
 
 If you'd like to run without the wine logging you can use this command instead `WINEDEBUG=-all wine YgoMasterClient.exe`
 
+## ClientSettings.json changes (required)
+
+Currently you need edit the default provided `YgoMaster/Data/ClientData/ClientSettings.json`
+
+- Change `{ProxyPort}` to `{BasePort}` in both the `"ServerUrl"` and `"ServerPollUrl"`.
+- If you're running PvP you may need to switch it back.
+
 ## Bugs
 
 - `ClientSettings.json` setting `ShowConsole` does not work
