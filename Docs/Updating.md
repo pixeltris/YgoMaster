@@ -35,9 +35,9 @@ Certain logs will be dumped as json into `%USERPROFILE%/Documents/Fiddler2/Captu
 - Download the latest shops list from [here](https://github.com/pixeltris/YgoMaster/issues/129) and place them `YgoMaster/Data/ShopDumps/`
 - Click `SHOP` to log `/ayk/api/Shop.get_list`
 - Rename the `YgoMasterUpdate/Shop.json` log to the update date and copy it into `YgoMaster/Data/ShopDumps/`
-- In game select `Master Pack` and click `Cards included in this pack`. Manually copy the response of `/ayk/api/Gacha.get_card_list` into `Data/ShopDumps/Gacha-10000001.json`
-- In game select `Legacy Pack` and click `Cards included in this pack`. Manually copy the response of `/ayk/api/Gacha.get_card_list` into `Data/ShopDumps/Gacha-10003001.json`
-- Run the `YgoMaster.exe --mergeshops` command to merge `/Data/ShopDumps/` into `/Data/AllShopsMerged.json`. Copy out what is needed. For some shops like 3001 you'll need to manually fix up the shop price (and maybe the card list as well?).
+- In game select `Master Pack` and click `Cards included in this pack`. Manually copy the response of `/ayk/api/Gacha.get_card_list` into `YgoMaster/Data/ShopDumps/Gacha-10000001.json`
+- In game select `Legacy Pack` and click `Cards included in this pack`. Manually copy the response of `/ayk/api/Gacha.get_card_list` into `YgoMaster/Data/ShopDumps/Gacha-10003001.json`
+- Run the `YgoMaster.exe --mergeshops` command to merge `YgoMaster/Data/ShopDumps/` into `YgoMaster/Data/AllShopsMerged.json`. Copy out what is needed. For some shops like 3001 you'll need to manually fix up the shop price (and maybe the card list as well?).
 - Zip up your `ShopDumps` folder and update the link at the top of this section. Then delete your `ShopDumps` folder.
 
 For any new packs with new pack images...
@@ -65,17 +65,17 @@ For creating `YgoMaster/Data/ShopDumps/` from scratch...
 
 ## YdkIds.txt
 
-- In the client console run `carddata` which should create `/Data/ClientDataDump/Card/Data/{CLIENT_VERSION}/`, move and rename the `{CLIENT_VERSION}` folder to `/Data/CardData/`. You must do this while using the `English` language setting.
+- In the client console run `carddata` which should create `YgoMaster/Data/ClientDataDump/Card/Data/{CLIENT_VERSION}/`, move and rename the `{CLIENT_VERSION}` folder to `YgoMaster/Data/CardData/`. You must do this while using the `English` language setting.
 - Run `YgoMaster.exe --updateydk` to update `YdkIds.txt`.
 
 ## PvP card data
 
-- To update PvP card data you must follow the above YdkIds.txt instructions. If you don't do this any newly added cards wont function correctly in PvP as the duel engine requires `/Data/CardData/` being up to date.
+- To update PvP card data you must follow the above YdkIds.txt instructions. If you don't do this any newly added cards wont function correctly in PvP as the duel engine requires `YgoMaster/Data/CardData/` being up to date.
 
 ## ItemID.json
 
 - In the client console run `itemid` which will create `ItemID.json` in the game folder.
-- Copy it over to `/Data/` and remove any invalid entries (some make the client crash / are blank).
+- Copy it over to `YgoMaster/Data/` and remove any invalid entries (some make the client crash / are blank).
 
 ## Enabling the client console
 
