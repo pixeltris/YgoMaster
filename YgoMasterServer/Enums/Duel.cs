@@ -248,6 +248,7 @@ namespace YgoMaster
         Kyoumei,//1.6.1?
         Kyouai,//v1.9.0
         Access,//v1.9.0
+        Shukudai,//V2.0.0
         Max
     }
 

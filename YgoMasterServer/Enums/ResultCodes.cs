@@ -462,6 +462,8 @@ namespace YgoMaster
             FATAL = 2,
             CRITICAL = 3,
             PLAYBACK_FAIL = 3301,
+            IN_PREPARATION,//v2.0.0
+            DISP_DECK_FAIL,//v2.0.0
         }
 
         public enum EnqueteCode

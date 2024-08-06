@@ -27,7 +27,7 @@ namespace YgomGame.Mission
                 return;
             }
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
-            IL2Class classInfo = assembly.GetClass("MissionViewController", "YgomGame.Mission");
+            IL2Class classInfo = assembly.GetClass("ResidentMissionContent", "YgomGame.Mission");
             hookCheckLaunch = new Hook<Del_CheckLaunch>(CheckLaunch, classInfo.GetMethod("CheckLaunch"));
         }
 

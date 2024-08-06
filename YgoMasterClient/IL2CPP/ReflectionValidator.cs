@@ -130,7 +130,7 @@ namespace IL2CPP
                 IL2Class klass = assembly.GetClass(signature.Class[0], signature.Namespace);
                 if (klass == null)
                 {
-                    Log("Failed to type '" + signature.Class[0] + "' in assembly '" + signature.Assembly + "'");
+                    Log("Failed to find type '" + signature.Class[0] + "' in assembly '" + signature.Assembly + "'");
                     continue;
                 }
                 for (int i = 1; i < signature.Class.Count; i++)
@@ -138,7 +138,7 @@ namespace IL2CPP
                     klass = klass.GetNestedType(signature.Class[i]);
                     if (klass == null)
                     {
-                        Log("Failed to nested type '" + string.Join(".", signature.Class) + "' in assembly '" + signature.Assembly + "'");
+                        Log("Failed to find nested type '" + string.Join(".", signature.Class) + "' in assembly '" + signature.Assembly + "'");
                         break;
                     }
                 }

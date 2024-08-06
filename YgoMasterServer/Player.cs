@@ -511,12 +511,12 @@ namespace YgoMaster
 
         struct State
         {
-            public byte NumNormal;
-            public byte NumShine;
-            public byte NumRoyal;
-            public byte NumNormal_NoDismantle;
-            public byte NumShine_NoDismantle;
-            public byte NumRoyal_NoDismantle;
+            public int NumNormal;
+            public int NumShine;
+            public int NumRoyal;
+            public int NumNormal_NoDismantle;
+            public int NumShine_NoDismantle;
+            public int NumRoyal_NoDismantle;
             public long Time;
 
             public bool IsZero
@@ -570,18 +570,17 @@ namespace YgoMaster
             public void Set(int count, PlayerCardKind kind)
             {
                 Time = Utils.GetEpochTime();
-                byte countByte = IntToByte(count);
                 switch (kind)
                 {
                     case PlayerCardKind.All:
-                        NumNormal = NumShine = NumRoyal = countByte;
-                        NumNormal_NoDismantle = NumShine_NoDismantle = NumRoyal_NoDismantle = countByte;
+                        NumNormal = NumShine = NumRoyal = count;
+                        NumNormal_NoDismantle = NumShine_NoDismantle = NumRoyal_NoDismantle = count;
                         break;
                     case PlayerCardKind.Dismantle:
-                        NumNormal = NumShine = NumRoyal = countByte;
+                        NumNormal = NumShine = NumRoyal = count;
                         break;
                     case PlayerCardKind.NoDismantle:
-                        NumNormal_NoDismantle = NumShine_NoDismantle = NumRoyal_NoDismantle = countByte;
+                        NumNormal_NoDismantle = NumShine_NoDismantle = NumRoyal_NoDismantle = count;
                         break;
                 }
             }
@@ -589,47 +588,33 @@ namespace YgoMaster
             public void Set(int count, PlayerCardKind kind, CardStyleRarity styleRarity)
             {
                 Time = Utils.GetEpochTime();
-                byte countByte = IntToByte(count);
                 switch (kind)
                 {
                     case PlayerCardKind.All:
                         switch (styleRarity)
                         {
-                            case CardStyleRarity.Normal: NumNormal = NumNormal_NoDismantle = countByte; break;
-                            case CardStyleRarity.Shine: NumShine = NumShine_NoDismantle = countByte; break;
-                            case CardStyleRarity.Royal: NumRoyal = NumRoyal_NoDismantle = countByte; break;
+                            case CardStyleRarity.Normal: NumNormal = NumNormal_NoDismantle = count; break;
+                            case CardStyleRarity.Shine: NumShine = NumShine_NoDismantle = count; break;
+                            case CardStyleRarity.Royal: NumRoyal = NumRoyal_NoDismantle = count; break;
                         }
                         break;
                     case PlayerCardKind.Dismantle:
                         switch (styleRarity)
                         {
-                            case CardStyleRarity.Normal: NumNormal = countByte; break;
-                            case CardStyleRarity.Shine: NumShine = countByte; break;
-                            case CardStyleRarity.Royal: NumRoyal = countByte; break;
+                            case CardStyleRarity.Normal: NumNormal = count; break;
+                            case CardStyleRarity.Shine: NumShine = count; break;
+                            case CardStyleRarity.Royal: NumRoyal = count; break;
                         }
                         break;
                     case PlayerCardKind.NoDismantle:
                         switch (styleRarity)
                         {
-                            case CardStyleRarity.Normal: NumNormal_NoDismantle = countByte; break;
-                            case CardStyleRarity.Shine: NumShine_NoDismantle = countByte; break;
-                            case CardStyleRarity.Royal: NumRoyal_NoDismantle = countByte; break;
+                            case CardStyleRarity.Normal: NumNormal_NoDismantle = count; break;
+                            case CardStyleRarity.Shine: NumShine_NoDismantle = count; break;
+                            case CardStyleRarity.Royal: NumRoyal_NoDismantle = count; break;
                         }
                         break;
                 }
-            }
-
-            byte IntToByte(int count)
-            {
-                if (count < byte.MinValue)
-                {
-                    return 0;
-                }
-                if (count > byte.MaxValue)
-                {
-                    return byte.MaxValue;
-                }
-                return (byte)count;
             }
         }
     }

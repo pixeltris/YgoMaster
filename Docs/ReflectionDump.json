@@ -134,7 +134,7 @@
     "Namespace": "YgomGame.Duel",
     "Class": [
       "DuelHUD",
-      "<PrepareToDuelProcess>d__130"
+      "<PrepareToDuelProcess>d__136"
     ],
     "Type": "Method",
     "Name": "MoveNext",
@@ -318,7 +318,7 @@
     ],
     "Type": "Method",
     "Name": "Get",
-    "Signature": "public YgomGame.Duel.CardRunEffectSetting.CardRunEffectInfo Get(System.Int32 mrk, YgomGame.Duel.CardRunEffectSetting.Player player)"
+    "Signature": "public YgomGame.Duel.CardRunEffectSetting.CardRunEffectInfo Get(System.Int32 mrk, YgomGame.Duel.CardRunEffectSetting.Player player, System.Int32 effectNo)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1520,6 +1520,16 @@
   },
   {
     "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Mission",
+    "Class": [
+      "ResidentMissionContent"
+    ],
+    "Type": "Method",
+    "Name": "CheckLaunch",
+    "Signature": "public static System.Void CheckLaunch(System.Int32 tabId, System.Int32 poolId, System.Action onSuccess, System.Action onFailed)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
     "Namespace": "YgomGame.Credit",
     "Class": [
       "CreditViewController"
@@ -1822,6 +1832,16 @@
     "Assembly": "Assembly-CSharp",
     "Namespace": "YgomGame.Bg",
     "Class": [
+      "BgManager"
+    ],
+    "Type": "Method",
+    "Name": "PlayEntryAnimation",
+    "Signature": "public System.Void PlayEntryAnimation()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Bg",
+    "Class": [
       "BgEffectManagerInner"
     ],
     "Type": "Field",
@@ -1877,16 +1897,6 @@
     "Type": "Field",
     "Name": "effectManager",
     "Signature": "BgUnit"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Bg",
-    "Class": [
-      "BgUnit"
-    ],
-    "Type": "Method",
-    "Name": "PlayCharaEntryAnimation",
-    "Signature": "public System.Void PlayCharaEntryAnimation()"
   },
   {
     "Assembly": "Assembly-CSharp",

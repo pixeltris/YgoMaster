@@ -290,6 +290,7 @@ namespace YgoMaster
     {
         AllClose,
         FrontOpen,
-        AllOpen
+        AllOpen,
+        Unknown = 255,//v2.0.0
     }
 }

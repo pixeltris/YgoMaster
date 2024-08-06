@@ -610,7 +610,7 @@ namespace YgomGame.Duel
 
     unsafe static class CardRunEffectSetting
     {
-        delegate IntPtr Del_Get(IntPtr thisPtr, int mrk, int player);
+        delegate IntPtr Del_Get(IntPtr thisPtr, int mrk, int player, int effectNo);
         static Hook<Del_Get> hookGet;
 
         static CardRunEffectSetting()
@@ -620,14 +620,14 @@ namespace YgomGame.Duel
             hookGet = new Hook<Del_Get>(Get, classInfo.GetMethod("Get"));
         }
 
-        static IntPtr Get(IntPtr thisPtr, int mrk, int player)
+        static IntPtr Get(IntPtr thisPtr, int mrk, int player, int effectNo)
         {
             if (ClientSettings.DuelClientDisableCutinAnimations ||
                 (ClientSettings.DuelClientDisableCutinAnimationsForCardsWithCustomImages && CardIndividualSetting.IsCustomImage(mrk)))
             {
                 return IntPtr.Zero;
             }
-            return hookGet.Original(thisPtr, mrk, player);
+            return hookGet.Original(thisPtr, mrk, player, effectNo);
         }
     }
 
