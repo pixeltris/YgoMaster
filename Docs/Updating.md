@@ -1,8 +1,9 @@
 ## Logging requirements
 
 - Download Fiddler Classic https://www.telerik.com/download/fiddler (install to `C:/Program Files (x86)/Fiddler/` as the YgoMasterFiddler project file uses this path)
-- Run `YgoMaster/YgoMasterFiddler/Build.bat`
-- Copy `YgoMaster/YgoMasterFiddler/bin/Debug/YgoMasterFiddler.dll` to `C:/Program Files (x86)/Fiddler/Inspectors/`
+- Download and unzip the YgoMaster source code https://github.com/pixeltris/YgoMaster/archive/refs/heads/master.zip
+- Run `YgoMaster-master/YgoMasterFiddler/Build.bat`
+- Copy `YgoMaster-master/YgoMasterFiddler/bin/Debug/YgoMasterFiddler.dll` to `C:/Program Files (x86)/Fiddler/Inspectors/`
 - Run Fiddler, select a game network request and click the two `YgoMaster` tabs (request / response)
 
 Certain logs will be dumped as json into `%USERPROFILE%/Documents/Fiddler2/Captures/YgoMasterUpdate/` when the log is clicked and both `YgoMaster` tabs are selected.
