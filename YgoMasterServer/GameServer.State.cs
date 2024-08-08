@@ -315,6 +315,7 @@ namespace YgoMaster
                     }
                 }
             }
+            DuelSettings.LoadBgmInfo(Path.Combine(dataDirectory, "Bgm.json"));
 
             ItemID.Load(dataDirectory);
             YdkHelper.LoadIdMap(dataDirectory);
@@ -1103,6 +1104,7 @@ namespace YgoMaster
                 data["IconFrameId"] = player.IconFrameId;
                 data["AvatarId"] = player.AvatarId;
                 data["Wallpaper"] = player.Wallpaper;
+                data["DuelBgmMode"] = (int)player.DuelBgmMode;
                 data["CardFavorites"] = player.CardFavorites.ToDictionary();
                 data["TitleTags"] = player.TitleTags.ToArray();
                 if (!UnlockAllItems)
@@ -1195,6 +1197,7 @@ namespace YgoMaster
             player.IconFrameId = Utils.GetValue<int>(data, "IconFrameId");
             player.AvatarId = Utils.GetValue<int>(data, "AvatarId");
             player.Wallpaper = Utils.GetValue<int>(data, "Wallpaper");
+            player.DuelBgmMode = (DuelBgmMode)Utils.GetValue<int>(data, "DuelBgmMode");
 
             if (UnlockAllSoloChapters)
             {

@@ -27,6 +27,7 @@ namespace YgoMaster
         public int IconFrameId;
         public int AvatarId;
         public int Wallpaper;
+        public DuelBgmMode DuelBgmMode;
         public HashSet<int> Items { get; private set; }
         public HashSet<int> TitleTags { get; private set; }
         public CardCollection CardFavorites { get; private set; }

@@ -870,7 +870,7 @@ namespace YgomGame.Room
             DuelSettings settingsClone;
             Buttons buttons;
 
-            static int bgmMax = 0;
+            static List<string> bgmStrings = new List<string>();
 
             public DuelSettings Settings
             {
@@ -921,11 +921,52 @@ namespace YgomGame.Room
                 {
                     settings.RandSeed = (uint)Utils.Rand.Next();
                 }
+                settings.SetRequiredDefaults();
+                if (settings.bgms.Count == 1)
+                {
+                    string bgm = settings.bgms[0];
+                    int bgmValue;
+                    if (int.TryParse(bgm, out bgmValue))
+                    {
+                        settings.BgmsFromValue(bgmValue);
+                    }
+                    else if (bgm == ClientSettings.CustomTextRandom)
+                    {
+                        settings.SetRandomBgm();
+                    }
+                    else if (bgm == ClientSettings.CustomTextDefault)
+                    {
+                        settings.bgms.Clear();
+                    }
+                    else if (bgm == ClientSettings.CustomTextDuelStarterP1DuelField)
+                    {
+                        settings.SetBgm(DuelBgmMode.Myself);
+                    }
+                    else if (bgm == ClientSettings.CustomTextDuelStarterP2DuelField)
+                    {
+                        settings.SetBgm(DuelBgmMode.Rival);
+                    }
+                    else if (bgm.StartsWith("BGM_"))
+                    {
+                        string valueStr = bgm.Split('_').Last();
+                        if (int.TryParse(valueStr, out bgmValue))
+                        {
+                            settings.BgmsFromValue(bgmValue);
+                        }
+                        else
+                        {
+                            settings.bgms.Clear();
+                        }
+                    }
+                    else
+                    {
+                        settings.bgms.Clear();
+                    }
+                }
                 if (settings.bgms.Count == 0)
                 {
-                    settings.SetRandomBgm();
+                    settings.SetBgm((DuelBgmMode)YgomSystem.Utility.ClientWork.GetByJsonPath<int>("$.Persistence.App.Settings.Duelbgm"));
                 }
-                settings.SetRequiredDefaults();
             }
 
             public void Save()
@@ -1202,7 +1243,8 @@ namespace YgomGame.Room
                 DuelLimitedType limitedType;
                 Enum.TryParse<DuelLimitedType>(GetButtonValueString(buttons.Limit), out limitedType);
                 settings.Limit = (int)limitedType;
-                settings.BgmsFromValue(GetButtonValueI32(buttons.BGM));
+                settings.bgms.Clear();
+                settings.bgms.Add(GetButtonValueString(buttons.BGM));
                 settings.MyType = GetButtonValueStringIndex(buttons.Player1) == 0 ? 0 : 1;
                 //settings.OpponentType = GetButtonValueIndex(buttons.Player2) == 0 ? 1 : 2;
                 //settings.MyPartnerType = GetButtonValueIndex(buttons.Player3) == 0 ? 0 : 1;
@@ -1256,7 +1298,7 @@ namespace YgomGame.Room
                 SetButtonValueString(buttons.Cpu, settings.cpu == int.MaxValue ? null : settings.cpu.ToString());
                 SetButtonValueString(buttons.CpuFlag, settings.cpuflag);
                 SetButtonValueString(buttons.Limit, ((DuelLimitedType)settings.Limit).ToString());
-                SetButtonIndexFromI32(buttons.BGM, settings.GetBgmValue());
+                SetButtonValueString(buttons.BGM, settings.bgms.Count == 0 ? null : settings.bgms[0]);
                 SetButtonIndex(buttons.Player1, settings.MyType == 0 ? 0 : 1);
                 //SetButtonIndex(buttons.Player2, settings.OpponentType == 1 ? 0 : 1);
                 //SetButtonIndex(buttons.Player3, settings.MyPartnerType == 0 ? 0 : 1);
@@ -1336,21 +1378,19 @@ namespace YgomGame.Room
                 duelType.Add(DuelType.Rush.ToString());
                 //duelType.Add(DuelType.Tag.ToString());
 
-                if (bgmMax == 0)
+                if (bgmStrings.Count == 0)
                 {
+                    bgmStrings.Add(ClientSettings.CustomTextDefault);
+                    bgmStrings.Add(ClientSettings.CustomTextRandom);
+                    bgmStrings.Add(ClientSettings.CustomTextDuelStarterP1DuelField);
+                    bgmStrings.Add(ClientSettings.CustomTextDuelStarterP2DuelField);
                     for (int i = 1; i < 99; i++)
                     {
                         if (AssetHelper.FileExists("Sound/AudioClip/BGM/BGM_DUEL_NORMAL_" + i.ToString().PadLeft(2, '0')))
                         {
-                            bgmMax = i;
+                            bgmStrings.Add(i.ToString());
                         }
                     }
-                }
-                List<string> bgmStrings = new List<string>();
-                bgmStrings.Add(ClientSettings.CustomTextRandom);
-                for (int i = 1; i <= bgmMax; i++)
-                {
-                    bgmStrings.Add(i.ToString());
                 }
 
                 AddLabel(infosList, ClientSettings.CustomTextDuelStarterDecks);

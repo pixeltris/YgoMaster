@@ -110,5 +110,19 @@ namespace YgoMaster
                 };
             }
         }
+
+        void Act_SystemToggleDuelBgm(GameServerWebRequest request)
+        {
+            request.Player.DuelBgmMode = request.Player.DuelBgmMode == DuelBgmMode.Myself ? DuelBgmMode.Rival : DuelBgmMode.Myself;
+            SavePlayer(request.Player);
+            request.Response["Persistence"] = new Dictionary<string, object>()
+            {
+                { "App", new Dictionary<string, object>() {
+                    { "Settings", new Dictionary<string, object>() {
+                        { "Duelbgm", (int)request.Player.DuelBgmMode }
+                    }}
+                }}
+            };
+        }
     }
 }

@@ -286,6 +286,14 @@ namespace YgoMasterClient
         /// </summary>
         public static string CustomTextDuelStarterClearSelectedDecks;
         /// <summary>
+        /// P1's duel field
+        /// </summary>
+        public static string CustomTextDuelStarterP1DuelField;
+        /// <summary>
+        /// P2's duel field
+        /// </summary>
+        public static string CustomTextDuelStarterP2DuelField;
+        /// <summary>
         /// Load replays
         /// </summary>
         public static string CustomTextHomeSubMenuLoadReplays;
@@ -593,6 +601,8 @@ namespace YgoMasterClient
             CustomTextDuelStarterExta = Utils.GetValue<string>(data, "CustomTextDuelStarterExta");
             CustomTextDuelStarterOpenDeckEditor = Utils.GetValue<string>(data, "CustomTextDuelStarterOpenDeckEditor");
             CustomTextDuelStarterClearSelectedDecks = Utils.GetValue<string>(data, "CustomTextDuelStarterClearSelectedDecks");
+            CustomTextDuelStarterP1DuelField = Utils.GetValue<string>(data, "CustomTextDuelStarterP1DuelField");
+            CustomTextDuelStarterP2DuelField = Utils.GetValue<string>(data, "CustomTextDuelStarterP2DuelField");
 
             CustomTextHomeSubMenuLoadReplays = Utils.GetValue<string>(data, "CustomTextHomeSubMenuLoadReplays");
             CustomTextHomeSubMenuLoadReplaysAsOpponent = Utils.GetValue<string>(data, "CustomTextHomeSubMenuLoadReplaysAsOpponent");

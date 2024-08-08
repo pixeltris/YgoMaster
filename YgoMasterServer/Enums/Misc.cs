@@ -293,4 +293,13 @@ namespace YgoMaster
         AllOpen,
         Unknown = 255,//v2.0.0
     }
+
+    /// <summary>
+    /// SettingsUtil.BGM_MODE
+    /// </summary>
+    enum DuelBgmMode
+    {
+        Myself = 0,
+        Rival = 1
+    }
 }

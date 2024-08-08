@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using System.IO;
 
 namespace YgoMaster
 {
@@ -15,6 +16,7 @@ namespace YgoMaster
     {
         public static string DefaultNamePlayer = "Duelist";
         public static string DefaultNameCPU = "CPU";
+        public static Dictionary<int, List<string>> MatIdToBgmId = new Dictionary<int, List<string>>();
 
 #pragma warning disable 0169
 #pragma warning disable 0649
@@ -22,7 +24,7 @@ namespace YgoMaster
         public const int CpuIndex = 1;
         public const int MaxPlayers = 4;
         public const string ExpectedDuelDataKey = "icon";
-        public const int MaxBgmId = 13;// Update based on the largest number shown in the custom duel starter UI
+        public const int MaxBgmId = 16;// Update based on the largest number shown in the custom duel starter UI
 
         public bool IsCustomDuel;
 
@@ -206,6 +208,18 @@ namespace YgoMaster
         public void SetRandomBgm()
         {
             BgmsFromValue(Utils.Rand.Next(1, (MaxBgmId + 1)));
+        }
+
+        public void SetBgm(DuelBgmMode bgmMode)
+        {
+            int myMatId = MyID == 0 ? mat[0] : mat[1];
+            int rivalMatId = MyID == 0 ? mat[1] : mat[0];
+            List<string> targetBgms;
+            if (MatIdToBgmId.TryGetValue(bgmMode == DuelBgmMode.Myself ? myMatId : rivalMatId, out targetBgms) && targetBgms.Count == 3)
+            {
+                bgms.Clear();
+                bgms.AddRange(targetBgms);
+            }
         }
 
         public static int GetRandomBgmValue()
@@ -796,6 +810,42 @@ namespace YgoMaster
                 }
             }
             return true;
+        }
+
+        public static void LoadBgmInfo(string file)
+        {
+            if (!File.Exists(file))
+            {
+                return;
+            }
+            MatIdToBgmId.Clear();
+            List<object> entries = MiniJSON.Json.DeserializeStripped(File.ReadAllText(file)) as List<object>;
+            foreach (object entry in entries)
+            {
+                KeyValuePair<string, object> data = (entry as Dictionary<string, object>).First();
+                int matId;
+                if (int.TryParse(data.Key, out matId))
+                {
+                    List<string> bgms = new List<string>();
+                    if (data.Value is List<object>)
+                    {
+                        List<object> bgmList = data.Value as List<object>;
+                        foreach (object bgm in bgmList)
+                        {
+                            bgms.Add((string)bgm);
+                        }
+
+                    }
+                    else
+                    {
+                        int bgm = (int)Convert.ChangeType(data.Value, typeof(int));
+                        bgms.Add("BGM_DUEL_NORMAL_" + bgm.ToString().PadLeft(2, '0'));
+                        bgms.Add("BGM_DUEL_KEYCARD_" + bgm.ToString().PadLeft(2, '0'));
+                        bgms.Add("BGM_DUEL_CLIMAX_" + bgm.ToString().PadLeft(2, '0'));
+                    }
+                    MatIdToBgmId[matId] = bgms;
+                }
+            }
         }
     }
 }

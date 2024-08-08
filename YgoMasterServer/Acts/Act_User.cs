@@ -59,6 +59,11 @@ namespace YgoMaster
                 times[(i + 1).ToString()] = timeData;
             }
 
+            Dictionary<string, object> persistenceData = request.GetOrCreateDictionary("Persistence");
+            Dictionary<string, object> appData = Utils.GetOrCreateDictionary(persistenceData, "App");
+            Dictionary<string, object> settingsData = Utils.GetOrCreateDictionary(appData, "Settings");
+            settingsData["Duelbgm"] = (int)request.Player.DuelBgmMode;
+
             request.Remove(
                 "Room.room_info",
                 "Master",

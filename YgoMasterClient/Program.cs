@@ -138,6 +138,7 @@ namespace YgoMasterClient
                 LocalPlayerSaveDataDir = Path.Combine(DataDir, "Players", "Local");
                 ClientDataDir = Path.Combine(DataDir, "ClientData");
                 ClientDataDumpDir = Path.Combine(DataDir, "ClientDataDump");
+                DuelSettings.LoadBgmInfo(Path.Combine(DataDir, "Bgm.json"));
                 ItemID.Load(DataDir);
                 YdkHelper.LoadIdMap(DataDir);
 

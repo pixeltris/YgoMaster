@@ -1207,7 +1207,6 @@ namespace YgoMaster
             duelSettings.duel = null;
             duelSettings.is_pvp = true;//false
             duelSettings.chapter = 0;
-            duelSettings.BgmsFromValue(table.Bgm);
             for (int i = 0; i < players.Length; i++)
             {
                 duelSettings.Deck[i] = decks[i];
@@ -1230,6 +1229,8 @@ namespace YgoMaster
                 duelSettings.profile_tag[i] = players[i].TitleTags.ToList();
             }
             duelSettings.SetRequiredDefaults();
+            //duelSettings.BgmsFromValue(table.Bgm);// table.Bgm is a random BGM used to be shared between both players
+            duelSettings.SetBgm(request.Player.DuelBgmMode);
             request.Player.ActiveDuelSettings.CopyFrom(duelSettings);
             request.Player.ActiveDuelSettings.PvpChoice = table.CoinFlipPlayerIndex;
             request.Player.ActiveDuelSettings.HasSavedReplay = false;

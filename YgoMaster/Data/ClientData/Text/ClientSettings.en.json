@@ -68,6 +68,8 @@
     "CustomTextDuelStarterExta": "Extra",
     "CustomTextDuelStarterOpenDeckEditor": "Open deck editor",
     "CustomTextDuelStarterClearSelectedDecks": "Clear selected decks",
+    "CustomTextDuelStarterP1DuelField": "P1's duel field",
+    "CustomTextDuelStarterP2DuelField": "P2's duel field",
     
     "CustomTextHomeSubMenuLoadReplays": "Load replays",
     "CustomTextHomeSubMenuLoadReplaysAsOpponent": "Load replays (as opponent)",

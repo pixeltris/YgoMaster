@@ -267,6 +267,9 @@ namespace YgoMaster
                                     case "System.set_language":
                                         Act_SystemSetLanguage(gameServerWebRequest);
                                         break;
+                                    case "System.toggle_duelbgm":
+                                        Act_SystemToggleDuelBgm(gameServerWebRequest);
+                                        break;
                                     case "Account.auth":
                                         Act_AccountAuth(gameServerWebRequest);
                                         break;
