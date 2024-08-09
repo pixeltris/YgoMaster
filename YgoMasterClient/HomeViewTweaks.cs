@@ -71,7 +71,17 @@ namespace YgoMasterClient
 
         static void UpdateHome(IntPtr thisPtr)
         {
+            // Hacky way to get proficiency test icon to show on the home screen but not the profile UI
+            // NOTE: This is done because otherwise there's a big blank space where the icon should be
+            // Alternative fix:
+            // - Get this object "HomeUI_Console(Clone).Root.SafeAreaPlayer.RootPlayer.Player.ButtonPlayer.BaseGroup.Base"
+            // - Decrease its RectTransform.offsetMax
+            // - Get this object "HomeUI_Console(Clone).Root.SafeAreaPlayer.RootPlayer.Player.ButtonPlayer.BaseGroup.Over"
+            // - Decrease its RectTransform.offsetMax
+            YgomSystem.Utility.ClientWork.UpdateJson("{\"Certification\":{\"is_certification_open\":true}}");
             hookUpdateHome.Original(thisPtr);
+            YgomSystem.Utility.ClientWork.DeleteByJsonPath("$.Certification");
+
             if (AssetHelper.IsQuitting)
             {
                 return;
