@@ -559,7 +559,7 @@ namespace YgomGame.Duel
                         case 2:
                             if (cmdItems.Length >= 1)
                             {
-                                DuelDll.DLL_DuelComDebugCommand(); Console.WriteLine("DLL_DuelComDebugCommand");
+                                DuelDll.DLL_DuelComDebugCommand();
                                 if (ClientSettings.CustomDuelCmdLog)
                                 {
                                     Console.WriteLine("DLL_DuelComDebugCommand");

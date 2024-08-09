@@ -181,7 +181,7 @@ namespace YgoMasterClient
                 {
                     TcpListener listener = new TcpListener(IPAddress.Loopback, ClientSettings.ProxyPort);
                     listener.Start();
-                    Console.WriteLine("Proxy listening on port " + ClientSettings.ProxyPort);
+                    VerboseLog("Proxy listening on port " + ClientSettings.ProxyPort);
                     while (true)
                     {
                         try

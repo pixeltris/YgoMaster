@@ -61,4 +61,7 @@
     "CustomBackgroundBehindParticles": false,
     "CustomBackgroundFadeHideInSeconds": 0.2,
     "CustomBackgroundFadeShowInSeconds": 0.5,
+    "HomeDisableUnusedHeaders": true,
+    "HomeDisableUnusedBanners": true,
+    "HomeDisableUnusedTopics": true,
 }

@@ -285,6 +285,7 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(AssetHelper));
                 nativeTypes.Add(typeof(WallpaperCycle));
                 nativeTypes.Add(typeof(CustomBackground));
+                nativeTypes.Add(typeof(HomeViewTweaks));
                 nativeTypes.Add(typeof(YgomGame.Utility.ItemUtil));
                 nativeTypes.Add(typeof(YgomSystem.Utility.TextData));
                 nativeTypes.Add(typeof(YgomSystem.Utility.ClientWork));
@@ -380,7 +381,10 @@ unsafe static class Win32Hooks
         {
             for (int i = actions.Count - 1; i >= 0; i--)
             {
-                actions[i]();
+                if (!AssetHelper.IsQuitting)
+                {
+                    actions[i]();
+                }
                 actions.RemoveAt(i);
             }
         }

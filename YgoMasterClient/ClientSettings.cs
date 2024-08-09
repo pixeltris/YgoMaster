@@ -78,6 +78,9 @@ namespace YgoMasterClient
         public static bool CustomBackgroundBehindParticles;
         public static float CustomBackgroundFadeHideInSeconds;
         public static float CustomBackgroundFadeShowInSeconds;
+        public static bool HomeDisableUnusedHeaders;
+        public static bool HomeDisableUnusedBanners;
+        public static bool HomeDisableUnusedTopics;
 
         public static string FilePath
         {
@@ -184,6 +187,9 @@ namespace YgoMasterClient
             CustomBackgroundBehindParticles = Utils.GetValue<bool>(data, "CustomBackgroundBehindParticles");
             CustomBackgroundFadeHideInSeconds = Utils.GetValue<float>(data, "CustomBackgroundFadeHideInSeconds");
             CustomBackgroundFadeShowInSeconds = Utils.GetValue<float>(data, "CustomBackgroundFadeShowInSeconds");
+            HomeDisableUnusedHeaders = Utils.GetValue<bool>(data, "HomeDisableUnusedHeaders");
+            HomeDisableUnusedBanners = Utils.GetValue<bool>(data, "HomeDisableUnusedBanners");
+            HomeDisableUnusedTopics = Utils.GetValue<bool>(data, "HomeDisableUnusedTopics");
 
             return LoadText();
         }

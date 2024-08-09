@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="YgoMasterClient\HomeViewTweaks.cs" />
     <Compile Include="YgoMasterClient\CustomBackground.cs" />
     <Compile Include="YgoMasterClient\AudioLoader.cs" />
     <Compile Include="YgoMasterClient\FolderPicker.cs" />

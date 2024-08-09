@@ -153,7 +153,10 @@ namespace YgoMaster
                         duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.FIELD, deck.Accessory.Field);
                         duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.FIELD_OBJ, deck.Accessory.FieldObj);
                         duelSettings.story_deck_id[DuelSettings.PlayerIndex] = 0;
-                        duelSettings.SetBgm(player.DuelBgmMode);
+                        if (player.DuelBgmMode == DuelBgmMode.Myself)
+                        {
+                            duelSettings.SetBgm(player.DuelBgmMode);
+                        }
                     }
                 }
                 duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.AVATAR, player.AvatarId);
