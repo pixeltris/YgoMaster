@@ -21,6 +21,11 @@ namespace YgoMasterClient
 
         static HomeViewTweaks()
         {
+            if (Program.IsLive)
+            {
+                return;
+            }
+
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
 
             IL2Class headerClass = assembly.GetClass("HeaderViewController", "YgomGame.Menu");
