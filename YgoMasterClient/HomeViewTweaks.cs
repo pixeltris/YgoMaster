@@ -9,7 +9,7 @@ using UnityEngine;
 namespace YgoMasterClient
 {
     /// <summary>
-    /// Tweaks to the home UI (HomeViewController / HeaderViewController)
+    /// Tweaks to the home UI
     /// </summary>
     unsafe static class HomeViewTweaks
     {
@@ -18,6 +18,9 @@ namespace YgoMasterClient
 
         delegate void Del_UpdateHome(IntPtr thisPtr);
         static Hook<Del_UpdateHome> hookUpdateHome;
+
+        delegate bool Del_IsDispForceNotification();
+        static Hook<Del_IsDispForceNotification> hookIsDispForceNotification;
 
         static HomeViewTweaks()
         {
@@ -33,6 +36,15 @@ namespace YgoMasterClient
 
             IL2Class homeViewClass = assembly.GetClass("HomeViewController", "YgomGame.Menu");
             hookUpdateHome = new Hook<Del_UpdateHome>(UpdateHome, homeViewClass.GetMethod("UpdateHome"));
+
+            IL2Class notificationClass = assembly.GetClass("ForceNotification", "YgomGame.Menu");
+            hookIsDispForceNotification = new Hook<Del_IsDispForceNotification>(IsDispForceNotification, notificationClass.GetMethod("IsDispForceNotification"));
+        }
+
+        static bool IsDispForceNotification()
+        {
+            // Hide the daily notification popup
+            return false;
         }
 
         static void UpdateDispPart(IntPtr thisPtr, int part)
