@@ -138,7 +138,7 @@ namespace YgoMaster
                 int value;
                 if (Utils.TryGetValue(args, "deck_case", out value))
                 {
-                    if (!request.Player.Items.Contains(value) && !UnlockAllItems)
+                    if (!request.Player.Items.Contains(value))
                     {
                         foreach (int id in ItemID.Values[ItemID.Category.DECK_CASE])
                         {

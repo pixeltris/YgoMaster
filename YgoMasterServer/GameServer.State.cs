@@ -51,6 +51,8 @@ namespace YgoMaster
 
         int NumDeckSlots;
         bool UnlockAllCards;
+        bool UnlockAllCardsHighestRarity;
+        bool UnlockAllCardsShine;
         bool UnlockAllItems;
         bool UnlockAllSoloChapters;
         bool SoloRemoveDuelTutorials;
@@ -390,6 +392,8 @@ namespace YgoMaster
             Utils.GetIntHashSet(values, "DefaultItems", DefaultItems = new HashSet<int>(), ignoreZero: true);
             DefaultGems = Utils.GetValue<int>(values, "DefaultGems");
             UnlockAllCards = Utils.GetValue<bool>(values, "UnlockAllCards");
+            UnlockAllCardsHighestRarity = Utils.GetValue<bool>(values, "UnlockAllCardsHighestRarity");
+            UnlockAllCardsShine = Utils.GetValue<bool>(values, "UnlockAllCardsShine");
             UnlockAllItems = Utils.GetValue<bool>(values, "UnlockAllItems");
             UnlockAllSoloChapters = Utils.GetValue<bool>(values, "UnlockAllSoloChapters");
             SoloRemoveDuelTutorials = Utils.GetValue<bool>(values, "SoloRemoveDuelTutorials");
@@ -1105,24 +1109,15 @@ namespace YgoMaster
                 data["AvatarId"] = player.AvatarId;
                 data["Wallpaper"] = player.Wallpaper;
                 data["DuelBgmMode"] = (int)player.DuelBgmMode;
-                data["CardFavorites"] = player.CardFavorites.ToDictionary();
-                data["TitleTags"] = player.TitleTags.ToArray();
-                if (!UnlockAllItems)
-                {
-                    data["Items"] = player.Items.ToArray();
-                }
-                if (!UnlockAllSoloChapters)
-                {
-                    data["SoloChapters"] = player.SoloChaptersToDictionary();
-                }
                 data["CraftPoints"] = player.CraftPoints.ToDictionary();
                 data["OrbPoints"] = player.OrbPoints.ToDictionary();
                 data["SelectedDeck"] = player.Duel.SelectedDeckToDictionary();
+                data["TitleTags"] = player.TitleTags.ToArray();
+                data["CardFavorites"] = player.CardFavorites.ToDictionary();
+                data["Items"] = player.Items.ToArray();
+                data["SoloChapters"] = player.SoloChaptersToDictionary();
                 data["ShopState"] = player.ShopState.ToDictionary();
-                if (!UnlockAllCards)
-                {
-                    data["Cards"] = player.Cards.ToDictionary();
-                }
+                data["Cards"] = player.Cards.ToDictionary();
                 if (MultiplayerEnabled)
                 {
                     data["Friends"] = GetFriends(player);
@@ -1199,16 +1194,13 @@ namespace YgoMaster
             player.Wallpaper = Utils.GetValue<int>(data, "Wallpaper");
             player.DuelBgmMode = (DuelBgmMode)Utils.GetValue<int>(data, "DuelBgmMode");
 
+            player.SoloChaptersFromDictionary(Utils.GetDictionary(data, "SoloChapters"));
             if (UnlockAllSoloChapters)
             {
                 foreach (int chapterId in GetAllSoloChapterIds())
                 {
                     player.SoloChapters[chapterId] = ChapterStatus.COMPLETE;
                 }
-            }
-            else
-            {
-                player.SoloChaptersFromDictionary(Utils.GetDictionary(data, "SoloChapters"));
             }
             player.CraftPoints.FromDictionary(Utils.GetDictionary(data, "CraftPoints"));
             player.OrbPoints.FromDictionary(Utils.GetDictionary(data, "OrbPoints"));
@@ -1222,32 +1214,7 @@ namespace YgoMaster
                     player.TitleTags.Add((int)Convert.ChangeType(tag, typeof(int)));
                 }
             }
-            if (UnlockAllItems)
-            {
-                ItemID.Category[] categories =
-                {
-                    ItemID.Category.AVATAR,
-                    ItemID.Category.ICON,
-                    ItemID.Category.ICON_FRAME,
-                    ItemID.Category.PROTECTOR,
-                    ItemID.Category.DECK_CASE,
-                    ItemID.Category.FIELD,
-                    ItemID.Category.FIELD_OBJ,
-                    ItemID.Category.AVATAR_HOME,
-                    ItemID.Category.WALLPAPER,
-                };
-                foreach (ItemID.Category category in categories)
-                {
-                    foreach (int value in ItemID.Values[category])
-                    {
-                        player.Items.Add(value);
-                    }
-                }
-            }
-            else
-            {
-                Utils.GetIntHashSet(data, "Items", player.Items, ignoreZero: true);
-            }
+            Utils.GetIntHashSet(data, "Items", player.Items, ignoreZero: true);
             foreach (int item in DefaultItems)
             {
                 if (item != 0)
@@ -1268,19 +1235,79 @@ namespace YgoMaster
                     }
                 }
             }
+            if (UnlockAllItems)
+            {
+                ItemID.Category[] categories =
+                {
+                    ItemID.Category.AVATAR,
+                    ItemID.Category.ICON,
+                    ItemID.Category.ICON_FRAME,
+                    ItemID.Category.PROTECTOR,
+                    ItemID.Category.DECK_CASE,
+                    ItemID.Category.FIELD,
+                    ItemID.Category.FIELD_OBJ,
+                    ItemID.Category.AVATAR_HOME,
+                    ItemID.Category.WALLPAPER,
+                };
+                foreach (ItemID.Category category in categories)
+                {
+                    foreach (int value in ItemID.Values[category])
+                    {
+                        if (player.Items.Add(value))
+                        {
+                            player.RequiresSaving = true;
+                        }
+                    }
+                }
+            }
+            Dictionary<string, object> cards = Utils.GetDictionary(data, "Cards");
+            if (cards != null)
+            {
+                player.Cards.FromDictionary(cards);
+            }
             if (UnlockAllCards)
             {
                 foreach (int cardId in CardRare.Keys)
                 {
-                    player.Cards.SetCount(cardId, 3, PlayerCardKind.Dismantle, CardStyleRarity.Normal);
+                    int count = player.Cards.GetCount(cardId, PlayerCardKind.Dismantle, CardStyleRarity.Normal);
+                    if (count < 3)
+                    {
+                        player.Cards.SetCount(cardId, 3, PlayerCardKind.Dismantle, CardStyleRarity.Normal);
+                    }
                 }
             }
-            else
+            if (UnlockAllCardsHighestRarity)
             {
-                Dictionary<string, object> cards = Utils.GetDictionary(data, "Cards");
-                if (cards != null)
+                foreach (KeyValuePair<int, int> card in CardRare)
                 {
-                    player.Cards.FromDictionary(cards);
+                    CardStyleRarity style = CardStyleRarity.Normal;
+                    switch ((CardRarity)card.Value)
+                    {
+                        case CardRarity.Normal:
+                        case CardRarity.Rare:
+                            style = CardStyleRarity.Shine;
+                            break;
+                        case CardRarity.SuperRare:
+                        case CardRarity.UltraRare:
+                            style = CardStyleRarity.Royal;
+                            break;
+                    }
+                    int count = player.Cards.GetCount(card.Key, PlayerCardKind.Dismantle, style);
+                    if (count < 3)
+                    {
+                        player.Cards.SetCount(card.Key, 3, PlayerCardKind.Dismantle, style);
+                    }
+                }
+            }
+            if (UnlockAllCardsShine)
+            {
+                foreach (int cardId in CardRare.Keys)
+                {
+                    int count = player.Cards.GetCount(cardId, PlayerCardKind.Dismantle, CardStyleRarity.Shine);
+                    if (count < 3)
+                    {
+                        player.Cards.SetCount(cardId, 3, PlayerCardKind.Dismantle, CardStyleRarity.Shine);
+                    }
                 }
             }
             if (player.Cards.Count == 0)

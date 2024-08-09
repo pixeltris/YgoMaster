@@ -75,7 +75,7 @@ namespace MiniJSON {
     /// All numbers are parsed to doubles.
     /// </summary>
     public static class Json {
-        public static string Format(string json)
+        public static string FormatSlow(string json)
         {
             // https://stackoverflow.com/questions/4580397/json-formatter-in-c/24782322#24782322
             const string INDENT_STRING = "    ";
@@ -90,6 +90,69 @@ namespace MiniJSON {
                 select lineBreak == null ? openChar.Length > 1 ? openChar : closeChar : lineBreak;
             return String.Concat(result);
         }
+
+        private const string INDENT_STRING = "  ";
+        public static string Format(string str)
+        {
+            // https://stackoverflow.com/questions/4580397/json-formatter-in-c/6237866#6237866
+            bool quoted = false;
+            StringBuilder sb = new StringBuilder();
+            StringBuilder indentString = new StringBuilder();
+            for (var i = 0; i < str.Length; i++)
+            {
+                char ch = str[i];
+                switch (ch)
+                {
+                    case '{':
+                    case '[':
+                        sb.Append(ch);
+                        if (!quoted)
+                        {
+                            sb.Append('\n');
+                            indentString.Append(INDENT_STRING);
+                            sb.Append(indentString);
+                        }
+                        break;
+                    case '}':
+                    case ']':
+                        if (!quoted)
+                        {
+                            sb.Append('\n');
+                            indentString.Remove(indentString.Length - INDENT_STRING.Length, INDENT_STRING.Length);
+                            sb.Append(indentString);
+                        }
+                        sb.Append(ch);
+                        break;
+                    case '"':
+                        sb.Append(ch);
+                        bool escaped = false;
+                        var index = i;
+                        while (index > 0 && str[--index] == '\\')
+                            escaped = !escaped;
+                        if (!escaped)
+                            quoted = !quoted;
+                        break;
+                    case ',':
+                        sb.Append(ch);
+                        if (!quoted)
+                        {
+                            sb.Append('\n');
+                            sb.Append(indentString);
+                        }
+                        break;
+                    case ':':
+                        sb.Append(ch);
+                        /*if (!quoted)
+                            sb.Append(" ");*/
+                        break;
+                    default:
+                        sb.Append(ch);
+                        break;
+                }
+            }
+            return sb.ToString();
+        }
+
         public static object DeserializeStripped(string json)
         {
             if (json == null)

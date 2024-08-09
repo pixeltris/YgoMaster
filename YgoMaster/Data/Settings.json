@@ -29,9 +29,11 @@
     "DontUpdateDeckEditTime": false,
     "ShowTopics": true,
     "DeckSlots": 999,
-    "UnlockAllCards": false,// [WARNING] Enabling this permanently wipes your saved cards (all cards are set to 3x without any shine/royal and any newly obtained cards don't save)
-    "UnlockAllItems": false,// [WARNING] Enabling this permanently wipes your saved items
-    "UnlockAllSoloChapters": false,// [WARNING] Enabling this permanently wipes your saved solo progress
+    "UnlockAllCards": false,// 3x of every card (STYLE: Normal)
+    "UnlockAllCardsShine": false,// 3x of every card (STYLE: Shine)
+    "UnlockAllCardsHighestRarity": false,// 3x of every card (STYLE: N/R = Shine, UR/SR = Royal)
+    "UnlockAllItems": false,// Gives every item in ItemID.json
+    "UnlockAllSoloChapters": false,// Sets every solo chapter to complete
     "SoloRemoveDuelTutorials": false,
     "SoloDisableNoShuffle": false,
     "SoloShowGateClearForAllSecretPacks": false,

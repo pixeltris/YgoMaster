@@ -27,7 +27,9 @@ You can copy/paste/move/rename (but not modify the contents of) files in this fo
 - `DisableBanList` - disables the ban list.
 - `DefaultGems` - sets the default number of gems (unimportant once `Player.json` exists).
 - `SoloRemoveDuelTutorials` - disables tutorial duels (they are turned into normal duels; this currently set to true).
-- `UnlockAllCards` - unlocks all cards in the game.
+- `UnlockAllCards` - 3x of every card (STYLE: Normal).
+- `UnlockAllCardsShine` - 3x of every card (STYLE: Shine).
+- `UnlockAllCardsHighestRarity` - 3x of every card (STYLE: N/R = Shine, UR/SR = Royal).
 - `UnlockAllItems` - unlocks all items in the game.
 - `UnlockAllSoloChapters` - unlocks all solo content.
 - `CardCraftableAll` - sets all cards to craftable.
