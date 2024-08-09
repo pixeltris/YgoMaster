@@ -42,6 +42,7 @@
     1000024,//Blue-Eyes White Dragon
     1000026,//Spright Blue
     1000027,//Unchained Abomination
+    1000028,//White Aura Dolphin
     1000029,//Souleating Oviraptor
     1000030,//Purrely
     1000032,//Elemental HERO Flame Wingman
@@ -160,6 +161,10 @@
     1010069,//Number C62: Neo Galaxy-Eyes Prime Photon Dragon
     1010070,//Galaxy-Eyes Photon Dragon
     1010071,//Ash Blossom & Joyous Spring
+    1010072,//Nibiru, the Primal Being
+    1010073,//Lo, the Prayers of the Voiceless Voice
+    1010080,//The Legendary Fisherman
+    1010081,//Cyber Harpie Lady
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -193,7 +198,7 @@
     1011031,//WCS 2024 Qualifiers Bronze Finalist
     1011032,//Xyz Cup Gold Finalist
     1011033,//Xyz Cup Silver Finalist
-    1011034,//Xyz CupR Bronze Finalist
+    1011034,//Xyz Cup Bronze Finalist
     1011042,//Xyz Cup Champion
     1012001,//X-Krawler Synaphysis
     1012002,//Mekk-Knight Spectrum Supreme
@@ -360,6 +365,25 @@
     1020099,//Purple Wave
     1020100,//White Wave
     1020101,//Black Wave
+    1020102,//Limit One Festival 2024
+    1020103,//Fusion x Link Festival 2024
+    1020104,//WCS 2024 Qualifiers Top 10
+    1020105,//WCS 2024 Qualifiers Top 100
+    1020106,//WCS 2024 Qualifiers Top 500
+    1020107,//WCS 2024 Qualifiers Top 1000
+    1020108,//WCS 2024 Qualifiers Top 10000
+    1020109,//WCS 2024 Qualifiers DLv. MAX
+    1020110,//Xyz Cup Top 10
+    1020111,//Xyz Cup Top 100
+    1020112,//Xyz Cup Top 500
+    1020113,//Xyz Cup Top 1000
+    1020114,//Xyz Cup Top 10000
+    1020115,//Xyz Cup 2nd Stage Duelist
+    1020116,//Awakening
+    1020119,//MD Proficiency Test Grade 20
+    1020130,//Overlord of Deepest Black
+    1020131,//Storm and Surge
+    1021001,//Starting Out
   ],
   "ICON_FRAME": [
     1030001,//Beginner's Frame
@@ -481,6 +505,7 @@
     1070070,//Blue-Eyes White Dragon
     1070071,//Magicians of Bonds and Unity
     1070072,//Dragon of Pride and Soul
+    1070073,//Shaddoll Fusion
     1070074,//Tearlaments Perlegia
     1070075,//Nightmare Magician
     1070076,//The Iris Swordsoul
@@ -498,6 +523,7 @@
     1070088,//Galaxy-Eyes Photon Dragon
     1070089,//Flower Cardian Cherry Blossom with Curtain
     1070090,//Aleister the Invoker of Madness
+    1070091,//Flower Cardian Zebra Grass
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -537,6 +563,8 @@
     1073005,//DC 2024 MAR Celebration
     1073006,//WCS 2024 Qualifiers Celebration
     1073007,//Xyz Cup Celebration
+    1073008,//WCS 2024 Celebration
+    1073009,//WCS 2024 Party Favor
     1075001,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
   ],
   "DECK_CASE": [
@@ -697,6 +725,8 @@
     1111021,//Green Stone of Magic
     1111022,//Summer Trace of the Thunder God
     1111024,//Limiter Removal
+    1111032,//Xyz Monster Card
+    1111039,//Barrier of the Voiceless Voice
     1112001,//Colosseum
     1112002,//WCS
     1113001,//WCS 2023 Party Favor
@@ -718,6 +748,7 @@
     1120014,//Gem-Knights' Resolution
     1120015,//Dragonmaid-To-Order
     1120016,//Burning Spirits
+    1120017,//Freezing World
     1120018,//Spellbook of Prophecy
     1120019,//Immortal Glory
     1120020,//Vortex of Magic
@@ -776,6 +807,7 @@
     1130045,//Dark Hole Dragon
     1130046,//Kingyo Sukui
     1130047,//Galaxy-Eyes Photon Dragon
+    1130048,//Raidraptor - Rising Rebellion Falcon
   ],
   "PACK_TICKET": [
     1140001,//Legacy Pack ticket
