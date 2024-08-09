@@ -1404,6 +1404,7 @@ namespace YgomGame.Room
                     ClientSettings.CustomTextDuelStarterLoadDeckFromFile,
                     ClientSettings.CustomTextDuelStarterLoadDeckFromFolder
                 });
+                buttons.OpenDeckEditor = AddButtonString(infosList, "OpenDeckEditor", ClientSettings.CustomTextDuelStarterOpenDeckEditor, null);
                 AddLabel(infosList, ClientSettings.CustomTextDuelStarterSettings);
                 buttons.StartingPlayer = AddButtonString(infosList, "StartingPlayer", ClientSettings.CustomTextDuelStarterStartingPlayer, new string[] { ClientSettings.CustomTextRandom, "1", "2"/*, "3", "4"*/ });
                 buttons.LifePoints = AddButtonString(infosList, "LifePoints", ClientSettings.CustomTextDuelStarterLifePoints, lpStrings);
@@ -1444,7 +1445,6 @@ namespace YgomGame.Room
                 buttons.Load = AddButtonString(infosList, "Load", ClientSettings.CustomTextDuelStarterLoad, null);
                 buttons.Save = AddButtonString(infosList, "Save", ClientSettings.CustomTextDuelStarterSave, null);
                 AddLabel(infosList, ClientSettings.CustomTextDuelStarterExta);
-                buttons.OpenDeckEditor = AddButtonString(infosList, "OpenDeckEditor", ClientSettings.CustomTextDuelStarterOpenDeckEditor, null);
                 buttons.ClearAllDecks = AddButtonString(infosList, "ClearAllDecks", ClientSettings.CustomTextDuelStarterClearSelectedDecks, null);
 
                 if (!hasExistingSetting)
