@@ -21,11 +21,12 @@ You can copy/paste/move/rename (but not modify the contents of) files in this fo
 *This file is only created after a save action occurs (e.g. changing name / spending gems)*
 
 - `Gems` - the number of gems owned.
+- `CraftPoints` - craft points.
 
 ### /Data/Settings.json
 
-- `DisableBanList` - disables the ban list.
-- `DefaultGems` - sets the default number of gems (unimportant once `Player.json` exists).
+- `DefaultGems` - sets the default number of gems (unused after `Player.json` is created).
+- `DefaultCraftPoints` - sets the default number of craft points (unused after `Player.json` is created).
 - `SoloRemoveDuelTutorials` - disables tutorial duels (they are turned into normal duels; this currently set to true).
 - `UnlockAllCards` - 3x of every card (STYLE: Normal).
 - `UnlockAllCardsShine` - 3x of every card (STYLE: Shine).
@@ -36,6 +37,7 @@ You can copy/paste/move/rename (but not modify the contents of) files in this fo
 - `DuelRewards` - custom reward list (needs balancing, you can also delete the entry to disable custom rewards).
 - `Craft` - card crafting cost / dismantling reward.
 - `DisableNoDismantle` - all cards given to the player can be dismantled (doesn't impact previously given cards).
+- `DisableBanList` - disables the ban list.
 
 ### /Data/Shop.json
 

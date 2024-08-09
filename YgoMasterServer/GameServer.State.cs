@@ -59,6 +59,7 @@ namespace YgoMaster
         bool SoloDisableNoShuffle;
         HashSet<int> DefaultItems;
         int DefaultGems;
+        Dictionary<string, object> DefaultCraftPoints;
         CraftInfo Craft;
         ShopInfo Shop;
         Dictionary<int, DeckInfo> StructureDecks;// <structureid, DeckInfo>
@@ -391,6 +392,7 @@ namespace YgoMaster
             NumDeckSlots = Utils.GetValue<int>(values, "DeckSlots", 20);
             Utils.GetIntHashSet(values, "DefaultItems", DefaultItems = new HashSet<int>(), ignoreZero: true);
             DefaultGems = Utils.GetValue<int>(values, "DefaultGems");
+            DefaultCraftPoints = Utils.GetDictionary(values, "DefaultCraftPoints");
             UnlockAllCards = Utils.GetValue<bool>(values, "UnlockAllCards");
             UnlockAllCardsHighestRarity = Utils.GetValue<bool>(values, "UnlockAllCardsHighestRarity");
             UnlockAllCardsShine = Utils.GetValue<bool>(values, "UnlockAllCardsShine");
@@ -1171,6 +1173,7 @@ namespace YgoMaster
             {
                 data = MiniJSON.Json.DeserializeStripped(File.ReadAllText(path)) as Dictionary<string, object>;
             }
+            bool isNewPlayer = data == null;
             if (data == null)
             {
                 data = new Dictionary<string, object>();
@@ -1203,6 +1206,17 @@ namespace YgoMaster
                 }
             }
             player.CraftPoints.FromDictionary(Utils.GetDictionary(data, "CraftPoints"));
+            if (isNewPlayer && DefaultCraftPoints != null)
+            {
+                foreach (KeyValuePair<string, object> entry in DefaultCraftPoints)
+                {
+                    int itemId;
+                    if (int.TryParse(entry.Key, out itemId) && itemId >= (int)ItemID.Value.CpN && itemId <= (int)ItemID.Value.CpUR)
+                    {
+                        player.AddItem(itemId, Convert.ToInt32(entry.Value));
+                    }
+                }
+            }
             player.OrbPoints.FromDictionary(Utils.GetDictionary(data, "OrbPoints"));
             player.ShopState.FromDictionary(Utils.GetDictionary(data, "ShopState"));
             player.CardFavorites.FromDictionary(Utils.GetDictionary(data, "CardFavorites"));

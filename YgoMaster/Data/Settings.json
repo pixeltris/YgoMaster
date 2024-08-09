@@ -94,6 +94,12 @@
     "TradeEnterRoomRequestDelayInSeconds": 1.5,
     "EmoteMaxLength": 1000,
     "DefaultGems": 2000,
+    "DefaultCraftPoints": {
+        "3":0,// Normal
+        "4":0,// Rare
+        "5":0,// SuperRare
+        "6":0,// UltraRare
+    },
     "DefaultItems": [
         1000001,// Rescue Rabbit (AVATAR)
         1010001,// Duelist (ICON)
