@@ -281,7 +281,7 @@ namespace YgoMaster
             using (WebClient client = new WebClient())
             {
                 client.Proxy = null;
-                string json = client.DownloadString("https://db.ygoprodeck.com/api/v7/cardinfo.php");
+                string json = client.DownloadString("https://db.ygoprodeck.com/api/v7/cardinfo.php?misc=yes");
                 Dictionary<string, object> jsonData = MiniJSON.Json.Deserialize(json) as Dictionary<string, object>;
 
                 object dataListObj;
@@ -291,7 +291,29 @@ namespace YgoMaster
                     foreach (object dataObj in dataList)
                     {
                         Dictionary<string, object> data = dataObj as Dictionary<string, object>;
-                        long ydkId = (long)Convert.ChangeType(data["id"], typeof(long));
+                        List<long> ydkIds = new List<long>();
+                        ydkIds.Add((long)Convert.ChangeType(data["id"], typeof(long)));
+                        List<long> betaYdkIds = new List<long>();
+                        if (data.ContainsKey("misc_info"))
+                        {
+                            List<object> miscInfoList = data["misc_info"] as List<object>;
+                            if (miscInfoList != null)
+                            {
+                                foreach (object miscInfoObj in miscInfoList)
+                                {
+                                    Dictionary<string, object> miscInfo = miscInfoObj as Dictionary<string, object>;
+                                    if (miscInfo == null)
+                                    {
+                                        continue;
+                                    }
+                                    long betaId = Utils.GetValue<long>(miscInfo, "beta_id");
+                                    if (betaId > 10000)
+                                    {
+                                        ydkIds.Add(betaId);
+                                    }
+                                }
+                            }
+                        }
                         string ydkName = data["name"] as string;
                         GameCardInfo cardInfo = gameCards.Values.FirstOrDefault(x => x.Id >= 4000 && x.Name.Equals(ydkName, StringComparison.InvariantCultureIgnoreCase));
                         if (cardInfo == null)
@@ -304,8 +326,11 @@ namespace YgoMaster
                         }
                         if (cardInfo != null)
                         {
-                            ydkIdToOfficialId[ydkId] = cardInfo.Id;
-                            officialIdToYdkId[cardInfo.Id] = ydkId;
+                            foreach (long ydkId in ydkIds)
+                            {
+                                ydkIdToOfficialId[ydkId] = cardInfo.Id;
+                                officialIdToYdkId[cardInfo.Id] = ydkId;
+                            }
 
                             object cardImagesObj;
                             if (data.TryGetValue("card_images", out cardImagesObj))
