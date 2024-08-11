@@ -172,7 +172,6 @@ namespace YgoMaster
             request.Response["EXHDeck"] = new object[0];// Exhibition deck list?
             request.Response["EXHDeckList"] = null;// Exhibition deck list?
 
-            string lang = !string.IsNullOrEmpty(request.Player.Lang) ? request.Player.Lang : "en_US";
             string NotificationPath = Path.Combine(dataDirectory, "Notifications");
 
             if (ShowTopics)

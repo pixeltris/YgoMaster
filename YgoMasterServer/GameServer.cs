@@ -264,9 +264,6 @@ namespace YgoMaster
                                     case "System.info":
                                         Act_SystemInfo(gameServerWebRequest);
                                         break;
-                                    case "System.set_language":
-                                        Act_SystemSetLanguage(gameServerWebRequest);
-                                        break;
                                     case "System.toggle_duelbgm":
                                         Act_SystemToggleDuelBgm(gameServerWebRequest);
                                         break;

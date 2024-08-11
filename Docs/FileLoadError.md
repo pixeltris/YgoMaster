@@ -10,15 +10,10 @@ Fully update your game. If you have multiple folders inside of LocalData (which 
 
 ## Changing language
 
-To change the language of the game you will need to set the language on the Steam version of the game, reopen the game using Steam, then follow the above `LocalSave` steps, and then finally open YgoMaster. If this doesn't work you can try the following which is an example of setting the language to Chinese:
-
-- Launch the game via Steam and change the language to English.
-- Launch the game again via Steam to ensure all language files are fully downloaded.
-- Next, load the game using YgoMaster (the game should start normally at this point).
-- Change the language settings to your desired language, for example, Chinese, from within the game.
-- Return to the startup page; you should receive a prompt indicating a file loading error.
-- Subsequently, launch the game via Steam and change the language to Chinese.
-- Once all language files are fully downloaded, you should be able to load the game using YgoMaster.
+- Change the language on the Steam version of the game (the setting is under a sub menu at the top right of the home screen)
+- You will get sent back to the title screen
+- Click through to the home screen which will download the language files
+- Close the game and open YgoMaster
 
 ## Note
 

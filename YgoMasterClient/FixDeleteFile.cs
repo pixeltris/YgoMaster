@@ -9,13 +9,13 @@ namespace YgoMasterClient
     /// <summary>
     /// Prevents the client from deleting files when LocalSave doesn't exist
     /// </summary>
-    unsafe static class DeleteFileFix
+    unsafe static class FixDeleteFile
     {
         delegate void Del_DeleteFile();
         static Hook<Del_DeleteFile> hookDLCList_DeleteFile;
         static Hook<Del_DeleteFile> hookDLCVersion_DeleteFile;
 
-        static DeleteFileFix()
+        static FixDeleteFile()
         {
             if (Program.IsLive)
             {

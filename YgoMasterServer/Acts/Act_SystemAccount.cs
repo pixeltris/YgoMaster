@@ -63,11 +63,6 @@ namespace YgoMaster
             }
 
             request.Player.Lang = Utils.GetValue<string>(request.ActParams, "lang");
-            if (!string.IsNullOrEmpty(request.Player.Lang))
-            {
-                // Only using this for topic text which uses underscores
-                request.Player.Lang = request.Player.Lang.Replace("-", "_");
-            }
 
             WriteToken(request);
 
@@ -95,20 +90,6 @@ namespace YgoMaster
             //request.Remove("Server");// Removed v1.9.0 as this will wipe urls which are set client side
             request.Remove("Response");
             request.Remove("Download");
-        }
-
-        void Act_SystemSetLanguage(GameServerWebRequest request)
-        {
-            string lang;
-            if (Utils.TryGetValue(request.ActParams, "lang", out lang))
-            {
-                request.Response["Persistence"] = new Dictionary<string, object>()
-                {
-                    { "System", new Dictionary<string, object>() {
-                        { "lang", lang }
-                    }}
-                };
-            }
         }
 
         void Act_SystemToggleDuelBgm(GameServerWebRequest request)

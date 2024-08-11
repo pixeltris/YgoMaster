@@ -286,7 +286,8 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(WallpaperCycle));
                 nativeTypes.Add(typeof(CustomBackground));
                 nativeTypes.Add(typeof(HomeViewTweaks));
-                nativeTypes.Add(typeof(DeleteFileFix));
+                nativeTypes.Add(typeof(FixDeleteFile));
+                nativeTypes.Add(typeof(FixLanguage));
                 nativeTypes.Add(typeof(YgomGame.Utility.ItemUtil));
                 nativeTypes.Add(typeof(YgomSystem.Utility.TextData));
                 nativeTypes.Add(typeof(YgomSystem.Utility.ClientWork));

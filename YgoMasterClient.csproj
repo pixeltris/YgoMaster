@@ -50,7 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="YgoMasterClient\DeleteFileFix.cs" />
+    <Compile Include="YgoMasterClient\FixDeleteFile.cs" />
     <Compile Include="YgoMasterClient\HomeViewTweaks.cs" />
     <Compile Include="YgoMasterClient\CustomBackground.cs" />
     <Compile Include="YgoMasterClient\AudioLoader.cs" />
@@ -59,6 +59,7 @@
     <Compile Include="YgoMasterClient\DuelTapSync.cs" />
     <Compile Include="YgoMasterClient\DuelEmoteHelper.cs" />
     <Compile Include="YgoMasterClient\IL2CPP\ReflectionValidator.cs" />
+    <Compile Include="YgoMasterClient\FixLanguage.cs" />
     <Compile Include="YgoMasterClient\SimpleProxy.cs" />
     <Compile Include="YgoMasterClient\TradeUtils.cs" />
     <Compile Include="YgoMasterClient\ClientSettings.Text.cs" />
