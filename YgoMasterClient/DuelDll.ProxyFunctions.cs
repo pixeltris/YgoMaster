@@ -302,7 +302,7 @@ namespace YgoMasterClient
             hookDLL_DuelGetThisMonsterFightableOnEffect = new Hook<Del_DLL_DuelGetThisMonsterFightableOnEffect>(DLL_DuelGetThisMonsterFightableOnEffect, PInvoke.GetProcAddress(lib, "DLL_DuelGetThisMonsterFightableOnEffect"));
             hookDLL_DuelGetTopCardIndex = new Hook<Del_DLL_DuelGetTopCardIndex>(DLL_DuelGetTopCardIndex, PInvoke.GetProcAddress(lib, "DLL_DuelGetTopCardIndex"));
             hookDLL_DuelGetTrapMonstBasicVal = new Hook<Del_DLL_DuelGetTrapMonstBasicVal>(DLL_DuelGetTrapMonstBasicVal, PInvoke.GetProcAddress(lib, "DLL_DuelGetTrapMonstBasicVal"));
-            hookDLL_DuelGetTurnNum = new Hook<DuelDll.Del_DLL_DuelGetTurnNum>(DLL_DuelGetTurnNum, PInvoke.GetProcAddress(lib, "DLL_DuelGetTurnNum"));
+            hookDLL_DuelGetTurnNum = new Hook<Del_DLL_DuelGetTurnNum>(DLL_DuelGetTurnNum, PInvoke.GetProcAddress(lib, "DLL_DuelGetTurnNum"));
             hookDLL_DuelIsHuman = new Hook<Del_DLL_DuelIsHuman>(DLL_DuelIsHuman, PInvoke.GetProcAddress(lib, "DLL_DuelIsHuman"));
             hookDLL_DuelIsMyself = new Hook<Del_DLL_DuelIsMyself>(DLL_DuelIsMyself, PInvoke.GetProcAddress(lib, "DLL_DuelIsMyself"));
             hookDLL_DuelIsReplayMode = new Hook<Del_DLL_DuelIsReplayMode>(DLL_DuelIsReplayMode, PInvoke.GetProcAddress(lib, "DLL_DuelIsReplayMode"));

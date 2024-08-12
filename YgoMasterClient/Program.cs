@@ -884,11 +884,11 @@ namespace YgomSystem.LocalFileSystem
                             DirectoryInfo dirInfo = new DirectoryInfo(dir);
                             if (dirInfo.Name != folderName)
                             {
-                                // Exodia the Forbidden One (card image) - "Card/Images/Illust/tcg/4027"
-                                string findFile = Path.Combine(dirInfo.FullName, "0000", "f5", "f5e2cfa8");
-                                if (File.Exists(findFile))
+                                // "dlcVersion" - should be modified any time new data is downloaded
+                                FileInfo fileInfo = new FileInfo(Path.Combine(dirInfo.FullName, "0000", "32", "32782cb5"));
+                                if (fileInfo.Exists)
                                 {
-                                    possibleFoldersExactMatch[dirInfo.Name] = dirInfo.LastWriteTime;
+                                    possibleFoldersExactMatch[dirInfo.Name] = fileInfo.LastWriteTime;
                                 }
                                 else
                                 {
