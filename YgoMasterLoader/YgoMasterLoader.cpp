@@ -271,14 +271,20 @@ int CreateHooks()
     {
         return 1;
     }
+
+    LPWSTR commandLine = GetCommandLineW();
+    BOOL isBepInEx = commandLine && wcsstr(commandLine, L"--YgoMasterDir=\"") != NULL;
     
-    if (GetModuleHandleW(L"GameAssembly.dll"))
+    if (!isBepInEx)
     {
-        runningLive = true;
-    }
-    else if (MH_CreateHook(&LoadLibraryW, &Hook_LoadLibraryW, (LPVOID*)&Original_LoadLibraryW) != MH_OK)
-    {
-        return 1;
+        if (GetModuleHandleW(L"GameAssembly.dll"))
+        {
+            runningLive = true;
+        }
+        else if (!isBepInEx && MH_CreateHook(&LoadLibraryW, &Hook_LoadLibraryW, (LPVOID*)&Original_LoadLibraryW) != MH_OK)
+        {
+            return 1;
+        }
     }
     
     QueryPerformanceCounter(&lastTime);

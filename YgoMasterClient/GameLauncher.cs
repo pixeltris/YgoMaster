@@ -24,7 +24,11 @@ namespace YgoMasterClient
         /// <summary>
         /// Inject into the process instead of launching it
         /// </summary>
-        Inject
+        Inject,
+        /// <summary>
+        /// Launch the process normally but provide args to be picked up by the YgoMasterBepInEx plugin
+        /// </summary>
+        BepInEx
     }
 
     class GameLauncher
@@ -126,6 +130,14 @@ namespace YgoMasterClient
 
             STARTUPINFO si = default(STARTUPINFO);
             PROCESS_INFORMATION pi = default(PROCESS_INFORMATION);
+
+            if (mode == GameLauncherMode.BepInEx)
+            {
+                using (Process p = Process.Start(exePath, "--YgoMasterDir=\"" + Program.CurrentDir + "\""))
+                {
+                }
+                return true;
+            }
 
             if (mode == GameLauncherMode.Detours)
             {

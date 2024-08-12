@@ -123,7 +123,7 @@ namespace YgoMaster
                                 Player player = client.Player;
                                 if (player != null && player.NetClient != client)
                                 {
-                                    Utils.LogInfo("Bad netclient state. Player thinks NetClient is null but NetClient has a player. " +
+                                    Utils.LogInfo("Player/NetClient mismatch. Close old NetClient. " +
                                         " Player:'" + player.Name + "' pcode:" + Utils.FormatPlayerCode(player.Code) + " NetClientIP:" + client.IP);
                                     client.Close();
                                 }

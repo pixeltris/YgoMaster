@@ -6,7 +6,6 @@ using System.IO;
 using System.Threading;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using System.Globalization;
 using System.Security.Principal;
 using System.Diagnostics;
@@ -15,8 +14,6 @@ using YgoMasterClient;
 using YgoMaster;
 using YgoMaster.Net;
 using YgoMaster.Net.Message;
-using System.Net;
-using System.Net.Sockets;
 
 namespace YgoMasterClient
 {
@@ -51,7 +48,7 @@ namespace YgoMasterClient
             bool success = false;
             if (!File.Exists(GameLauncher.LoaderDll))
             {
-                MessageBox.Show("Couldn't find " + GameLauncher.LoaderDll);
+                ShowMessageBox("Couldn't find " + GameLauncher.LoaderDll);
                 return;
             }
             if (!File.Exists(Path.Combine("..", "masterduel_Data", "Plugins", "x86_64", "duel.dll")))
@@ -117,9 +114,9 @@ namespace YgoMasterClient
             }
             if (!success)
             {
-                MessageBox.Show("Failed. Make sure the YgoMaster folder is inside game folder.\n\nThis should roughly be (depending on your steam install):\n\n " +
+                ShowMessageBox("Failed. Make sure the YgoMaster folder is inside game folder.\n\nThis should roughly be (depending on your steam install):\n\n " +
                     "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Yu-Gi-Oh! Master Duel\\YgoMaster\\\n\nThe working directory is:\n\n" +
-                     Environment.CurrentDirectory, "Error", MessageBoxButtons.OK, MessageBoxIcon.None);
+                     Environment.CurrentDirectory);
             }
         }
 
@@ -272,9 +269,13 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomGame.Menu.ToastMessageInform));
                 nativeTypes.Add(typeof(TradeUtils));
                 // WebUI
-                nativeTypes.Add(typeof(YgomGame.Mission.MissionViewController));
-                nativeTypes.Add(typeof(YgomGame.Credit.CreditViewController));
-                nativeTypes.Add(typeof(YgomGame.Settings.SettingsUtil));
+                if (Environment.Version.Major == 4)
+                {
+                    // These reference WinForms so cannot be loaded under BepInEx
+                    nativeTypes.Add(typeof(YgomGame.Mission.MissionViewController));
+                    nativeTypes.Add(typeof(YgomGame.Credit.CreditViewController));
+                    nativeTypes.Add(typeof(YgomGame.Settings.SettingsUtil));
+                }
                 // Misc
                 nativeTypes.Add(typeof(DuelDll));
                 nativeTypes.Add(typeof(DuelTapSync));
@@ -356,11 +357,39 @@ namespace YgoMasterClient
             }
             catch (Exception e)
             {
-                System.Windows.Forms.MessageBox.Show(e.ToString());
+                ShowMessageBox(e.ToString());
                 Environment.Exit(0);
                 return 1;
             }
             return 0;
+        }
+
+        static void ShowMessageBox(string str)
+        {
+            Console.WriteLine(str);
+            if (Environment.Version.Major == 4)
+            {
+                ShowMessageBoxImpl(str);
+            }
+        }
+
+        static void ShowMessageBoxImpl(string str)
+        {
+            System.Windows.Forms.MessageBox.Show(str);
+        }
+
+        static void ShowMessageBoxError(string str)
+        {
+            Console.WriteLine(str);
+            if (Environment.Version.Major == 4)
+            {
+                ShowMessageBoxImpl(str);
+            }
+        }
+
+        static void ShowMessageBoxErrorImpl(string error)
+        {
+            System.Windows.Forms.MessageBox.Show(error, "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.None);
         }
     }
 }

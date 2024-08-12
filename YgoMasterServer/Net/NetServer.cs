@@ -318,6 +318,21 @@ namespace YgoMaster.Net
             {
                 lock (connections)
                 {
+                    foreach (NetClient existingClient in GetConnections())
+                    {
+                        // Kick the old client (if one exists) to prevent duplicate NetClient connections
+                        try
+                        {
+                            if (existingClient.Player == player)
+                            {
+                                Utils.LogInfo("Kicking old NetClient. Player:'" + player.Name + "' pcode:" + Utils.FormatPlayerCode(player.Code) + " NetClientIP:" + client.IP);
+                                existingClient.Close();
+                            }
+                        }
+                        catch
+                        {
+                        }
+                    }
                     client.Player = player;
                     player.NetClient = client;
                 }

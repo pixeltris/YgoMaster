@@ -1,0 +1,2 @@
+call %WINDIR%\Microsoft.NET\Framework\v4.0.30319\csc.exe /target:library /platform:x64 YgoMasterBepinEx.cs /reference:BepInEx.Core.dll /reference:BepInEx.Unity.IL2CPP.dll /reference:Il2CppInterop.Runtime.dll /reference:netstandard.dll /reference:System.Runtime.dll
+pause
