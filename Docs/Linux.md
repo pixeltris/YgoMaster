@@ -4,7 +4,7 @@
 - Run `wine regedit` and do this to fix input on window focus change (create keys which don't exist) https://askubuntu.com/questions/299286/how-to-recover-focus-after-losing-it-while-using-wine/1202472#1202472
 - Download the latest YgoMaster release from https://github.com/pixeltris/YgoMaster/releases
 - Copy the `YgoMaster` folder (the folder, not the contents of the folder) into the game folder
-- [Download this zip]() and extract / merge it with the YgoMaster folder from the previous step
+- [Download this zip](https://github.com/user-attachments/files/16606063/YgoMaster-mono.zip) and extract / merge it with the YgoMaster folder from the previous step
 - Run `wine MonoRun.exe YgoMasterClient.exe`
 
 ## Folder structure

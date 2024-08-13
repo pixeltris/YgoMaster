@@ -8,8 +8,8 @@ To get around this you can use the mono runtime with YgoMaster.
 
 ## Instructions
 
-- Grab the zip from [Linux.md](Linux.md)
-- Extract / merge it into your YgoMaster folder
+- [Download this zip](https://github.com/user-attachments/files/16606063/YgoMaster-mono.zip)
+- Extract / merge it with your YgoMaster folder
 - Run `YgoMasterClient.exe` / `YgoMaster.exe` as you normally would
 
 Your folder structure should look like this:
