@@ -64,4 +64,5 @@
     "HomeDisableUnusedHeaders": true,
     "HomeDisableUnusedBanners": true,
     "HomeDisableUnusedTopics": true,
+    "DontAutoRunServerExe": false,
 }

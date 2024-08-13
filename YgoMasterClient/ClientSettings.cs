@@ -81,6 +81,7 @@ namespace YgoMasterClient
         public static bool HomeDisableUnusedHeaders;
         public static bool HomeDisableUnusedBanners;
         public static bool HomeDisableUnusedTopics;
+        public static bool DontAutoRunServerExe;
 
         public static string FilePath
         {
@@ -190,6 +191,7 @@ namespace YgoMasterClient
             HomeDisableUnusedHeaders = Utils.GetValue<bool>(data, "HomeDisableUnusedHeaders");
             HomeDisableUnusedBanners = Utils.GetValue<bool>(data, "HomeDisableUnusedBanners");
             HomeDisableUnusedTopics = Utils.GetValue<bool>(data, "HomeDisableUnusedTopics");
+            DontAutoRunServerExe = Utils.GetValue<bool>(data, "DontAutoRunServerExe");
 
             return LoadText();
         }

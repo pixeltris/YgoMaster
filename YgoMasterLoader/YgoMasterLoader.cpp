@@ -38,7 +38,7 @@
 #pragma comment(lib, "detours.lib")
 #endif
 
-//#define WITH_MONO
+#define WITH_MONO
 #ifdef WITH_MONO
 #include "mono.h"
 #endif
@@ -141,7 +141,7 @@ void GetRelativeFilePath(wchar_t* outputPath, wchar_t* path)
 #ifdef WITH_MONO
 BOOL MonoExists(wchar_t* dllPath)
 {
-    GetRelativeFilePath(dllPath, L"\\mono\\MonoBleedingEdge\\EmbedRuntime\\mono-2.0-sgen.dll");
+    GetRelativeFilePath(dllPath, L"\\mono\\bin\\mono-2.0-sgen.dll");
     return FileExists(dllPath);
 }
 #endif

@@ -26,6 +26,7 @@ struct _MonoObject
 	void *synchronisation;
 };
 
+// TODO: Validate this structure is still up to date for the latest version of mono
 struct MonoException
 {
 	_MonoObject object;
@@ -61,8 +62,6 @@ typedef void(*import__mono_domain_set_config)(MonoDomain *domain, const char* ba
 typedef void(*import__mono_set_dirs)(const char* assembly_dir, const char* config_dir);
 typedef void(*import__mono_debug_init)(MonoDebugFormat format);
 typedef MonoDomain*(*import__mono_jit_init_version)(const char* domain_name, const char* runtime_version);
-typedef MonoDomain*(*import__mono_jit_init)(const char* file);
-typedef void(*import__mono_jit_cleanup)(MonoDomain* domain);
 typedef MonoAssembly*(*import__mono_domain_assembly_open)(MonoDomain* domain, const char* name);
 typedef MonoImage*(*import__mono_assembly_get_image)(MonoAssembly* assembly);
 typedef MonoMethodDesc*(*import__mono_method_desc_new)(const char* name, mono_bool include_namespace);
@@ -85,8 +84,6 @@ import__mono_domain_set_config mono_domain_set_config;
 import__mono_set_dirs mono_set_dirs;
 import__mono_debug_init mono_debug_init;
 import__mono_jit_init_version mono_jit_init_version;
-import__mono_jit_init mono_jit_init;
-import__mono_jit_cleanup mono_jit_cleanup;
 import__mono_domain_assembly_open mono_domain_assembly_open;
 import__mono_assembly_get_image mono_assembly_get_image;
 import__mono_method_desc_new mono_method_desc_new;
@@ -105,46 +102,60 @@ import__mono_trace_set_printerr_handler mono_trace_set_printerr_handler;
 import__mono_dl_fallback_register mono_dl_fallback_register;
 
 #ifdef MONO_VERBOSE_LOGGING
-void add( char* str)
+BOOL monoLogEnabled = false;
+#define MONO_LOG_FILE "mono_log.txt"
+void MonoLog(const char* str)
 {
-  FILE *afp;
-  errno_t err = fopen_s( &afp, "mono_log.txt", "a+" );
-  if( !err )
-  {
-    fprintf( afp, "%s", str);
-    fclose( afp );
-  }
+    if (!monoLogEnabled)
+    {
+        return;
+    }
+    FILE *file;
+    errno_t err = fopen_s(&file, MONO_LOG_FILE, "a+");
+    if (!err)
+    {
+        fprintf(file, "%s", str);
+        fclose(file);
+    }
 }
 
 void OnMonoLog(const char* log_domain, const char* log_level, const char* message, mono_bool fatal, void* user_data)
 {
+    if (!monoLogEnabled)
+    {
+        return;
+    }
     char buff[1024] = {0};
-    sprintf(buff, "log_domain:%s log_level:%s msg:%s fatal:%d\n", log_domain, log_level, message, fatal);
-    //MessageBox(0, buff, 0, 0);
-    add(buff);
-    printf("log_domain:%s log_level:%s msg:%s fatal:%d\n", log_domain, log_level, message, fatal);
+    sprintf_s(buff, sizeof(buff), "log_domain:%s log_level:%s msg:%s fatal:%d\n", log_domain, log_level, message, fatal);
+    MonoLog(buff);
 }
 
 void OnMonoPrint(const char* str, mono_bool is_stdout)
 {
+    if (!monoLogEnabled)
+    {
+        return;
+    }
     char buff[1024] = {0};
-    sprintf(buff, "%s", str);
-    //MessageBox(0, buff, 0, 0);
-    add(buff);
-	printf("%s\n", str);
+    sprintf_s(buff, sizeof(buff), "%s\n", str);// TODO: Confirm we want the \n here
+    MonoLog(buff);
 }
 #endif
 
-void LogLoaderError(char* str)
+BOOL FileExists(LPCSTR szPath)
 {
-    MessageBox(0, str, 0, 0);
+    DWORD dwAttrib = GetFileAttributes(szPath);
+    return (dwAttrib != INVALID_FILE_ATTRIBUTES && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 }
 
 BOOL LoadMono(wchar_t* monoDllPath, BOOL runningLive)
 {
+    monoLogEnabled = FileExists(MONO_LOG_FILE);
+    MonoLog("Loading mono dll\n");
     HMODULE dllHandle = LoadLibraryW(monoDllPath);
     if (dllHandle == NULL)
     {
+        MonoLog("Failed to load mono dll\n");
         return false;
     }
     
@@ -153,8 +164,6 @@ BOOL LoadMono(wchar_t* monoDllPath, BOOL runningLive)
 	mono_set_dirs = (import__mono_set_dirs)GetProcAddress(dllHandle, TEXT("mono_set_dirs"));
 	mono_debug_init = (import__mono_debug_init)GetProcAddress(dllHandle, TEXT("mono_debug_init"));
 	mono_jit_init_version = (import__mono_jit_init_version)GetProcAddress(dllHandle, TEXT("mono_jit_init_version"));
-	mono_jit_init = (import__mono_jit_init)GetProcAddress(dllHandle, TEXT("mono_jit_init"));
-	mono_jit_cleanup = (import__mono_jit_cleanup)GetProcAddress(dllHandle, TEXT("mono_jit_cleanup"));
 	mono_domain_assembly_open = (import__mono_domain_assembly_open)GetProcAddress(dllHandle, TEXT("mono_domain_assembly_open"));
 	mono_assembly_get_image = (import__mono_assembly_get_image)GetProcAddress(dllHandle, TEXT("mono_assembly_get_image"));
 	mono_method_desc_new = (import__mono_method_desc_new)GetProcAddress(dllHandle, TEXT("mono_method_desc_new"));
@@ -177,8 +186,6 @@ BOOL LoadMono(wchar_t* monoDllPath, BOOL runningLive)
 		mono_set_dirs == NULL ||
 		mono_debug_init == NULL ||
 		mono_jit_init_version == NULL ||
-		mono_jit_init == NULL ||
-		mono_jit_cleanup == NULL ||
 		mono_domain_assembly_open == NULL ||
 		mono_assembly_get_image == NULL ||
 		mono_method_desc_new == NULL ||
@@ -196,6 +203,7 @@ BOOL LoadMono(wchar_t* monoDllPath, BOOL runningLive)
 		mono_trace_set_printerr_handler == NULL ||
 		mono_dl_fallback_register == NULL)
 	{
+        MonoLog("Failed to find mono functions\n");
 		return false;
 	}
     
@@ -216,7 +224,7 @@ BOOL LoadMono(wchar_t* monoDllPath, BOOL runningLive)
         return false;
     }
     
-    // TODO: Figure out how to support wchar_t under mono, or force utf8?
+    // TODO: Figure out how to support wchar_t under mono?
     char dllPath[MAX_PATH] = {0};
     GetModuleFileName(hm, dllPath, MAX_PATH);
     if (strlen(dllPath) <= 0)
@@ -227,11 +235,11 @@ BOOL LoadMono(wchar_t* monoDllPath, BOOL runningLive)
     
     char assemblyDir[MAX_PATH] = {0};
     strcpy(assemblyDir, dllPath);
-    strcat(assemblyDir, "\\mono\\Managed");
+    strcat(assemblyDir, "\\mono\\lib");
     
     char configDir[MAX_PATH] = {0};
     strcpy(configDir, dllPath);
-    strcat(configDir, "\\mono\\MonoBleedingEdge\\etc");
+    strcat(configDir, "\\mono\\etc");
     
     char targetAssemblyPath[MAX_PATH] = {0};
     strcpy(targetAssemblyPath, dllPath);
@@ -251,32 +259,43 @@ BOOL LoadMono(wchar_t* monoDllPath, BOOL runningLive)
     MonoAssembly* assembly = mono_domain_assembly_open((MonoDomain*)monoDomain, targetAssemblyPath);
     if (assembly == NULL)
     {
-        LogLoaderError(TEXT("mono_domain_assembly_open"));
+        MonoLog("mono_domain_assembly_open failed\n");
         return false;
     }
     MonoImage* image = mono_assembly_get_image(assembly);
     if (image == NULL)
     {
-        LogLoaderError(TEXT("mono_assembly_get_image"));
+        MonoLog("mono_assembly_get_image failed\n");
         return false;
     }
     MonoMethodDesc* methodDesc = mono_method_desc_new("YgoMasterClient.Program:DllMain", true);
     if (methodDesc == NULL)
     {
-        LogLoaderError(TEXT("mono_method_desc_new"));
+        MonoLog("mono_method_desc_new failed\n");
         return false;
     }
     MonoMethod* method = mono_method_desc_search_in_image(methodDesc, image);
     if (method == NULL)
     {
-        LogLoaderError(TEXT("mono_method_desc_search_in_image"));
+        MonoLog("mono_method_desc_search_in_image failed\n");
         return false;
     }
     mono_method_desc_free(methodDesc);
     void* args = { (void*)mono_string_new((MonoDomain*)monoDomain, runningLive ? "live" : "") };
     MonoException* exception = NULL;
     MonoObject* result = mono_runtime_invoke(method, NULL, &args, &exception);
-    // TODO: Validate result
+    int32 retVal = 0;
+    if (exception != NULL || (retVal = *(int32*)mono_object_unbox(result)) != 0)
+    {
+        MonoLog("Error when running YgoMasterClient.Program:DllMain\n");
+        while (exception != NULL)
+        {
+            MonoLog(mono_string_to_utf8(exception->message));
+            MonoLog("\n");
+            exception = (MonoException*)exception->inner_ex;
+        }
+        MonoLog("\n");
+    }
     return true;
 }
 

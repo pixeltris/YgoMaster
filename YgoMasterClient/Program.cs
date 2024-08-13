@@ -79,7 +79,7 @@ namespace YgoMasterClient
             }
             else
             {
-                if (!isMultiplayerClient)
+                if (!isMultiplayerClient && !ClientSettings.DontAutoRunServerExe)
                 {
                     Process[] processes = Process.GetProcessesByName("YgoMaster");
                     try
