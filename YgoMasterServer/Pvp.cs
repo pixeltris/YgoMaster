@@ -825,7 +825,7 @@ namespace YgoMaster
             }
             if (!netClient.IsConnected)
             {
-                Console.WriteLine("!netClient.IsConnected");
+                Console.WriteLine("!netClient.IsConnected (make sure MultiplayerPvpClientConnectIP is correct)");
                 if (!keepConsoleAlive)
                 {
                     Environment.Exit(0);
