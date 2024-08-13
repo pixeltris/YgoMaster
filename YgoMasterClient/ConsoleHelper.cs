@@ -1429,9 +1429,6 @@ namespace YgoMasterClient
                         }).Start();
                     }
                     break;
-                case "proxy_connection_count":
-                    SimpleProxy.LogConnections();
-                    break;
             }
         }
 

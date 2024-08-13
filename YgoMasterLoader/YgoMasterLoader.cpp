@@ -64,12 +64,6 @@ LARGE_INTEGER lastTime = {0};
 LARGE_INTEGER fakeTime = {0};
 double timeMultiplier = 1.0;
 
-BOOL FileExists(LPCWSTR szPath)
-{
-    DWORD dwAttrib = GetFileAttributesW(szPath);
-    return (dwAttrib != INVALID_FILE_ATTRIBUTES && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
-}
-
 LIBRARY_API MH_STATUS WL_InitHooks()
 {
     if (!hooksInitialized)
@@ -122,35 +116,11 @@ LIBRARY_API BOOL DetourCreateProcessWithDll_Exported(LPCSTR lpApplicationName, L
 }
 #endif
 
-void GetRelativeFilePath(wchar_t* outputPath, wchar_t* path)
-{
-    HMODULE hm;
-    if(GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPWSTR)&GetRelativeFilePath, &hm))
-    {
-        wchar_t dllPath[MAX_PATH] = {0};
-        GetModuleFileNameW(hm, dllPath, MAX_PATH);
-        if (wcslen(dllPath) > 0 && FileExists(dllPath))
-        {
-            PathRemoveFileSpecW(dllPath);
-            wcscpy(outputPath, dllPath);
-            wcscat(outputPath, path);
-        }
-    }
-}
-
-#ifdef WITH_MONO
-BOOL MonoExists(wchar_t* dllPath)
-{
-    GetRelativeFilePath(dllPath, L"\\mono\\bin\\mono-2.0-sgen.dll");
-    return FileExists(dllPath);
-}
-#endif
-
 HRESULT LoadDotNetImpl()
 {
 #ifdef WITH_MONO
     wchar_t monoDllPath[MAX_PATH] = {0};
-    if (MonoExists(monoDllPath) && LoadMono(monoDllPath, runningLive))
+    if (MonoExists(monoDllPath) && LoadMono(monoDllPath, "YgoMasterClient.exe", runningLive ? "live" : ""))
     {
         return 0;
     }
@@ -190,7 +160,7 @@ HRESULT LoadDotNetImpl()
 
     wchar_t binaryPath[MAX_PATH] = {0};
     GetRelativeFilePath(binaryPath, L"\\YgoMasterClient.exe");
-    if (!FileExists(binaryPath))
+    if (!FileExistsW(binaryPath))
     {
         return 0x1333337;
     }

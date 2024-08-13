@@ -1256,11 +1256,29 @@ namespace YgoMaster
                     data["RunDialogUserOffset"] = MultiplayerPvpClientRunDialogUserOffset;
 
                     process.StartInfo.Arguments = "--pvp \"" + Convert.ToBase64String(Encoding.UTF8.GetBytes(MiniJSON.Json.Serialize(data))) + "\"";
-                    process.StartInfo.FileName = Path.GetFileName(ygoMasterExePath);
+                    if (Program.IsMonoRun)
+                    {
+                        process.StartInfo.WorkingDirectory = Path.GetDirectoryName(ygoMasterExePath);
+                        process.StartInfo.FileName = "MonoRun.exe";
+                        process.StartInfo.Arguments = "YgoMaster.exe " + process.StartInfo.Arguments;
+                    }
+                    else
+                    {
+                        process.StartInfo.FileName = Path.GetFileName(ygoMasterExePath);
+                    }
                     if (!MultiplayerPvpClientShowConsole)
                     {
-                        process.StartInfo.CreateNoWindow = true;
-                        process.StartInfo.UseShellExecute = false;
+                        if (Program.IsMonoRun)
+                        {
+                            // This is the only thing that seems to work under Linux
+                            // TODO: Validate this is actually running under Linux
+                            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                        }
+                        else
+                        {
+                            process.StartInfo.CreateNoWindow = true;
+                            process.StartInfo.UseShellExecute = false;
+                        }
                     }
                     process.Start();
                 }

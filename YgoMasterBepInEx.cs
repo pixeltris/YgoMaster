@@ -14,7 +14,7 @@ namespace YgoMasterBepInEx
     {
         public override void Load()
         {
-            // TODO: Support "live" mode in YgoMaster+BepInEx
+            // TODO: Support "live"
             string targetDir = null;
             string[] args = Environment.GetCommandLineArgs();
             if (args != null)

@@ -7,13 +7,41 @@ using System.Globalization;
 using System.IO;
 using System.Diagnostics;
 
+namespace YgoMasterClient
+{
+    class Program
+    {
+        public static int DllMain(string arg)
+        {
+            try
+            {
+                YgoMaster.Program.IsMonoRun = true;
+                Console.WriteLine("(MonoRun)");
+                return YgoMaster.Program.Main(new string[0]);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            return 0;
+        }
+    }
+}
+
 namespace YgoMaster
 {
     class Program
     {
-        static int Main(string[] args)
+        public static bool IsMonoRun;
+
+        internal static int Main(string[] args)
         {
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+
+            if (IsMonoRun)
+            {
+                args = ProcessCommandLine.GetCommandLineArgs().Skip(2).ToArray();
+            }
 
             for (int i = 0; i < args.Length; i++)
             {

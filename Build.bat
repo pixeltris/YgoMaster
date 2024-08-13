@@ -27,6 +27,7 @@ goto cppCompilerNotFound
 
 cd YgoMasterLoader
 cl YgoMasterLoader.cpp /LD /DWITHDETOURS /Fe:../YgoMaster/YgoMasterLoader.dll
+cl MonoRun.cpp /Fe:../YgoMaster/MonoRun.exe
 cd ../
 goto done
 

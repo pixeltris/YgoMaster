@@ -205,11 +205,10 @@ namespace YgoMaster
                 if (!string.IsNullOrEmpty(actsHeader) && context.Request.ContentLength64 <= maxContentLength)
                 {
                     requestBuffer = new byte[context.Request.ContentLength64];
-                    int readBytes = 1;
+                    int readBytes = 0;
                     int offset = 0;
-                    while (readBytes > 0)
+                    while ((readBytes = context.Request.InputStream.Read(requestBuffer, offset, requestBuffer.Length - offset)) > 0)
                     {
-                        readBytes = context.Request.InputStream.Read(requestBuffer, offset, requestBuffer.Length - offset);
                         offset += readBytes;
                     }
                     if (offset == requestBuffer.Length)

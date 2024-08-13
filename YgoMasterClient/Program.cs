@@ -26,6 +26,7 @@ namespace YgoMasterClient
         public static string ClientDataDir;// Path of the custom client content
         public static string ClientDataDumpDir;// Path to dump client content when dumping is enabled
         public static NetClient NetClient;
+        public static bool IsMonoRun;
 
         static void Main(string[] args)
         {
@@ -81,15 +82,34 @@ namespace YgoMasterClient
             {
                 if (!isMultiplayerClient && !ClientSettings.DontAutoRunServerExe)
                 {
-                    Process[] processes = Process.GetProcessesByName("YgoMaster");
+                    Process[] processes = Process.GetProcessesByName(IsMonoRun ? "MonoRun" : "YgoMaster");
                     try
                     {
-                        if (processes.Length == 0)
+                        int processCount = processes.Length;
+                        if (IsMonoRun && processCount > 0)
+                        {
+                            foreach (Process process in processes)
+                            {
+                                List<string> processArgs = ProcessCommandLine.RetrieveArgs(process);
+                                if (processArgs.Count < 2 || processArgs[1] != "YgoMaster.exe")
+                                {
+                                    processCount--;
+                                }
+                            }
+                        }
+                        if (processCount == 0)
                         {
                             string serverExe = Path.Combine(Environment.CurrentDirectory, "YgoMaster.exe");
                             if (File.Exists(serverExe))
                             {
-                                Process.Start(serverExe);
+                                if (IsMonoRun)
+                                {
+                                    Process.Start("MonoRun.exe", "YgoMaster.exe").Close();
+                                }
+                                else
+                                {
+                                    Process.Start(serverExe).Close();
+                                }
                             }
                         }
                     }
@@ -122,6 +142,14 @@ namespace YgoMasterClient
 
         public static int DllMain(string arg)
         {
+            if (arg == "MonoRun")
+            {
+                Console.WriteLine("(MonoRun)");
+                IsMonoRun = true;
+                Main(new string[0]);
+                return 0;
+            }
+
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
             try

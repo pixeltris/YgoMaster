@@ -1,4 +1,3 @@
-#ifdef WITH_MONO
 #define MONO_VERBOSE_LOGGING
 typedef enum
 {
@@ -104,6 +103,7 @@ import__mono_dl_fallback_register mono_dl_fallback_register;
 #ifdef MONO_VERBOSE_LOGGING
 BOOL monoLogEnabled = false;
 #define MONO_LOG_FILE "mono_log.txt"
+#define MONO_LOG_FILE_L L"mono_log.txt"
 void MonoLog(const char* str)
 {
     if (!monoLogEnabled)
@@ -142,15 +142,43 @@ void OnMonoPrint(const char* str, mono_bool is_stdout)
 }
 #endif
 
+BOOL FileExistsW(LPCWSTR szPath)
+{
+    DWORD dwAttrib = GetFileAttributesW(szPath);
+    return (dwAttrib != INVALID_FILE_ATTRIBUTES && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+}
+
 BOOL FileExists(LPCSTR szPath)
 {
     DWORD dwAttrib = GetFileAttributes(szPath);
     return (dwAttrib != INVALID_FILE_ATTRIBUTES && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 }
 
-BOOL LoadMono(wchar_t* monoDllPath, BOOL runningLive)
+void GetRelativeFilePath(wchar_t* outputPath, wchar_t* path)
 {
-    monoLogEnabled = FileExists(MONO_LOG_FILE);
+    HMODULE hm;
+    if(GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPWSTR)&GetRelativeFilePath, &hm))
+    {
+        wchar_t dllPath[MAX_PATH] = {0};
+        GetModuleFileNameW(hm, dllPath, MAX_PATH);
+        if (wcslen(dllPath) > 0 && FileExistsW(dllPath))
+        {
+            PathRemoveFileSpecW(dllPath);
+            wcscpy(outputPath, dllPath);
+            wcscat(outputPath, path);
+        }
+    }
+}
+
+BOOL MonoExists(wchar_t* dllPath)
+{
+    GetRelativeFilePath(dllPath, L"\\mono\\bin\\mono-2.0-sgen.dll");
+    return FileExistsW(dllPath);
+}
+
+BOOL LoadMono(wchar_t* monoDllPath, char* targetAssemblyName, char* arg)
+{
+    monoLogEnabled = FileExistsW(MONO_LOG_FILE_L);
     MonoLog("Loading mono dll\n");
     HMODULE dllHandle = LoadLibraryW(monoDllPath);
     if (dllHandle == NULL)
@@ -243,7 +271,8 @@ BOOL LoadMono(wchar_t* monoDllPath, BOOL runningLive)
     
     char targetAssemblyPath[MAX_PATH] = {0};
     strcpy(targetAssemblyPath, dllPath);
-    strcat(targetAssemblyPath, "\\YgoMasterClient.exe");
+    strcat(targetAssemblyPath, "\\");
+    strcat(targetAssemblyPath, targetAssemblyName);
 
     mono_set_dirs(assemblyDir, configDir);
     //mono_debug_init(MONO_DEBUG_FORMAT_MONO);
@@ -254,7 +283,7 @@ BOOL LoadMono(wchar_t* monoDllPath, BOOL runningLive)
     // Workaround to avoid this exception:
 	// System.Configuration.ConfigurationErrorsException: Error Initializing the configuration system.
 	// ---> System.ArgumentException: The 'ExeConfigFilename' argument cannot be null.
-	//mono_domain_set_config(monoDomain, ".", "");
+	mono_domain_set_config(monoDomain, ".", "");
 
     MonoAssembly* assembly = mono_domain_assembly_open((MonoDomain*)monoDomain, targetAssemblyPath);
     if (assembly == NULL)
@@ -281,7 +310,7 @@ BOOL LoadMono(wchar_t* monoDllPath, BOOL runningLive)
         return false;
     }
     mono_method_desc_free(methodDesc);
-    void* args = { (void*)mono_string_new((MonoDomain*)monoDomain, runningLive ? "live" : "") };
+    void* args = { (void*)mono_string_new((MonoDomain*)monoDomain, arg) };
     MonoException* exception = NULL;
     MonoObject* result = mono_runtime_invoke(method, NULL, &args, &exception);
     int32 retVal = 0;
@@ -298,5 +327,3 @@ BOOL LoadMono(wchar_t* monoDllPath, BOOL runningLive)
     }
     return true;
 }
-
-#endif

@@ -123,6 +123,7 @@
     <Compile Include="YgoMasterServer\Lib\MiniJSON.cs" />
     <Compile Include="YgoMasterServer\Infos\DeckInfo.cs" />
     <Compile Include="YgoMasterServer\Lib\MiniMessagePacker.cs" />
+    <Compile Include="YgoMasterServer\Lib\ProcessCommandLine.cs" />
     <Compile Include="YgoMasterServer\Net\Message\ConnectionRequestMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\ConnectionResponseMessage.cs" />
     <Compile Include="YgoMasterServer\Net\Message\DuelComCancelCommand2Message.cs" />

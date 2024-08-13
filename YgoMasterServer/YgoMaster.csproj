@@ -62,6 +62,7 @@
     <Compile Include="Infos\DuelRoom.cs" />
     <Compile Include="Infos\TradeInfo.cs" />
     <Compile Include="Lib\LinearCongruentialGenerator.cs" />
+    <Compile Include="Lib\ProcessCommandLine.cs" />
     <Compile Include="Net\Message\ConnectionRequestMessage.cs" />
     <Compile Include="Net\Message\ConnectionResponseMessage.cs" />
     <Compile Include="Net\Message\DuelComCancelCommand2Message.cs" />
