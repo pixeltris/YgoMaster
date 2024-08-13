@@ -20,14 +20,14 @@ Offline Yu-Gi-Oh! Master Duel (PC)
 - .NET Framework 4.0 (or above)
 - The game downloaded on Steam (complete the in-game tutorial to download all data)
 
-*YgoMaster is portable. It can be used on any machine without Steam installed (after being fully downloaded).*
+YgoMaster is portable and can be used on any machine without Steam installed after being fully downloaded
 
 ## Usage
 
 - Download the latest release from https://github.com/pixeltris/YgoMaster/releases
 - Copy the `YgoMaster` folder (the folder, not the contents of the folder) into the game folder
-- Run `YgoMasterClient.exe` (this should also auto run `YgoMaster.exe`, if it doesn't manually run it)
-- *If you see file load error popups, infinite loading screens, corrupt screens, etc [follow these instructions](Docs/FileLoadError.md)*
+- Run `YgoMasterClient.exe` (this should also auto run `YgoMaster.exe`)
+- *[If you see file load error popups, infinite loading screens, corrupt screens, etc follow these instructions](Docs/FileLoadError.md)*
 
 Additionally...
 

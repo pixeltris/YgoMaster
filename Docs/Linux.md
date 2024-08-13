@@ -44,7 +44,7 @@ You may have missing fonts under wine. If the game crashes when prompted to load
 
 ## Diagnosing issues
 
-Create `mono_log.exe` in the Master Duel folder and inside the `YgoMaster` folder. This will log all mono messages in these files which you can look through to diagnose problems with mono.
+Create `mono_log.txt` in the Master Duel folder and inside the `YgoMaster` folder. This will log all mono messages in these files which you can look through to diagnose problems with mono.
 
 ## Where the `mono` files come from
 
