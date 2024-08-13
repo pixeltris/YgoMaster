@@ -38,6 +38,11 @@
 #pragma comment(lib, "detours.lib")
 #endif
 
+//#define WITH_MONO
+#ifdef WITH_MONO
+#include "mono.h"
+#endif
+
 #ifdef __cplusplus
 #define LIBRARY_API extern "C" __declspec (dllexport)
 #else
@@ -117,8 +122,39 @@ LIBRARY_API BOOL DetourCreateProcessWithDll_Exported(LPCSTR lpApplicationName, L
 }
 #endif
 
+void GetRelativeFilePath(wchar_t* outputPath, wchar_t* path)
+{
+    HMODULE hm;
+    if(GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPWSTR)&GetRelativeFilePath, &hm))
+    {
+        wchar_t dllPath[MAX_PATH] = {0};
+        GetModuleFileNameW(hm, dllPath, MAX_PATH);
+        if (wcslen(dllPath) > 0 && FileExists(dllPath))
+        {
+            PathRemoveFileSpecW(dllPath);
+            wcscpy(outputPath, dllPath);
+            wcscat(outputPath, path);
+        }
+    }
+}
+
+#ifdef WITH_MONO
+BOOL MonoExists(wchar_t* dllPath)
+{
+    GetRelativeFilePath(dllPath, L"\\mono\\MonoBleedingEdge\\EmbedRuntime\\mono-2.0-sgen.dll");
+    return FileExists(dllPath);
+}
+#endif
+
 HRESULT LoadDotNetImpl()
 {
+#ifdef WITH_MONO
+    wchar_t monoDllPath[MAX_PATH] = {0};
+    if (MonoExists(monoDllPath) && LoadMono(monoDllPath, runningLive))
+    {
+        return 0;
+    }
+#endif
     ICLRMetaHost* metaHost;
     ICLRRuntimeHost* runtimeHost;
     ICLRRuntimeInfo *runtimeInfo;
@@ -153,19 +189,7 @@ HRESULT LoadDotNetImpl()
     }
 
     wchar_t binaryPath[MAX_PATH] = {0};
-    
-    HMODULE hm;
-    if(GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPWSTR)&LoadDotNetImpl, &hm))
-    {
-        wchar_t dllPath[MAX_PATH] = {0};
-        GetModuleFileNameW(hm, dllPath, MAX_PATH);
-        if (wcslen(dllPath) > 0 && FileExists(dllPath))
-        {
-            PathRemoveFileSpecW(dllPath);
-            wcscpy(binaryPath, dllPath);
-            wcscat(binaryPath, L"\\YgoMasterClient.exe");
-        }
-    }
+    GetRelativeFilePath(binaryPath, L"\\YgoMasterClient.exe");
     if (!FileExists(binaryPath))
     {
         return 0x1333337;

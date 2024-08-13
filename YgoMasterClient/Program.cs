@@ -114,7 +114,7 @@ namespace YgoMasterClient
             }
             if (!success)
             {
-                ShowMessageBox("Failed. Make sure the YgoMaster folder is inside game folder.\n\nThis should roughly be (depending on your steam install):\n\n " +
+                ShowMessageBoxError("Failed. Make sure the YgoMaster folder is inside game folder.\n\nThis should roughly be (depending on your steam install):\n\n " +
                     "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Yu-Gi-Oh! Master Duel\\YgoMaster\\\n\nThe working directory is:\n\n" +
                      Environment.CurrentDirectory);
             }
@@ -363,6 +363,8 @@ namespace YgoMasterClient
             }
             return 0;
         }
+
+        // The following are in seperate functions due to .NET Core erroring out from the lack of WinForms support
 
         static void ShowMessageBox(string str)
         {
