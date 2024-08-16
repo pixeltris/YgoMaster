@@ -586,6 +586,15 @@ namespace YgoMaster
                         Array array = property.GetValue(this, null) as Array;
                         if (array != null)
                         {
+                            bool isCmds = property.Name == "cmds";
+                            List<object> acsl1 = null;
+                            List<object> acsl2 = null;
+                            if (isCmds)
+                            {
+                                List<object> acsl = isCmds ? Utils.GetOrCreateList(result, "acsl") : null;
+                                acsl.Add(acsl1 = new List<object>());
+                                acsl.Add(acsl2 = new List<object>());
+                            }
                             int len = IsCustomArray(property) ? array.Length : Math.Min(array.Length, MaxPlayers);
                             for (int i = 0; i < len; i++)
                             {
@@ -596,6 +605,27 @@ namespace YgoMaster
                                     for (int j = 0; j < list.Count; j++)
                                     {
                                         objList.Add(list[j]);
+                                    }
+                                }
+                                if (isCmds && objList.Count >= 7)
+                                {
+                                    int cmd = (int)Convert.ChangeType(objList[0], typeof(int));
+                                    if (cmd == 0)
+                                    {
+                                        int player = (int)Convert.ChangeType(objList[1], typeof(int));
+                                        int pos = (int)Convert.ChangeType(objList[2], typeof(int));
+                                        //int unk = (int)Convert.ChangeType(objList[3], typeof(int));
+                                        int cid = (int)Convert.ChangeType(objList[4], typeof(int));
+                                        int prm = (int)Convert.ChangeType(objList[5], typeof(int));
+                                        int df = (int)Convert.ChangeType(objList[6], typeof(int));
+                                        List<object> acslArray = player == 0 ? acsl1 : acsl2;
+                                        acslArray.Add(new Dictionary<string, object>()
+                                        {
+                                            {  "cid", cid },
+                                            {  "pos", pos },
+                                            {  "prm", prm },
+                                            {  "df", df },
+                                        });
                                     }
                                 }
                                 objListList.Add(objList);
