@@ -317,6 +317,7 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(HomeViewTweaks));
                 nativeTypes.Add(typeof(FixDeleteFile));
                 nativeTypes.Add(typeof(FixLanguage));
+                nativeTypes.Add(typeof(SoundInterceptor));
                 nativeTypes.Add(typeof(YgomGame.Utility.ItemUtil));
                 nativeTypes.Add(typeof(YgomSystem.Utility.TextData));
                 nativeTypes.Add(typeof(YgomSystem.Utility.ClientWork));

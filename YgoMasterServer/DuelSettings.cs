@@ -36,6 +36,11 @@ namespace YgoMaster
         public int OpponentType;
         public int OpponentPartnerType;
 
+        // Custom (used to prevent certain BGMs from playing)
+        public bool SingleBgm;
+        public bool DoubleBgm;
+        public bool NoKeycardBgm;
+
         // Used for injecting duel commands
         [DuelSettingsCustomArray]
         public List<int>[] cmds { get; private set; }
