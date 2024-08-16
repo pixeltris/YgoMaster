@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Net;
-using System.Collections.Specialized;
 using System.Diagnostics;
 
 namespace YgoMaster
@@ -277,7 +276,38 @@ namespace YgoMaster
             AddCardManually(41002238, 16620);//Kaiser Glider - Golden Burst
             AddCardManually(77406972, 16621);//Giltia the D. Knight - Soul Spear
             AddCardManually(4991081, 16622);//Harpie's Pet Dragon - Fearsome Fire Blast
-            
+
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;//Tls12
+
+            try
+            {
+                using (WebClient client = new WebClient())
+                {
+                    client.Proxy = null;
+                    string json = client.DownloadString("https://code.mycard.moe/sherry_chaos/MDPro3/-/raw/master/Data/cards_Alt.json");
+                    Dictionary<string, object> jsonData = MiniJSON.Json.Deserialize(json) as Dictionary<string, object>;
+                    foreach (KeyValuePair<string, object> entry in jsonData)
+                    {
+                        Dictionary<string, object> cardData = entry.Value as Dictionary<string, object>;
+                        if (cardData != null)
+                        {
+                            int cardId = Utils.GetValue<int>(cardData, "cid");
+                            int ydkId = Utils.GetValue<int>(cardData, "id");
+                            if (cardId > 0 && ydkId > 0)
+                            {
+                                AddCardManually(ydkId, cardId);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Console.WriteLine("Failed to get alt art json from mycard.moe. Aborting");
+                return;
+            }
+
             using (WebClient client = new WebClient())
             {
                 client.Proxy = null;
