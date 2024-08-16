@@ -32,6 +32,7 @@ namespace YgoMasterClient
         public static bool DuelStarterShowFirstPlayer;
         public static int DuelStarterLiveChapterId;
         public static bool DuelStarterLiveNotLiveTest;
+        public static bool DuelStarterShowAllBgms;
         public static bool DeckEditorDisableLimits;
         public static bool DeckEditorConvertStyleRarity;
         public static bool DeckEditorShowStats;
@@ -149,6 +150,7 @@ namespace YgoMasterClient
             DuelStarterShowFirstPlayer = Utils.GetValue<bool>(data, "DuelStarterShowFirstPlayer");
             DuelStarterLiveChapterId = Utils.GetValue<int>(data, "DuelStarterLiveChapterId");
             DuelStarterLiveNotLiveTest = Utils.GetValue<bool>(data, "DuelStarterLiveNotLiveTest");
+            DuelStarterShowAllBgms = Utils.GetValue<bool>(data, "DuelStarterShowAllBgms");
             DuelClientShowRemainingCardsInDeck = Utils.GetValue<bool>(data, "DuelClientShowRemainingCardsInDeck");
             DuelClientMillenniumEye = Utils.GetValue<bool>(data, "DuelClientMillenniumEye");
             DuelClientDisableCameraShake = Utils.GetValue<bool>(data, "DuelClientDisableCameraShake");

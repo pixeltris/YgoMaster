@@ -863,7 +863,7 @@ namespace YgomGame.Room
                 public IntPtr FieldPart2; public IntPtr Mate1; public IntPtr Mate2; public IntPtr MateBase1; public IntPtr MateBase2;
                 public IntPtr Icon1; public IntPtr Icon2; public IntPtr IconFrame1; public IntPtr IconFrame2;
                 public IntPtr Player1; /*public IntPtr Player2; public IntPtr Player3; public IntPtr Player4;*/
-                public IntPtr BGM;
+                public IntPtr BGM; public IntPtr BGM1; public IntPtr BGM2; public IntPtr BGM3;
             }
 
             DuelSettings settings;
@@ -871,6 +871,8 @@ namespace YgomGame.Room
             Buttons buttons;
 
             static List<string> bgmStrings = new List<string>();
+            static List<string> allBgms = new List<string>();
+            static List<string> allBgmsRawList = new List<string>();
 
             public DuelSettings Settings
             {
@@ -961,6 +963,36 @@ namespace YgomGame.Room
                     else
                     {
                         settings.bgms.Clear();
+                    }
+                }
+                if (ClientSettings.DuelStarterShowAllBgms)
+                {
+                    if (settings.bgms.Count < 3 || allBgmsRawList.Count == 0)
+                    {
+                        settings.bgms.Clear();
+                    }
+                    else
+                    {
+                        for (int i = 0; i < settings.bgms.Count; i++)
+                        {
+                            string bgm = settings.bgms[i];
+                            if (bgm == ClientSettings.CustomTextRandom)
+                            {
+                                settings.bgms[i] = allBgmsRawList[Utils.Rand.Next(allBgmsRawList.Count)];
+                            }
+                            else if (bgm == ClientSettings.CustomTextDefault)
+                            {
+                                settings.SetBgm((DuelBgmMode)YgomSystem.Utility.ClientWork.GetByJsonPath<int>("$.Persistence.App.Settings.Duelbgm"), i);
+                            }
+                            else if (bgm == ClientSettings.CustomTextDuelStarterP1DuelField)
+                            {
+                                settings.SetBgm(DuelBgmMode.Myself, i);
+                            }
+                            else if (bgm == ClientSettings.CustomTextDuelStarterP2DuelField)
+                            {
+                                settings.SetBgm(DuelBgmMode.Rival, i);
+                            }
+                        }
                     }
                 }
                 if (settings.bgms.Count == 0)
@@ -1244,7 +1276,16 @@ namespace YgomGame.Room
                 Enum.TryParse<DuelLimitedType>(GetButtonValueString(buttons.Limit), out limitedType);
                 settings.Limit = (int)limitedType;
                 settings.bgms.Clear();
-                settings.bgms.Add(GetButtonValueString(buttons.BGM));
+                if (ClientSettings.DuelStarterShowAllBgms)
+                {
+                    settings.bgms.Add(GetButtonValueString(buttons.BGM1));
+                    settings.bgms.Add(GetButtonValueString(buttons.BGM2));
+                    settings.bgms.Add(GetButtonValueString(buttons.BGM3));
+                }
+                else
+                {
+                    settings.bgms.Add(GetButtonValueString(buttons.BGM));
+                }
                 settings.MyType = GetButtonValueStringIndex(buttons.Player1) == 0 ? 0 : 1;
                 //settings.OpponentType = GetButtonValueIndex(buttons.Player2) == 0 ? 1 : 2;
                 //settings.MyPartnerType = GetButtonValueIndex(buttons.Player3) == 0 ? 0 : 1;
@@ -1298,7 +1339,16 @@ namespace YgomGame.Room
                 SetButtonValueString(buttons.Cpu, settings.cpu == int.MaxValue ? null : settings.cpu.ToString());
                 SetButtonValueString(buttons.CpuFlag, settings.cpuflag);
                 SetButtonValueString(buttons.Limit, ((DuelLimitedType)settings.Limit).ToString());
-                SetButtonValueString(buttons.BGM, settings.bgms.Count == 0 ? null : settings.bgms[0]);
+                if (ClientSettings.DuelStarterShowAllBgms)
+                {
+                    SetButtonValueString(buttons.BGM1, settings.bgms.Count < 3 ? null : settings.bgms[0]);
+                    SetButtonValueString(buttons.BGM2, settings.bgms.Count < 3 ? null : settings.bgms[1]);
+                    SetButtonValueString(buttons.BGM3, settings.bgms.Count < 3 ? null : settings.bgms[2]);
+                }
+                else
+                {
+                    SetButtonValueString(buttons.BGM, settings.bgms.Count == 0 ? null : settings.bgms[0]);
+                }
                 SetButtonIndex(buttons.Player1, settings.MyType == 0 ? 0 : 1);
                 //SetButtonIndex(buttons.Player2, settings.OpponentType == 1 ? 0 : 1);
                 //SetButtonIndex(buttons.Player3, settings.MyPartnerType == 0 ? 0 : 1);
@@ -1417,7 +1467,44 @@ namespace YgomGame.Room
                 buttons.Cpu = AddButtonString(infosList, "Cpu", ClientSettings.CustomTextDuelStarterCpu, cpuParamStrings.ToArray());
                 buttons.CpuFlag = AddButtonString(infosList, "CpuFlag", ClientSettings.CustomTextDuelStarterCpuFlag, cpuFlagStrings.ToArray());
                 buttons.Limit = AddButtonString(infosList, "Limit", ClientSettings.CustomTextDuelStarterLimit, limitedTypeStrings.ToArray());
-                buttons.BGM = AddButtonString(infosList, "BGM", ClientSettings.CustomTextDuelStarterBGM, bgmStrings.ToArray());
+                if (ClientSettings.DuelStarterShowAllBgms)
+                {
+                    if (allBgms.Count == 0)
+                    {
+                        allBgms.Add(ClientSettings.CustomTextDefault);
+                        allBgms.Add(ClientSettings.CustomTextRandom);
+                        allBgms.Add(ClientSettings.CustomTextDuelStarterP1DuelField);
+                        allBgms.Add(ClientSettings.CustomTextDuelStarterP2DuelField);
+                        try
+                        {
+                            foreach (string line in File.ReadAllLines(Path.Combine(Program.DataDir, "Bgm.json")))
+                            {
+                                if (line.StartsWith("//BGM_"))
+                                {
+                                    string[] splitted = line.TrimStart('/').Trim().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    foreach (string bgm in splitted)
+                                    {
+                                        if (bgm.StartsWith("BGM_"))
+                                        {
+                                            allBgms.Add(bgm);
+                                            allBgmsRawList.Add(bgm);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                        }
+                    }
+                    buttons.BGM1 = AddButtonString(infosList, "BGM1", ClientSettings.CustomTextDuelStarterBGM1, allBgms.ToArray());
+                    buttons.BGM2 = AddButtonString(infosList, "BGM2", ClientSettings.CustomTextDuelStarterBGM2, allBgms.ToArray());
+                    buttons.BGM3 = AddButtonString(infosList, "BGM3", ClientSettings.CustomTextDuelStarterBGM3, allBgms.ToArray());
+                }
+                else
+                {
+                    buttons.BGM = AddButtonString(infosList, "BGM", ClientSettings.CustomTextDuelStarterBGM, bgmStrings.ToArray());
+                }
                 buttons.Player1 = AddButtonString(infosList, "Player1", ClientSettings.CustomTextDuelStarterP1, new string[] { ClientSettings.CustomTextDuelStarterPlayer, ClientSettings.CustomTextDuelStarterCPU });
                 //buttons.Player2 = AddButtonString(infosList, "Player2", ClientSettings.CustomTextDuelStarterP2, new string[] { ClientSettings.CustomTextDuelStarterPlayer, ClientSettings.CustomTextDuelStarterCPU });
                 //buttons.Player3 = AddButtonString(infosList, "Player3", ClientSettings.CustomTextDuelStarterP3, new string[] { ClientSettings.CustomTextDuelStarterPlayer, ClientSettings.CustomTextDuelStarterCPU });

@@ -174,6 +174,18 @@ namespace YgoMasterClient
         /// </summary>
         public static string CustomTextDuelStarterBGM;
         /// <summary>
+        /// BGM1
+        /// </summary>
+        public static string CustomTextDuelStarterBGM1;
+        /// <summary>
+        /// BGM2
+        /// </summary>
+        public static string CustomTextDuelStarterBGM2;
+        /// <summary>
+        /// BGM3
+        /// </summary>
+        public static string CustomTextDuelStarterBGM3;
+        /// <summary>
         /// P1
         /// </summary>
         public static string CustomTextDuelStarterP1;
@@ -573,6 +585,9 @@ namespace YgoMasterClient
             CustomTextDuelStarterCpuFlag = Utils.GetValue<string>(data, "CustomTextDuelStarterCpuFlag");
             CustomTextDuelStarterLimit = Utils.GetValue<string>(data, "CustomTextDuelStarterLimit");
             CustomTextDuelStarterBGM = Utils.GetValue<string>(data, "CustomTextDuelStarterBGM");
+            CustomTextDuelStarterBGM1 = Utils.GetValue<string>(data, "CustomTextDuelStarterBGM1");
+            CustomTextDuelStarterBGM2 = Utils.GetValue<string>(data, "CustomTextDuelStarterBGM2");
+            CustomTextDuelStarterBGM3 = Utils.GetValue<string>(data, "CustomTextDuelStarterBGM3");
             CustomTextDuelStarterP1 = Utils.GetValue<string>(data, "CustomTextDuelStarterP1");
             CustomTextDuelStarterPlayer = Utils.GetValue<string>(data, "CustomTextDuelStarterPlayer");
             CustomTextDuelStarterCPU = Utils.GetValue<string>(data, "CustomTextDuelStarterCPU");

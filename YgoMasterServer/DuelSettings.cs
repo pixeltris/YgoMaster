@@ -227,6 +227,18 @@ namespace YgoMaster
             }
         }
 
+        public void SetBgm(DuelBgmMode bgmMode, int index)
+        {
+            int myMatId = MyID == 0 ? mat[0] : mat[1];
+            int rivalMatId = MyID == 0 ? mat[1] : mat[0];
+            List<string> targetBgms;
+            if (MatIdToBgmId.TryGetValue(bgmMode == DuelBgmMode.Myself ? myMatId : rivalMatId, out targetBgms) &&
+                targetBgms.Count == 3 && bgms.Count > index && targetBgms.Count > index)
+            {
+                bgms[index] = targetBgms[index];
+            }
+        }
+
         public static int GetRandomBgmValue()
         {
             return Utils.Rand.Next(1, (MaxBgmId + 1));

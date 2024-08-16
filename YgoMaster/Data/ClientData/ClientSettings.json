@@ -22,6 +22,7 @@
     "DeckEditorDisableSorting": false,// NOTE: Only use for testing specific card draws. This isn't implemented properly and breaks normal deck editor functionality
     "DuelStarterShowFirstPlayer": true,
     "DuelStarterLiveChapterId": 10002,
+    "DuelStarterShowAllBgms": false,
     "DuelClientShowRemainingCardsInDeck": false,
     "DuelClientMillenniumEye": false,
     "DuelClientDisableCameraShake": false,

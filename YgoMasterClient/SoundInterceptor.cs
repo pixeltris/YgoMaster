@@ -19,13 +19,13 @@ namespace YgoMasterClient
 
         static void PlayBGM(int idx, float delay)
         {
-            // Only play BGM 1
+            // Only play BGM 0
             bool singleBgm = YgomSystem.Utility.ClientWork.GetByJsonPath<csbool>("Duel.SingleBgm");
 
-            // Play BGM 1/2 but not BGM 3
+            // Play BGM 0/1 but not BGM 2
             bool doubleBgm = YgomSystem.Utility.ClientWork.GetByJsonPath<csbool>("Duel.DoubleBgm");
 
-            // Only play BGM 1/3 but not BGM 2
+            // Play BGM 0/2 but not BGM 1
             bool noKeycardBGM = YgomSystem.Utility.ClientWork.GetByJsonPath<csbool>("Duel.NoKeycardBgm");
             
             if (singleBgm && idx > 0)
