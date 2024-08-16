@@ -68,6 +68,7 @@ namespace YgoMasterClient
         static IL2Method methodGetResource;
         static IL2Method methodGetAsset;
         static IL2Method methodUnload;
+        static IL2Method methodCallErrorHandler;
         static IL2Field fieldResourceDictionary;
         static IL2Field fieldResourceManagerInstance;
 
@@ -96,6 +97,7 @@ namespace YgoMasterClient
         static IL2Method methodGetRefCount;
         static IL2Method methodSetRefCount;
         static IL2Method methodSetResType;
+        static IL2Method methodGetDone;
         static IL2Method methodSetDone;
         static IL2Method methodSetSystemType;
         static IL2Method methodSetQueueId;
@@ -198,6 +200,40 @@ namespace YgoMasterClient
         //class ScriptingBackendNativeStringPtrOpaque * __cdecl AudioClip_CUSTOM_GetName(class ScriptingBackendNativeObjectPtrOpaque *)
         //void * __cdecl DownloadHandlerAudioClip_CUSTOM_Create(class ScriptingBackendNativeObjectPtrOpaque *,class ScriptingBackendNativeStringPtrOpaque *,enum FMOD_SOUND_TYPE)
 
+        // UnityEngine.Networking.DownloadHandlerTexture
+        delegate IntPtr Del_DownloadHandlerTexture_CUSTOM_Create(IntPtr obj, csbool readable);
+        static Del_DownloadHandlerTexture_CUSTOM_Create DownloadHandlerTexture_CUSTOM_Create;
+        delegate IntPtr Del_DownloadHandlerTexture_CUSTOM_InternalGetTextureNative(IntPtr thisPtr);
+        static Del_DownloadHandlerTexture_CUSTOM_InternalGetTextureNative DownloadHandlerTexture_CUSTOM_InternalGetTextureNative;
+
+        // UnityEngine.Networking.UnityWebRequest
+        static IL2Class webRequestClass;
+        static IL2Method webRequestSend;
+        static IL2Method webRequestCtor;
+        static IL2Method webRequestGetResult;
+        static IL2Method webRequestDispose;
+        static IL2Method webRequestSetAutoDisposeDownloadHandler;
+        // UnityEngine.Networking.DownloadHandler
+        static IL2Class downloadHandlerClass;
+        static IL2Method downloadHandlerCtor;
+
+        static List<AsyncLoadTextureRequest> asyncLoadTextureRequests = new List<AsyncLoadTextureRequest>();
+        class AsyncLoadTextureRequest
+        {
+            public DateTime RequestTime;
+            public IntPtr WebRequest;
+            public IntPtr DownloadHandler;
+            public Action<IntPtr> Callback;
+        }
+
+        static List<AsyncLoadRequest> assetLoadRequests = new List<AsyncLoadRequest>();
+        class AsyncLoadRequest
+        {
+            public DateTime RequestTime;
+            public IntPtr ResouecePtr;
+            public Action Callback;
+        }
+
         [StructLayout(LayoutKind.Sequential)]
         public struct Vector2
         {
@@ -299,6 +335,7 @@ namespace YgoMasterClient
             methodGetResource = resourceManagerClassInfo.GetMethod("getResource", x => x.GetParameters().Length == 2 && x.GetParameters()[0].Name == "path");
             methodGetAsset = resourceManagerClassInfo.GetMethod("GetAsset");
             methodUnload = resourceManagerClassInfo.GetMethod("unload", x => x.GetParameters()[0].Name == "path");
+            methodCallErrorHandler = resourceManagerClassInfo.GetMethod("CallErrorHandler");
             fieldResourceDictionary = resourceManagerClassInfo.GetField("resourceDictionary");
             fieldResourceManagerInstance = resourceManagerClassInfo.GetField("s_instance");
             hookGetResource = new Hook<Del_GetResource>(GetResource, methodGetResource);
@@ -318,6 +355,7 @@ namespace YgoMasterClient
             methodGetRefCount = resourceClassInfo.GetProperty("RefCount").GetGetMethod();
             methodSetRefCount = resourceClassInfo.GetProperty("RefCount").GetSetMethod();
             methodSetResType = resourceClassInfo.GetProperty("ResType").GetSetMethod();
+            methodGetDone = resourceClassInfo.GetProperty("Done").GetGetMethod();
             methodSetDone = resourceClassInfo.GetProperty("Done").GetSetMethod();
             methodSetSystemType = resourceClassInfo.GetProperty("SystemType").GetSetMethod();
             methodSetQueueId = resourceClassInfo.GetProperty("queueId").GetSetMethod();
@@ -417,6 +455,19 @@ namespace YgoMasterClient
             AudioClip_CUSTOM_Construct_Internal = (Del_AudioClip_CUSTOM_Construct_Internal)Marshal.GetDelegateForFunctionPointer((IntPtr)(unityPlayer + ClientSettings.UnityPlayerRVA_AudioClip_CUSTOM_Construct_Internal), typeof(Del_AudioClip_CUSTOM_Construct_Internal));
             AudioClip_CUSTOM_CreateUserSound = (Del_AudioClip_CUSTOM_CreateUserSound)Marshal.GetDelegateForFunctionPointer((IntPtr)(unityPlayer + ClientSettings.UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound), typeof(Del_AudioClip_CUSTOM_CreateUserSound));
             AudioClip_CUSTOM_SetData = (Del_AudioClip_CUSTOM_SetData)Marshal.GetDelegateForFunctionPointer((IntPtr)(unityPlayer + ClientSettings.UnityPlayerRVA_AudioClip_CUSTOM_SetData), typeof(Del_AudioClip_CUSTOM_SetData));
+
+            IL2Assembly webRequestAssembly = Assembler.GetAssembly("UnityEngine.UnityWebRequestModule");
+            webRequestClass = webRequestAssembly.GetClass("UnityWebRequest");
+            webRequestCtor = webRequestClass.GetMethod(".ctor", x => x.GetParameters().Length == 4);
+            webRequestSend = webRequestClass.GetMethod("SendWebRequest");
+            webRequestGetResult = webRequestClass.GetProperty("result").GetGetMethod();
+            webRequestDispose = webRequestClass.GetMethod("Dispose");
+            webRequestSetAutoDisposeDownloadHandler = webRequestClass.GetProperty("disposeDownloadHandlerOnDispose").GetSetMethod();
+            downloadHandlerClass = webRequestAssembly.GetClass("DownloadHandler");
+            downloadHandlerCtor = downloadHandlerClass.GetMethod(".ctor");
+
+            DownloadHandlerTexture_CUSTOM_Create = (Del_DownloadHandlerTexture_CUSTOM_Create)Marshal.GetDelegateForFunctionPointer((IntPtr)(unityPlayer + ClientSettings.UnityPlayerRVA_DownloadHandlerTexture_CUSTOM_Create), typeof(Del_DownloadHandlerTexture_CUSTOM_Create));
+            DownloadHandlerTexture_CUSTOM_InternalGetTextureNative = (Del_DownloadHandlerTexture_CUSTOM_InternalGetTextureNative)Marshal.GetDelegateForFunctionPointer((IntPtr)(unityPlayer + ClientSettings.UnityPlayerRVA_DownloadHandlerTexture_CUSTOM_InternalGetTextureNative), typeof(Del_DownloadHandlerTexture_CUSTOM_InternalGetTextureNative));
 
             methodAddQuitting = coreModuleAssembly.GetClass("Application", "UnityEngine").GetMethod("add_quitting");
 
@@ -656,22 +707,19 @@ namespace YgoMasterClient
                     methodSetRefCount.Invoke(resourcePtr, new IntPtr[] { new IntPtr(&refCount) });
                     if (completeHandler != IntPtr.Zero)
                     {
-                        lock (customAssetLoadRequests)
+                        List<CustomAssetLoadRequest> loadRequests;
+                        if (customAssetLoadRequests.TryGetValue(path, out loadRequests))
                         {
-                            List<CustomAssetLoadRequest> loadRequests;
-                            if (customAssetLoadRequests.TryGetValue(path, out loadRequests))
+                            if (loadRequests == null)
                             {
-                                if (loadRequests == null)
-                                {
-                                    customAssetLoadRequests[path] = loadRequests = new List<CustomAssetLoadRequest>();
-                                }
-                                loadRequests.Add(new CustomAssetLoadRequest()
-                                {
-                                    CompleteHandler = completeHandler,
-                                    GcHandle = Import.Handler.il2cpp_gchandle_new(completeHandler, true)
-                                });
-                                return true;
+                                customAssetLoadRequests[path] = loadRequests = new List<CustomAssetLoadRequest>();
                             }
+                            loadRequests.Add(new CustomAssetLoadRequest()
+                            {
+                                CompleteHandler = completeHandler,
+                                GcHandle = Import.Handler.il2cpp_gchandle_new(completeHandler, true)
+                            });
+                            return true;
                         }
                         methodInvoke.Invoke(completeHandler, new IntPtr[] { pathPtr });
                     }
@@ -718,13 +766,13 @@ namespace YgoMasterClient
                             LoadCustomAudio(thisPtr, pathPtr, systemTypeInstance, completeHandler, disableErrorNotify, path, loadPath, customAssetPath, resourcePtr, false);//loadImmediate);
                             break;
                         case AssetType.Image:
-                            LoadCustomImage(thisPtr, pathPtr, systemTypeInstance, completeHandler, disableErrorNotify, path, loadPath, customAssetPath, resourcePtr);
+                            LoadCustomImage(thisPtr, pathPtr, systemTypeInstance, completeHandler, disableErrorNotify, path, loadPath, customAssetPath, resourcePtr, loadImmediate);
                             break;
                         case AssetType.Protector:
-                            LoadCustomMaterial(thisPtr, pathPtr, systemTypeInstance, completeHandler, disableErrorNotify, path, loadPath, customAssetPath, resourcePtr, assetType);
+                            LoadCustomMaterial(thisPtr, pathPtr, systemTypeInstance, completeHandler, disableErrorNotify, path, loadPath, customAssetPath, resourcePtr, assetType, loadImmediate);
                             break;
                         case AssetType.IconFrame:
-                            LoadCustomMaterial(thisPtr, pathPtr, systemTypeInstance, completeHandler, disableErrorNotify, path, loadPath, customAssetPath, resourcePtr, assetType);
+                            LoadCustomMaterial(thisPtr, pathPtr, systemTypeInstance, completeHandler, disableErrorNotify, path, loadPath, customAssetPath, resourcePtr, assetType, loadImmediate);
                             break;
                         case AssetType.Wallpaper:
                             LoadCustomWallpaper(thisPtr, pathPtr, systemTypeInstance, completeHandler, disableErrorNotify, path, loadPath, customAssetPath, resourcePtr);
@@ -891,10 +939,7 @@ namespace YgoMasterClient
                 audioLoader.Close();
             };
 
-            lock (customAssetLoadRequests)
-            {
-                customAssetLoadRequests[path] = null;
-            }
+            customAssetLoadRequests[path] = null;
             if (loadImmediate)
             {
                 work(null);
@@ -905,12 +950,11 @@ namespace YgoMasterClient
             }
         }
 
-        static void LoadCustomImage(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, string path, string loadPath, string customAssetPath, IntPtr resourcePtr)
+        static void LoadCustomImage(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, string path, string loadPath, string customAssetPath, IntPtr resourcePtr, bool loadImmediate)
         {
-            IL2Array<IntPtr> assetsArray = new IL2Array<IntPtr>(2, objectClassInfo);
-            if (assetsArray.ptr == IntPtr.Zero)
+            if (ClientSettings.DisableAsyncImageLoad)
             {
-                return;
+                loadImmediate = true;
             }
 
             Rect rect = default(Rect);
@@ -931,21 +975,170 @@ namespace YgoMasterClient
                 mipChain = false;
             }
 
-            string assetName = Path.GetFileNameWithoutExtension(customAssetPath);
-            IntPtr newTextureAsset = TextureFromPNG(customAssetPath, assetName, mipChain);
-            assetsArray[0] = newTextureAsset;
-
-            IntPtr newSpriteAsset = SpriteFromTexture(newTextureAsset, assetName, rect);
-            if (newSpriteAsset != IntPtr.Zero)
+            if (loadImmediate)
             {
-                assetsArray[1] = newSpriteAsset;
-            }
+                IL2Array<IntPtr> assetsArray = new IL2Array<IntPtr>(2, objectClassInfo);
+                if (assetsArray.ptr == IntPtr.Zero)
+                {
+                    return;
+                }
 
-            FinishLoad(assetsArray, resourcePtr, path, completeHandler);
+                string assetName = Path.GetFileNameWithoutExtension(customAssetPath);
+                IntPtr newTextureAsset = TextureFromPNG(customAssetPath, assetName, mipChain);
+                assetsArray[0] = newTextureAsset;
+
+                IntPtr newSpriteAsset = SpriteFromTexture(newTextureAsset, assetName, rect);
+                if (newSpriteAsset != IntPtr.Zero)
+                {
+                    assetsArray[1] = newSpriteAsset;
+                }
+
+                FinishLoad(assetsArray, resourcePtr, path, completeHandler);
+            }
+            else
+            {
+                customAssetLoadRequests[path] = null;
+
+                uint resourcePtrHandle = Import.Handler.il2cpp_gchandle_new(resourcePtr, true);
+                uint completeHandlerHandle = Import.Handler.il2cpp_gchandle_new(completeHandler, true);
+
+                string assetName = Path.GetFileNameWithoutExtension(customAssetPath);
+                AsyncTextureFromPNG(customAssetPath, assetName, (IntPtr texture) =>
+                {
+                    if (texture == IntPtr.Zero)
+                    {
+                        //Console.WriteLine("Not found");
+                        bool disableNotify = disableErrorNotify;
+                        methodCallErrorHandler.Invoke(thisPtr, new IntPtr[] { resourcePtr, new IntPtr(&disableNotify) });
+                        customAssetLoadRequests.Remove(path);
+                    }
+                    else
+                    {
+                        //Console.WriteLine("Found. Refs: " + methodGetRefCount.Invoke(resourcePtr).GetValueRef<int>());
+                        IL2Array<IntPtr> assetsArray = new IL2Array<IntPtr>(2, objectClassInfo);
+                        if (assetsArray.ptr == IntPtr.Zero)
+                        {
+                            customAssetLoadRequests.Remove(path);
+                            return;
+                        }
+
+                        assetsArray[0] = texture;
+
+                        IntPtr newSpriteAsset = SpriteFromTexture(texture, assetName, rect);
+                        if (newSpriteAsset != IntPtr.Zero)
+                        {
+                            assetsArray[1] = newSpriteAsset;
+                        }
+
+                        FinishLoad(assetsArray, resourcePtr, path, completeHandler);
+                    }
+
+                    Import.Handler.il2cpp_gchandle_free(completeHandlerHandle);
+                    Import.Handler.il2cpp_gchandle_free(resourcePtrHandle);
+                });
+            }
         }
 
-        static void LoadCustomMaterial(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, string path, string loadPath, string customAssetPath, IntPtr resourcePtr, AssetType assetType)
+        static void AsyncTextureFromPNG(string filePath, string assetName, Action<IntPtr> callback)
         {
+            AsyncLoadTextureRequest request = new AsyncLoadTextureRequest();
+            request.Callback = callback;
+            request.RequestTime = DateTime.UtcNow;
+
+            // Should be a DownloadHandlerTexture but the game doesn't have it
+            request.DownloadHandler = Import.Object.il2cpp_object_new(downloadHandlerClass.ptr);
+            if (request.DownloadHandler == IntPtr.Zero)
+            {
+                Console.WriteLine("TODO: Handle failing of DownloadHandler ctor");
+                callback(IntPtr.Zero);
+                return;
+            }
+            downloadHandlerCtor.Invoke(request.DownloadHandler);
+
+            // +16 is accessed in DownloadHandlerTexture_CUSTOM_InternalGetTextureNative
+            // TODO: The false param will need to be updated in a future unity version as they add additional params for mipmap options
+            *(IntPtr*)(request.DownloadHandler + 16) = DownloadHandlerTexture_CUSTOM_Create(request.DownloadHandler, false);
+
+            request.WebRequest = Import.Object.il2cpp_object_new(webRequestClass.ptr);
+            if (request.WebRequest == IntPtr.Zero)
+            {
+                Console.WriteLine("TODO: Handle failing of UnityWebRequest ctor");
+                callback(IntPtr.Zero);
+                return;
+            }
+
+            bool autoDisposeDownloadHandler = true;
+            webRequestSetAutoDisposeDownloadHandler.Invoke(request.WebRequest, new IntPtr[] { new IntPtr(&autoDisposeDownloadHandler) });
+
+            string uri = "file://";
+            try
+            {
+                uri = uri + Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, filePath)).Replace("\\", "/");
+                //Console.WriteLine(filePath);
+            }
+            catch
+            {
+            }
+            webRequestCtor.Invoke(request.WebRequest, new IntPtr[] { new IL2String(uri).ptr, new IL2String("GET").ptr, request.DownloadHandler, IntPtr.Zero });
+
+            Import.Handler.il2cpp_gchandle_new(request.DownloadHandler, true);
+            Import.Handler.il2cpp_gchandle_new(request.WebRequest, true);
+            webRequestSend.Invoke(request.WebRequest);
+
+            asyncLoadTextureRequests.Add(request);
+        }
+
+        public static void Update()
+        {
+            if (asyncLoadTextureRequests.Count > 0)
+            {
+                Console.WriteLine("asyncLoadTextureRequests: " + asyncLoadTextureRequests.Count);
+            }
+            if (assetLoadRequests.Count > 0)
+            {
+                Console.WriteLine("assetLoadRequests: " + assetLoadRequests.Count);
+            }
+
+            for (int i = asyncLoadTextureRequests.Count - 1; i >= 0; i--)
+            {
+                AsyncLoadTextureRequest request = asyncLoadTextureRequests[i];
+                int result = webRequestGetResult.Invoke(request.WebRequest).GetValueRef<int>();
+                // UnityWebRequest.Result.InProgress = 0
+                // UnityWebRequest.Result.Success = 1
+                if (result != 0 || request.RequestTime < DateTime.UtcNow - TimeSpan.FromMinutes(1))
+                {
+                    IntPtr texture = result != 1 ? IntPtr.Zero : DownloadHandlerTexture_CUSTOM_InternalGetTextureNative(request.DownloadHandler);
+                    request.Callback(texture);
+                    webRequestDispose.Invoke(request.WebRequest);
+                    asyncLoadTextureRequests.RemoveAt(i);
+                    break;// Limit how many you do per frame
+                }
+            }
+
+            for (int i = assetLoadRequests.Count - 1; i >= 0; i--)
+            {
+                AsyncLoadRequest request = assetLoadRequests[i];
+                if (methodGetDone.Invoke(request.ResouecePtr).GetValueRef<csbool>() ||
+                    request.RequestTime < DateTime.UtcNow - TimeSpan.FromMinutes(1))
+                {
+                    request.Callback();
+                    assetLoadRequests.RemoveAt(i);
+                }
+            }
+        }
+
+        static void LoadCustomMaterial(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, string path, string loadPath, string customAssetPath, IntPtr resourcePtr, AssetType assetType, bool loadImmediate)
+        {
+            if (ClientSettings.DisableAsyncImageLoad)
+            {
+                loadImmediate = true;
+            }
+            if (!loadImmediate)
+            {
+                LoadCustomMaterialAsync(thisPtr, pathPtr, systemTypeInstance, completeHandler, disableErrorNotify, path, loadPath, customAssetPath, resourcePtr, assetType);
+                return;
+            }
+
             string baseMat = null;
             const string baseMatKey = "BaseMat";
             string dir = Path.GetDirectoryName(customAssetPath);
@@ -981,6 +1174,7 @@ namespace YgoMasterClient
                 }
                 existingAssetPath = new IL2String("Images/ProfileFrame/ProfileFrameMat" + baseMat).ptr;
             }
+
             hookLoadImmediate.Original(thisPtr, existingAssetPath, IntPtr.Zero, IntPtr.Zero, false);
             IntPtr workPathPtr = IntPtr.Zero;
             IntPtr existingAssetResourcePtr = hookGetResource.Original(thisPtr, existingAssetPath, (IntPtr)(&workPathPtr));
@@ -1072,6 +1266,192 @@ namespace YgoMasterClient
             }
 
             FinishLoad(assetsArray, resourcePtr, path, completeHandler);
+        }
+
+        static void LoadCustomMaterialAsync(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, string path, string loadPath, string customAssetPath, IntPtr resourcePtr, AssetType assetType)
+        {
+            // TODO: Correct cleanup
+            uint resourcePtrHandle = Import.Handler.il2cpp_gchandle_new(resourcePtr, true);
+            uint completeHandlerHandle = Import.Handler.il2cpp_gchandle_new(completeHandler, true);
+
+            string baseMat = null;
+            const string baseMatKey = "BaseMat";
+            string dir = Path.GetDirectoryName(customAssetPath);
+            string settingsFile = Path.Combine(dir, Path.GetFileNameWithoutExtension(customAssetPath) + ".json");
+            Dictionary<string, object> settings = null;
+            if (File.Exists(settingsFile))
+            {
+                settings = MiniJSON.Json.DeserializeStripped(File.ReadAllText(settingsFile)) as Dictionary<string, object>;
+                if (settings != null)
+                {
+                    baseMat = Utils.GetValue<int>(settings, baseMatKey).ToString().PadLeft(4, '0');
+                }
+            }
+
+            bool isDuluxe = false;
+            string extraImg = Path.Combine(dir, Path.GetFileNameWithoutExtension(customAssetPath) + "_1.png");
+
+            IntPtr existingAssetPath;
+            if (assetType == AssetType.Protector)
+            {
+                isDuluxe = File.Exists(extraImg);
+                if (string.IsNullOrEmpty(baseMat))
+                {
+                    baseMat = (isDuluxe ? "2001" : "0005");
+                }
+                existingAssetPath = new IL2String("Protector/tcg/" + baseMat + "/PMat").ptr;
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(baseMat))
+                {
+                    baseMat = "1030001";
+                }
+                existingAssetPath = new IL2String("Images/ProfileFrame/ProfileFrameMat" + baseMat).ptr;
+            }
+            uint existingAssetPathHandle = Import.Handler.il2cpp_gchandle_new(existingAssetPath, true);
+
+            uint crc = hookLoad.Original(thisPtr, existingAssetPath, IntPtr.Zero, IntPtr.Zero, false);
+            if (!resourceDictionary.ContainsKey((int)crc))
+            {
+                Console.WriteLine("ASYNC_TODO_CLEANUP-1");
+                bool disableNotify = disableErrorNotify;
+                methodCallErrorHandler.Invoke(thisPtr, new IntPtr[] { resourcePtr, new IntPtr(&disableNotify) });
+                return;
+            }
+
+            IntPtr existingAssetResourcePtr = resourceDictionary[(int)crc];
+            Action callback = () =>
+            {
+                IntPtr workPathPtr = IntPtr.Zero;
+                bool force = false;
+                methodUnload.Invoke(thisPtr, new IntPtr[] { existingAssetPath, new IntPtr(&force) });
+                if (existingAssetResourcePtr == IntPtr.Zero)
+                {
+                    Console.WriteLine("ASYNC_TODO_CLEANUP-2");
+                    return;
+                }
+                IL2Object existingAssetsArrayObj = methodGetAssets.Invoke(existingAssetResourcePtr);
+                if (existingAssetsArrayObj == null)
+                {
+                    Console.WriteLine("ASYNC_TODO_CLEANUP-3");
+                    return;
+                }
+                IL2Array<IntPtr> existingAssetsArray = new IL2Array<IntPtr>(existingAssetsArrayObj.ptr);
+                if (existingAssetsArray.Length == 0)
+                {
+                    Console.WriteLine("ASYNC_TODO_CLEANUP-4");
+                    return;
+                }
+                IntPtr existingObj = existingAssetsArray[0];
+                if (existingObj == IntPtr.Zero)
+                {
+                    Console.WriteLine("ASYNC_TODO_CLEANUP-5");
+                    return;
+                }
+                IL2Array<IntPtr> assetsArray = new IL2Array<IntPtr>(1, objectClassInfo);
+                assetsArray[0] = UnityEngine.UnityObject.Instantiate(existingObj);
+                uint assetsGcHandle = Import.Handler.il2cpp_gchandle_new(assetsArray.ptr, true);
+
+                // TODO: Load both textures at the same time (and during the Load call)
+                string assetName = Path.GetFileNameWithoutExtension(customAssetPath);
+                AsyncTextureFromPNG(customAssetPath, assetName, (IntPtr newTextureAsset) =>
+                {
+                    if (newTextureAsset == IntPtr.Zero)
+                    {
+                        Console.WriteLine("ASYNC_TODO_CLEANUP-6");
+                        bool disableNotify = disableErrorNotify;
+                        methodCallErrorHandler.Invoke(thisPtr, new IntPtr[] { resourcePtr, new IntPtr(&disableNotify) });
+                        return;
+                    }
+
+                    methodSetTexture.Invoke(assetsArray[0], new IntPtr[] { new IL2String("_MainTex").ptr, newTextureAsset });
+
+                    string assetName2 = Path.GetFileNameWithoutExtension(extraImg);
+                    Action<IntPtr> onTextureLoadFinished = (IntPtr newTextureAsset2) =>
+                    {
+                        if (newTextureAsset2 != IntPtr.Zero)
+                        {
+                            methodSetTexture.Invoke(assetsArray[0], new IntPtr[] { new IL2String("_MainTex2").ptr, newTextureAsset2 });
+                        }
+
+                        if (settings != null)
+                        {
+                            foreach (KeyValuePair<string, object> entry in settings)
+                            {
+                                if (entry.Key == baseMatKey || entry.Value == null)
+                                {
+                                    continue;
+                                }
+                                TypeCode typeCode = Type.GetTypeCode(entry.Value.GetType());
+                                switch (typeCode)
+                                {
+                                    case TypeCode.Double:
+                                        {
+                                            float val = Convert.ToSingle(entry.Value);
+                                            methodSetFloat.Invoke(assetsArray[0], new IntPtr[] { new IL2String(entry.Key).ptr, new IntPtr(&val) });
+                                        }
+                                        break;
+                                    case TypeCode.Int64:
+                                        {
+                                            int val = Convert.ToInt32(entry.Value);
+                                            methodSetInt.Invoke(assetsArray[0], new IntPtr[] { new IL2String(entry.Key).ptr, new IntPtr(&val) });
+                                        }
+                                        break;
+                                    case TypeCode.String:
+                                        {
+                                            string[] splitted = (entry.Value as string).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                            if (splitted.Length == 4)
+                                            {
+                                                float* color = stackalloc float[4];
+                                                if (splitted.Length > 0) float.TryParse(splitted[0], out color[0]);
+                                                if (splitted.Length > 1) float.TryParse(splitted[1], out color[1]);
+                                                if (splitted.Length > 2) float.TryParse(splitted[2], out color[2]);
+                                                if (splitted.Length > 3) float.TryParse(splitted[3], out color[3]);
+                                                methodSetColor.Invoke(assetsArray[0], new IntPtr[] { new IL2String(entry.Key).ptr, new IntPtr(color) });
+                                            }
+                                            else if (splitted.Length > 0)
+                                            {
+                                                string imageFile = Path.Combine(dir, splitted[0] + ".png");
+                                                if (File.Exists(imageFile))
+                                                {
+                                                    IntPtr tex = TextureFromPNG(imageFile, splitted[0]);
+                                                    methodSetTexture.Invoke(assetsArray[0], new IntPtr[] { new IL2String(entry.Key).ptr, tex });
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    default:
+                                        Console.WriteLine("Unsupported type " + typeCode + " in material value setter");
+                                        break;
+                                }
+                            }
+                        }
+
+                        Import.Handler.il2cpp_gchandle_free(existingAssetPathHandle);
+                        Import.Handler.il2cpp_gchandle_free(assetsGcHandle);
+                        Import.Handler.il2cpp_gchandle_free(completeHandlerHandle);
+                        Import.Handler.il2cpp_gchandle_free(resourcePtrHandle);
+
+                        FinishLoad(assetsArray, resourcePtr, path, completeHandler);
+                    };
+                    if (isDuluxe)
+                    {
+                        AsyncTextureFromPNG(extraImg, assetName2, onTextureLoadFinished);
+                    }
+                    else
+                    {
+                        onTextureLoadFinished(IntPtr.Zero);
+                    }
+                });
+            };
+
+            assetLoadRequests.Add(new AsyncLoadRequest()
+            {
+                ResouecePtr = existingAssetResourcePtr,
+                RequestTime = DateTime.UtcNow,
+                Callback = callback
+            });
         }
 
         static void LoadCustomWallpaper(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, string path, string loadPath, string customAssetPath, IntPtr resourcePtr)
@@ -1391,19 +1771,16 @@ namespace YgoMasterClient
                 methodInvoke.Invoke(completeHandler, new IntPtr[] { pathPtr });
             }
 
-            lock (customAssetLoadRequests)
+            List<CustomAssetLoadRequest> requests;
+            if (customAssetLoadRequests.TryGetValue(path, out requests) && requests != null)
             {
-                List<CustomAssetLoadRequest> requests;
-                if (customAssetLoadRequests.TryGetValue(path, out requests) && requests != null)
+                foreach (CustomAssetLoadRequest request in requests)
                 {
-                    foreach (CustomAssetLoadRequest request in requests)
-                    {
-                        methodInvoke.Invoke(request.CompleteHandler, new IntPtr[] { pathPtr });
-                        Import.Handler.il2cpp_gchandle_free(request.GcHandle);
-                    }
+                    methodInvoke.Invoke(request.CompleteHandler, new IntPtr[] { pathPtr });
+                    Import.Handler.il2cpp_gchandle_free(request.GcHandle);
                 }
-                customAssetLoadRequests.Remove(path);
             }
+            customAssetLoadRequests.Remove(path);
         }
 
         static uint Load(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInstance, IntPtr completeHandler, csbool disableErrorNotify)

@@ -30,6 +30,8 @@ namespace YgoMasterClient
             { "?AudioClip_CUSTOM_Construct_Internal@@YAPEAVScriptingBackendNativeObjectPtrOpaque@@XZ", new SymbolInfo("UnityPlayerRVA_AudioClip_CUSTOM_Construct_Internal") },
             { "?AudioClip_CUSTOM_CreateUserSound@@YAXPEAVScriptingBackendNativeObjectPtrOpaque@@PEAVScriptingBackendNativeStringPtrOpaque@@HHHE@Z", new SymbolInfo("UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound") },
             { "?AudioClip_CUSTOM_SetData@@YAEPEAVScriptingBackendNativeObjectPtrOpaque@@PEAVScriptingBackendNativeArrayPtrOpaque@@HH@Z", new SymbolInfo("UnityPlayerRVA_AudioClip_CUSTOM_SetData") },
+            { "?DownloadHandlerTexture_CUSTOM_Create@@YAPEAXPEAVScriptingBackendNativeObjectPtrOpaque@@E@Z", new SymbolInfo("UnityPlayerRVA_DownloadHandlerTexture_CUSTOM_Create") },
+            { "?DownloadHandlerTexture_CUSTOM_InternalGetTextureNative@@YAPEAVScriptingBackendNativeObjectPtrOpaque@@PEAV1@@Z", new SymbolInfo("UnityPlayerRVA_DownloadHandlerTexture_CUSTOM_InternalGetTextureNative") },
         };
         class SymbolInfo
         {

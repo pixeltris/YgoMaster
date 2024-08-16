@@ -8,7 +8,6 @@ using System.IO;
 using System.Diagnostics;
 using System.Globalization;
 using System.Security.Cryptography;
-using YgoMaster.Net.Message;
 
 namespace YgoMaster
 {

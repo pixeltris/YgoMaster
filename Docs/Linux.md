@@ -1,7 +1,7 @@
 # YgoMaster for Linux
 
 - Install wine
-- Run `wine regedit` and do this to fix input on window focus change (create keys which don't exist) https://askubuntu.com/questions/299286/how-to-recover-focus-after-losing-it-while-using-wine/1202472#1202472
+- Run `wine regedit` and do this to fix input on window focus change https://askubuntu.com/questions/299286/how-to-recover-focus-after-losing-it-while-using-wine/1202472#1202472
 - Download the latest YgoMaster release from https://github.com/pixeltris/YgoMaster/releases
 - Copy the `YgoMaster` folder (the folder, not the contents of the folder) into the game folder
 - [Download this zip](https://github.com/user-attachments/files/16606063/YgoMaster-mono.zip) and extract / merge it with the YgoMaster folder from the previous step
@@ -50,11 +50,9 @@ Create `mono_log.txt` in the Master Duel folder and inside the `YgoMaster` folde
 
 The files inside `mono` were copied from the latest mono stable release https://www.mono-project.com/download/stable/#download-win
 
-- `%ProgramFiles%/mono/lib/mono/4.5/` folder was stripped down and copied to the output `mono/lib`. If you need more dlls that stable release where you would copy them from. `mscorlib.dll` was copied from that same `4.5` folder  into the ouput `mono/lib/mono/4.5/mscorlib.dll` as that is where mono wants it
+- `%ProgramFiles%/mono/lib/mono/4.5/` folder was stripped down and copied to the output `mono/lib`. Additionally `mscorlib.dll` was copied from the `4.5` folder into `mono/lib/mono/4.5/mscorlib.dll` as that is where mono wants it
 - `%ProgramFiles%/mono/etc/` was copied as-is to the output `mono/etc`
 - `%ProgramFiles%/mono/bin/*.dll` was copied as-is to the output `mono/bin`
-
-You will know if you need more dlls by looking at the `mono_log.txt` and searching for `Assembly:` which are assembly loading errors.
 
 ## Bugs
 

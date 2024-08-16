@@ -680,7 +680,7 @@ namespace YgoMasterClient
                     }
                     break;
                 case "unityplayerupdate":// Updates UnityPlayer.dll function addresses based on the provided PDB
-                    UnityPlayerPdb.Update();
+                    UnityPlayerPdb.Update();// NOTE: This can crash, if it does just copy this code into Main and run exe from MD folder
                     break;
                 case "bgreload":
                     CustomBackground.ReloadBg();

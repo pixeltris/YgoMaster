@@ -69,6 +69,9 @@ namespace YgoMasterClient
         public static uint UnityPlayerRVA_AudioClip_CUSTOM_Construct_Internal;
         public static uint UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound;
         public static uint UnityPlayerRVA_AudioClip_CUSTOM_SetData;
+        public static uint UnityPlayerRVA_DownloadHandlerTexture_CUSTOM_Create;
+        public static uint UnityPlayerRVA_DownloadHandlerTexture_CUSTOM_InternalGetTextureNative;
+        public static bool DisableAsyncImageLoad;
         public static bool WallpaperDisabled;
         public static bool WallpaperCycleEnabled;
         public static bool WallpaperCycleOnEveryHomeVisit;
@@ -179,6 +182,9 @@ namespace YgoMasterClient
             UnityPlayerRVA_AudioClip_CUSTOM_Construct_Internal = Utils.GetValue<uint>(data, "UnityPlayerRVA_AudioClip_CUSTOM_Construct_Internal");
             UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound = Utils.GetValue<uint>(data, "UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound");
             UnityPlayerRVA_AudioClip_CUSTOM_SetData = Utils.GetValue<uint>(data, "UnityPlayerRVA_AudioClip_CUSTOM_SetData");
+            UnityPlayerRVA_DownloadHandlerTexture_CUSTOM_Create = Utils.GetValue<uint>(data, "UnityPlayerRVA_DownloadHandlerTexture_CUSTOM_Create");
+            UnityPlayerRVA_DownloadHandlerTexture_CUSTOM_InternalGetTextureNative = Utils.GetValue<uint>(data, "UnityPlayerRVA_DownloadHandlerTexture_CUSTOM_InternalGetTextureNative");
+            DisableAsyncImageLoad = Utils.GetValue<bool>(data, "DisableAsyncImageLoad");
             WallpaperDisabled = Utils.GetValue<bool>(data, "WallpaperDisabled");
             WallpaperCycleEnabled = Utils.GetValue<bool>(data, "WallpaperCycleEnabled");
             WallpaperCycleOnEveryHomeVisit = Utils.GetValue<bool>(data, "WallpaperCycleOnEveryHomeVisit");

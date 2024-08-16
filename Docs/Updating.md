@@ -90,3 +90,14 @@ Client updates typically occur every few months (see https://steamdb.info/depot/
 - In the client console run `updatediff` which will create `updatediff.cs` in the game folder.
 - Run a diff against that file and `/Docs/updatediff.cs`. Update relevant code throughout YgoMaster based on the changes and then insert the new `updatediff.cs`.
 - After client updates uncomment `ReflectionValidator.ValidateDump()` in `Program.cs` and check the output. Then re-comment it, uncomment `ReflectionValidator.IsDumping = true;` and run again to update `ReflectionDump.json` (after fixing any broken code from the previous step).
+- Update `MultiplayerPvpClientDoCommandUserOffset` / `MultiplayerPvpClientRunDialogUserOffset` in Settings.json to fix controlling the opponents hand in PvP (TODO: Provide a tool to do this)
+
+## Unity Engine updates
+
+The following needs to be updated in ClientSettings.json if using custom content (sound images). See `UnityPlayerPdb.cs`
+
+- UnityPlayerRVA_AudioClip_CUSTOM_Construct_Internal
+- UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound
+- UnityPlayerRVA_AudioClip_CUSTOM_SetData
+- UnityPlayerRVA_DownloadHandlerTexture_CUSTOM_Create
+- UnityPlayerRVA_DownloadHandlerTexture_CUSTOM_InternalGetTextureNative

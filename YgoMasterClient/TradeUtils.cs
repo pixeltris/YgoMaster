@@ -65,6 +65,7 @@ namespace YgoMasterClient
         static void Update(IntPtr thisPtr)
         {
             hookUpdate.Original(thisPtr);
+            AssetHelper.Update();
             DuelEmoteHelper.Update();
 
             if (hasActionToRun || lastActionCheck < DateTime.UtcNow - TimeSpan.FromSeconds(2))
