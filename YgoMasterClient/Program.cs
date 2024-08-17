@@ -181,6 +181,15 @@ namespace YgoMasterClient
                     ConsoleHelper.ShowConsole();
                 }
 
+                string pluginsDir = Path.Combine(CurrentDir, "Plugins");
+                if (Directory.Exists(pluginsDir))
+                {
+                    foreach (string file in Directory.GetFiles(pluginsDir, "*.dll"))
+                    {
+                        PInvoke.LoadLibrary(file);
+                    }
+                }
+
                 //ReflectionValidator.ValidateDump();
 
                 if (!IsLive)
