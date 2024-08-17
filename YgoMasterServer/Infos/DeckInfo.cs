@@ -363,17 +363,7 @@ namespace YgoMaster
             {
                 return;
             }
-            Name = Utils.GetValue<string>(data, "name");
-            TimeCreated = Utils.GetValue<uint>(data, "ct");
-            TimeEdited = Utils.GetValue<uint>(data, "et");
-            RegulationId = Utils.GetValue<int>(data, "regulation_id");
-            RegulationName = Utils.GetValue<string>(data, "regulation_name");
-            Accessory.FromDictionary(Utils.GetDictionary(data, "accessory"));
-            DisplayCards.FromIndexedDictionary(Utils.GetDictionary(data, "pick_cards"));
-            if (data.ContainsKey("focus"))
-            {
-                DisplayCards.FromIndexedDictionary(Utils.GetDictionary(data, "focus"));
-            }
+            FromDictionaryAccessory(data);
             MainDeckCards.FromDictionary(Utils.GetDictionary(data, longKeys ? "Main" : "m"), longKeys);
             ExtraDeckCards.FromDictionary(Utils.GetDictionary(data, longKeys ? "Extra" : "e"), longKeys);
             SideDeckCards.FromDictionary(Utils.GetDictionary(data, longKeys ? "Side" : "s"), longKeys);
@@ -384,8 +374,6 @@ namespace YgoMaster
             {
                 File = randomDeckPath;
             }
-
-            FixupRegulation();
         }
 
         public Dictionary<string, object> ToDictionaryEx(bool longKeys = false)
@@ -420,6 +408,39 @@ namespace YgoMaster
                 { "e", ExtraDeckCards.ToDictionary() },
                 { "s", SideDeckCards.ToDictionary() },
             };
+            return data;
+        }
+
+        public void FromDictionaryAccessory(Dictionary<string, object> data)
+        {
+            if (data == null)
+            {
+                return;
+            }
+            Name = Utils.GetValue<string>(data, "name");
+            TimeCreated = Utils.GetValue<uint>(data, "ct");
+            TimeEdited = Utils.GetValue<uint>(data, "et");
+            RegulationId = Utils.GetValue<int>(data, "regulation_id");
+            RegulationName = Utils.GetValue<string>(data, "regulation_name");
+            Accessory.FromDictionary(Utils.GetDictionary(data, "accessory"));
+            DisplayCards.FromIndexedDictionary(Utils.GetDictionary(data, "pick_cards"));
+            if (data.ContainsKey("focus"))
+            {
+                DisplayCards.FromIndexedDictionary(Utils.GetDictionary(data, "focus"));
+            }
+            FixupRegulation();
+        }
+
+        public Dictionary<string, object> ToDictionaryAccessory()
+        {
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data["name"] = Name;
+            data["ct"] = TimeCreated;
+            data["et"] = TimeEdited;
+            data["regulation_id"] = RegulationId;
+            data["regulation_name"] = RegulationName;
+            data["accessory"] = Accessory.ToDictionary();
+            data["pick_cards"] = DisplayCards.ToIndexDictionary();
             return data;
         }
 

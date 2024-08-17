@@ -93,13 +93,7 @@ namespace YgoMaster
                         string possibleJson = line.Substring(line.IndexOf(customYdkHeader) + customYdkHeader.Length).Trim();
                         try
                         {
-                            // We only want the accessory data from this section
-                            DeckInfo tempDeck = new DeckInfo();
-                            tempDeck.FromDictionaryEx(MiniJSON.Json.Deserialize(possibleJson) as Dictionary<string, object>);
-                            deck.Accessory.CopyFrom(tempDeck.Accessory);
-                            deck.DisplayCards.CopyFrom(tempDeck.DisplayCards);
-                            deck.TimeCreated = tempDeck.TimeCreated;
-                            deck.TimeEdited = tempDeck.TimeEdited;
+                            deck.FromDictionaryAccessory(MiniJSON.Json.Deserialize(possibleJson) as Dictionary<string, object>);
                         }
                         catch
                         {
@@ -132,7 +126,7 @@ namespace YgoMaster
         public static void SaveDeck(DeckInfo deck)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("#" + customYdkHeader + " " + MiniJSON.Json.Serialize(deck.ToDictionaryEx()));
+            sb.AppendLine("#" + customYdkHeader + " " + MiniJSON.Json.Serialize(deck.ToDictionaryAccessory()));
             sb.AppendLine("#main");
             foreach (int cardId in deck.MainDeckCards.GetIds())
             {

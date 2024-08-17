@@ -850,7 +850,7 @@ namespace YgomGame
             {
                 return 0;
             }
-            IL2Object result = methodGetDeckName.Invoke(currentInstance);
+            IL2Object result = methodGetDeckID.Invoke(currentInstance);
             return result != null ? result.GetValueRef<int>() : 0;
         }
 
@@ -1295,8 +1295,12 @@ namespace YgomGame.SubMenu
                 if (deckId > 0)
                 {
                     // Also see YgomGame.Deck.DeckInfo for other things we may want
-                    deck.Accessory.FromDictionary(MiniJSON.Json.Deserialize(
-                        YgomSystem.Utility.ClientWork.SerializePath("$.Deck.list." + deckId + ".accessory")) as Dictionary<string, object>);
+                    deck.FromDictionaryAccessory(MiniJSON.Json.Deserialize(
+                        YgomSystem.Utility.ClientWork.SerializePath("$.Deck.list." + deckId)) as Dictionary<string, object>);
+                }
+                if (deck.Accessory.Box == 0)
+                {
+                    deck.Accessory.SetDefault();
                 }
                 if (deck.GetAllCards().Count > 0)
                 {
