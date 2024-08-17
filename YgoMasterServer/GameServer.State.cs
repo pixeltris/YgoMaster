@@ -861,7 +861,7 @@ namespace YgoMaster
                                 Console.WriteLine("Missing chapters: " + string.Join(",", chapterIds.Except(chaptersOnDisk)));
                             }
                             break;
-                        case "--missing-deckid":// Logs which solo chapters are missing the npc deck id values
+                        case "--missing-deckids":// Logs which solo chapters are missing the npc deck id values
                             {
                                 HashSet<int> chapterIds = new HashSet<int>();
                                 HashSet<int> chaptersWithDeckId = new HashSet<int>();
@@ -911,6 +911,41 @@ namespace YgoMaster
                                         Console.WriteLine("Missing deck id for chapter " + chapterId);
                                     }
                                 }
+                            }
+                            break;
+                        case "--merge-deckids":
+                            {
+                                Dictionary<int, int> chaptersDeckIds = new Dictionary<int, int>();
+                                string jsonFile = Path.Combine(Path.Combine(dataDirectory, "SoloNpcDeckIds.json"));
+                                if (File.Exists(jsonFile))
+                                {
+                                    Dictionary<string, object> chapterDatas = MiniJSON.Json.DeserializeStripped(File.ReadAllText(jsonFile)) as Dictionary<string, object>;
+                                    if (chapterDatas != null)
+                                    {
+                                        foreach (KeyValuePair<string, object> chapter in chapterDatas)
+                                        {
+                                            int deckId = (int)Convert.ChangeType(chapter.Value, typeof(int));
+                                            int chapterId;
+                                            if (int.TryParse(chapter.Key, out chapterId))
+                                            {
+                                                chaptersDeckIds[chapterId] = deckId;
+                                            }
+                                        }
+                                    }
+                                }
+                                foreach (string file in Directory.GetFiles(Path.Combine(dataDirectory, "SoloNpcDeckIds"), "*.txt"))
+                                {
+                                    int chapterId;
+                                    if (int.TryParse(Path.GetFileNameWithoutExtension(file), out chapterId))
+                                    {
+                                        int npcDeckId;
+                                        if (int.TryParse(File.ReadAllText(file).Trim(), out npcDeckId))
+                                        {
+                                            chaptersDeckIds[chapterId] = npcDeckId;
+                                        }
+                                    }
+                                }
+                                File.WriteAllText(jsonFile, MiniJSON.Json.Format(MiniJSON.Json.Serialize(chaptersDeckIds)));
                             }
                             break;
                         default:
@@ -2280,21 +2315,22 @@ namespace YgoMaster
                 }
                 SoloDuels[chapterId] = duel;
             }
-            dir = Path.Combine(dataDirectory, "SoloNpcDeckIds");
-            if (!Directory.Exists(dir))
+            string jsonFile = Path.Combine(Path.Combine(dataDirectory, "SoloNpcDeckIds.json"));
+            if (File.Exists(jsonFile))
             {
-                return;
-            }
-            foreach (string file in Directory.GetFiles(dir, "*.txt", SearchOption.AllDirectories))
-            {
-                int chapterId;
-                int npcDeckId;
-                DuelSettings duelSettings;
-                if (int.TryParse(Path.GetFileNameWithoutExtension(file), out chapterId) &&
-                    int.TryParse(File.ReadAllText(file).Trim(), out npcDeckId) &&
-                    SoloDuels.TryGetValue(chapterId, out duelSettings))
+                Dictionary<string, object> chapterDatas = MiniJSON.Json.DeserializeStripped(File.ReadAllText(jsonFile)) as Dictionary<string, object>;
+                if (chapterDatas != null)
                 {
-                    duelSettings.npc_deck_id = npcDeckId;
+                    foreach (KeyValuePair<string, object> chapter in chapterDatas)
+                    {
+                        int npcDeckId = (int)Convert.ChangeType(chapter.Value, typeof(int));
+                        int chapterId;
+                        DuelSettings duelSettings;
+                        if (int.TryParse(chapter.Key, out chapterId) && SoloDuels.TryGetValue(chapterId, out duelSettings))
+                        {
+                            duelSettings.npc_deck_id = npcDeckId;
+                        }
+                    }
                 }
             }
         }

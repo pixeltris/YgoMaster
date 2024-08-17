@@ -29,7 +29,8 @@ Certain logs will be dumped as json into `%USERPROFILE%/Documents/Fiddler2/Captu
 - Log `/ayk/api/Duel.begin` for each duel (**loaner deck only**)
 - Log `/ayk/api/Solo.detail` for each duel
 - Copy all files in `YgoMasterUpdate/SoloDuels/` to `YgoMaster/Data/SoloDuels/`
-- Copy all files in `YgoMasterUpdate/SoloDeckIds/` to `YgoMaster/Data/SoloDeckIds/`
+- Copy all files in `YgoMasterUpdate/SoloNpcDeckIds/` to `YgoMaster/Data/SoloNpcDeckIds/`
+- Run `YgoMaster.exe --merge-deckids` to update `SoloNpcDeckIds.json` based on the `SoloNpcDeckIds` files
 
 *To log this data faster add `"AlwaysWin": true` to `ClientSettings.json` to win duels [on the live game](LiveMods.md) by surrendering.*
 
