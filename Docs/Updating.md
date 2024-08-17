@@ -12,8 +12,8 @@ Certain logs will be dumped as json into `%USERPROFILE%/Documents/Fiddler2/Captu
 
 ## Card list / card craft list / ban list
 
-- Go back to the title screen
-- Enter the game and log `/ayk/api/User.home`
+- Open the game using Steam (reopen it if it's already open)
+- Enter the game and log `/ayk/api/Account.auth` / `/ayk/api/User.entry` / `/ayk/api/User.home`
 - Copy the following files from `YgoMasterUpdate/` to `YgoMaster/Data/`
 - `CardCraftableList.json`, `CardList.json`, `Regulation.json`, `RegulationIcon.json`, `RegulationInfo.json`, `StructureDecks.json`, `TitleLoop.json`
 
@@ -27,18 +27,20 @@ Certain logs will be dumped as json into `%USERPROFILE%/Documents/Fiddler2/Captu
 - Click `SOLO` to log `/ayk/api/Solo.info`
 - Copy `YgoMasterUpdate/Solo.json` to `YgoMaster/Data/Solo.json`
 - Log `/ayk/api/Duel.begin` for each duel (**loaner deck only**)
+- Log `/ayk/api/Solo.detail` for each duel
 - Copy all files in `YgoMasterUpdate/SoloDuels/` to `YgoMaster/Data/SoloDuels/`
+- Copy all files in `YgoMasterUpdate/SoloDeckIds/` to `YgoMaster/Data/SoloDeckIds/`
 
-*To log this data faster add `"AlwaysWin": true` to `ClientSettings.json` to win duels on the live game by surrendering.*
+*To log this data faster add `"AlwaysWin": true` to `ClientSettings.json` to win duels [on the live game](LiveMods.md) by surrendering.*
 
 ## Shop
 
 - Download the latest shops list from [here](https://github.com/pixeltris/YgoMaster/issues/129) and place them `YgoMaster/Data/ShopDumps/`
 - Click `SHOP` to log `/ayk/api/Shop.get_list`
 - Rename the `YgoMasterUpdate/Shop.json` log to the update date and copy it into `YgoMaster/Data/ShopDumps/`
-- In game select `Master Pack` and click `Cards included in this pack`. Manually copy the response of `/ayk/api/Gacha.get_card_list` into `YgoMaster/Data/ShopDumps/Gacha-10000001.json`
-- In game select `Legacy Pack` and click `Cards included in this pack`. Manually copy the response of `/ayk/api/Gacha.get_card_list` into `YgoMaster/Data/ShopDumps/Gacha-10003001.json`
-- Run the `YgoMaster.exe --mergeshops` command to merge `YgoMaster/Data/ShopDumps/` into `YgoMaster/Data/AllShopsMerged.json`. Copy out what is needed. For some shops like 3001 you'll need to manually fix up the shop price (and maybe the card list as well?).
+- In game select `Master Pack` and click `Cards included in this pack`. Log `Gacha.get_card_list` to generate `Gacha-10000001.json` and copy it into ShopDumps
+- In game select `Legacy Pack` and click `Cards included in this pack`. Log `Gacha.get_card_list` to generate `Gacha-10003001.json` and copy it into ShopDumps
+- Run the `YgoMaster.exe --mergeshops` command to merge `YgoMaster/Data/ShopDumps/` into `YgoMaster/Data/AllShopsMerged.json`. Copy out what is needed
 - Zip up your `ShopDumps` folder and update the link at the top of this section. Then delete your `ShopDumps` folder.
 
 For any new packs with new pack images...

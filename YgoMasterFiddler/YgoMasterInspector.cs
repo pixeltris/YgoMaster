@@ -497,12 +497,65 @@ namespace YgoMaster
                                             File.WriteAllText(Path.Combine(soloDuelsDir, (long)duelData["chapter"] + ".json"), MiniJSON.Json.Serialize(dictTemp));
                                         }
                                     }
+                                    if (data.ContainsKey("Solo") && data["Solo"] as Dictionary<string, object> != null)
+                                    {
+                                        Dictionary<string, object> soloData = data["Solo"] as Dictionary<string, object>;
+                                        if (soloData.ContainsKey("chapter") && soloData["chapter"] as Dictionary<string, object> != null)
+                                        {
+                                            Dictionary<string, object> chaptersData = soloData["chapter"] as Dictionary<string, object>;
+                                            foreach (KeyValuePair<string, object> chapter in chaptersData)
+                                            {
+                                                Dictionary<string, object> chapterData;
+                                                int chapterId;
+                                                if (int.TryParse(chapter.Key, out chapterId) && chapterId > 0 && (chapterData = chapter.Value as Dictionary<string, object>) != null &&
+                                                    chapterData.ContainsKey("npc_deck_id"))
+                                                {
+                                                    int npcDeckId = (int)Convert.ChangeType(chapterData["npc_deck_id"], typeof(int));
+                                                    if (npcDeckId > 0)
+                                                    {
+                                                        string soloDeckIdsDir = Path.Combine(updateDir, "SoloNpcDeckIds");
+                                                        try
+                                                        {
+                                                            Directory.CreateDirectory(soloDeckIdsDir);
+                                                        }
+                                                        catch
+                                                        {
+                                                        }
+                                                        File.WriteAllText(Path.Combine(soloDeckIdsDir, chapterId + ".txt"), npcDeckId.ToString());
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                     if (data.ContainsKey("Shop") && data["Shop"] as Dictionary<string, object> != null)
                                     {
                                         Dictionary<string, object> shopData = data["Shop"] as Dictionary<string, object>;
                                         if (shopData.ContainsKey("PackShop"))
                                         {
                                             File.WriteAllText(Path.Combine(updateDir, "Shop.json"), MiniJSON.Json.Serialize(dictTemp));
+                                        }
+                                    }
+                                    if (data.ContainsKey("Gacha") && data["Gacha"] as Dictionary<string, object> != null)
+                                    {
+                                        Dictionary<string, object> gachaData = data["Gacha"] as Dictionary<string, object>;
+                                        if (gachaData.ContainsKey("cardList") && gachaData["cardList"] as Dictionary<string, object> != null)
+                                        {
+                                            Dictionary<string, object> cardListList = gachaData["cardList"] as Dictionary<string, object>;
+                                            foreach (KeyValuePair<string, object> cardList in cardListList)
+                                            {
+                                                int cardListId;
+                                                if (int.TryParse(cardList.Key, out cardListId))
+                                                {
+                                                    int id = cardListId / 10000;
+                                                    if (id == 0)
+                                                    {
+                                                        // Should always be the Master Pack
+                                                        id = 1;
+                                                    }
+                                                    id = 10000000 + id;
+                                                    File.WriteAllText(Path.Combine(updateDir, "Gacha-" + id + ".json"), MiniJSON.Json.Serialize(dictTemp));
+                                                }
+                                            }
                                         }
                                     }
                                 }

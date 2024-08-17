@@ -817,16 +817,15 @@ namespace YgoMaster
                 DuelSettings duel = GetSoloDuelSettings(request.Player, chapterId);
                 if (duel != null)
                 {
-                    // NOTE: These ids likely link up to IDS_DECKRECIPE so really they shouldn't be generated
                     if (duel.Deck[DuelSettings.PlayerIndex].MainDeckCards.Count > 0)
                     {
                         chapterInfo["story_deck"] = duel.Deck[DuelSettings.PlayerIndex].ToDictionary();
-                        chapterInfo["story_deck_id"] = duel.Deck[DuelSettings.PlayerIndex].Id;
+                        chapterInfo["story_deck_id"] = duel.story_deck_id != null && duel.story_deck_id.Length > 0 ? duel.story_deck_id[0] : 0;
                     }
                     if (duel.Deck[DuelSettings.CpuIndex].MainDeckCards.Count > 0)
                     {
                         chapterInfo["npc_deck"] = duel.Deck[DuelSettings.CpuIndex].ToDictionary();
-                        chapterInfo["npc_deck_id"] = duel.Deck[DuelSettings.CpuIndex].Id;
+                        chapterInfo["npc_deck_id"] = duel.npc_deck_id;
                     }
                     if (duel.FirstPlayer >= 0)
                     {

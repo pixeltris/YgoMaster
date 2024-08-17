@@ -41,6 +41,9 @@ namespace YgoMaster
         public bool DoubleBgm;
         public bool NoKeycardBgm;
 
+        // Normally not stored here (it comes from Solo.detail) - this links to IDS_DECKRECIPE
+        public int npc_deck_id;
+
         // Used for injecting duel commands
         [DuelSettingsCustomArray]
         public List<int>[] cmds { get; private set; }

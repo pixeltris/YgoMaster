@@ -861,6 +861,58 @@ namespace YgoMaster
                                 Console.WriteLine("Missing chapters: " + string.Join(",", chapterIds.Except(chaptersOnDisk)));
                             }
                             break;
+                        case "--missing-deckid":// Logs which solo chapters are missing the npc deck id values
+                            {
+                                HashSet<int> chapterIds = new HashSet<int>();
+                                HashSet<int> chaptersWithDeckId = new HashSet<int>();
+                                foreach (string file in Directory.GetFiles(Path.Combine(dataDirectory, "SoloDuels"), "*.json"))
+                                {
+                                    int chapterId;
+                                    if (int.TryParse(Path.GetFileNameWithoutExtension(file), out chapterId))
+                                    {
+                                        Dictionary<string, object> data = MiniJSON.Json.DeserializeStripped(File.ReadAllText(file)) as Dictionary<string, object>;
+                                        data = Utils.GetResData(data);
+                                        Dictionary<string, object> duelData;
+                                        if (!Utils.TryGetValue(data, "Duel", out duelData))
+                                        {
+                                            continue;
+                                        }
+                                        int chapterId2;
+                                        if (!Utils.TryGetValue(duelData, "chapter", out chapterId2))
+                                        {
+                                            continue;
+                                        }
+                                        chapterIds.Add(chapterId2);
+                                        DuelSettings duel = new DuelSettings();
+                                        duel.FromDictionary(duelData);
+                                        if (duel.npc_deck_id != 0)
+                                        {
+                                            chaptersWithDeckId.Add(chapterId2);
+                                        }
+                                    }
+                                }
+                                foreach (string file in Directory.GetFiles(Path.Combine(dataDirectory, "SoloNpcDeckIds"), "*.txt"))
+                                {
+                                    int chapterId;
+                                    if (int.TryParse(Path.GetFileNameWithoutExtension(file), out chapterId))
+                                    {
+                                        int npcDeckId;
+                                        if (int.TryParse(File.ReadAllText(file).Trim(), out npcDeckId))
+                                        {
+                                            chaptersWithDeckId.Add(chapterId);
+                                        }
+                                    }
+                                }
+                                Console.WriteLine("Missing npc deck ids:");
+                                foreach (int chapterId in chapterIds)
+                                {
+                                    if (!chaptersWithDeckId.Contains(chapterId))
+                                    {
+                                        Console.WriteLine("Missing deck id for chapter " + chapterId);
+                                    }
+                                }
+                            }
+                            break;
                         default:
                             log = false;
                             break;
@@ -2227,6 +2279,23 @@ namespace YgoMaster
                     continue;
                 }
                 SoloDuels[chapterId] = duel;
+            }
+            dir = Path.Combine(dataDirectory, "SoloNpcDeckIds");
+            if (!Directory.Exists(dir))
+            {
+                return;
+            }
+            foreach (string file in Directory.GetFiles(dir, "*.txt", SearchOption.AllDirectories))
+            {
+                int chapterId;
+                int npcDeckId;
+                DuelSettings duelSettings;
+                if (int.TryParse(Path.GetFileNameWithoutExtension(file), out chapterId) &&
+                    int.TryParse(File.ReadAllText(file).Trim(), out npcDeckId) &&
+                    SoloDuels.TryGetValue(chapterId, out duelSettings))
+                {
+                    duelSettings.npc_deck_id = npcDeckId;
+                }
             }
         }
 
