@@ -101,13 +101,14 @@ static class ProcessCommandLine
     private static bool ReadStructFromProcessMemory<TStruct>(
         IntPtr hProcess, IntPtr lpBaseAddress, out TStruct val)
     {
-        val = default;
+        val = default(TStruct);
         var structSize = Marshal.SizeOf(typeof(TStruct));
         var mem = Marshal.AllocHGlobal(structSize);
         try
         {
+            uint len;
             if (Win32Native.ReadProcessMemory(
-                hProcess, lpBaseAddress, mem, (uint)structSize, out var len) &&
+                hProcess, lpBaseAddress, mem, (uint)structSize, out len) &&
                 (len == structSize))
             {
                 val = (TStruct)Marshal.PtrToStructure(mem, typeof(TStruct));
@@ -121,8 +122,9 @@ static class ProcessCommandLine
         return false;
     }
 
-    public static string ErrorToString(int error) =>
-        new string[]
+    public static string ErrorToString(int error)
+    {
+        return new string[]
         {
             "Success",
             "Failed to open process for reading",
@@ -132,6 +134,7 @@ static class ProcessCommandLine
             "Failed to read process parameters",
             "Failed to read command line from process"
         }[Math.Abs(error)];
+    }
 
     public static List<string> RetrieveArgs(Process process)
     {
@@ -161,19 +164,22 @@ static class ProcessCommandLine
                 var memPBI = Marshal.AllocHGlobal(sizePBI);
                 try
                 {
+                    uint len;
                     var ret = Win32Native.NtQueryInformationProcess(
                         hProcess, Win32Native.PROCESS_BASIC_INFORMATION, memPBI,
-                        (uint)sizePBI, out var len);
+                        (uint)sizePBI, out len);
                     if (0 == ret)
                     {
                         var pbiInfo = (Win32Native.ProcessBasicInformation)Marshal.PtrToStructure(memPBI, typeof(Win32Native.ProcessBasicInformation));
                         if (pbiInfo.PebBaseAddress != IntPtr.Zero)
                         {
+                            Win32Native.PEB pebInfo;
                             if (ReadStructFromProcessMemory<Win32Native.PEB>(hProcess,
-                                pbiInfo.PebBaseAddress, out var pebInfo))
+                                pbiInfo.PebBaseAddress, out pebInfo))
                             {
+                                Win32Native.RtlUserProcessParameters ruppInfo;
                                 if (ReadStructFromProcessMemory<Win32Native.RtlUserProcessParameters>(
-                                    hProcess, pebInfo.ProcessParameters, out var ruppInfo))
+                                    hProcess, pebInfo.ProcessParameters, out ruppInfo))
                                 {
                                     var clLen = ruppInfo.CommandLine.MaximumLength;
                                     var memCL = Marshal.AllocHGlobal(clLen);
@@ -245,7 +251,8 @@ static class ProcessCommandLine
             return new List<string>();
         }
 
-        var argv = Win32Native.CommandLineToArgv(commandLine, out var argc);
+        int argc;
+        var argv = Win32Native.CommandLineToArgv(commandLine, out argc);
         if (argv == IntPtr.Zero)
         {
             return new List<string>();
