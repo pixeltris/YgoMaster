@@ -17,7 +17,7 @@ Offline Yu-Gi-Oh! Master Duel (PC)
 
 ## Requirements
 
-- .NET Framework 4.0 (or above)
+- .NET Framework 4.0 Runtime (or above)
 - The game downloaded on Steam (complete the in-game tutorial to download all data)
 
 YgoMaster is portable and can be used on any machine without Steam installed after being fully downloaded
@@ -39,7 +39,8 @@ Additionally...
 
 ## Compiling from source
 
-- Install Visual Studio with C++ compilers
+- Install Visual Studio with C++ & C# workloads
+- Install .NET Framework 4.0 SDK (or above)
 - Run `Build.bat`
 - Copy the `YgoMaster` folder into the game folder as mentioned above
 
