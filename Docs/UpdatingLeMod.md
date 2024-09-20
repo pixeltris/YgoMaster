@@ -1,3 +1,3 @@
-- Copy CardCraftableList.json, CardList.json, ItemID.json, YdkIds.txt, Regulation.json, RegulationIcon.json, RegulationInfo.json
+- Copy CardCraftableList.json, CardList.json, ItemID.json, YdkIds.txt, Regulation.json, RegulationIcon.json, RegulationInfo.json, Bgm.json, TitleLoop.json
 - Open Shop.json and copy AccessoryShop
 - Open Settings.json and copy any new settings (don't replace any existing differing settings)

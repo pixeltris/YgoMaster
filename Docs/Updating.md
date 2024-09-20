@@ -67,6 +67,16 @@ For creating `YgoMaster/Data/ShopDumps/` from scratch...
 - Get the card list for Legacy Pack and save the `/ayk/api/Gacha.get_card_list` log into `YgoMaster/Data/ShopDumps/Gacha-10003001.json`
 - Follow the above `YgoMaster.exe --mergeshops` instructions
 
+## Docs/AltCardsYdk.json
+
+`Docs/AltCardsYdk.json` is used for mapping missing alt art card ids when generating `YdkIds.txt`
+
+- Run `YgoMaster.exe --unknown-alt-cards` which will print a list of missing alt card ids (or nothing if there's nothing new)
+- Navigate to ygoprodeck.com (or duelingnexus.com/wiki), search the card, copy the alt art image url, take the number in the url to get the ydk id
+- Update `Docs/AltCardsYdk.json` manually based on the found card id / ydk id
+
+NOTE: Card ids >= 30000 seem to be used for promotions / announcements and aren't real cards.
+
 ## YdkIds.txt
 
 - In the client console run `carddata` which should create `YgoMaster/Data/ClientDataDump/Card/Data/{CLIENT_VERSION}/`, move and rename the `{CLIENT_VERSION}` folder to `YgoMaster/Data/CardData/`. You must do this while using the `English` language setting.

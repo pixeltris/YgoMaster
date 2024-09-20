@@ -273,35 +273,6 @@ namespace YgoMaster
 
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;//Tls12
 
-            try
-            {
-                using (WebClient client = new WebClient())
-                {
-                    client.Proxy = null;
-                    string json = client.DownloadString("https://code.mycard.moe/sherry_chaos/MDPro3/-/raw/master/Data/cards_Alt.json");
-                    Dictionary<string, object> jsonData = MiniJSON.Json.Deserialize(json) as Dictionary<string, object>;
-                    foreach (KeyValuePair<string, object> entry in jsonData)
-                    {
-                        Dictionary<string, object> cardData = entry.Value as Dictionary<string, object>;
-                        if (cardData != null)
-                        {
-                            int cardId = Utils.GetValue<int>(cardData, "cid");
-                            int ydkId = Utils.GetValue<int>(cardData, "id");
-                            if (cardId > 0 && ydkId > 0)
-                            {
-                                AddCardManually(ydkId, cardId);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                Console.WriteLine("Failed to get alt art json from mycard.moe. Aborting");
-                return;
-            }
-
             using (WebClient client = new WebClient())
             {
                 client.Proxy = null;
@@ -376,6 +347,30 @@ namespace YgoMaster
                         }
                     }
                 }
+            }
+
+            string cardsAltJson = null;
+            string cardsAltFile = Path.Combine("..", "Docs", "AltCardsYdk.json");
+            if (File.Exists(cardsAltFile))
+            {
+                cardsAltJson = File.ReadAllText(cardsAltFile);
+            }
+            if (!string.IsNullOrWhiteSpace(cardsAltJson))
+            {
+                Dictionary<string, object> jsonData = MiniJSON.Json.DeserializeStripped(cardsAltJson) as Dictionary<string, object>;
+                foreach (KeyValuePair<string, object> entry in jsonData)
+                {
+                    int ydkId;
+                    if (int.TryParse(entry.Key, out ydkId))
+                    {
+                        int cardId = (int)Convert.ChangeType(entry.Value, typeof(int));
+                        AddCardManually(ydkId, cardId);
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("No alt cards json");
             }
 
             using (TextWriter writer = File.CreateText(Path.Combine(dataDir, idMapFileName)))

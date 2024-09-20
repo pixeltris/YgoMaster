@@ -1,0 +1,20 @@
+// ydk <-> cid for alt card art
+{
+  "10000012":3401,//The Winged Dragon of Ra
+  "4280259":3411,//Apollousa, Bow of the Goddess
+  "65741787":3415,//I:P Masquerena
+  "38342336":3421,//Knightmare Unicorn
+  "95440947":3423,//Eldlich the Golden Lord
+  "63166096":3434,//Sky Striker Mobilize - Engage!
+  "89631139":3801,//Blue-Eyes White Dragon
+  "46986418":3863,//Dark Magician
+  "10000002":3868,//Obelisk the Tormentor
+  "10000022":3869,//Slifer the Sky Dragon
+  "44508095":3882,//Stardust Dragon
+  "14558128":3891,//Ash Blossom & Joyous Spring
+  "20366275":3894,//El Shaddoll Construct
+  "94977270":3895,//El Shaddoll Winda
+  "63288574":3899,//Sky Striker Ace - Kagari
+  "60800382":19077,//Junk Warrior
+  "96363154":19943,//Tuning
+}

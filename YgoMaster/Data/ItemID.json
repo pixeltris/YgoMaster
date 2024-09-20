@@ -67,6 +67,7 @@
     1001016,//Kagetokage
     1001017,//Gunkan Suship Ikura
     1001018,//Genex Controller
+    1001019,//Genex Spare
     1001020,//A New Life - Galatea
     1001021,//Linkuriboh
     1001022,//Cross-Sheep
@@ -75,6 +76,7 @@
     1001025,//Naturia Cosmobeet
     1001026,//The Fabled Chawa
     1001028,//Bonfire
+    1001031,//Ryko, Lightsworn Hunter
     1002001,//Soccer Ball
     1002002,//Basketball
     1002003,//Record Player
@@ -163,8 +165,14 @@
     1010071,//Ash Blossom & Joyous Spring
     1010072,//Nibiru, the Primal Being
     1010073,//Lo, the Prayers of the Voiceless Voice
+    1010074,//Ragnaraika the Evil Seed
+    1010075,//Minerva, the Athenian Lightsworn
+    1010076,//Called by the Grave
+    1010078,//Stardust Dragon
+    1010079,//Junk Warrior
     1010080,//The Legendary Fisherman
     1010081,//Cyber Harpie Lady
+    1010085,//2025 SEASON
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -199,6 +207,13 @@
     1011032,//Xyz Cup Gold Finalist
     1011033,//Xyz Cup Silver Finalist
     1011034,//Xyz Cup Bronze Finalist
+    1011035,//WCS 2024 Champion
+    1011036,//WCS 2024 Finalist
+    1011037,//WCS 2024 Top 4
+    1011038,//WCS 2024 Top 12
+    1011039,//DC 2024 SEP Gold Finalist
+    1011040,//DC 2024 SEP Silver Finalist
+    1011041,//DC 2024 SEP Bronze Finalist
     1011042,//Xyz Cup Champion
     1012001,//X-Krawler Synaphysis
     1012002,//Mekk-Knight Spectrum Supreme
@@ -256,6 +271,7 @@
     1012054,//Commander Gottoms, Swordmaster
     1012055,//Eldlich the Golden Lord
     1012056,//Naturia Leodrake
+    1012057,//Ally of Justice Field Marshal
     1012058,//Fabled Leviathan
     1012061,//Cyber Dragon
     1012062,//Evil★Twins Ki-sikil & Lil-la
@@ -380,7 +396,14 @@
     1020114,//Xyz Cup Top 10000
     1020115,//Xyz Cup 2nd Stage Duelist
     1020116,//Awakening
+    1020117,//Transcendence
     1020119,//MD Proficiency Test Grade 20
+    1020120,//DC 2024 SEP Top 10
+    1020121,//DC 2024 SEP Top 100
+    1020122,//DC 2024 SEP Top 500
+    1020123,//DC 2024 SEP Top 1000
+    1020124,//DC 2024 SEP Top 10000
+    1020125,//DC 2024 SEP 2nd Stage Duelist
     1020130,//Overlord of Deepest Black
     1020131,//Storm and Surge
     1021001,//Starting Out
@@ -414,6 +437,7 @@
     1030026,//Link Master Frame
     1030027,//The Legend of Duelist  QUARTER CENTURY Frame
     1030028,//Lime Frame
+    1030029,//Gray Frame
     1030030,//Leodrake's Mane
     1031001,//The Path of the Blue Sky Striker
     1031002,//The Path of the Red Sky Striker
@@ -423,6 +447,7 @@
     1031006,//Polymerization
     1031007,//Blue-Eyes White Dragon
     1031008,//Brain Control
+    1031009,//Called by the Grave
     1032001,//Festive Ornament
     1032002,//Celebration of Spring Breeze
     1032003,//Tropical Seaside
@@ -431,6 +456,7 @@
     1032006,//Flurry of Cherry Blossoms
     1032007,//Neon Sign
     1033001,//WCS 2023 Party Favor
+    1033002,//WCS 2024 Party Favor
     1033003,//Overlay Unit
   ],
   "PROTECTOR": [
@@ -524,6 +550,9 @@
     1070089,//Flower Cardian Cherry Blossom with Curtain
     1070090,//Aleister the Invoker of Madness
     1070091,//Flower Cardian Zebra Grass
+    1070092,//Ragnaraika Stag Sovereign
+    1070095,//Stardust Dragon
+    1070096,//Junk Warrior
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -553,6 +582,7 @@
     1071027,//Eldlixir of Black Awakening
     1071028,//Naturia Leodrake
     1071029,//Fabled Leviathan
+    1071030,//Ally of Justice Field Marshal
     1072001,//Sky Striker Conversion: Flaming Wings of Destruction
     1072002,//Chaos Xyz Evolution －Galactic Gathering of Dragons－
     1072003,//Sky Striker Armor - Black Flash Raiment
@@ -565,6 +595,7 @@
     1073007,//Xyz Cup Celebration
     1073008,//WCS 2024 Celebration
     1073009,//WCS 2024 Party Favor
+    1073010,//DC 2024 SEP Celebration
     1075001,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
   ],
   "DECK_CASE": [
@@ -633,6 +664,7 @@
     1090022,//Pyroxene Cave
     1090023,//Pressured Planet Wraitsoth
     1090025,//Blue-Eyes Mausoleum
+    1090030,//Forest of the Traptrix
     1092001,//Colosseum
     1092002,//WCS
   ],
@@ -661,6 +693,7 @@
     1100022,//Pyroxene Cave
     1100023,//Pressured Planet Wraitsoth
     1100025,//Blue-Eyes Mausoleum
+    1100030,//Forest of the Traptrix
     1101001,//Trap Hole
     1101002,//Magical Hats
     1101003,//Summon Limit
@@ -704,6 +737,7 @@
     1110022,//Pyroxene Cave
     1110023,//Pressured Planet Wraitsoth
     1110025,//Blue-Eyes Mausoleum
+    1110030,//Forest of the Traptrix
     1111001,//Destiny Board
     1111002,//Bug Matrix
     1111003,//Shien's Dojo
@@ -730,6 +764,7 @@
     1112001,//Colosseum
     1112002,//WCS
     1113001,//WCS 2023 Party Favor
+    1113002,//WCS 2024 Party Favor
   ],
   "STRUCTURE": [
     1120001,//Starting Deck
@@ -808,6 +843,11 @@
     1130046,//Kingyo Sukui
     1130047,//Galaxy-Eyes Photon Dragon
     1130048,//Raidraptor - Rising Rebellion Falcon
+    1130049,//Ancient Gear Advance
+    1130050,//Aroma Healing
+    1130051,//Final Gesture
+    1130053,//Stardust Dragon
+    1130054,//Junk Warrior
   ],
   "PACK_TICKET": [
     1140001,//Legacy Pack ticket

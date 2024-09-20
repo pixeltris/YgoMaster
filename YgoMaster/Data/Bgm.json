@@ -23,6 +23,7 @@
 	{ "1090022": 06 },//Pyroxene Cave
 	{ "1090023": 12 },//Pressured Planet Wraitsoth
 	{ "1090025": 16 },//Blue-Eyes Mausoleum
+	{ "1090030": 15 },//Forest of the Traptrix
 	{ "1092001": [ "BGM_DUEL_EX_02_NORMAL", "BGM_DUEL_EX_02_KEYCARD", "BGM_DUEL_EX_02_CLIMAX" ] },//Colosseum
 	{ "1092002": [ "BGM_DUEL_EX_03_NORMAL", "BGM_DUEL_EX_03_KEYCARD", "BGM_DUEL_EX_03_CLIMAX" ] },//WCS
 ]
