@@ -35,6 +35,7 @@ Additionally...
 - Download [VG.TCG.Decks.7z](https://github.com/pixeltris/YgoMaster/releases/download/v1.4/VG.TCG.Decks.7z) for ~6000 decks from the YGO video games
 - The custom duel starter UI can be accessed using the DUEL button on the home screen
 - When updating copy your `/YgoMaster/Data/Players/` folder
+- [How to change language](Docs/ChanginLanguage.md)
 - [How to run on Linux](Docs/Linux.md)
 
 ## Compiling from source

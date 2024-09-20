@@ -8,7 +8,7 @@ To get around this you can use the mono runtime with YgoMaster.
 
 ## Instructions
 
-- [Download this zip](https://github.com/user-attachments/files/16606063/YgoMaster-mono.zip)
+- [Download this zip](https://github.com/pixeltris/YgoMaster/releases/download/v1.50/YgoMaster-Linux-Data-v1.zip)
 - Extract / merge it with your YgoMaster folder
 - Run `YgoMasterClient.exe` / `YgoMaster.exe` as you normally would
 
