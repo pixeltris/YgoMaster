@@ -17,16 +17,45 @@ namespace YgoMaster
                 return;
             }
 
+            bool isBoostGen = false;
+            CardStyleRarity boostHighestCraftedStyle = CardStyleRarity.None;
+            CardStyleRarity boostTargetStyle = CardStyleRarity.None;
+            int boostMaxCost = 0;
+            int boostCurrentCost = 0;
+            int boostCostPerCard = 0;
+            CardRarity boostCardRarity = CardRarity.None;
             Dictionary<string, object> cardList = Utils.GetDictionary(request.ActParams, "card_list");
-            if (cardList != null)
+            if (cardList == null && isCraft)
             {
-                Dictionary<int, int> cardRare = GetCardRarities(request.Player);
-                Dictionary<int, Dictionary<CardStyleRarity, int>> cards = new Dictionary<int, Dictionary<CardStyleRarity, int>>();
-                PlayerCraftPoints points = new PlayerCraftPoints();
-                PlayerCraftPoints totalPoints = new PlayerCraftPoints();
-                totalPoints.Add(request.Player.CraftPoints);
-                HashSet<int> foundSecrets = new HashSet<int>();// Hashset of shop ids
-                HashSet<int> foundSecretsExtend = new HashSet<int>();
+                int cid = Utils.GetValue<int>(request.ActParams, "card_id");
+                boostTargetStyle = Utils.GetValue<CardStyleRarity>(request.ActParams, "premium_type");
+                boostMaxCost = Utils.GetValue<int>(request.ActParams, "cost_cp");
+                if (cid > 0 && boostTargetStyle > 0 && boostMaxCost > 0)
+                {
+                    isBoostGen = true;
+                    cardList = new Dictionary<string, object>()
+                    {
+                        { cid.ToString(), new Dictionary<string, object>() {
+                            { "num", 1 },
+                            { "p1_num", 0 },
+                            { "p2_num", 0 },
+                        }}
+                    };
+                }
+            }
+            if (cardList == null)
+            {
+                return;
+            }
+            Dictionary<int, int> cardRare = GetCardRarities(request.Player);
+            Dictionary<int, Dictionary<CardStyleRarity, int>> cards = new Dictionary<int, Dictionary<CardStyleRarity, int>>();
+            PlayerCraftPoints points = new PlayerCraftPoints();
+            PlayerCraftPoints totalPoints = new PlayerCraftPoints();
+            totalPoints.Add(request.Player.CraftPoints);
+            HashSet<int> foundSecrets = new HashSet<int>();// Hashset of shop ids
+            HashSet<int> foundSecretsExtend = new HashSet<int>();
+            while (true)
+            {
                 foreach (KeyValuePair<string, object> item in cardList)
                 {
                     Dictionary<string, object> numObj = item.Value as Dictionary<string, object>;
@@ -49,6 +78,10 @@ namespace YgoMaster
                         
                         foreach (KeyValuePair<CardStyleRarity, int> styleRarityNum in cards[cardId])
                         {
+                            if (styleRarityNum.Value <= 0)
+                            {
+                                continue;
+                            }
                             if (!isCraft && styleRarityNum.Value > request.Player.Cards.GetCount(cardId, PlayerCardKind.Dismantle, styleRarityNum.Key))
                             {
                                 Utils.LogWarning("Lacking the desired amount of cards for dismantle");
@@ -71,13 +104,17 @@ namespace YgoMaster
                             {
                                 pointCount = Craft.GetDismantleReward(rarity, styleRarityNum.Key);
                             }
-                            if (isCraft && !totalPoints.CanSubtract(rarity, styleRarityNum.Value * pointCount))
+                            pointCount = styleRarityNum.Value * pointCount;
+                            boostCostPerCard = pointCount;
+                            boostCardRarity = rarity;
+                            boostCurrentCost += boostCostPerCard;
+                            if (isCraft && !totalPoints.CanSubtract(rarity, pointCount))
                             {
                                 Utils.LogWarning("Overflow of craft points when crafting");
                                 request.ResultCode = (int)ResultCodes.CraftCode.ERROR_UPDATE_FAILED;
                                 return;
                             }
-                            else if (!isCraft && !totalPoints.CanAdd(rarity, styleRarityNum.Value * pointCount))
+                            else if (!isCraft && !totalPoints.CanAdd(rarity, pointCount))
                             {
                                 Utils.LogWarning("Overflow of craft points when dismantling");
                                 request.ResultCode = (int)ResultCodes.CraftCode.ERROR_UPDATE_FAILED;
@@ -87,7 +124,7 @@ namespace YgoMaster
                             {
                                 if (isCraft)
                                 {
-                                    totalPoints.Subtract(rarity, styleRarityNum.Value * pointCount);
+                                    totalPoints.Subtract(rarity, pointCount);
                                     List<ShopItemInfo> secretPacks;
                                     if (rarity >= CardRarity.SuperRare && Shop.SecretPacksByCardId.TryGetValue(cardId, out secretPacks))
                                     {
@@ -112,9 +149,9 @@ namespace YgoMaster
                                 }
                                 else
                                 {
-                                    totalPoints.Add(rarity, styleRarityNum.Value * pointCount);
+                                    totalPoints.Add(rarity, pointCount);
                                 }
-                                points.Add(rarity, styleRarityNum.Value * pointCount);
+                                points.Add(rarity, pointCount);
                             }
                         }
                     }
@@ -156,11 +193,19 @@ namespace YgoMaster
                                             }
                                         }
                                     }
+                                    if (styleRarity >= boostHighestCraftedStyle)
+                                    {
+                                        boostHighestCraftedStyle = styleRarity;
+                                    }
                                     request.Player.Cards.Add(card.Key, 1, PlayerCardKind.Dismantle, styleRarity);
                                 }
                             }
-                            else
+                            else if (styleCount.Value > 0)
                             {
+                                if (styleCount.Key >= boostHighestCraftedStyle)
+                                {
+                                    boostHighestCraftedStyle = styleCount.Key;
+                                }
                                 request.Player.Cards.Add(card.Key, styleCount.Value, PlayerCardKind.Dismantle, styleCount.Key);
                             }
                         }
@@ -170,6 +215,15 @@ namespace YgoMaster
                         }
                     }
                 }
+
+                if (isBoostGen && boostCurrentCost > 0 && boostCostPerCard > 0 &&
+                    boostCurrentCost + boostCostPerCard <= boostMaxCost &&
+                    points.CanSubtract(boostCardRarity, boostCostPerCard) &&
+                    boostHighestCraftedStyle < boostTargetStyle)
+                {
+                    continue;
+                }
+
                 Dictionary<int, Dictionary<string, object>> secretPackList = new Dictionary<int, Dictionary<string, object>>();
                 if (isCraft)
                 {
@@ -229,6 +283,7 @@ namespace YgoMaster
                         }
                     }
                 }
+
                 SavePlayer(request.Player);
                 request.Response["Item"] = new Dictionary<string, object>()
                 {
@@ -241,10 +296,16 @@ namespace YgoMaster
                     { "is_send_present_box", false }
                 };
                 WriteCards_have(request, new HashSet<int>(cards.Keys));
+                break;
             }
         }
 
         void Act_CraftGenerateMulti(GameServerWebRequest request)
+        {
+            Act_CraftExchangeMulti(request, true);
+        }
+
+        void Act_CraftGenerateBoost(GameServerWebRequest request)
         {
             Act_CraftExchangeMulti(request, true);
         }

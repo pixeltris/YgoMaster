@@ -455,9 +455,12 @@ namespace YgoMaster
         Exodia2,
         Exodia3,
         CiNo1000,
+        Sekitori,
+        Shukudai,//v2.1.0
         FinishError = 100,
         FinishDisconnect,
-        FinishNoContest
+        FinishNoContest,
+        FinishEngineCrash = 105,
     }
 
     /// <summary>

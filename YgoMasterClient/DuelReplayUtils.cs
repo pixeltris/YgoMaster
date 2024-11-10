@@ -102,8 +102,7 @@ namespace YgomGame.Menu
         delegate void Del_OnItemSetData(IntPtr thisPtr, int res);
         static Hook<Del_OnItemSetData> hookOnItemSetData_1;
         static Hook<Del_OnItemSetData> hookOnItemSetData_2;
-        static Hook<Del_OnItemSetData> hookOnItemSetData_3;
-        static Hook<Del_OnItemSetData>[] hooks = new Hook<Del_OnItemSetData>[3];
+        static Hook<Del_OnItemSetData>[] hooks = new Hook<Del_OnItemSetData>[2];
 
         static IL2Field fieldDataIndex;
 
@@ -113,9 +112,8 @@ namespace YgomGame.Menu
             IL2Class classInfo = assembly.GetClass("ProfileReplayViewController", "YgomGame.Menu");
             hookOnCreatedView = new Hook<Del_OnCreatedView>(OnCreatedView, classInfo.GetMethod("OnCreatedView"));
 
-            FindOnItemSetDataMethod(classInfo, "<OnItemSetData>b__1", ref hookOnItemSetData_1, 0);
-            FindOnItemSetDataMethod(classInfo, "<OnItemSetData>b__2", ref hookOnItemSetData_2, 1);
-            FindOnItemSetDataMethod(classInfo, "<OnItemSetData>b__3", ref hookOnItemSetData_3, 2);
+            FindOnItemSetDataMethod(classInfo, "<OnItemSetData>b__0", ref hookOnItemSetData_1, 0);
+            FindOnItemSetDataMethod(classInfo, "<OnItemSetData>b__1", ref hookOnItemSetData_2, 1);
         }
 
         static void FindOnItemSetDataMethod(IL2Class classInfo, string name, ref Hook<Del_OnItemSetData> hook, int i)

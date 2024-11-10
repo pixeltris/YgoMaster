@@ -184,6 +184,13 @@ namespace YgoMaster
             WriteCards_favorite(request);
         }
 
+        void Act_DeckSetLockCards(GameServerWebRequest request)
+        {
+            request.Player.CardLock.FromDictionary(Utils.GetDictionary(request.ActParams, "card_list"));
+            SavePlayer(request.Player);
+            WriteCards_lock(request);
+        }
+
         void Act_SetSelectDeck(GameServerWebRequest request)
         {
             GameMode mode;

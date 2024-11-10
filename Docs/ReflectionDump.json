@@ -17,7 +17,7 @@
     ],
     "Type": "Field",
     "Name": "mhandle",
-    "Signature": "public RuntimeMethodInfo"
+    "Signature": "public mhandle"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -27,7 +27,7 @@
     ],
     "Type": "Field",
     "Name": "ffIconOn",
-    "Signature": "ReplayControl"
+    "Signature": "ffIconOn"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -57,7 +57,7 @@
     ],
     "Type": "Field",
     "Name": "instance",
-    "Signature": "static DuelClient"
+    "Signature": "static instance"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -67,7 +67,7 @@
     ],
     "Type": "Field",
     "Name": "m_Step",
-    "Signature": "DuelClient"
+    "Signature": "m_Step"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -77,7 +77,7 @@
     ],
     "Type": "Field",
     "Name": "replayRealtime",
-    "Signature": "DuelClient"
+    "Signature": "replayRealtime"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -134,7 +134,7 @@
     "Namespace": "YgomGame.Duel",
     "Class": [
       "DuelHUD",
-      "<PrepareToDuelProcess>d__136"
+      "<PrepareToDuelProcess>d__140"
     ],
     "Type": "Method",
     "Name": "MoveNext",
@@ -248,7 +248,7 @@
     ],
     "Type": "Field",
     "Name": "m_Type",
-    "Signature": "GenericCardListController"
+    "Signature": "m_Type"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -338,7 +338,7 @@
     ],
     "Type": "Field",
     "Name": "m_RemainInDuel",
-    "Signature": "DuelTimer3D"
+    "Signature": "m_RemainInDuel"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -348,7 +348,7 @@
     ],
     "Type": "Field",
     "Name": "m_RemainInTurn",
-    "Signature": "DuelTimer3D"
+    "Signature": "m_RemainInTurn"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -548,7 +548,7 @@
     ],
     "Type": "Field",
     "Name": "infos",
-    "Signature": "RoomCreateViewController"
+    "Signature": "infos"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -558,7 +558,7 @@
     ],
     "Type": "Field",
     "Name": "isv",
-    "Signature": "RoomCreateViewController"
+    "Signature": "isv"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -580,7 +580,7 @@
     ],
     "Type": "Field",
     "Name": "title",
-    "Signature": "public ButtonInfoBase"
+    "Signature": "public title"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -677,7 +677,7 @@
     ],
     "Type": "Field",
     "Name": "onCompleteSelectDeckCallback",
-    "Signature": "public DeckBrowserViewController"
+    "Signature": "public onCompleteSelectDeckCallback"
   },
   {
     "Assembly": "mscorlib",
@@ -728,7 +728,7 @@
     ],
     "Type": "Field",
     "Name": "id",
-    "Signature": "public Chapter"
+    "Signature": "public id"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -770,7 +770,7 @@
     ],
     "Type": "Field",
     "Name": "step",
-    "Signature": "SoloStartProductionViewController"
+    "Signature": "step"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -781,7 +781,7 @@
     ],
     "Type": "Field",
     "Name": "Final",
-    "Signature": "public static Step"
+    "Signature": "public static Final"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -883,7 +883,7 @@
     ],
     "Type": "Field",
     "Name": "code",
-    "Signature": "public RequestStructure"
+    "Signature": "public code"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -903,7 +903,7 @@
     ],
     "Type": "Field",
     "Name": "m_Request",
-    "Signature": "Handle"
+    "Signature": "m_Request"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -952,8 +952,8 @@
       "DeckView"
     ],
     "Type": "Method",
-    "Name": "SetDismantleMode",
-    "Signature": "public System.Void SetDismantleMode(System.Boolean b)"
+    "Name": "SetMode",
+    "Signature": "public System.Void SetMode(YgomGame.Deck.DeckView.Mode m)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -963,7 +963,7 @@
     ],
     "Type": "Method",
     "Name": "AddToMainDeckByID",
-    "Signature": "public YgomGame.Deck.DeckCard AddToMainDeckByID(System.Int32 id, System.Int32 prem, System.Boolean owned, System.Boolean isRental, System.Int32 reg, System.Boolean sort, System.Boolean isIni, System.Boolean noAdd)"
+    "Signature": "public YgomGame.Deck.DeckCard AddToMainDeckByID(System.Int32 id, System.Int32 prem, System.Boolean owned, System.Boolean isRental, System.Boolean isAutoBuild, System.Int32 reg, System.Boolean sort, System.Boolean isIni, System.Boolean noAdd)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -973,7 +973,7 @@
     ],
     "Type": "Method",
     "Name": "AddToExtraDeckByID",
-    "Signature": "public YgomGame.Deck.DeckCard AddToExtraDeckByID(System.Int32 id, System.Int32 prem, System.Boolean owned, System.Boolean isRental, System.Int32 reg, System.Boolean sort, System.Boolean isIni, System.Boolean noAdd)"
+    "Signature": "public YgomGame.Deck.DeckCard AddToExtraDeckByID(System.Int32 id, System.Int32 prem, System.Boolean owned, System.Boolean isRental, System.Boolean isAutoBuild, System.Int32 reg, System.Boolean sort, System.Boolean isIni, System.Boolean noAdd)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1023,7 +1023,7 @@
     ],
     "Type": "Field",
     "Name": "mainDeckCards",
-    "Signature": "DeckView"
+    "Signature": "mainDeckCards"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1033,7 +1033,7 @@
     ],
     "Type": "Field",
     "Name": "mainCardDataList",
-    "Signature": "public DeckView"
+    "Signature": "public mainCardDataList"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1043,7 +1043,7 @@
     ],
     "Type": "Field",
     "Name": "extraDeckCards",
-    "Signature": "DeckView"
+    "Signature": "extraDeckCards"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1053,7 +1053,7 @@
     ],
     "Type": "Field",
     "Name": "extraCardDataList",
-    "Signature": "public DeckView"
+    "Signature": "public extraCardDataList"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1093,7 +1093,7 @@
     ],
     "Type": "Field",
     "Name": "m_DeckView",
-    "Signature": "DeckEditViewController2"
+    "Signature": "public m_DeckView"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1103,7 +1103,7 @@
     ],
     "Type": "Field",
     "Name": "m_CollectionView",
-    "Signature": "DeckEditViewController2"
+    "Signature": "public m_CollectionView"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1113,7 +1113,7 @@
     ],
     "Type": "Field",
     "Name": "m_SaveButton",
-    "Signature": "DeckEditViewController2"
+    "Signature": "public m_SaveButton"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1123,7 +1123,7 @@
     ],
     "Type": "Method",
     "Name": "getRemainPremiumCard",
-    "Signature": "System.Int32 getRemainPremiumCard(System.Int32 id, YgomGame.Card.CardCollectionInfo.Premium prem)"
+    "Signature": "public System.Int32 getRemainPremiumCard(System.Int32 id, YgomGame.Card.CardCollectionInfo.Premium prem)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1153,7 +1153,7 @@
     ],
     "Type": "Method",
     "Name": "InitializeView",
-    "Signature": "System.Void InitializeView()"
+    "Signature": "public System.Void InitializeView()"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1163,7 +1163,7 @@
     ],
     "Type": "Method",
     "Name": "SortDeckViewCards",
-    "Signature": "System.Void SortDeckViewCards()"
+    "Signature": "public System.Void SortDeckViewCards()"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1183,7 +1183,7 @@
     ],
     "Type": "Method",
     "Name": "NeedSave",
-    "Signature": "System.Boolean NeedSave()"
+    "Signature": "public System.Boolean NeedSave()"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1293,7 +1293,7 @@
     ],
     "Type": "Field",
     "Name": "s_instance",
-    "Signature": "static Content"
+    "Signature": "static s_instance"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1353,7 +1353,7 @@
     ],
     "Type": "Field",
     "Name": "s_instance",
-    "Signature": "static Sound"
+    "Signature": "static s_instance"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1390,33 +1390,22 @@
     "Namespace": "YgomGame.Menu",
     "Class": [
       "ProfileReplayViewController",
-      "<>c__DisplayClass29_0"
+      "<>c__DisplayClass49_0"
     ],
     "Type": "Field",
     "Name": "dataindex",
-    "Signature": "public <>c__DisplayClass29_0"
+    "Signature": "public dataindex"
   },
   {
     "Assembly": "Assembly-CSharp",
     "Namespace": "YgomGame.Menu",
     "Class": [
       "ProfileReplayViewController",
-      "<>c__DisplayClass29_0"
+      "<>c__DisplayClass49_0"
     ],
     "Type": "Field",
     "Name": "dataindex",
-    "Signature": "public <>c__DisplayClass29_0"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Menu",
-    "Class": [
-      "ProfileReplayViewController",
-      "<>c__DisplayClass29_0"
-    ],
-    "Type": "Field",
-    "Name": "dataindex",
-    "Signature": "public <>c__DisplayClass29_0"
+    "Signature": "public dataindex"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1426,7 +1415,7 @@
     ],
     "Type": "Field",
     "Name": "rootMenu",
-    "Signature": "ProfileViewController"
+    "Signature": "rootMenu"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1436,7 +1425,7 @@
     ],
     "Type": "Field",
     "Name": "isMine",
-    "Signature": "ProfileViewController"
+    "Signature": "isMine"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1446,7 +1435,7 @@
     ],
     "Type": "Field",
     "Name": "pcode",
-    "Signature": "ProfileViewController"
+    "Signature": "pcode"
   },
   {
     "Assembly": "Unity.TextMeshPro",
@@ -1466,7 +1455,7 @@
     ],
     "Type": "Field",
     "Name": "m_LifeSecond",
-    "Signature": "ToastMessageInform"
+    "Signature": "m_LifeSecond"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1517,16 +1506,6 @@
     "Type": "Method",
     "Name": "Update",
     "Signature": "System.Void Update()"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Mission",
-    "Class": [
-      "ResidentMissionContent"
-    ],
-    "Type": "Method",
-    "Name": "CheckLaunch",
-    "Signature": "public static System.Void CheckLaunch(System.Int32 tabId, System.Int32 poolId, System.Action onSuccess, System.Action onFailed)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1716,7 +1695,7 @@
     ],
     "Type": "Field",
     "Name": "s_instance",
-    "Signature": "static Engine"
+    "Signature": "static s_instance"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1726,7 +1705,7 @@
     ],
     "Type": "Field",
     "Name": "replayStream",
-    "Signature": "Engine"
+    "Signature": "replayStream"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1736,7 +1715,7 @@
     ],
     "Type": "Field",
     "Name": "gameMode",
-    "Signature": "Engine"
+    "Signature": "gameMode"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1786,7 +1765,7 @@
     ],
     "Type": "Field",
     "Name": "instance",
-    "Signature": "static DuelClient"
+    "Signature": "static instance"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1846,7 +1825,7 @@
     ],
     "Type": "Field",
     "Name": "triggerSettings",
-    "Signature": "BgEffectManagerInner"
+    "Signature": "triggerSettings"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1856,7 +1835,7 @@
     ],
     "Type": "Field",
     "Name": "animationLabel",
-    "Signature": "public BgEffectSettingInner"
+    "Signature": "public animationLabel"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1866,7 +1845,7 @@
     ],
     "Type": "Field",
     "Name": "manager",
-    "Signature": "public BgEffectSettingInner"
+    "Signature": "public manager"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1886,7 +1865,7 @@
     ],
     "Type": "Field",
     "Name": "activeCharacter",
-    "Signature": "BgUnit"
+    "Signature": "activeCharacter"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1896,7 +1875,7 @@
     ],
     "Type": "Field",
     "Name": "effectManager",
-    "Signature": "BgUnit"
+    "Signature": "effectManager"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1936,7 +1915,7 @@
     ],
     "Type": "Field",
     "Name": "m_FreeInstanceQueue",
-    "Signature": "PopUpTextManager"
+    "Signature": "m_FreeInstanceQueue"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2006,7 +1985,7 @@
     ],
     "Type": "Field",
     "Name": "m_Showing",
-    "Signature": "PopUpText"
+    "Signature": "m_Showing"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2224,9 +2203,19 @@
     "Class": [
       "ResourceManager"
     ],
+    "Type": "Method",
+    "Name": "CallErrorHandler",
+    "Signature": "System.Void CallErrorHandler(YgomSystem.ResourceSystem.Resource res, System.Boolean disableErrorPath)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem",
+    "Class": [
+      "ResourceManager"
+    ],
     "Type": "Field",
     "Name": "resourceDictionary",
-    "Signature": "ResourceManager"
+    "Signature": "resourceDictionary"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2236,7 +2225,7 @@
     ],
     "Type": "Field",
     "Name": "s_instance",
-    "Signature": "static ResourceManager"
+    "Signature": "static s_instance"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2376,6 +2365,16 @@
       "Resource"
     ],
     "Type": "Property",
+    "Name": "Done",
+    "Signature": "public System.Boolean"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.ResourceSystem",
+    "Class": [
+      "Resource"
+    ],
+    "Type": "Property",
     "Name": "SystemType",
     "Signature": "public System.Type"
   },
@@ -2437,7 +2436,7 @@
     ],
     "Type": "Field",
     "Name": "s_instance",
-    "Signature": "static Content"
+    "Signature": "static s_instance"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2787,7 +2786,7 @@
     ],
     "Type": "Field",
     "Name": "label",
-    "Signature": "public Tween"
+    "Signature": "public label"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2797,7 +2796,7 @@
     ],
     "Type": "Field",
     "Name": "from",
-    "Signature": "public TweenAlpha"
+    "Signature": "public from"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2807,7 +2806,7 @@
     ],
     "Type": "Field",
     "Name": "to",
-    "Signature": "public TweenAlpha"
+    "Signature": "public to"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2817,7 +2816,7 @@
     ],
     "Type": "Field",
     "Name": "isRecusive",
-    "Signature": "public TweenAlpha"
+    "Signature": "public isRecusive"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2827,7 +2826,7 @@
     ],
     "Type": "Field",
     "Name": "from",
-    "Signature": "public TweenPosition"
+    "Signature": "public from"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2837,7 +2836,7 @@
     ],
     "Type": "Field",
     "Name": "to",
-    "Signature": "public TweenPosition"
+    "Signature": "public to"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2847,7 +2846,7 @@
     ],
     "Type": "Field",
     "Name": "from",
-    "Signature": "public TweenRotation"
+    "Signature": "public from"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2857,7 +2856,7 @@
     ],
     "Type": "Field",
     "Name": "to",
-    "Signature": "public TweenRotation"
+    "Signature": "public to"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2867,7 +2866,7 @@
     ],
     "Type": "Field",
     "Name": "quaternionLerp",
-    "Signature": "public TweenRotation"
+    "Signature": "public quaternionLerp"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2877,7 +2876,7 @@
     ],
     "Type": "Field",
     "Name": "from",
-    "Signature": "public TweenScale"
+    "Signature": "public from"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2887,7 +2886,7 @@
     ],
     "Type": "Field",
     "Name": "to",
-    "Signature": "public TweenScale"
+    "Signature": "public to"
   },
   {
     "Assembly": "mscorlib",
@@ -2898,6 +2897,66 @@
     "Type": "Method",
     "Name": "ReadAllBytes",
     "Signature": "public static System.Byte[] ReadAllBytes(System.String path)"
+  },
+  {
+    "Assembly": "UnityEngine.UnityWebRequestModule",
+    "Namespace": "UnityEngine.Networking",
+    "Class": [
+      "UnityWebRequest"
+    ],
+    "Type": "Method",
+    "Name": ".ctor",
+    "Signature": "public System.Void .ctor(System.String url, System.String method, UnityEngine.Networking.DownloadHandler downloadHandler, UnityEngine.Networking.UploadHandler uploadHandler)"
+  },
+  {
+    "Assembly": "UnityEngine.UnityWebRequestModule",
+    "Namespace": "UnityEngine.Networking",
+    "Class": [
+      "UnityWebRequest"
+    ],
+    "Type": "Method",
+    "Name": "SendWebRequest",
+    "Signature": "public UnityEngine.Networking.UnityWebRequestAsyncOperation SendWebRequest()"
+  },
+  {
+    "Assembly": "UnityEngine.UnityWebRequestModule",
+    "Namespace": "UnityEngine.Networking",
+    "Class": [
+      "UnityWebRequest"
+    ],
+    "Type": "Property",
+    "Name": "result",
+    "Signature": "public UnityEngine.Networking.UnityWebRequest.Result"
+  },
+  {
+    "Assembly": "UnityEngine.UnityWebRequestModule",
+    "Namespace": "UnityEngine.Networking",
+    "Class": [
+      "UnityWebRequest"
+    ],
+    "Type": "Method",
+    "Name": "Dispose",
+    "Signature": "public System.Void Dispose()"
+  },
+  {
+    "Assembly": "UnityEngine.UnityWebRequestModule",
+    "Namespace": "UnityEngine.Networking",
+    "Class": [
+      "UnityWebRequest"
+    ],
+    "Type": "Property",
+    "Name": "disposeDownloadHandlerOnDispose",
+    "Signature": "public System.Boolean"
+  },
+  {
+    "Assembly": "UnityEngine.UnityWebRequestModule",
+    "Namespace": "UnityEngine.Networking",
+    "Class": [
+      "DownloadHandler"
+    ],
+    "Type": "Method",
+    "Name": ".ctor",
+    "Signature": "public System.Void .ctor()"
   },
   {
     "Assembly": "UnityEngine.CoreModule",
@@ -2917,7 +2976,7 @@
     ],
     "Type": "Field",
     "Name": "m_GateMap",
-    "Signature": "SoloCardThumbSettings"
+    "Signature": "m_GateMap"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2927,7 +2986,7 @@
     ],
     "Type": "Field",
     "Name": "m_ChapterMap",
-    "Signature": "SoloCardThumbSettings"
+    "Signature": "m_ChapterMap"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2938,7 +2997,7 @@
     ],
     "Type": "Field",
     "Name": "m_Settings",
-    "Signature": "SettingMap"
+    "Signature": "m_Settings"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2949,7 +3008,7 @@
     ],
     "Type": "Field",
     "Name": "m_SettingsMap",
-    "Signature": "SettingMap"
+    "Signature": "m_SettingsMap"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2971,7 +3030,7 @@
     ],
     "Type": "Field",
     "Name": "id",
-    "Signature": "public ThumbSetting"
+    "Signature": "public id"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2982,7 +3041,7 @@
     ],
     "Type": "Field",
     "Name": "mrk",
-    "Signature": "public ThumbSetting"
+    "Signature": "public mrk"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2993,7 +3052,7 @@
     ],
     "Type": "Field",
     "Name": "uvRectPos",
-    "Signature": "public ThumbSetting"
+    "Signature": "public uvRectPos"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3004,7 +3063,7 @@
     ],
     "Type": "Field",
     "Name": "uvRectSize",
-    "Signature": "public ThumbSetting"
+    "Signature": "public uvRectSize"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3015,7 +3074,7 @@
     ],
     "Type": "Field",
     "Name": "uvRectPosOther",
-    "Signature": "public ThumbSetting"
+    "Signature": "public uvRectPosOther"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3026,7 +3085,7 @@
     ],
     "Type": "Field",
     "Name": "uvRectSizeOther",
-    "Signature": "public ThumbSetting"
+    "Signature": "public uvRectSizeOther"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3076,7 +3135,7 @@
     ],
     "Type": "Field",
     "Name": "currentWallpaperGo",
-    "Signature": "HomeViewController"
+    "Signature": "currentWallpaperGo"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3156,7 +3215,77 @@
     ],
     "Type": "Field",
     "Name": "m_BackRoot",
-    "Signature": "OutGameBGManager"
+    "Signature": "m_BackRoot"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "HeaderViewController"
+    ],
+    "Type": "Method",
+    "Name": "UpdateDispPart",
+    "Signature": "System.Void UpdateDispPart(YgomGame.Menu.HeaderViewController.Part part)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "HomeViewController"
+    ],
+    "Type": "Method",
+    "Name": "UpdateHome",
+    "Signature": "System.Void UpdateHome()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "ForceNotification"
+    ],
+    "Type": "Method",
+    "Name": "IsDispForceNotification",
+    "Signature": "public static System.Boolean IsDispForceNotification()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Download",
+    "Class": [
+      "DLCList"
+    ],
+    "Type": "Method",
+    "Name": "Delete",
+    "Signature": "public static System.Void Delete()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Download",
+    "Class": [
+      "DLCVersion"
+    ],
+    "Type": "Method",
+    "Name": "Delete",
+    "Signature": "public static System.Void Delete()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.Utility",
+    "Class": [
+      "Locale"
+    ],
+    "Type": "Method",
+    "Name": "setup",
+    "Signature": "static System.Void setup()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
+      "Sound"
+    ],
+    "Type": "Method",
+    "Name": "PlayBGM",
+    "Signature": "public static System.Void PlayBGM(YgomGame.Duel.Sound.DuelBGM idx, System.Single delay)"
   },
   {
     "Assembly": "Assembly-CSharp",

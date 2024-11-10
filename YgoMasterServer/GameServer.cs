@@ -292,10 +292,13 @@ namespace YgoMaster
                                     case "Deck.SetFavoriteCards":
                                         Act_DeckSetFavoriteCards(gameServerWebRequest);
                                         break;
-                                    case "Deck.update_deck":// Unused sinc v1.2.0?
+                                    case "Deck.SetLockCards":// v2.1.0
+                                        Act_DeckSetLockCards(gameServerWebRequest);
+                                        break;
+                                    case "Deck.update_deck":// Unused since v1.2.0?
                                         Act_DeckUpdate(gameServerWebRequest);
                                         break;
-                                    case "Deck.update_deck_reg":// Added v1.2.0
+                                    case "Deck.update_deck_reg":// v1.2.0
                                         Act_DeckUpdate(gameServerWebRequest);
                                         break;
                                     case "Deck.get_deck_list":
@@ -330,6 +333,9 @@ namespace YgoMaster
                                         break;
                                     case "Craft.generate_multi":
                                         Act_CraftGenerateMulti(gameServerWebRequest);
+                                        break;
+                                    case "Craft.generate_boost":// v2.1.0
+                                        Act_CraftGenerateBoost(gameServerWebRequest);
                                         break;
                                     case "Craft.get_card_route":
                                         Act_CraftGetCardRoute(gameServerWebRequest);
@@ -441,6 +447,15 @@ namespace YgoMaster
                                         break;
                                     case "PvP.set_replay_open":
                                         Act_ReplaySetOpen(gameServerWebRequest);
+                                        break;
+                                    case "PvP.set_replay_lock":// v2.1.0
+                                        Act_ReplaySetLock(gameServerWebRequest);
+                                        break;
+                                    case "PvP.set_replay_tags":// v2.1.0
+                                        Act_ReplaySetTags(gameServerWebRequest);
+                                        break;
+                                    case "PvP.set_replay_pick_cards":// v2.1.0
+                                        Act_ReplaySetPickCards(gameServerWebRequest);
                                         break;
                                     case "PvP.remove_replay":
                                         Act_ReplayRemove(gameServerWebRequest);

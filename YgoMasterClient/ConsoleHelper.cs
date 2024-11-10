@@ -47,7 +47,7 @@ namespace YgoMasterClient
                         {
                             bool.TryParse(splitted[1], out dumpInvalid);
                         }
-                        Dictionary<YgomGame.Utility.ItemUtil.Category, List<string>> categories = new Dictionary<YgomGame.Utility.ItemUtil.Category, List<string>>();
+                        Dictionary<ItemID.Category, List<string>> categories = new Dictionary<ItemID.Category, List<string>>();
                         IL2Class classInfo = classInfo = Assembler.GetAssembly("Assembly-CSharp").GetClass("IDS_ITEM", "YgomGame.TextIDs");
                         IL2Field[] fields = classInfo.GetFields();
                         foreach (IL2Field field in fields)
@@ -62,7 +62,7 @@ namespace YgoMasterClient
                                 {
                                     continue;
                                 }
-                                YgomGame.Utility.ItemUtil.Category cat = YgomGame.Utility.ItemUtil.GetCategoryFromID(id);
+                                ItemID.Category cat = YgomGame.Utility.ItemUtil.GetCategoryFromID(id);
                                 if (!categories.ContainsKey(cat))
                                 {
                                     categories[cat] = new List<string>();
@@ -78,7 +78,7 @@ namespace YgoMasterClient
                         }
                         StringBuilder res = new StringBuilder();
                         res.AppendLine("{");
-                        foreach (KeyValuePair<YgomGame.Utility.ItemUtil.Category, List<string>> cat in categories.OrderBy(x => x.Key))
+                        foreach (KeyValuePair<ItemID.Category, List<string>> cat in categories.OrderBy(x => x.Key))
                         {
                             res.AppendLine("  \"" + cat.Key + "\": [");
                             res.AppendLine(string.Join(Environment.NewLine, cat.Value));
@@ -91,7 +91,7 @@ namespace YgoMasterClient
                     break;
                 case "itemid_enum":// Creates enums for values in IDS_ITEM (all item ids)
                     {
-                        Dictionary<YgomGame.Utility.ItemUtil.Category, List<string>> categories = new Dictionary<YgomGame.Utility.ItemUtil.Category, List<string>>();
+                        Dictionary<ItemID.Category, List<string>> categories = new Dictionary<ItemID.Category, List<string>>();
                         IL2Class classInfo = classInfo = Assembler.GetAssembly("Assembly-CSharp").GetClass("IDS_ITEM", "YgomGame.TextIDs");
                         IL2Field[] fields = classInfo.GetFields();
                         foreach (IL2Field field in fields)
@@ -101,7 +101,7 @@ namespace YgoMasterClient
                             if (fieldName.StartsWith("ID") && int.TryParse(fieldName.Substring(2), out id))
                             {
                                 string name = YgomGame.Utility.ItemUtil.GetItemName(id);
-                                YgomGame.Utility.ItemUtil.Category cat = YgomGame.Utility.ItemUtil.GetCategoryFromID(id);
+                                ItemID.Category cat = YgomGame.Utility.ItemUtil.GetCategoryFromID(id);
                                 if (!categories.ContainsKey(cat))
                                 {
                                     categories[cat] = new List<string>();
@@ -113,7 +113,7 @@ namespace YgoMasterClient
                             }
                         }
                         StringBuilder res = new StringBuilder();
-                        foreach (KeyValuePair<YgomGame.Utility.ItemUtil.Category, List<string>> cat in categories)
+                        foreach (KeyValuePair<ItemID.Category, List<string>> cat in categories)
                         {
                             res.AppendLine("public enum " + cat.Key + "{");
                             res.AppendLine(string.Join(Environment.NewLine, cat.Value));
@@ -1367,7 +1367,8 @@ namespace YgoMasterClient
                                 { "p2_num", 0 }
                             };
                         }
-                        Craft_generate_multi.Invoke(new IntPtr[] { YgomMiniJSON.Json.Deserialize(MiniJSON.Json.Serialize(cardListData)) });
+                        csbool check = false;
+                        Craft_generate_multi.Invoke(new IntPtr[] { YgomMiniJSON.Json.Deserialize(MiniJSON.Json.Serialize(cardListData)), new IntPtr(&check) });
                     }
                     break;
                 case "auto_free_pull":// Opens every pack with a free pull
@@ -1427,6 +1428,29 @@ namespace YgoMasterClient
                             }
                             Console.WriteLine("Done");
                         }).Start();
+                    }
+                    break;
+                case "card_base_data_size":// Get size of CardBaseData
+                    {
+                        IL2Assembly mscorlibAssembly = Assembler.GetAssembly("mscorlib");
+                        IL2Method sizeOf = mscorlibAssembly.GetClass("Marshal").GetMethod("SizeOf", x => x.GetParameters().Length == 1);
+
+                        IL2Assembly assembly2 = Assembler.GetAssembly("Assembly-CSharp");
+                        IL2Class targetStruct = assembly2.GetClass("CardBaseData", "YgomGame.Deck");
+
+                        Console.WriteLine("expected: " + sizeof(YgomGame.Deck.CardBaseData));
+                        foreach (System.Reflection.FieldInfo field in typeof(YgomGame.Deck.CardBaseData).GetFields())
+                        {
+                            // https://stackoverflow.com/questions/30817924/obtain-non-explicit-field-offset/56512720#56512720
+                            Console.WriteLine(field.Name + "=" + (Marshal.ReadInt32(field.FieldHandle.Value + (4 + IntPtr.Size)) & 0xFFFFFF));
+                        }
+                        Console.WriteLine();
+                        int baseOffset = 0x10;// See IL2Object.GetValueRef
+                        Console.WriteLine("sizeof(CardBaseData) = " + sizeOf.Invoke(new IntPtr[] { targetStruct.IL2Typeof() }).GetValueRef<int>());
+                        foreach (IL2Field field in targetStruct.GetFields())
+                        {
+                            Console.WriteLine(field.Name + "=" + (field.Token - baseOffset));
+                        }
                     }
                     break;
             }

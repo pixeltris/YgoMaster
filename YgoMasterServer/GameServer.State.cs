@@ -1280,6 +1280,7 @@ namespace YgoMaster
                 data["SelectedDeck"] = player.Duel.SelectedDeckToDictionary();
                 data["TitleTags"] = player.TitleTags.ToArray();
                 data["CardFavorites"] = player.CardFavorites.ToDictionary();
+                data["CardLock"] = player.CardLock.ToDictionary();
                 data["Items"] = player.Items.ToArray();
                 data["SoloChapters"] = player.SoloChaptersToDictionary();
                 data["ShopState"] = player.ShopState.ToDictionary();
@@ -1384,6 +1385,7 @@ namespace YgoMaster
             player.OrbPoints.FromDictionary(Utils.GetDictionary(data, "OrbPoints"));
             player.ShopState.FromDictionary(Utils.GetDictionary(data, "ShopState"));
             player.CardFavorites.FromDictionary(Utils.GetDictionary(data, "CardFavorites"));
+            player.CardLock.FromDictionary(Utils.GetDictionary(data, "CardLock"));
             List<object> titleTags;
             if (Utils.TryGetValue(data, "TitleTags", out titleTags))
             {

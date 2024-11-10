@@ -501,32 +501,9 @@ namespace YgomGame.Utility
             return methodGetItemDesc.Invoke(new IntPtr[] { new IntPtr(&itemID), new IntPtr(&useMobileSfx) }).GetValueObj<string>();
         }
 
-        public static Category GetCategoryFromID(int itemID)
+        public static ItemID.Category GetCategoryFromID(int itemID)
         {
-            return (Category)methodGetCategoryFromID.Invoke(new IntPtr[] { new IntPtr(&itemID) }).GetValueRef<int>();
-        }
-
-        /// <summary>
-        /// YgomGame.Utility.ItemUtil.Category
-        /// </summary>
-        public enum Category
-        {
-            NONE,
-            CONSUME,
-            CARD,
-            AVATAR,
-            ICON,
-            PROFILE_TAG,
-            ICON_FRAME,
-            PROTECTOR,
-            DECK_CASE,
-            FIELD,
-            FIELD_OBJ,
-            AVATAR_HOME,
-            STRUCTURE,
-            WALLPAPER,
-            PACK_TICKET,
-            DECK_LIMIT
+            return (ItemID.Category)methodGetCategoryFromID.Invoke(new IntPtr[] { new IntPtr(&itemID) }).GetValueRef<int>();
         }
     }
 }

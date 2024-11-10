@@ -285,6 +285,7 @@ namespace YgoMaster
                     Utils.TryCreateDirectory(replaysDir);
                     try
                     {
+                        bool canSaveReplay = true;
                         string replayPath = Path.Combine(replaysDir, request.Player.ActiveDuelSettings.DuelBeginTime + ".json");
                         if (!File.Exists(replayPath))
                         {
@@ -301,15 +302,31 @@ namespace YgoMaster
                             // Delete auto saved replays when we reach the save limit for auto saved replays
                             if (autoSavedReplaysByCreationDate.Length >= DuelReplaySaveFileLimit)
                             {
+                                canSaveReplay = false;
                                 int deletedReplays = 0;
                                 foreach (FileInfo replayFileInfo in autoSavedReplaysByCreationDate)
                                 {
                                     try
                                     {
+                                        try
+                                        {
+                                            // TODO: Cache this data so that we don't have to keep reopening all replay files when the player reaches their limit
+                                            DuelSettings duelSettings = new DuelSettings();
+                                            duelSettings.FromDictionary(MiniJSON.Json.Deserialize(File.ReadAllText(replayFileInfo.FullName)) as Dictionary<string, object>);
+                                            if (duelSettings.IsReplayLocked)
+                                            {
+                                                continue;
+                                            }
+                                        }
+                                        catch
+                                        {
+                                        }
+
                                         replayFileInfo.Delete();
                                         deletedReplays++;
                                         if (replays.Count - deletedReplays < DuelReplaySaveFileLimit)
                                         {
+                                            canSaveReplay = true;
                                             break;
                                         }
                                     }
@@ -319,7 +336,10 @@ namespace YgoMaster
                                 }
                             }
                         }
-                        File.WriteAllText(replayPath, MiniJSON.Json.Serialize(request.Player.ActiveDuelSettings.ToDictionary()));
+                        if (canSaveReplay)
+                        {
+                            File.WriteAllText(replayPath, MiniJSON.Json.Serialize(request.Player.ActiveDuelSettings.ToDictionary()));
+                        }
                     }
                     catch (Exception e)
                     {

@@ -31,6 +31,7 @@ namespace YgoMaster
         public HashSet<int> Items { get; private set; }
         public HashSet<int> TitleTags { get; private set; }
         public CardCollection CardFavorites { get; private set; }
+        public CardCollection CardLock { get; private set; }
         public Dictionary<int, DeckInfo> Decks { get; private set; }
         public PlayerCards Cards { get; private set; }
         public PlayerShopState ShopState { get; private set; }
@@ -44,6 +45,7 @@ namespace YgoMaster
         public uint SpectatingPlayerCode;
         public DuelSettings ActiveDuelSettings { get; private set; }
         public Dictionary<long, string> RecentlyListedReplayFilesByDid { get; private set; }
+        public bool IsViewingOwnReplays;
         public TradeInfo ActiveTrade;
         public DateTime LastEnterTradeRoomRequest;
         public NetClient NetClient;
@@ -62,6 +64,7 @@ namespace YgoMaster
             Items = new HashSet<int>();
             TitleTags = new HashSet<int>();
             CardFavorites = new CardCollection();
+            CardLock = new CardCollection();
             Decks = new Dictionary<int, DeckInfo>();
             Cards = new PlayerCards();
             ShopState = new PlayerShopState();

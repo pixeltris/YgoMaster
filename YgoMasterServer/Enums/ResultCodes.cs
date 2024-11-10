@@ -143,6 +143,8 @@ namespace YgoMaster
             CDB_SERVER_ERROR,//v1.3.1
             KONAMIID_SERVER_ERROR,//v1.3.1
             NEURON_MAINTENANCE,//v1.3.1
+            NO_CONSTRUCT_DATA = 1460,//v2.1.0
+            AUTO_CONSTRUCT_TIMEOUT,//v2.1.0
         }
 
         public enum CraftCode
@@ -154,6 +156,8 @@ namespace YgoMaster
             ERROR_CRAFT_GEN = 1800,
             ERROR_CRAFT_LIMIT = 1801,
             ERROR_UPDATE_FAILED = 1802,
+            ERROR_COMPENSATION_TIMELIMIT,
+            ERROR_BOOST_CRAFT_FAILED,//v2.1.0
         }
 
         public enum GachaCode
@@ -232,6 +236,8 @@ namespace YgoMaster
             VS_TEAM_DECIDED,//v1.3.1
             TEAM_MATCHING_CANCELED,//v1.3.1
             VS_TEAM_WAITING,//v1.3.1
+            ERR_REPLAY_LOCK_MAX = 2150,//v2.1.0
+            ERR_REPLAY_LOCK,////v2.1.0
         }
 
         public enum StructureCode

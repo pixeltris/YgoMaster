@@ -163,6 +163,7 @@ namespace YgoMaster
         {
             WriteCards_have(request);
             WriteCards_favorite(request);
+            WriteCards_lock(request);
         }
 
         void WriteCards_have(GameServerWebRequest request)
@@ -193,6 +194,12 @@ namespace YgoMaster
         {
             Dictionary<string, object> cards = request.GetOrCreateDictionary("Cards");
             cards["favorite"] = request.Player.CardFavorites.ToDictionary();
+        }
+
+        void WriteCards_lock(GameServerWebRequest request)
+        {
+            Dictionary<string, object> cards = request.GetOrCreateDictionary("Cards");
+            cards["lock"] = request.Player.CardLock.ToDictionary();
         }
 
         void WriteSolo_deck_info(GameServerWebRequest request)

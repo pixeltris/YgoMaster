@@ -93,7 +93,7 @@ namespace YgomGame.Deck
         static IL2Field fieldMainCardDataList;
         static IL2Field fieldExtraDeckCards;
         static IL2Field fieldExtraCardDataList;
-        static IL2Method methodSetDismantleMode;
+        static IL2Method methodSetMode;
         static IL2Method methodAddToMainDeckByID;
         static IL2Method methodAddToExtraDeckByID;
         static IL2Method methodRemoveCardFromMainOrExtra;
@@ -104,12 +104,22 @@ namespace YgomGame.Deck
         delegate int Del_GetAddableType(IntPtr thisPtr, int cardID, int regulation);
         static Hook<Del_GetAddableType> hookGetAddableType;
 
+        /// <summary>
+        /// DeckView.Mode
+        /// </summary>
+        enum Mode
+        {
+            Default,
+            Dismantle,
+            Lock
+        }
+
         static DeckView()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("DeckView", "YgomGame.Deck");
             hookGetAddableType = new Hook<Del_GetAddableType>(GetAddableType, classInfo.GetMethod("GetAddableType"));
-            methodSetDismantleMode = classInfo.GetMethod("SetDismantleMode");
+            methodSetMode = classInfo.GetMethod("SetMode");
             methodAddToMainDeckByID = classInfo.GetMethod("AddToMainDeckByID");
             methodAddToExtraDeckByID = classInfo.GetMethod("AddToExtraDeckByID");
             methodRemoveCardFromMainOrExtra = classInfo.GetMethod("RemoveCardFromMainOrExtra");
@@ -137,30 +147,34 @@ namespace YgomGame.Deck
             }
         }
 
+        private static void SetMode(IntPtr thisPtr, Mode mode)
+        {
+            methodSetMode.Invoke(thisPtr, new IntPtr[] { new IntPtr(&mode) });
+        }
+
         public static void AddCardWithSound(IntPtr thisPtr, int cardId, CardStyleRarity styleRarity, bool owned, bool mainDeck)
         {
-            bool b = false;
-            methodSetDismantleMode.Invoke(thisPtr, new IntPtr[] { new IntPtr(&b) });
+            SetMode(thisPtr, Mode.Default);
 
             IL2Method method = mainDeck ? methodAddToMainDeckByID : methodAddToExtraDeckByID;
             int reg = 0;//?
             int prem = (int)styleRarity;
             bool sort = false;
             bool isRental = false;//?
+            bool isAutoBuild = false;
             bool isIni = false;//? isInitializeSelect?
             bool noAdd = false;//?
             method.Invoke(thisPtr, new IntPtr[]
             {
-                new IntPtr(&cardId), new IntPtr(&prem), new IntPtr(&owned), new IntPtr(&isRental), new IntPtr(&reg), new IntPtr(&sort),
-                new IntPtr(&isIni), new IntPtr(&noAdd)
+                new IntPtr(&cardId), new IntPtr(&prem), new IntPtr(&owned), new IntPtr(&isRental),
+                new IntPtr(&isAutoBuild), new IntPtr(&reg), new IntPtr(&sort), new IntPtr(&isIni), new IntPtr(&noAdd)
             });
             YgomSystem.Sound.Play("SE_DECK_PLUS");
         }
 
         public static void RemoveCardWithSound(IntPtr thisPtr, int cardId, CardStyleRarity styleRarity, bool owned, bool mainDeck)
         {
-            bool b = false;
-            methodSetDismantleMode.Invoke(thisPtr, new IntPtr[] { new IntPtr(&b) });
+            SetMode(thisPtr, Mode.Default);
 
             CardBaseData cbd = new CardBaseData();
             cbd.CardID = cardId;
@@ -188,8 +202,7 @@ namespace YgomGame.Deck
         {
             // TODO: Look into ways of improving the performance of this
 
-            bool b = false;
-            methodSetDismantleMode.Invoke(thisPtr, new IntPtr[] { new IntPtr(&b) });
+            SetMode(thisPtr, Mode.Default);
 
             IL2ListExplicit mainCardDataList = new IL2ListExplicit(fieldMainCardDataList.GetValue(thisPtr).ptr, cardBaseDataClassInfo);
             IL2ListExplicit extraCardDataList = new IL2ListExplicit(fieldExtraCardDataList.GetValue(thisPtr).ptr, cardBaseDataClassInfo);
@@ -273,12 +286,13 @@ namespace YgomGame.Deck
                         int reg = 0;//?
                         bool sort = false;
                         bool isRental = false;//?
+                        bool isAutoBuild = false;
                         bool isIni = false;//? isInitializeSelect?
                         bool noAdd = false;//?
                         method.Invoke(thisPtr, new IntPtr[]
                         {
-                            new IntPtr(&id), new IntPtr(&prem), new IntPtr(&owned), new IntPtr(&isRental), new IntPtr(&reg), new IntPtr(&sort),
-                            new IntPtr(&isIni), new IntPtr(&noAdd)
+                            new IntPtr(&id), new IntPtr(&prem), new IntPtr(&owned), new IntPtr(&isRental),
+                            new IntPtr(&isAutoBuild), new IntPtr(&reg), new IntPtr(&sort), new IntPtr(&isIni), new IntPtr(&noAdd)
                         });
                     }
                 }
@@ -333,21 +347,24 @@ namespace YgomGame.Deck
         }
     }
 
+    //sizeof(CardBaseData) = 32 (0x20) - v2.1.0 (use client console command "card_base_data_size" when updating this struct)
     [StructLayout(LayoutKind.Sequential)]
     struct CardBaseData
     {
-        public int CardID;
-        public int PremiumID;
-        public bool IsOwned;
-        public int Obtained;
-        public int Inventory;
-        public int Rarity;
-        public bool IsRental;
+        public int CardID;//0x0
+        public int PremiumID;//0x4
+        public bool IsOwned;//0x8
+        public int Obtained;//0xC
+        public int Inventory;//0x10
+        public int Rarity;//0x14
+        public csbool IsRental;//0x18
+        public csbool IsAutoBuild;//0x19 v2.1.0
+        private int padding;
 
         public override string ToString()
         {
             return "cid:" + CardID + " pid:" + PremiumID + " owned:" + IsOwned + " obtained:" + Obtained + " inv:" + Inventory +
-                " rarity:" + Rarity + " rental:" + IsRental;
+                " rarity:" + Rarity + " rental:" + IsRental + " autobuild:" + IsAutoBuild;
         }
     }
 }

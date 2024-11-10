@@ -85,6 +85,7 @@ namespace YgoMaster
         public bool is_pvp;
         public int chapter;
         public string replaym;
+        public bool view_mydeck;//v2.1.0
         public List<string> bgms { get; private set; }
         public DeckInfo[] Deck { get; private set; }
         public int[] life { get; private set; }
@@ -119,6 +120,8 @@ namespace YgoMaster
         public int[] xuid { get; private set; }
         public string[] online_id { get; private set; }
         public bool[] is_same_os { get; private set; }
+        public bool IsReplayLocked;//v2.1.0 - we can't call this "lock" due to C#'s lock keyword (see fixup in GetFieldName)
+        public List<int> tags { get; private set; }//v2.1.0
 #pragma warning restore 0169
 #pragma warning restore 0649
 
@@ -129,6 +132,8 @@ namespace YgoMaster
             surrender = true;
             MyPartnerType = 1;
             cpu = int.MaxValue;
+            view_mydeck = true;
+            PvpChoice = -1;
 
             foreach (PropertyInfo property in GetType().GetProperties())
             {
@@ -719,14 +724,14 @@ namespace YgoMaster
 #endif
         {
             Dictionary<string, object> replayData = new Dictionary<string, object>();
-            replayData["mode"] = GameMode;
+            replayData["mode"] = GameMode == 0 ? (int)YgoMaster.GameMode.SoloSingle : GameMode;
             replayData["did"] = did;
             replayData["time"] = DuelBeginTime > 0 ? DuelBeginTime : duel_start_timestamp;
             replayData["myid"] = MyID;
             replayData["deck"] = new object[]
             {
-                Deck[0].ToDictionary(),
-                Deck[1].ToDictionary()
+                Deck[0].ToDictionary(true),
+                Deck[1].ToDictionary(true)
             };
             replayData["icon"] = icon;
             replayData["icon_frame"] = icon_frame;
@@ -813,11 +818,25 @@ namespace YgoMaster
             replayData["season_id"] = 1;
             replayData["date"] = Utils.FormatDateTime(Utils.ConvertEpochTime(DuelBeginTime));
 
+            replayData["first_player"] = FirstPlayer;
+            if (PvpChoice >= 0 && GameMode > 0 && GameMode != (int)YgoMaster.GameMode.SoloSingle)
+            {
+                replayData["choice"] = PvpChoice;
+            }
+            replayData["lock"] = IsReplayLocked;
+            replayData["tags"] = tags;
+            replayData["pcard"] = new List<object>()
+            {
+                Deck[0].DisplayCards.ToIndexDictionary(),
+                Deck[1].DisplayCards.ToIndexDictionary()
+            };
+
             return replayData;
         }
 
         public static Dictionary<string, object> FixupReplayRequirements(DuelSettings duelSettings, Dictionary<string, object> data)
         {
+            data["view_mydeck"] = false;
             data["rank"] = new List<object>()
             {
                 new Dictionary<string, object>()

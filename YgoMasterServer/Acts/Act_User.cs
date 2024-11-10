@@ -40,8 +40,13 @@ namespace YgoMaster
             WriteItem(request);
             request.Response["Craft"] = Craft.ToDictionary();
 
+            Dictionary<string, object> serverData = request.GetOrCreateDictionary("Server");
+            
             // This is required to get duel room spectator watching options (live / not live)
-            request.GetOrCreateDictionary("Server")["rapidwatch"] = true;
+            serverData["rapidwatch"] = true;
+
+            // Auto deck builder button in the deck editor (v2.1.0)
+            serverData["autodeck"] = false;
 
             WriteRoomInfo(request, request.Player.DuelRoom);
             Dictionary<string, object> roomData = request.GetOrCreateDictionary("Room");
@@ -190,6 +195,14 @@ namespace YgoMaster
                 { "is_goldpass", false },
                 { "received", new object[0] }
             };*/
+            int numReplays, numLockedReplays, maxReplays;
+            GetReplayStats(request.Player, out numReplays, out numLockedReplays, out maxReplays);
+            request.Response["ReplayInfo"] = new Dictionary<string, object>()
+            {
+                { "num", numReplays },
+                { "lock", numLockedReplays },
+                { "max", maxReplays }
+            };
             request.Remove(
                 "Master.CardRare",
                 "Master.CardCr",
@@ -212,7 +225,8 @@ namespace YgoMaster
                 "Duelpass",
                 "Room.rule_list",
                 "Room.holding_rule_list",
-                "Room.common");
+                "Room.common",
+                "ReplayInfo");
         }
 
         static List<object> ProcessJsonNotificationsFiles(string directoryPath)
@@ -327,7 +341,7 @@ namespace YgoMaster
             {
                 Dictionary<string, object> userData = request.GetOrCreateDictionary("User");
                 Dictionary<string, object> profileData = Utils.GetOrCreateDictionary(userData, "profile");
-                GetCommonProfileData(request.Player, profileData);
+                GetCommonProfileData(request.Player, request.Player, profileData);
 
                 // TODO: Item.sort { "1000012": { "category": 3, "item_id": 1000012, "sort_order": 7 }, ... }
             }
@@ -342,7 +356,7 @@ namespace YgoMaster
                 {
                     Dictionary<string, object> friendData = request.GetOrCreateDictionary("Friend");
                     Dictionary<string, object> profileData = Utils.GetOrCreateDictionary(friendData, "profile");
-                    GetCommonProfileData(player, profileData);
+                    GetCommonProfileData(player, request.Player, profileData);
 
                     FriendState friendState;
                     GetFriends(request.Player).TryGetValue(player.Code, out friendState);
@@ -362,7 +376,7 @@ namespace YgoMaster
             }
         }
 
-        void GetCommonProfileData(Player player, Dictionary<string, object> profileData)
+        void GetCommonProfileData(Player player, Player requestedBy, Dictionary<string, object> profileData)
         {
             Dictionary<uint, FriendState> friends = GetFriends(player);
             profileData["name"] = player.Name;
@@ -378,6 +392,7 @@ namespace YgoMaster
             profileData["tag"] = player.TitleTags.ToArray();
             profileData["follow_num"] = friends.Count(x => x.Value.HasFlag(FriendState.Following));
             profileData["follower_num"] = friends.Count(x => x.Value.HasFlag(FriendState.Follower));
+            profileData["replay_exist"] = DoesPlayerHaveAnyVisibleReplays(player, requestedBy);
         }
 
         void Act_UserRecord(GameServerWebRequest request)

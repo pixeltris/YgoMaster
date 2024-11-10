@@ -1,4 +1,4 @@
-// Client version 2.0.0
+// Client version 2.1.0
 // This file is generated using the 'updatediff' command in YgoMasterClient. This information is used to determine changes between client versions which impact YgoMaster.
 // Run the command, diff against the old file, and use the changes to update code.
 
@@ -400,6 +400,7 @@ enum Category
     WALLPAPER,
     PACK_TICKET,
     DECK_LIMIT,
+    REPLAY_LIMIT,
 }
 //==================================
 // Duel.cs
@@ -831,6 +832,7 @@ enum DuelFinishType
     Exodia3,
     CiNo1000,
     Sekitori,
+    Shukudai,
     FinishError = 100,
     FinishDisconnect,
     FinishNoContest,
@@ -1368,6 +1370,7 @@ enum CraftCode
     ERROR_CRAFT_LIMIT,
     ERROR_UPDATE_FAILED,
     ERROR_COMPENSATION_TIMELIMIT,
+    ERROR_BOOST_CRAFT_FAILED,
 }
 enum CupCode
 {
@@ -1403,6 +1406,8 @@ enum DeckCode
     CDB_SERVER_ERROR,
     KONAMIID_SERVER_ERROR,
     NEURON_MAINTENANCE,
+    NO_CONSTRUCT_DATA = 1460,
+    AUTO_CONSTRUCT_TIMEOUT,
 }
 enum DuelCode
 {
@@ -1641,6 +1646,8 @@ enum PvPCode
     VS_TEAM_DECIDED,
     TEAM_MATCHING_CANCELED,
     VS_TEAM_WAITING,
+    ERR_REPLAY_LOCK_MAX = 2150,
+    ERR_REPLAY_LOCK,
 }
 enum RankEventCode
 {
@@ -1972,8 +1979,10 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Deck_set_select_deck(System.Int32 _mode_, System.Int32 _deck_id_)
 //public static YgomSystem.Network.Handle Deck_CopyStructure(System.Int32 _structure_id_)
 //public static YgomSystem.Network.Handle Deck_SetFavoriteCards(System.Collections.Generic.Dictionary<System.String,System.Object> _card_list_)
+//public static YgomSystem.Network.Handle Deck_SetLockCards(System.Collections.Generic.Dictionary<System.String,System.Object> _card_list_)
 //public static YgomSystem.Network.Handle Deck_ExportDeck(System.String _N_token_, System.Int32 _deck_id_)
 //public static YgomSystem.Network.Handle Deck_GetAccessoryDetail()
+//public static YgomSystem.Network.Handle Deck_get_auto_deck(System.Int32[] _card_ids_)
 //public static YgomSystem.Network.Handle Download_begin()
 //public static YgomSystem.Network.Handle Download_complete()
 //public static YgomSystem.Network.Handle Download_progress(System.String _dl_end_)
@@ -1982,6 +1991,7 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Craft_generate(System.Int32 _card_id_)
 //public static YgomSystem.Network.Handle Craft_generate_multi(System.Collections.Generic.Dictionary<System.String,System.Object> _card_list_, System.Boolean _check_)
 //public static YgomSystem.Network.Handle Craft_get_card_route(System.Int32 _card_id_)
+//public static YgomSystem.Network.Handle Craft_generate_boost(System.Int32 _card_id_, System.Int32 _premium_type_, System.Int32 _cost_cp_, System.Boolean _check_)
 //public static YgomSystem.Network.Handle Friend_follow(System.Int64 _pcode_, System.Int32 _delete_)
 //public static YgomSystem.Network.Handle Friend_set_pin(System.Int64 _pcode_, System.Int32 _delete_, System.Int32 _update_work_)
 //public static YgomSystem.Network.Handle Friend_get_follower(System.Int64 _date_, System.Int64 _pcode_, System.Int32 _dir_)
@@ -1998,11 +2008,15 @@ enum WcsCode
 //public static YgomSystem.Network.Handle PvP_watch_duel(System.Int64 _pcode_, System.Int64 _rapid_)
 //public static YgomSystem.Network.Handle PvP_replay_duel(System.Int64 _pcode_, System.Int64 _did_)
 //public static YgomSystem.Network.Handle PvP_save_replay(System.Int32 _mode_, System.Int64 _did_, System.Int32 _eid_)
+//public static YgomSystem.Network.Handle PvP_save_replay_new(System.Int32 _mode_, System.Int64 _did_, System.Int32 _eid_, System.Boolean _open_)
 //public static YgomSystem.Network.Handle PvP_remove_replay(System.Int64 _did_)
 //public static YgomSystem.Network.Handle PvP_replay_duel_history(System.Int32 _idx_, System.Int32 _mode_, System.Int64 _did_, System.Int32 _eid_)
 //public static YgomSystem.Network.Handle PvP_replay_duel_history_with_room(System.Int64 _did_, System.Int64 _pcode_)
 //public static YgomSystem.Network.Handle PvP_duel_history(System.Int32 _mode_)
 //public static YgomSystem.Network.Handle PvP_set_replay_open(System.Int64 _did_, System.Boolean _open_)
+//public static YgomSystem.Network.Handle PvP_set_replay_lock(System.Int64 _did_, System.Boolean _lock_)
+//public static YgomSystem.Network.Handle PvP_set_replay_tags(System.Int64 _did_, System.Int32[] _tags_)
+//public static YgomSystem.Network.Handle PvP_set_replay_pick_cards(System.Int64 _did_, System.Int32 _myid_, System.Collections.Generic.Dictionary<System.String,System.Object> _pcards_)
 //public static YgomSystem.Network.Handle PvP_get_history_deck(System.Int64 _did_, System.Int32 _mode_, System.Int32 _idx_)
 //public static YgomSystem.Network.Handle PvP_get_replay_deck(System.Int64 _did_)
 //public static YgomSystem.Network.Handle Structure_first(System.Int32 _structure_id_)
