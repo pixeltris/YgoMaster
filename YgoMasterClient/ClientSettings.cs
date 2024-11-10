@@ -6,6 +6,7 @@ using System.IO;
 using YgoMaster;
 using System.Net.Sockets;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace YgoMasterClient
 {
@@ -98,6 +99,7 @@ namespace YgoMasterClient
             {
                 return false;
             }
+            UpdateClientTokenIfEmpty();
             Dictionary<string, object> data = null;
             try
             {
@@ -202,6 +204,31 @@ namespace YgoMasterClient
             DontAutoRunServerExe = Utils.GetValue<bool>(data, "DontAutoRunServerExe");
 
             return LoadText();
+        }
+
+        public static bool UpdateClientTokenIfEmpty()
+        {
+            // regex instead of minijson, to keep comment
+            try
+            {
+                string content = File.ReadAllText(FilePath);
+                if (string.IsNullOrEmpty(content))
+                {
+                    return false;
+                }
+                string emptyTokenPattern = @"""MultiplayerToken""\s*:\s*""""\s*,";
+                if (!Regex.IsMatch(content, emptyTokenPattern))
+                {
+                    return false;
+                }
+                string randomToken = Guid.NewGuid().ToString();
+                content = Regex.Replace(content, emptyTokenPattern, $"\"MultiplayerToken\": \"{randomToken}\",");
+                File.WriteAllText(FilePath, content);
+                return true;
+            } catch
+            {
+                return false;
+            }
         }
 
         public static void LoadTimeMultipliers()
