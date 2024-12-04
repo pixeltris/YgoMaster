@@ -837,7 +837,7 @@ namespace YgoMaster
                                             Dictionary<string, object> gateData = Utils.GetDictionary(allGateData, gateId.ToString());
                                             bool isGoal = Utils.GetValue<int>(gateData, "clear_chapter") == chapterId;
 
-                                            bool isScenario = !string.IsNullOrWhiteSpace(Utils.GetValue<string>(chapterData, "begin_sn"));
+                                            bool isScenario = Utils.IsScenarioChapter(Utils.GetValue<string>(chapterData, "begin_sn"));
                                             bool isLock = Utils.GetValue<int>(chapterData, "unlock_id") != 0;
 
                                             int myDeckSetId = Utils.GetValue<int>(chapterData, "mydeck_set_id");
@@ -2476,6 +2476,19 @@ namespace YgoMaster
                                                     (shopId == 10002078 && Path.GetFileName(file) == "Shop-2023-03-15.json"))
                                                 {
                                                     continue;
+                                                }
+
+                                                Dictionary<string, object> allPrices = Utils.GetDictionary(itemData, "prices");
+                                                if (allPrices != null)
+                                                {
+                                                    foreach (KeyValuePair<string, object> priceDataObj in allPrices)
+                                                    {
+                                                        Dictionary<string, object> priceData = priceDataObj.Value as Dictionary<string, object>;
+                                                        if (priceData != null && priceData.ContainsKey("free_num"))
+                                                        {
+                                                            Utils.LogWarning("Shop " + shopId + " has a free pull. Use it and re-log the shop data");
+                                                        }
+                                                    }
                                                 }
 
                                                 ShopPackType packType = Utils.GetValue<ShopPackType>(itemData, "packType");

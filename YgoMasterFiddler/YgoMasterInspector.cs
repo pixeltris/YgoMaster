@@ -67,7 +67,7 @@ namespace YgoMaster
                 if (!string.IsNullOrEmpty(oS.oRequest["x_acts"]) || isPvp)
                 {
                     string headers = oS.RequestHeaders != null ? oS.RequestHeaders.ToString(true, false, true) : null;
-                    YgoMasterInspectorHelper.UpdateControl(textControl, binaryContent, headers, true, isPvp);
+                    YgoMasterInspectorHelper.UpdateControl(textControl, binaryContent, headers, true, isPvp, oS.fullUrl);
                 }
                 else
                 {
@@ -130,7 +130,7 @@ namespace YgoMaster
                 if (!string.IsNullOrEmpty(oS.oRequest["x_acts"]) || isPvp)
                 {
                     string headers = oS.ResponseHeaders != null ? oS.ResponseHeaders.ToString(true, false) : null;
-                    YgoMasterInspectorHelper.UpdateControl(textControl, binaryContent, headers, false, isPvp);
+                    YgoMasterInspectorHelper.UpdateControl(textControl, binaryContent, headers, false, isPvp, oS.fullUrl);
                 }
                 else
                 {
@@ -177,7 +177,7 @@ namespace YgoMaster
             return control;
         }
 
-        public static void UpdateControl(RichTextBox control, byte[] buffer, string headers, bool request, bool isPvp)
+        public static void UpdateControl(RichTextBox control, byte[] buffer, string headers, bool request, bool isPvp, string url)
         {
             if (buffer != null)
             {
@@ -204,7 +204,7 @@ namespace YgoMaster
                         }
                         else
                         {
-                            str = DeserializeResponse(buffer);
+                            str = DeserializeResponse(buffer, url);
                         }
                     }
                 }
@@ -416,7 +416,7 @@ namespace YgoMaster
             return string.Empty;
         }
 
-        private static string DeserializeResponse(byte[] buffer)
+        private static string DeserializeResponse(byte[] buffer, string url)
         {
             if (buffer.Length > 0)
             {
@@ -535,7 +535,7 @@ namespace YgoMaster
                                             File.WriteAllText(Path.Combine(updateDir, "Shop.json"), MiniJSON.Json.Serialize(dictTemp));
                                         }
                                     }
-                                    if (data.ContainsKey("Gacha") && data["Gacha"] as Dictionary<string, object> != null)
+                                    if (data.ContainsKey("Gacha") && data["Gacha"] as Dictionary<string, object> != null && url.Contains("Gacha.get_card_list"))
                                     {
                                         Dictionary<string, object> gachaData = data["Gacha"] as Dictionary<string, object>;
                                         if (gachaData.ContainsKey("cardList") && gachaData["cardList"] as Dictionary<string, object> != null)

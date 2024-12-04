@@ -13,7 +13,7 @@ Certain logs will be dumped as json into `%USERPROFILE%/Documents/Fiddler2/Captu
 ## Card list / card craft list / ban list
 
 - Open the game using Steam (reopen it if it's already open)
-- Enter the game and log `/ayk/api/Account.auth` / `/ayk/api/User.entry` / `/ayk/api/User.home`
+- Enter the game and log `/ayk/api/System.info` / `/ayk/api/User.entry` / `/ayk/api/User.home`
 - Copy the following files from `YgoMasterUpdate/` to `YgoMaster/Data/`
 - `CardCraftableList.json`, `CardList.json`, `Regulation.json`, `RegulationIcon.json`, `RegulationInfo.json`, `StructureDecks.json`, `TitleLoop.json`
 
@@ -102,7 +102,7 @@ Client updates typically occur every few months (see https://steamdb.info/depot/
 
 - In the client console run `updatediff` which will create `updatediff.cs` in the game folder.
 - Run a diff against that file and `/Docs/updatediff.cs`. Update relevant code throughout YgoMaster based on the changes and then insert the new `updatediff.cs`.
-- After client updates uncomment `ReflectionValidator.ValidateDump()` in `Program.cs` and check the output. Then re-comment it, uncomment `ReflectionValidator.IsDumping = true;` and run again to update `ReflectionDump.json` (after fixing any broken code from the previous step).
+- After client updates enable `ReflectionValidatorValidate` in `ClientSettings.json` and check the output. Then disable it and enable `ReflectionValidatorDump` and run again to update `ReflectionDump.json` (after fixing any broken code from the previous step).
 - Update `MultiplayerPvpClientDoCommandUserOffset` / `MultiplayerPvpClientRunDialogUserOffset` in Settings.json to fix controlling the opponents hand in PvP (TODO: Provide a tool to do this)
 
 ## Unity Engine updates

@@ -68,7 +68,7 @@ namespace YgoMaster
             {
                 return false;
             }
-            if (!string.IsNullOrWhiteSpace(Utils.GetValue<string>(chapterData, "begin_sn")))
+            if (Utils.IsScenarioChapter(Utils.GetValue<string>(chapterData, "begin_sn")))
             {
                 // This is a scenario chapter
                 return false;
@@ -101,7 +101,7 @@ namespace YgoMaster
             {
                 return false;
             }
-            if (!string.IsNullOrWhiteSpace(Utils.GetValue<string>(chapterData, "begin_sn")))
+            if (Utils.IsScenarioChapter(Utils.GetValue<string>(chapterData, "begin_sn")))
             {
                 // This is a scenario chapter
                 return true;
@@ -124,7 +124,7 @@ namespace YgoMaster
             }
             if (Utils.GetValue<int>(gateData, "clear_chapter") == chapterId)
             {
-                // This is the goal/clear chapter
+                // This is the goal/clear chapter (NOTE: Chapter 670501 is both a goal and a duel)
                 return true;
             }
             return false;

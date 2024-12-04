@@ -86,6 +86,8 @@ namespace YgoMasterClient
         public static bool HomeDisableUnusedBanners;
         public static bool HomeDisableUnusedTopics;
         public static bool DontAutoRunServerExe;
+        public static bool ReflectionValidatorDump;
+        public static bool ReflectionValidatorValidate;
 
         public static string FilePath
         {
@@ -200,6 +202,8 @@ namespace YgoMasterClient
             HomeDisableUnusedBanners = Utils.GetValue<bool>(data, "HomeDisableUnusedBanners");
             HomeDisableUnusedTopics = Utils.GetValue<bool>(data, "HomeDisableUnusedTopics");
             DontAutoRunServerExe = Utils.GetValue<bool>(data, "DontAutoRunServerExe");
+            ReflectionValidatorDump = Utils.GetValue<bool>(data, "ReflectionValidatorDump");
+            ReflectionValidatorValidate = Utils.GetValue<bool>(data, "ReflectionValidatorValidate");
 
             return LoadText();
         }

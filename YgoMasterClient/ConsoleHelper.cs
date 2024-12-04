@@ -612,6 +612,9 @@ namespace YgoMasterClient
                     YgomSystem.Utility.ClientWork.UpdateJson(splitted[1]);
                     Console.WriteLine("Done");
                     break;
+                case "logjson":// Logs json object at path
+                    Console.WriteLine(YgomSystem.Utility.ClientWork.SerializePath(splitted[1]));
+                    break;
                 case "cardswithart":// List all cards with art (requires setup of YgoMaster/Data/CardData/)
                     {
                         HashSet<int> missingCardsWithArt = new HashSet<int>();
@@ -706,9 +709,6 @@ namespace YgoMasterClient
                         IL2Method Duel_begin = apiClass.GetMethod("Duel_begin");
                         IL2Method Duel_end = apiClass.GetMethod("Duel_end");
 
-                        HashSet<int> chaptersList = new HashSet<int>();
-                        HashSet<int> lockedChapters = new HashSet<int>();
-
                         Dictionary<string, object> allChapterData = Utils.GetDictionary(solo, "chapter");
                         if (allChapterData == null)
                         {
@@ -740,171 +740,206 @@ namespace YgoMasterClient
                             allGatesChapterIds[gateId] = chapterIds;
                         }
 
-                        List<int> seenGateIds = new List<int>();
-                        List<int> gatesToProcess = new List<int>();
-                        Dictionary<int, Dictionary<string, object>> allGates = new Dictionary<int, Dictionary<string, object>>();
                         Dictionary<string, object> allGateData = Utils.GetDictionary(solo, "gate");
                         if (allGateData == null)
                         {
                             Console.WriteLine("Failed to find gate data");
                             return;
                         }
-                        foreach (KeyValuePair<string, object> gate in allGateData)
-                        {
-                            Dictionary<string, object> gateData = gate.Value as Dictionary<string, object>;
-                            int gateId;
-                            if (!int.TryParse(gate.Key, out gateId) || gateData == null)
-                            {
-                                continue;
-                            }
-                            allGates[gateId] = gateData;
-                            int viewGate;
-                            int unlockId;
-                            if (Utils.TryGetValue(gateData, "view_gate", out viewGate) && viewGate == 0 &&
-                                Utils.TryGetValue(gateData, "unlock_id", out unlockId) && unlockId == 0)
-                            {
-                                seenGateIds.Add(gateId);
-                                gatesToProcess.Add(gateId);
-                            }
-                        }
-                        while (gatesToProcess.Count > 0)
-                        {
-                            List<int> gateIds = new List<int>(gatesToProcess);
-                            gatesToProcess.Clear();
-                            foreach (int gateId in gateIds)
-                            {
-                                List<int> seenChapterIds = new List<int>();
-                                List<int> chaptersToProcess = new List<int>();
-                                List<int> gateChapterIds;
-                                if (allGatesChapterIds.TryGetValue(gateId, out gateChapterIds))
-                                {
-                                    foreach (int chapterId in gateChapterIds)
-                                    {
-                                        Dictionary<string, object> chapterData;
-                                        if (allChapters.TryGetValue(chapterId, out chapterData))
-                                        {
-                                            int parentChapterId;
-                                            if (Utils.TryGetValue(chapterData, "parent_chapter", out parentChapterId) && parentChapterId == 0)
-                                            {
-                                                seenChapterIds.Add(chapterId);
-                                                chaptersToProcess.Add(chapterId);
-                                            }
-                                        }
-                                    }
-                                }
-                                while (chaptersToProcess.Count > 0)
-                                {
-                                    List<int> chapterIds = new List<int>(chaptersToProcess);
-                                    chaptersToProcess.Clear();
-                                    foreach (int chapterId in chapterIds)
-                                    {
-                                        if (!lockedChapters.Contains(chapterId))
-                                        {
-                                            chaptersList.Add(chapterId);
-                                        }
 
-                                        foreach (int childChapterId in gateChapterIds)
-                                        {
-                                            Dictionary<string, object> childChapterData;
-                                            if (allChapters.TryGetValue(childChapterId, out childChapterData))
+                        Func<int, Dictionary<string, object>, int> GetChapterStatus = (int chapterId, Dictionary<string, object> cleared) =>
+                        {
+                            int gateId = chapterId / 10000;
+                            Dictionary<string, object> gateCleared = Utils.GetDictionary(cleared, gateId.ToString());
+                            if (gateCleared != null)
+                            {
+                                return Utils.GetValue<int>(gateCleared, chapterId.ToString());
+                            }
+                            return 0;
+                        };
+
+                        Func<int, Dictionary<string, object>, Dictionary<string, object>, bool> AreUnlockConditionsMet = (int unlockId, Dictionary<string, object> cleared, Dictionary<string, object> itemHave) =>
+                        {
+                            Dictionary<string, object> allUnlockData = Utils.GetDictionary(solo, "unlock");
+                            Dictionary<string, object> allUnlockItemData = Utils.GetDictionary(solo, "unlock_item");
+                            if (allUnlockData == null || allUnlockItemData == null)
+                            {
+                                Utils.LogWarning("Failed to get all unlock data");
+                                return false;
+                            }
+                            Dictionary<string, object> unlockData = Utils.GetDictionary(allUnlockData, unlockId.ToString());
+                            if (unlockData == null)
+                            {
+                                Utils.LogWarning("Failed to get unlock data for unlock_id " + unlockId);
+                                return false;
+                            }
+                            bool unlockConditionsMet = true;
+                            foreach (KeyValuePair<string, object> unlockRequirement in unlockData)
+                            {
+                                ChapterUnlockType unlockType;
+                                if (Enum.TryParse(unlockRequirement.Key, out unlockType))
+                                {
+                                    switch (unlockType)
+                                    {
+                                        case ChapterUnlockType.HAS_ITEM:
+                                        case ChapterUnlockType.ITEM:
                                             {
-                                                int parentChapterId = Utils.GetValue<int>(childChapterData, "parent_chapter");
-                                                if (parentChapterId == chapterId && !seenChapterIds.Contains(childChapterId))
+                                                List<object> itemSetList = unlockRequirement.Value as List<object>;
+                                                if (itemSetList == null)
                                                 {
-                                                    seenChapterIds.Add(childChapterId);
-                                                    chaptersToProcess.Add(childChapterId);
-
-                                                    int unlockId = Utils.GetValue<int>(childChapterData, "unlock_id");
-                                                    if (unlockId != 0 || lockedChapters.Contains(parentChapterId))
+                                                    continue;
+                                                }
+                                                foreach (object itemSet in itemSetList)
+                                                {
+                                                    int itemSetId = (int)Convert.ChangeType(itemSet, typeof(int));
+                                                    Dictionary<string, object> itemsByCategory = Utils.GetDictionary(allUnlockItemData, itemSetId.ToString());
+                                                    if (itemsByCategory == null)
                                                     {
-                                                        // TODO: Determine unlock requirements and add the locked chapters in the correct order
-                                                        lockedChapters.Add(childChapterId);
+                                                        Utils.LogWarning("Failed to find unlock_item " + itemSetId + " for unlock_id" + unlockId);
+                                                        continue;
+                                                    }
+                                                    foreach (KeyValuePair<string, object> itemCategory in itemsByCategory)
+                                                    {
+                                                        Dictionary<string, object> items = itemCategory.Value as Dictionary<string, object>;
+                                                        ItemID.Category category;
+                                                        if (!Enum.TryParse(itemCategory.Key, out category))
+                                                        {
+                                                            continue;
+                                                        }
+                                                        foreach (KeyValuePair<string, object> item in items)
+                                                        {
+                                                            int itemId;
+                                                            int count = (int)Convert.ChangeType(item.Value, typeof(int));
+                                                            if (!int.TryParse(item.Key, out itemId))
+                                                            {
+                                                                continue;
+                                                            }
+                                                            if (itemHave == null || Utils.GetValue<int>(itemHave, itemId.ToString()) < count)
+                                                            {
+                                                                unlockConditionsMet = false;
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
+                                            break;
+                                        case ChapterUnlockType.CHAPTER_OR:
+                                            {
+                                                List<int> chapterIds = Utils.GetIntList(unlockData, unlockRequirement.Key);
+                                                if (!chapterIds.Any(x => GetChapterStatus(x, cleared) != 0))
+                                                {
+                                                    unlockConditionsMet = false;
+                                                }
+                                            }
+                                            break;
+                                        case ChapterUnlockType.CHAPTER_AND:
+                                            {
+                                                List<int> chapterIds = Utils.GetIntList(unlockData, unlockRequirement.Key);
+                                                if (!chapterIds.All(x => GetChapterStatus(x, cleared) != 0))
+                                                {
+                                                    unlockConditionsMet = false;
+                                                }
+                                            }
+                                            break;
+                                        case ChapterUnlockType.USER_LEVEL:
+                                            {
+                                                // TODO
+                                            }
+                                            break;
                                     }
                                 }
                             }
+                            return unlockConditionsMet;
+                        };
 
-                            for (int i = 0; i < 2; i++)
+                        Func<int, Dictionary<string, object>, Dictionary<string, object>, bool> IsGateUnlocked = (int gateId, Dictionary<string, object> cleared, Dictionary<string, object> itemHave) =>
+                        {
+                            Dictionary<string, object> gateData = Utils.GetDictionary(allGateData, gateId.ToString());
+                            if (gateData == null)
                             {
-                                Dictionary<string, object> allUnlockData = Utils.GetDictionary(solo, "unlock");
-                                if (allUnlockData == null)
+                                return false;
+                            }
+                            int unlockId = Utils.GetValue<int>(gateData, "unlock_id");
+                            return unlockId == 0 || AreUnlockConditionsMet(unlockId, cleared, itemHave);
+                        };
+
+                        Func<int, Dictionary<string, object>, Dictionary<string, object>, bool> IsAvailable = (int chapterId, Dictionary<string, object> cleared, Dictionary<string, object> itemHave) =>
+                        {
+                            int gateId = chapterId / 10000;
+                            if (!IsGateUnlocked(gateId, cleared, itemHave))
+                            {
+                                return false;
+                            }
+
+                            Dictionary<string, object> chapter;
+                            if (!allChapters.TryGetValue(chapterId, out chapter))
+                            {
+                                return false;
+                            }
+
+                            int parentChapterId = Utils.GetValue<int>(chapter, "parent_chapter");
+                            if (parentChapterId != 0)
+                            {
+                                Dictionary<string, object> parentChapter;
+                                if (!allChapters.TryGetValue(parentChapterId, out parentChapter))
                                 {
-                                    Console.WriteLine("Failed to get unlock data");
-                                    return;
+                                    return false;
                                 }
-                                foreach (KeyValuePair<string, object> unlock in allUnlockData)
+                                if (GetChapterStatus(parentChapterId, cleared) == 0)
                                 {
-                                    Dictionary<string, object> unlockData = unlock.Value as Dictionary<string, object>;
-                                    int unlockId;
-                                    if (!int.TryParse(unlock.Key, out unlockId) || unlockData == null)
-                                    {
-                                        continue;
-                                    }
-                                    int numConditionsMet = 0;
-                                    foreach (KeyValuePair<string, object> unlockRequirement in unlockData)
-                                    {
-                                        List<int> chapterIds = Utils.GetIntList(unlockData, unlockRequirement.Key);
-                                        ChapterUnlockType unlockType;
-                                        if (Enum.TryParse(unlockRequirement.Key, out unlockType))
-                                        {
-                                            switch (unlockType)
-                                            {
-                                                case ChapterUnlockType.CHAPTER_AND:
-                                                    if (chapterIds.All(x => chaptersList.Contains(x)))
-                                                    {
-                                                        numConditionsMet++;
-                                                    }
-                                                    break;
-                                                case ChapterUnlockType.CHAPTER_OR:
-                                                    if (chapterIds.Any(x => chaptersList.Contains(x)))
-                                                    {
-                                                        numConditionsMet++;
-                                                    }
-                                                    break;
-                                            }
-                                        }
-                                    }
-                                    if (numConditionsMet == unlockData.Count)
-                                    {
-                                        foreach (KeyValuePair<int, Dictionary<string, object>> gate in allGates)
-                                        {
-                                            int gateUnlockId = Utils.GetValue<int>(gate.Value, "unlock_id");
-                                            if (gateUnlockId == unlockId && !seenGateIds.Contains(gate.Key))
-                                            {
-                                                seenGateIds.Add(gate.Key);
-                                                gatesToProcess.Add(gate.Key);
-                                            }
-                                        }
-                                    }
+                                    return false;
                                 }
-                                if (i == 0)
+                            }
+
+                            int unlockId = Utils.GetValue<int>(chapter, "unlock_id");
+                            if (unlockId != 0)
+                            {
+                                return AreUnlockConditionsMet(unlockId, cleared, itemHave);
+                            }
+
+                            return true;
+                        };
+
+                        Func<int> GetNextChapter = () =>
+                        {
+                            bool hasData = false;
+                            Dictionary<string, object> cleared = null;
+                            Dictionary<string, object> itemHave = null;
+                            Win32Hooks.Invoke(() =>
+                            {
+                                cleared = YgomSystem.Utility.ClientWork.GetDict("Solo.cleared");
+                                itemHave = YgomSystem.Utility.ClientWork.GetDict("Item.have");
+                                hasData = true;
+                            });
+                            while (!hasData)
+                            {
+                                Thread.Sleep(1);
+                            }
+                            if (cleared != null)
+                            {
+                                foreach (KeyValuePair<int, Dictionary<string, object>> chapter in allChapters)
                                 {
-                                    if (gatesToProcess.Count > 0)
+                                    if (GetChapterStatus(chapter.Key, cleared) != 3 && IsAvailable(chapter.Key, cleared, itemHave))
                                     {
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        foreach (int chapterId in lockedChapters)
-                                        {
-                                            chaptersList.Add(chapterId);
-                                        }
+                                        return chapter.Key;
                                     }
                                 }
                             }
-                        }
-
-                        Console.WriteLine("Chapters: " + chaptersList.Count + " / " + allChapters.Count + " (missing:" + string.Join(",", allChapters.Keys.Except(chaptersList).ToList()) + ")");
-                        Console.WriteLine("Gates: " + seenGateIds.Count + " / " + allGates.Count + " (missing:" + string.Join(",", allGates.Keys.Except(seenGateIds).ToList()) + ")");
+                            return 0;
+                        };
 
                         new Thread(delegate ()
                         {
                             int lastGateId = 0;
-                            foreach (int chapterId in chaptersList)
+                            while (true)
                             {
+                                int chapterId = GetNextChapter();
+                                if (chapterId == 0)
+                                {
+                                    Console.WriteLine("Done");
+                                    break;
+                                }
+
                                 Dictionary<string, object> chapterData;
                                 if (!allChapters.TryGetValue(chapterId, out chapterData))
                                 {
@@ -925,12 +960,23 @@ namespace YgoMasterClient
                                 Console.WriteLine("Doing chapter " + chapterId + " for gate " + gateId);
 
                                 Dictionary<string, object> gateData = Utils.GetDictionary(allGateData, gateId.ToString());
-                                bool isGoal = Utils.GetValue<int>(gateData, "clear_chapter") == chapterId;
+                                
+                                bool isGoalOnly = Utils.GetValue<int>(gateData, "clear_chapter") == chapterId;
+                                if (Utils.GetValue<int>(chapterData, "mydeck_set_id") != 0 || Utils.GetValue<int>(chapterData, "set_id") != 0)
+                                {
+                                    isGoalOnly = false;
+                                }
 
-                                bool isScenario = !string.IsNullOrWhiteSpace(Utils.GetValue<string>(chapterData, "begin_sn"));
+                                bool isScenario = Utils.IsScenarioChapter(Utils.GetValue<string>(chapterData, "begin_sn"));
                                 bool isLock = Utils.GetValue<int>(chapterData, "unlock_id") != 0;
 
-                                if (isScenario || isLock || isGoal)
+                                /*MakeNetworkRequest(isCompleted, () =>
+                                {
+                                    int chapterIdLoc = chapterId;
+                                    return Solo_detail.Invoke(new IntPtr[] { new IntPtr(&chapterIdLoc) }).ptr;
+                                });*/
+
+                                if (isScenario || isLock || isGoalOnly)
                                 {
                                     MakeNetworkRequest(isCompleted, () =>
                                     {
@@ -990,7 +1036,6 @@ namespace YgoMasterClient
                                     }
                                 }
                             }
-                            Console.WriteLine("Done");
                         }).Start();
                     }
                     break;

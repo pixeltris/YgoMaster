@@ -75,6 +75,7 @@
     1001024,//Eldlixir
     1001025,//Naturia Cosmobeet
     1001026,//The Fabled Chawa
+    1001027,//Snowman Eater
     1001028,//Bonfire
     1001031,//Ryko, Lightsworn Hunter
     1002001,//Soccer Ball
@@ -168,11 +169,16 @@
     1010074,//Ragnaraika the Evil Seed
     1010075,//Minerva, the Athenian Lightsworn
     1010076,//Called by the Grave
+    1010077,//Sangen Summoning
     1010078,//Stardust Dragon
     1010079,//Junk Warrior
     1010080,//The Legendary Fisherman
     1010081,//Cyber Harpie Lady
+    1010082,//Hallo & Ween
+    1010083,//1,000 Days since Launch Celebration
+    1010084,//Evil★Twin
     1010085,//2025 SEASON
+    1010086,//Nightmare Apprentice
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -276,6 +282,8 @@
     1012061,//Cyber Dragon
     1012062,//Evil★Twins Ki-sikil & Lil-la
     1012063,//Eldlixir of White Destiny
+    1012064,//Ally of Justice Cosmic Gateway
+    1012065,//Ally Mind
     1013001,//PawaPuro
     1013002,//Memories of Intersecting Duels
     1013003,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
@@ -397,6 +405,7 @@
     1020115,//Xyz Cup 2nd Stage Duelist
     1020116,//Awakening
     1020117,//Transcendence
+    1020118,//Beast
     1020119,//MD Proficiency Test Grade 20
     1020120,//DC 2024 SEP Top 10
     1020121,//DC 2024 SEP Top 100
@@ -404,8 +413,18 @@
     1020123,//DC 2024 SEP Top 1000
     1020124,//DC 2024 SEP Top 10000
     1020125,//DC 2024 SEP 2nd Stage Duelist
+    1020126,//Three Creeds
+    1020127,//Evolution Intertwined
+    1020128,//Hyperspeed Halo
+    1020129,//Three-Pronged Union
     1020130,//Overlord of Deepest Black
     1020131,//Storm and Surge
+    1020132,//WCS 2024 Champion
+    1020133,//WCS 2024 Finalist
+    1020134,//WCS 2024 Top 4
+    1020135,//WCS 2024 Top 12
+    1020136,//Ace of Black and Blue
+    1020137,//Domain of Nothingness
     1021001,//Starting Out
   ],
   "ICON_FRAME": [
@@ -439,6 +458,8 @@
     1030028,//Lime Frame
     1030029,//Gray Frame
     1030030,//Leodrake's Mane
+    1030031,//Ally of Justice Cosmic Gateway
+    1030032,//White Frame
     1031001,//The Path of the Blue Sky Striker
     1031002,//The Path of the Red Sky Striker
     1031003,//Magic Cylinder
@@ -455,6 +476,7 @@
     1032005,//Frost Frame
     1032006,//Flurry of Cherry Blossoms
     1032007,//Neon Sign
+    1032008,//Maple Maiden
     1033001,//WCS 2023 Party Favor
     1033002,//WCS 2024 Party Favor
     1033003,//Overlay Unit
@@ -551,8 +573,11 @@
     1070090,//Aleister the Invoker of Madness
     1070091,//Flower Cardian Zebra Grass
     1070092,//Ragnaraika Stag Sovereign
+    1070093,//Ritual Beast Ulti-Reirautari
+    1070094,//Flower Cardian Maple with Deer
     1070095,//Stardust Dragon
     1070096,//Junk Warrior
+    1070097,//Triple Tactics Talent
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -586,6 +611,8 @@
     1072001,//Sky Striker Conversion: Flaming Wings of Destruction
     1072002,//Chaos Xyz Evolution －Galactic Gathering of Dragons－
     1072003,//Sky Striker Armor - Black Flash Raiment
+    1072004,//Hallo & Ween
+    1072005,//Evil★Twin
     1073001,//WCS 2023 Party Favor
     1073002,//WCS 2023 Celebration
     1073003,//DC 2023 OCT Celebration
@@ -638,6 +665,8 @@
     1082012,//President's Briefcase
     1082013,//Magicians of Bonds and Unity
     1082014,//King's Sarcophagus
+    1082016,//Hallo & Ween
+    1082017,//Live☆Twin
   ],
   "FIELD": [
     1090001,//Forest
@@ -665,6 +694,8 @@
     1090023,//Pressured Planet Wraitsoth
     1090025,//Blue-Eyes Mausoleum
     1090030,//Forest of the Traptrix
+    1090031,//Ruins of the Sinful Spoils
+    1090033,//Evil★Twin
     1092001,//Colosseum
     1092002,//WCS
   ],
@@ -694,6 +725,8 @@
     1100023,//Pressured Planet Wraitsoth
     1100025,//Blue-Eyes Mausoleum
     1100030,//Forest of the Traptrix
+    1100031,//Ruins of the Sinful Spoils
+    1100033,//Evil★Twin
     1101001,//Trap Hole
     1101002,//Magical Hats
     1101003,//Summon Limit
@@ -707,7 +740,9 @@
     1101011,//Negate Attack
     1101012,//Twin Twisters
     1101013,//Foolish Burial
+    1101014,//Soul-Absorbing Bone Tower
     1101016,//Magical Thorn
+    1101020,//Opening of the Spirit Gates
     1101025,//Fire King Sanctuary
     1102001,//Colosseum
     1102002,//WCS
@@ -738,6 +773,8 @@
     1110023,//Pressured Planet Wraitsoth
     1110025,//Blue-Eyes Mausoleum
     1110030,//Forest of the Traptrix
+    1110031,//Ruins of the Sinful Spoils
+    1110033,//Evil★Twin
     1111001,//Destiny Board
     1111002,//Bug Matrix
     1111003,//Shien's Dojo
@@ -759,8 +796,11 @@
     1111021,//Green Stone of Magic
     1111022,//Summer Trace of the Thunder God
     1111024,//Limiter Removal
+    1111026,//Treasured Tree Stump
     1111032,//Xyz Monster Card
     1111039,//Barrier of the Voiceless Voice
+    1111040,//Gunkan Sushipyard Seaside Supper Spot
+    1111045,//Madolche Chickolates
     1112001,//Colosseum
     1112002,//WCS
     1113001,//WCS 2023 Party Favor
@@ -846,8 +886,11 @@
     1130049,//Ancient Gear Advance
     1130050,//Aroma Healing
     1130051,//Final Gesture
+    1130052,//Sangen Kaiho
     1130053,//Stardust Dragon
     1130054,//Junk Warrior
+    1130056,//Ties That Bind
+    1130057,//Terrors of the Afterroot
   ],
   "PACK_TICKET": [
     1140001,//Legacy Pack ticket
@@ -859,5 +902,8 @@
   ],
   "DECK_LIMIT": [
     1150001,//Deck Slot
+  ],
+  "REPLAY_LIMIT": [
+    1160001,//Replay Slots
   ],
 }

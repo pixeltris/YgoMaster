@@ -723,5 +723,19 @@ namespace YgoMaster
             Value value;
             instance.TryRemove(key, out value);
         }
+
+        public static bool IsScenarioChapter(string sn)
+        {
+            if (string.IsNullOrWhiteSpace(sn))
+            {
+                return false;
+            }
+            int id;
+            if (int.TryParse(sn, out id))
+            {
+                return id != 0;
+            }
+            return true;
+        }
     }
 }

@@ -154,8 +154,6 @@ namespace YgoMasterClient
 
             try
             {
-                //ReflectionValidator.IsDumping = true;
-
                 IsLive = arg == "live";
 
                 CurrentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -190,7 +188,14 @@ namespace YgoMasterClient
                     }
                 }
 
-                //ReflectionValidator.ValidateDump();
+                if (ClientSettings.ReflectionValidatorDump)
+                {
+                    ReflectionValidator.IsDumping = true;
+                }
+                else if (ClientSettings.ReflectionValidatorValidate)
+                {
+                    ReflectionValidator.ValidateDump();
+                }
 
                 if (!IsLive)
                 {

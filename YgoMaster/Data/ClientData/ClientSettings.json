@@ -69,4 +69,6 @@
     "HomeDisableUnusedBanners": true,
     "HomeDisableUnusedTopics": true,
     "DontAutoRunServerExe": false,
+    "ReflectionValidatorDump": false,
+    "ReflectionValidatorValidate": false,
 }
