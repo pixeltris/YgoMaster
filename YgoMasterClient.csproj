@@ -106,7 +106,6 @@
     <Compile Include="YgoMasterClient\Ultralight.cs" />
     <Compile Include="YgoMasterClient\UnityPlayerPdb.cs" />
     <Compile Include="YgoMasterClient\WallpaperCycle.cs" />
-    <Compile Include="YgoMasterClient\WebUI.cs" />
     <Compile Include="YgoMasterServer\DuelSettings.cs" />
     <Compile Include="YgoMasterServer\Enums\Card.cs" />
     <Compile Include="YgoMasterServer\Enums\Duel.cs" />

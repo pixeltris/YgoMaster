@@ -310,14 +310,6 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomGame.Menu.ProfileViewController));
                 nativeTypes.Add(typeof(YgomGame.Menu.ToastMessageInform));
                 nativeTypes.Add(typeof(TradeUtils));
-                // WebUI
-                if (Environment.Version.Major == 4)
-                {
-                    // These reference WinForms so cannot be loaded under BepInEx
-                    nativeTypes.Add(typeof(YgomGame.Mission.MissionViewController));
-                    nativeTypes.Add(typeof(YgomGame.Credit.CreditViewController));
-                    nativeTypes.Add(typeof(YgomGame.Settings.SettingsUtil));
-                }
                 // Misc
                 nativeTypes.Add(typeof(DuelDll));
                 nativeTypes.Add(typeof(DuelTapSync));
