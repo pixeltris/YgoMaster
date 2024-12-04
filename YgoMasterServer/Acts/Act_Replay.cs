@@ -389,6 +389,7 @@ namespace YgoMaster
                     if (File.Exists(replayPath))
                     {
                         File.Delete(replayPath);
+                        request.Player.RecentlyListedReplayFilesByDid.Remove(did);
                     }
                 }
                 catch (Exception e)
@@ -397,6 +398,15 @@ namespace YgoMaster
                 }
             }
             request.Remove("User.replay." + did);
+
+            int numReplays, numLockedReplays, maxReplays;
+            GetReplayStats(request.Player, out numReplays, out numLockedReplays, out maxReplays);
+            request.Response["ReplayInfo"] = new Dictionary<string, object>()
+            {
+                { "num", numReplays },
+                { "lock", numLockedReplays },
+                { "max", maxReplays }
+            };
         }
 
         void Act_ReplayDuel(GameServerWebRequest request)

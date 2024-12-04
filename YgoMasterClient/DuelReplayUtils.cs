@@ -50,21 +50,14 @@ namespace YgomGame.SubMenu
             string replaysDir = Path.Combine(Program.LocalPlayerSaveDataDir, "Replays");
             Utils.TryCreateDirectory(replaysDir);
 
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            /*FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.SelectedPath = replaysDir;
-            if (fbd.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(fbd.SelectedPath) && Directory.Exists(fbd.SelectedPath))
+            if (fbd.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(fbd.SelectedPath) && Directory.Exists(fbd.SelectedPath))*/
+            FolderPicker fbd = new FolderPicker();
+            fbd.InputPath = replaysDir;
+            if (fbd.ShowDialog() == true && !string.IsNullOrEmpty(fbd.ResultPath) && Directory.Exists(fbd.ResultPath))
             {
-                IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
-                if (manager != IntPtr.Zero)
-                {
-                    YgomGame.Menu.ProfileReplayViewController.IsHacked = true;
-                    YgomGame.Menu.ProfileReplayViewController.TargetDirectory = new DirectoryInfo(fbd.SelectedPath);
-                    Dictionary<string, object> args = new Dictionary<string, object>()
-                    {
-                        { "pcode", 0 }
-                    };
-                    YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "Profile/ProfileReplay", args);
-                }
+                YgomGame.Menu.ProfileReplayViewController.Push(fbd.ResultPath);
             }
         }
     }
@@ -91,49 +84,68 @@ namespace YgomGame.Menu
         const string NetHijackCmd = "User.profile";
         static string NetCmd;
         static long NetValue;
+        static bool NetRequestFailed;
 
         static Dictionary<long, ReplayInfo> replays = new Dictionary<long, ReplayInfo>();
         static List<ReplayInfo> replaysList = new List<ReplayInfo>();
-        static int targetReplayIndex = -1;
 
         delegate void Del_OnCreatedView(IntPtr thisPtr);
         static Hook<Del_OnCreatedView> hookOnCreatedView;
 
-        delegate void Del_OnItemSetData(IntPtr thisPtr, int res);
-        static Hook<Del_OnItemSetData> hookOnItemSetData_1;
-        static Hook<Del_OnItemSetData> hookOnItemSetData_2;
-        static Hook<Del_OnItemSetData>[] hooks = new Hook<Del_OnItemSetData>[2];
+        static IL2Field fieldItemIndex;
+        static IL2Field fieldReplayInfos;
+        static IL2Class classProfileReplayInfo;
+        static IL2Field fieldDid;
 
-        static IL2Field fieldDataIndex;
+        const string replayInfoKey = "ReplayInfo";
+        static Dictionary<string, object> cachedReplayInfo;
 
         static ProfileReplayViewController()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("ProfileReplayViewController", "YgomGame.Menu");
             hookOnCreatedView = new Hook<Del_OnCreatedView>(OnCreatedView, classInfo.GetMethod("OnCreatedView"));
-
-            FindOnItemSetDataMethod(classInfo, "<OnItemSetData>b__0", ref hookOnItemSetData_1, 0);
-            FindOnItemSetDataMethod(classInfo, "<OnItemSetData>b__1", ref hookOnItemSetData_2, 1);
+            fieldItemIndex = classInfo.GetField("itemIndex");
+            fieldReplayInfos = classInfo.GetField("replayInfos");
+            classProfileReplayInfo = classInfo.GetNestedType("ProfileReplayInfo");
+            fieldDid = classProfileReplayInfo.GetField("did");
         }
 
-        static void FindOnItemSetDataMethod(IL2Class classInfo, string name, ref Hook<Del_OnItemSetData> hook, int i)
+        static long GetActiveDid()
         {
-            foreach (IL2Class type in classInfo.GetNestedTypes())
+            if (Instance == IntPtr.Zero)
             {
-                IL2Method method = type.GetMethods().FirstOrDefault(x => x.Name == name);
-                if (method != null)
-                {
-                    fieldDataIndex = type.GetField("dataindex");
-                    hook = new Hook<Del_OnItemSetData>((IntPtr thisPtr, int res) =>
-                    {
-                        targetReplayIndex = fieldDataIndex.GetValue(thisPtr).GetValueRef<int>();
-                        hooks[i].Original(thisPtr, res);
-                    }, method);
-                    hooks[i] = hook;
-                    return;
-                }
+                return 0;
             }
-            Utils.LogWarning("Failed to find " + name + " function for ProfileReplayViewController");
+            IL2ListExplicit list = new IL2ListExplicit(fieldReplayInfos.GetValue(Instance).ptr, classProfileReplayInfo);
+            int index = fieldItemIndex.GetValue(Instance).GetValueRef<int>();
+            if (index >= 0 && index < list.Count)
+            {
+                return fieldDid.GetValue(list[index]).GetValueRef<long>();
+            }
+            return 0;
+        }
+
+        public static void Push(string path)
+        {
+            IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
+            if (manager == IntPtr.Zero)
+            {
+                return;
+            }
+
+            IsHacked = true;
+            TargetDirectory = new DirectoryInfo(path);
+            
+            cachedReplayInfo = YgomSystem.Utility.ClientWork.GetDict(replayInfoKey);
+
+            UpdateReplayList();
+
+            Dictionary<string, object> args = new Dictionary<string, object>()
+            {
+                { "pcode", 0 }
+            };
+            YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "Profile/ProfileReplay", args);
         }
 
         static void OnCreatedView(IntPtr thisPtr)
@@ -146,6 +158,11 @@ namespace YgomGame.Menu
         {
             if (Instance != IntPtr.Zero && popTarget == Instance)
             {
+                if (cachedReplayInfo != null)
+                {
+                    YgomSystem.Utility.ClientWork.UpdateJson(replayInfoKey, MiniJSON.Json.Serialize(cachedReplayInfo));
+                }
+                YgomSystem.Utility.ClientWork.DeleteByJsonPath("User.replay");
                 TargetDirectory = null;
                 IsHacked = false;
                 Instance = IntPtr.Zero;
@@ -155,11 +172,10 @@ namespace YgomGame.Menu
                 replays.Clear();
                 replaysList.Clear();
                 LastReplayListData.Clear();
-                targetReplayIndex = -1;
             }
         }
 
-        public static void OnNetworkComplete(IntPtr requestStructurePtr, string cmd)
+        private static void HandleAutoSave(IntPtr requestStructurePtr, string cmd)
         {
             if (cmd == "User.replay_list")
             {
@@ -328,175 +344,26 @@ namespace YgomGame.Menu
                 LiveDuelBeginData = null;
                 ActiveDuelReplayDid = 0;
             }
+        }
+
+        public static void OnNetworkComplete(IntPtr requestStructurePtr, string cmd)
+        {
+            HandleAutoSave(requestStructurePtr, cmd);
 
             if (!IsHacked || string.IsNullOrEmpty(NetCmd) || cmd != NetHijackCmd)
             {
                 return;
             }
 
+            if (NetRequestFailed)
+            {
+                // To avoid getting get stuck "loading" forever (NOTE: No error message appears, it just does nothing)
+                YgomSystem.Network.RequestStructure.SetCode(requestStructurePtr, (int)ResultCodes.DuelCode.ERROR);
+                NetRequestFailed = false;
+            }
+
             switch (NetCmd)
             {
-                case "User.profile":
-                    {
-                        //YgomSystem.Utility.ClientWork.DeleteByJsonPath("User.profile");
-                        YgomSystem.Utility.ClientWork.DeleteByJsonPath("Friend.profile");
-
-                        if (targetReplayIndex >= 0 && targetReplayIndex < replaysList.Count)
-                        {
-                            ReplayInfo replay = replaysList[targetReplayIndex];
-
-                            DuelSettings duelSettings = new DuelSettings();
-                            try
-                            {
-                                if (File.Exists(replay.Path))
-                                {
-                                    Dictionary<string, object> duelData = MiniJSON.Json.Deserialize(File.ReadAllText(replay.Path)) as Dictionary<string, object>;
-                                    duelSettings.FromDictionary(duelData);
-                                }
-                            }
-                            catch
-                            {
-                                return;
-                            }
-
-                            Dictionary<string, object> rootData = new Dictionary<string, object>();
-                            Dictionary<string, object> friendData = Utils.GetOrCreateDictionary(rootData, "Friend");
-                            Dictionary<string, object> profileData = Utils.GetOrCreateDictionary(friendData, "profile");
-
-                            profileData["name"] = duelSettings.name[replay.OpponentID];
-                            profileData["rank"] = duelSettings.rank[replay.OpponentID];
-                            profileData["rate"] = duelSettings.rate[replay.OpponentID];
-                            profileData["level"] = duelSettings.level[replay.OpponentID];
-                            profileData["exp"] = 0;
-                            profileData["need_exp"] = 0;
-                            profileData["icon_id"] = duelSettings.icon[replay.OpponentID];
-                            profileData["icon_frame_id"] = duelSettings.icon_frame[replay.OpponentID];
-                            profileData["avatar_id"] = duelSettings.avatar[replay.OpponentID];
-                            profileData["wallpaper"] = duelSettings.wallpaper[replay.OpponentID];
-                            profileData["tag"] = duelSettings.profile_tag[replay.OpponentID].ToArray();
-                            profileData["follow_num"] = duelSettings.follow_num[replay.OpponentID];
-                            profileData["follower_num"] = duelSettings.follower_num[replay.OpponentID];
-
-                            profileData["is_follow"] = false;
-                            profileData["is_block"] = false;
-                            profileData["is_ps_block"] = false;
-                            profileData["is_xbox_block"] = false;
-
-                            YgomSystem.Utility.ClientWork.UpdateJson(MiniJSON.Json.Serialize(rootData));
-                        }
-                    }
-                    break;
-                case "User.replay_list":
-                    {
-                        YgomSystem.Utility.ClientWork.DeleteByJsonPath("User.replay");
-
-                        replays.Clear();
-                        if (TargetDirectory.Exists)
-                        {
-                            Dictionary<string, object> rootData = new Dictionary<string, object>();
-                            Dictionary<string, object> userData = Utils.GetOrCreateDictionary(rootData, "User");
-                            Dictionary<string, object> allReplayData = Utils.GetOrCreateDictionary(userData, "replay");
-
-                            foreach (FileInfo fileInfo in TargetDirectory.GetFiles("*.json"))
-                            {
-                                try
-                                {
-                                    Dictionary<string, object> duelData = MiniJSON.Json.Deserialize(File.ReadAllText(fileInfo.FullName)) as Dictionary<string, object>;
-                                    if (duelData != null)
-                                    {
-                                        DuelSettings duelSettings = new DuelSettings();
-                                        duelSettings.FromDictionary(duelData);
-                                        while (replays.ContainsKey(duelSettings.did))
-                                        {
-                                            duelSettings.did++;
-                                        }
-                                        FixupDuelSettingsForIsOpponent(duelSettings, true);
-                                        ReplayInfo replayInfo = new ReplayInfo()
-                                        {
-                                            Did = duelSettings.did,
-                                            MyID = duelSettings.MyID,
-                                            Path = fileInfo.FullName,
-                                            Pcode = duelSettings.pcode
-                                        };
-                                        replays[duelSettings.did] = replayInfo;
-                                        replaysList.Add(replayInfo);
-                                        Dictionary<string, object> replayData = duelSettings.ToDictionaryForReplayList();
-                                        allReplayData[duelSettings.did.ToString()] = replayData;
-                                        replayInfo.Time = Utils.GetValue<long>(replayData, "time");
-                                    }
-                                }
-                                catch (Exception e)
-                                {
-                                    Utils.LogWarning("Load replay file '" + fileInfo.Name + "' failed. Error: " + e);
-                                }
-                            }
-
-                            // NOTE: Two duels with the same time might result in our list being off from the games list
-                            // (this would impact viewing those specific profiles but not viewing their duels)
-                            replaysList.Sort((x, y) => -x.Time.CompareTo(y.Time));
-
-                            YgomSystem.Utility.ClientWork.UpdateJson(MiniJSON.Json.Serialize(rootData));
-                        }
-                    }
-                    break;
-                case "PvP.get_replay_deck":
-                    {
-                        ReplayInfo replay;
-                        if (replays.TryGetValue(NetValue, out replay))
-                        {
-                            try
-                            {
-                                if (File.Exists(replay.Path))
-                                {
-                                    Dictionary<string, object> duelData = MiniJSON.Json.Deserialize(File.ReadAllText(replay.Path)) as Dictionary<string, object>;
-                                    if (duelData != null)
-                                    {
-                                        DuelSettings duelSettings = new DuelSettings();
-                                        duelSettings.FromDictionary(duelData);
-                                        DeckInfo deckInfo = duelSettings.Deck[replay.OpponentID];
-                                        if (deckInfo != null)
-                                        {
-                                            Dictionary<string, object> rootData = new Dictionary<string, object>();
-                                            Dictionary<string, object> allDeckListData = Utils.GetOrCreateDictionary(rootData, "RDeckList");
-                                            allDeckListData[replay.Did.ToString()] = deckInfo.ToDictionary();
-                                            YgomSystem.Utility.ClientWork.UpdateJson(MiniJSON.Json.Serialize(rootData));
-                                        }
-                                    }
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                Utils.LogWarning("Failed to get opponents deck for replay " + NetValue + "'. Error: " + e);
-                            }
-                        }
-                        break;
-                    }
-                case "PvP.set_replay_open":
-                    {
-                        // Making replays public / private here doesn't make much sense
-                    }
-                    break;
-                case "PvP.remove_replay":
-                    {
-                        ReplayInfo replay;
-                        if (replays.TryGetValue(NetValue, out replay))
-                        {
-                            try
-                            {
-                                if (File.Exists(replay.Path))
-                                {
-                                    File.Delete(replay.Path);
-                                    replays.Remove(replay.Did);
-                                    replaysList.Remove(replay);
-                                    YgomSystem.Utility.ClientWork.DeleteByJsonPath("User.replay." + NetValue);
-                                }
-                            }
-                            catch
-                            {
-                            }
-                        }
-                    }
-                    break;
                 case "PvP.replay_duel":
                     {
                         YgomSystem.Utility.ClientWork.DeleteByJsonPath("Response");
@@ -507,57 +374,6 @@ namespace YgomGame.Menu
                             Dictionary<string, object> responseData = Utils.GetOrCreateDictionary(rootData, "Response");
                             responseData["UrlScheme"] = "duel:push?GameMode=" + (int)GameMode.Replay + "&did=" + NetValue;
                             YgomSystem.Utility.ClientWork.UpdateJson(MiniJSON.Json.Serialize(rootData));
-                        }
-                    }
-                    break;
-                case "Duel.begin":
-                    {
-                        bool failed = true;
-
-                        YgomSystem.Utility.ClientWork.DeleteByJsonPath("Duel");
-                        YgomSystem.Utility.ClientWork.DeleteByJsonPath("DuelResult");
-                        YgomSystem.Utility.ClientWork.DeleteByJsonPath("Result");
-
-                        ReplayInfo replay;
-                        if (replays.TryGetValue(NetValue, out replay))
-                        {
-                            try
-                            {
-                                if (File.Exists(replay.Path))
-                                {
-                                    Dictionary<string, object> duelData = MiniJSON.Json.Deserialize(File.ReadAllText(replay.Path)) as Dictionary<string, object>;
-                                    if (duelData != null)
-                                    {
-                                        Dictionary<string, object> rootData = new Dictionary<string, object>();
-
-                                        DuelSettings duelSettings = new DuelSettings();
-                                        duelSettings.FromDictionary(duelData);
-
-                                        duelSettings.MyType = (int)DuelPlayerType.Replay;
-                                        duelSettings.chapter = 0;
-                                        duelSettings.GameMode = (int)GameMode.Replay;
-                                        FixupDuelSettingsForIsOpponent(duelSettings);
-
-                                        Dictionary<string, object> dict = DuelSettings.FixupReplayRequirements(duelSettings, duelSettings.ToDictionary());
-                                        dict["publicLevel"] = (int)ClientSettings.DuelReplayCardVisibility;
-                                        rootData["Duel"] = dict;
-
-                                        YgomSystem.Utility.ClientWork.UpdateJson(MiniJSON.Json.Serialize(rootData));
-
-                                        failed = false;
-                                    }
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                Utils.LogWarning("Failed to get opponents deck for replay " + NetValue + "'. Error: " + e);
-                            }
-                        }
-
-                        if (failed)
-                        {
-                            // To avoid getting get stuck "loading" forever (NOTE: No error message appears, it just does nothing)
-                            YgomSystem.Network.RequestStructure.SetCode(requestStructurePtr, (int)ResultCodes.DuelCode.ERROR);
                         }
                     }
                     break;
@@ -633,28 +449,229 @@ namespace YgomGame.Menu
                     return;
                 }
 
+                NetRequestFailed = false;
                 NetCmd = commandString;
                 switch (commandString)
                 {
                     case "User.profile":
-                        NetValue = Utils.GetValue<long>(param, "pcode");
-                        ReplaceNetworkEntry(ref commandPtr, ref paramPtr);
+                        {
+                            NetValue = Utils.GetValue<long>(param, "pcode");
+                            ReplaceNetworkEntry(ref commandPtr, ref paramPtr);
+
+                            //YgomSystem.Utility.ClientWork.DeleteByJsonPath("User.profile");
+                            YgomSystem.Utility.ClientWork.DeleteByJsonPath("Friend.profile");
+
+                            ReplayInfo replay = null;
+                            long did = GetActiveDid();
+                            if (did >= 0)
+                            {
+                                replays.TryGetValue(did, out replay);
+                            }
+                            if (replay == null && replays.Count > 0)
+                            {
+                                // NOTE: Need to return something otherwise the client will softlock (all network requests will freeze forever)
+                                replay = replays.Values.FirstOrDefault();
+                            }
+                            if (did >= 0 && replays.TryGetValue(did, out replay))
+                            {
+                                DuelSettings duelSettings = new DuelSettings();
+                                try
+                                {
+                                    if (File.Exists(replay.Path))
+                                    {
+                                        Dictionary<string, object> duelData = MiniJSON.Json.Deserialize(File.ReadAllText(replay.Path)) as Dictionary<string, object>;
+                                        duelSettings.FromDictionary(duelData);
+                                    }
+                                }
+                                catch
+                                {
+                                    return;
+                                }
+
+                                Dictionary<string, object> rootData = new Dictionary<string, object>();
+                                Dictionary<string, object> friendData = Utils.GetOrCreateDictionary(rootData, "Friend");
+                                Dictionary<string, object> profileData = Utils.GetOrCreateDictionary(friendData, "profile");
+
+                                profileData["name"] = duelSettings.name[replay.OpponentID];
+                                profileData["rank"] = duelSettings.rank[replay.OpponentID];
+                                profileData["rate"] = duelSettings.rate[replay.OpponentID];
+                                profileData["level"] = duelSettings.level[replay.OpponentID];
+                                profileData["exp"] = 0;
+                                profileData["need_exp"] = 0;
+                                profileData["icon_id"] = duelSettings.icon[replay.OpponentID];
+                                profileData["icon_frame_id"] = duelSettings.icon_frame[replay.OpponentID];
+                                profileData["avatar_id"] = duelSettings.avatar[replay.OpponentID];
+                                profileData["wallpaper"] = duelSettings.wallpaper[replay.OpponentID];
+                                profileData["tag"] = duelSettings.profile_tag[replay.OpponentID].ToArray();
+                                profileData["follow_num"] = duelSettings.follow_num[replay.OpponentID];
+                                profileData["follower_num"] = duelSettings.follower_num[replay.OpponentID];
+
+                                profileData["is_follow"] = false;
+                                profileData["is_block"] = false;
+                                profileData["is_ps_block"] = false;
+                                profileData["is_xbox_block"] = false;
+
+                                YgomSystem.Utility.ClientWork.UpdateJson(MiniJSON.Json.Serialize(rootData));
+                            }
+                        }
                         break;
                     case "User.replay_list":
                         NetValue = 0;
                         ReplaceNetworkEntry(ref commandPtr, ref paramPtr);
                         break;
-                    case "PvP.get_replay_deck":
-                        NetValue = Utils.GetValue<long>(param, "did");
-                        ReplaceNetworkEntry(ref commandPtr, ref paramPtr);
-                        break;
                     case "PvP.set_replay_open":
-                        NetValue = Utils.GetValue<long>(param, "did");
-                        ReplaceNetworkEntry(ref commandPtr, ref paramPtr);
+                        {
+                            NetValue = Utils.GetValue<long>(param, "did");
+                            ReplaceNetworkEntry(ref commandPtr, ref paramPtr);
+
+                            bool open = Utils.GetValue<bool>(param, "open");
+                            ReplayInfo replay;
+                            if (replays.TryGetValue(NetValue, out replay))
+                            {
+                                try
+                                {
+                                    Dictionary<string, object> data = MiniJSON.Json.Deserialize(File.ReadAllText(replay.Path)) as Dictionary<string, object>;
+                                    if (data != null && data.ContainsKey(DuelSettings.ExpectedDuelDataKey))
+                                    {
+                                        DuelSettings duelSettings = new DuelSettings();
+                                        duelSettings.FromDictionary(data);
+                                        if (duelSettings.open != open)
+                                        {
+                                            duelSettings.open = open;
+                                            File.WriteAllText(replay.Path, MiniJSON.Json.Serialize(duelSettings.ToDictionary()));
+                                        }
+                                        File.WriteAllText(replay.Path, MiniJSON.Json.Serialize(duelSettings.ToDictionary()));
+                                        YgomSystem.Utility.ClientWork.UpdateValue("User.replay." + NetValue + ".open", open.ToString());
+                                    }
+                                }
+                                catch
+                                {
+                                }
+                            }
+                        }
+                        break;
+                    case "PvP.set_replay_lock":
+                        {
+                            NetValue = Utils.GetValue<long>(param, "did");
+                            ReplaceNetworkEntry(ref commandPtr, ref paramPtr);
+
+                            bool lockReplay = Utils.GetValue<bool>(param, "lock");
+                            ReplayInfo replay;
+                            if (replays.TryGetValue(NetValue, out replay))
+                            {
+                                try
+                                {
+                                    Dictionary<string, object> data = MiniJSON.Json.Deserialize(File.ReadAllText(replay.Path)) as Dictionary<string, object>;
+                                    if (data != null && data.ContainsKey(DuelSettings.ExpectedDuelDataKey))
+                                    {
+                                        DuelSettings duelSettings = new DuelSettings();
+                                        duelSettings.FromDictionary(data);
+                                        if (duelSettings.IsReplayLocked != lockReplay)
+                                        {
+                                            duelSettings.IsReplayLocked = lockReplay;
+                                            File.WriteAllText(replay.Path, MiniJSON.Json.Serialize(duelSettings.ToDictionary()));
+                                        }
+                                        File.WriteAllText(replay.Path, MiniJSON.Json.Serialize(duelSettings.ToDictionary()));
+                                        YgomSystem.Utility.ClientWork.UpdateValue("User.replay." + NetValue + ".lock", lockReplay.ToString());
+                                    }
+                                }
+                                catch
+                                {
+                                }
+                            }
+                        }
+                        break;
+                    case "PvP.set_replay_tags":
+                        {
+                            NetValue = Utils.GetValue<long>(param, "did");
+                            ReplaceNetworkEntry(ref commandPtr, ref paramPtr);
+
+                            List<int> tags = Utils.GetIntList(param, "tags");
+                            ReplayInfo replay;
+                            if (replays.TryGetValue(NetValue, out replay))
+                            {
+                                try
+                                {
+                                    Dictionary<string, object> data = MiniJSON.Json.Deserialize(File.ReadAllText(replay.Path)) as Dictionary<string, object>;
+                                    if (data != null && data.ContainsKey(DuelSettings.ExpectedDuelDataKey))
+                                    {
+                                        DuelSettings duelSettings = new DuelSettings();
+                                        duelSettings.FromDictionary(data);
+                                        duelSettings.tags.Clear();
+                                        duelSettings.tags.AddRange(tags);
+                                        File.WriteAllText(replay.Path, MiniJSON.Json.Serialize(duelSettings.ToDictionary()));
+                                        YgomSystem.Utility.ClientWork.UpdateJson("User.replay." + NetValue + ".tags", MiniJSON.Json.Serialize(tags));
+                                    }
+                                }
+                                catch
+                                {
+                                }
+                            }
+                        }
+                        break;
+                    case "PvP.set_replay_pick_cards":
+                        {
+                            NetValue = Utils.GetValue<long>(param, "did");
+                            ReplaceNetworkEntry(ref commandPtr, ref paramPtr);
+
+                            int myid = Utils.GetValue<int>(param, "myid");
+                            CardCollection pcards = new CardCollection();
+                            pcards.FromIndexedDictionary(Utils.GetDictionary(param, "pcards"));
+
+                            ReplayInfo replay;
+                            if (replays.TryGetValue(NetValue, out replay))
+                            {
+                                try
+                                {
+                                    Dictionary<string, object> data = MiniJSON.Json.Deserialize(File.ReadAllText(replay.Path)) as Dictionary<string, object>;
+                                    if (data != null && data.ContainsKey(DuelSettings.ExpectedDuelDataKey))
+                                    {
+                                        DuelSettings duelSettings = new DuelSettings();
+                                        duelSettings.FromDictionary(data);
+                                        if (myid < duelSettings.Deck.Length)
+                                        {
+                                            duelSettings.Deck[myid].DisplayCards.CopyFrom(pcards);
+                                        }
+                                        File.WriteAllText(replay.Path, MiniJSON.Json.Serialize(duelSettings.ToDictionary()));
+
+                                        List<object> pcardObjs = new List<object>()
+                                        {
+                                            duelSettings.Deck[0].DisplayCards.ToIndexDictionary(),
+                                            duelSettings.Deck[1].DisplayCards.ToIndexDictionary()
+                                        };
+                                        YgomSystem.Utility.ClientWork.UpdateJson("User.replay." + NetValue + ".pcard", MiniJSON.Json.Serialize(pcardObjs));
+                                    }
+                                }
+                                catch
+                                {
+                                }
+                            }
+                        }
                         break;
                     case "PvP.remove_replay":
-                        NetValue = Utils.GetValue<long>(param, "did");
-                        ReplaceNetworkEntry(ref commandPtr, ref paramPtr);
+                        {
+                            NetValue = Utils.GetValue<long>(param, "did");
+                            ReplaceNetworkEntry(ref commandPtr, ref paramPtr);
+
+                            ReplayInfo replay;
+                            if (replays.TryGetValue(NetValue, out replay))
+                            {
+                                try
+                                {
+                                    if (File.Exists(replay.Path))
+                                    {
+                                        File.Delete(replay.Path);
+                                        replays.Remove(replay.Did);
+                                        replaysList.Remove(replay);
+                                        YgomSystem.Utility.ClientWork.DeleteByJsonPath("User.replay." + NetValue);
+                                        UpdateReplayList();
+                                    }
+                                }
+                                catch
+                                {
+                                }
+                            }
+                        }
                         break;
                     case "PvP.replay_duel":
                         //Utils.GetValue<long>(param, "pcode");
@@ -662,16 +679,62 @@ namespace YgomGame.Menu
                         ReplaceNetworkEntry(ref commandPtr, ref paramPtr);
                         break;
                     case "Duel.begin":
-                        Dictionary<string, object> rule;
-                        if (Utils.TryGetValue(param, "rule", out rule))
                         {
-                            NetValue = Utils.GetValue<long>(rule, "did");
+                            Dictionary<string, object> rule;
+                            if (Utils.TryGetValue(param, "rule", out rule))
+                            {
+                                NetValue = Utils.GetValue<long>(rule, "did");
+                            }
+                            else
+                            {
+                                NetValue = 0;
+                            }
+                            ReplaceNetworkEntry(ref commandPtr, ref paramPtr);
+
+                            bool failed = true;
+
+                            YgomSystem.Utility.ClientWork.DeleteByJsonPath("Duel");
+                            YgomSystem.Utility.ClientWork.DeleteByJsonPath("DuelResult");
+                            YgomSystem.Utility.ClientWork.DeleteByJsonPath("Result");
+
+                            ReplayInfo replay;
+                            if (replays.TryGetValue(NetValue, out replay))
+                            {
+                                try
+                                {
+                                    if (File.Exists(replay.Path))
+                                    {
+                                        Dictionary<string, object> duelData = MiniJSON.Json.Deserialize(File.ReadAllText(replay.Path)) as Dictionary<string, object>;
+                                        if (duelData != null)
+                                        {
+                                            Dictionary<string, object> rootData = new Dictionary<string, object>();
+
+                                            DuelSettings duelSettings = new DuelSettings();
+                                            duelSettings.FromDictionary(duelData);
+
+                                            duelSettings.MyType = (int)DuelPlayerType.Replay;
+                                            duelSettings.chapter = 0;
+                                            duelSettings.GameMode = (int)GameMode.Replay;
+                                            FixupDuelSettingsForIsOpponent(duelSettings);
+
+                                            Dictionary<string, object> dict = DuelSettings.FixupReplayRequirements(duelSettings, duelSettings.ToDictionary());
+                                            dict["publicLevel"] = (int)ClientSettings.DuelReplayCardVisibility;
+                                            rootData["Duel"] = dict;
+
+                                            YgomSystem.Utility.ClientWork.UpdateJson(MiniJSON.Json.Serialize(rootData));
+
+                                            failed = false;
+                                        }
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    Utils.LogWarning("Failed to get opponents deck for replay " + NetValue + "'. Error: " + e);
+                                }
+                            }
+
+                            NetRequestFailed = failed;
                         }
-                        else
-                        {
-                            NetValue = 0;
-                        }
-                        ReplaceNetworkEntry(ref commandPtr, ref paramPtr);
                         break;
                     case "Duel.end":
                         ReplaceNetworkEntry(ref commandPtr, ref paramPtr);
@@ -691,6 +754,82 @@ namespace YgomGame.Menu
             };
             paramPtr = YgomMiniJSON.Json.Deserialize(MiniJSON.Json.Serialize(param));
             commandPtr = new IL2String(NetHijackCmd).ptr;
+        }
+
+        static void UpdateReplayList()
+        {
+            int numReplays = 0;
+            int numLockedReplays = 0;
+            int maxReplays = ClientSettings.DuelReplayMaxReplays;
+
+            YgomSystem.Utility.ClientWork.DeleteByJsonPath("User.replay");
+
+            replays.Clear();
+            if (TargetDirectory.Exists)
+            {
+                Dictionary<string, object> rootData = new Dictionary<string, object>();
+                Dictionary<string, object> userData = Utils.GetOrCreateDictionary(rootData, "User");
+                Dictionary<string, object> allReplayData = Utils.GetOrCreateDictionary(userData, "replay");
+
+                foreach (FileInfo fileInfo in TargetDirectory.GetFiles("*.json"))
+                {
+                    try
+                    {
+                        Dictionary<string, object> duelData = MiniJSON.Json.Deserialize(File.ReadAllText(fileInfo.FullName)) as Dictionary<string, object>;
+                        if (duelData != null)
+                        {
+                            DuelSettings duelSettings = new DuelSettings();
+                            duelSettings.FromDictionary(duelData);
+                            while (replays.ContainsKey(duelSettings.did))
+                            {
+                                duelSettings.did++;
+                            }
+                            numReplays++;
+                            if (duelSettings.IsReplayLocked)
+                            {
+                                numLockedReplays++;
+                            }
+                            FixupDuelSettingsForIsOpponent(duelSettings, true);
+                            ReplayInfo replayInfo = new ReplayInfo()
+                            {
+                                Did = duelSettings.did,
+                                MyID = duelSettings.MyID,
+                                Path = fileInfo.FullName,
+                                Pcode = duelSettings.pcode
+                            };
+                            replays[duelSettings.did] = replayInfo;
+                            replaysList.Add(replayInfo);
+                            Dictionary<string, object> replayData = duelSettings.ToDictionaryForReplayList();
+                            allReplayData[duelSettings.did.ToString()] = replayData;
+                            replayInfo.Time = Utils.GetValue<long>(replayData, "time");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Utils.LogWarning("Load replay file '" + fileInfo.Name + "' failed. Error: " + e);
+                    }
+                }
+
+                // NOTE: Two duels with the same time might result in our list being off from the games list
+                // (this would impact viewing those specific profiles but not viewing their duels)
+                replaysList.Sort((x, y) => -x.Time.CompareTo(y.Time));
+
+                YgomSystem.Utility.ClientWork.UpdateJson(MiniJSON.Json.Serialize(rootData));
+
+                // TODO: Hook tags up to Settings.json (NOTE: Last updated v2.1.0) (also see Act_Replay.cs Act_ReplayList)
+                List<int> replayTags = new List<int>();
+                for (int i = 1; i <= 28; i++)
+                {
+                    replayTags.Add(i);
+                }
+                YgomSystem.Utility.ClientWork.UpdateJson("$.Master.ReplayTag", MiniJSON.Json.Serialize(replayTags));
+
+                Dictionary<string, object> replayStats = new Dictionary<string, object>();
+                replayStats["num"] = numReplays;
+                replayStats["lock"] = numLockedReplays;
+                replayStats["max"] = maxReplays;
+                YgomSystem.Utility.ClientWork.UpdateJson(replayInfoKey, MiniJSON.Json.Serialize(replayStats));
+            }
         }
 
         class LiveReplayInfo

@@ -701,14 +701,20 @@ namespace YgomSystem.Utility
             methodUpdateJsonRaw.Invoke(new IntPtr[] { new IL2String(jsonString).ptr });
         }
 
-        public static void UpdateJson(string jsonPath, string jsonString)
+        public static void UpdateJson(string jsonPath, string jsonString, bool keep = false)
         {
-            methodUpdateJson.Invoke(new IntPtr[] { new IL2String(jsonPath).ptr, new IL2String(jsonString).ptr });
+            //methodUpdateJson.Invoke(new IntPtr[] { new IL2String(jsonPath).ptr, new IL2String(jsonString).ptr });
+            methodUpdateValue.Invoke(new IntPtr[] { new IL2String(jsonPath).ptr, YgomMiniJSON.Json.Deserialize(jsonString), new IntPtr(&keep) });
         }
 
         public static void UpdateValue(string jsonPath, string value, bool keep = false)
         {
             methodUpdateValue.Invoke(new IntPtr[] { new IL2String(jsonPath).ptr, new IL2String(value).ptr, new IntPtr(&keep) });
+        }
+
+        public static void UpdateValue(string jsonPath, IntPtr value, bool keep = false)
+        {
+            methodUpdateValue.Invoke(new IntPtr[] { new IL2String(jsonPath).ptr, value, new IntPtr(&keep) });
         }
 
         public static string GetStringByJsonPath(string jsonPath, string defaultValue = "")

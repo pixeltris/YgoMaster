@@ -549,11 +549,7 @@ namespace YgoMaster
             }
 
             // NOTE: This will always be set when logging solo duel packets. Change it based on "Solo.detail"
-            int firstPlayer;
-            if (Utils.TryGetValue(data, "FirstPlayer", out firstPlayer))
-            {
-                FirstPlayer = firstPlayer;
-            }
+            FirstPlayer = Utils.GetValue(data, "FirstPlayer", FirstPlayer);
 
             if (DuelBeginTime == 0 && duel_start_timestamp != 0)
             {
@@ -571,6 +567,20 @@ namespace YgoMaster
             {
                 turn = MaxTurn;
             }
+
+            if (data.ContainsKey("PickCards"))
+            {
+                List<object> pickCards = data["PickCards"] as List<object>;
+                if (pickCards != null && pickCards.Count >= 2)
+                {
+                    Deck[0].DisplayCards.FromIndexedDictionary(pickCards[0] as Dictionary<string, object>);
+                    Deck[1].DisplayCards.FromIndexedDictionary(pickCards[1] as Dictionary<string, object>);
+                }
+            }
+
+            PvpChoice = Utils.GetValue(data, "choice", PvpChoice);
+            PvpChoice = Utils.GetValue(data, "Choice", PvpChoice);
+            FirstPlayer = Utils.GetValue(data, "first_player", FirstPlayer);
         }
 
         public Dictionary<string, object> ToDictionary()

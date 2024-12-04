@@ -41,6 +41,7 @@
     "DuelReplayLiveAutoSave": false,
     "DuelReplayLiveAutoSaveUseSubFolders": true,
     "DuelReplayAddHomeSubMenuButtons": false,
+    "DuelReplayMaxReplays": 9999,// This is a visual indicator. There's no actual limit
     "TradeBannerVisibleTimeInSeconds": 5.0,
     "TradeBannerOffsetY": -500,
     "TradeActionDelayInSeconds": 3.0,

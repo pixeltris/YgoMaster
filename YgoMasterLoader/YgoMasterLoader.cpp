@@ -55,6 +55,8 @@ typedef BOOL (WINAPI* Sig_QueryPerformanceCounter)(LARGE_INTEGER* lpPerformanceC
 Sig_QueryPerformanceCounter Original_QueryPerformanceCounter;
 typedef HMODULE (WINAPI* Sig_LoadLibraryW)(LPCWSTR fileName);
 Sig_LoadLibraryW Original_LoadLibraryW;
+typedef BOOL (WINAPI* Sig_TranslateMessage)(const MSG* lpMsg);
+Sig_TranslateMessage Original_TranslateMessage;
 typedef void* (*Sig_il2cpp_init)(const char* domain_name);
 Sig_il2cpp_init Original_il2cpp_init;
 
@@ -198,6 +200,14 @@ HMODULE WINAPI Hook_LoadLibraryW(LPCWSTR lpLibFileName)
     return handle;
 }
 
+BOOL WINAPI Hook_TranslateMessage(const MSG* lpMsg)
+{
+    BOOL result = Original_TranslateMessage(lpMsg);
+    MH_RemoveHook(&TranslateMessage);
+    LoadDotNet();
+    return result;
+}
+
 BOOL Hook_QueryPerformanceCounter(LARGE_INTEGER* lpPerformanceCount)
 {
     BOOL result = Original_QueryPerformanceCounter(lpPerformanceCount);
@@ -288,14 +298,17 @@ int CreateHooks()
         return 1;
     }
     
+    if (runningLive)
+    {
+        if (MH_CreateHook(&TranslateMessage, &Hook_TranslateMessage, (LPVOID*)&Original_TranslateMessage) != MH_OK)
+        {
+            return 1;
+        }
+    }
+    
     if (EnableAllHooksLL(true) != MH_OK)
     {
         return 1;
-    }
-    
-    if (runningLive)
-    {
-        CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)LoadDotNet, NULL, NULL, NULL);
     }
     
     return 0;

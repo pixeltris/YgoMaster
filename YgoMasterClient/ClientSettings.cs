@@ -58,6 +58,7 @@ namespace YgoMasterClient
         public static bool DuelReplayLiveAutoSave;
         public static bool DuelReplayLiveAutoSaveUseSubFolders;
         public static bool DuelReplayAddHomeSubMenuButtons;
+        public static int DuelReplayMaxReplays;
         public static float TradeBannerVisibleTimeInSeconds;
         public static int TradeBannerOffsetY;
         public static float TradeActionDelayInSeconds;
@@ -174,6 +175,7 @@ namespace YgoMasterClient
             DuelReplayLiveAutoSave = Utils.GetValue<bool>(data, "DuelReplayLiveAutoSave");
             DuelReplayLiveAutoSaveUseSubFolders = Utils.GetValue<bool>(data, "DuelReplayLiveAutoSaveUseSubFolders");
             DuelReplayAddHomeSubMenuButtons = Utils.GetValue<bool>(data, "DuelReplayAddHomeSubMenuButtons");
+            DuelReplayMaxReplays = Utils.GetValue<int>(data, "DuelReplayMaxReplays");
             TradeBannerVisibleTimeInSeconds = Utils.GetValue<float>(data, "TradeBannerVisibleTimeInSeconds");
             TradeBannerOffsetY = Utils.GetValue<int>(data, "TradeBannerOffsetY");
             TradeActionDelayInSeconds = Utils.GetValue<float>(data, "TradeActionDelayInSeconds");
