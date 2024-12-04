@@ -40,6 +40,7 @@ namespace YgoMaster
         public bool SingleBgm;
         public bool DoubleBgm;
         public bool NoKeycardBgm;
+        public bool OverrideUserBgm;
 
         // Normally not stored here (it comes from Solo.detail) - this links to IDS_DECKRECIPE
         public int npc_deck_id;
