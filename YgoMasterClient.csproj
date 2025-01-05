@@ -103,7 +103,6 @@
     <Compile Include="YgoMasterClient\Properties\AssemblyInfo.cs" />
     <Compile Include="YgoMasterClient\DuelStarter.cs" />
     <Compile Include="YgoMasterClient\DeckEditorUtils.cs" />
-    <Compile Include="YgoMasterClient\Ultralight.cs" />
     <Compile Include="YgoMasterClient\UnityPlayerPdb.cs" />
     <Compile Include="YgoMasterClient\WallpaperCycle.cs" />
     <Compile Include="YgoMasterServer\DuelSettings.cs" />
