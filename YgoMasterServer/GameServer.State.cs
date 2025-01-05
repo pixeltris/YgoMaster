@@ -272,6 +272,10 @@ namespace YgoMaster
         /// Doesn't update the deck edit time when the deck is edited (this will preserve the deck order of the deck list)
         /// </summary>
         public bool DontUpdateDeckEditTime;
+        /// <summary>
+        /// Forces the deck list to be sorted alphabetically
+        /// </summary>
+        public bool DeckListAlphabetical;
 
         void LoadSettings()
         {
@@ -409,6 +413,7 @@ namespace YgoMaster
             DisableNoDismantle = Utils.GetValue<bool>(values, "DisableNoDismantle");
             DisableDeckValidation = Utils.GetValue<bool>(values, "DisableDeckValidation");
             DontUpdateDeckEditTime = Utils.GetValue<bool>(values, "DontUpdateDeckEditTime");
+            DeckListAlphabetical = Utils.GetValue<bool>(values, "DeckListAlphabetical");
             TradeAllowOtherPlayerToAddYourCards = Utils.GetValue<bool>(values, "TradeAllowOtherPlayerToAddYourCards");
             TradeAllowOtherPlayerToRemoveYourCards = Utils.GetValue<bool>(values, "TradeAllowOtherPlayerToRemoveYourCards");
             TradeEnterRoomRequestDelayInSeconds = Utils.GetValue<float>(values, "TradeEnterRoomRequestDelayInSeconds");
@@ -1516,6 +1521,10 @@ namespace YgoMaster
                     LoadDeck(player, file);
                 }
             }
+            if (DeckListAlphabetical)
+            {
+                SortDecksAlphabetically(player);
+            }
             player.Duel.SelectedDeckFromDictionary(Utils.GetDictionary(data, "SelectedDeck"));
 
             if (MultiplayerEnabled)
@@ -1585,6 +1594,27 @@ namespace YgoMaster
             }
             catch
             {
+            }
+        }
+
+        void SortDecksAlphabetically(Player player, GameServerWebRequest request = null)
+        {
+            int et = 1;
+            foreach (DeckInfo deck in player.Decks.Values.OrderByDescending(x => x.Name))
+            {
+                deck.TimeEdited = et++;
+            }
+            if (request != null)
+            {
+                Dictionary<string, object> deck = request.GetOrCreateDictionary("Deck");
+                Dictionary<string, object> list = Utils.GetOrCreateDictionary(deck, "list");
+                foreach (DeckInfo deckInfo in request.Player.Decks.Values)
+                {
+                    list[deckInfo.Id.ToString()] = new Dictionary<string, object>()
+                    {
+                        { "et", deckInfo.TimeEdited },
+                    };
+                }
             }
         }
 

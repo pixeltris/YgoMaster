@@ -117,6 +117,10 @@ namespace YgoMaster
             {
                 deck.TimeEdited = Utils.GetEpochTime();
             }
+            if (DeckListAlphabetical)
+            {
+                SortDecksAlphabetically(request.Player, request);
+            }
             SaveDeck(deck);
             WriteDeck(request, deck.Id);
             WriteDeckList(request, deck.Id);

@@ -95,12 +95,11 @@ namespace YgoMaster
         void WriteDeck(GameServerWebRequest request)
         {
             Dictionary<string, object> deck = request.GetOrCreateDictionary("Deck");
-            Dictionary<string, object> list = new Dictionary<string, object>();
+            Dictionary<string, object> list = Utils.GetOrCreateDictionary(deck, "list");
             foreach (DeckInfo deckInfo in request.Player.Decks.Values)
             {
                 WriteDeck_list_item(request, list, deckInfo);
             }
-            deck["list"] = list;
             deck["deckMax"] = NumDeckSlots;// Probably a max slot limit when they introduce buying more slots? (deckMax:50 deckLimit:20)
             deck["deckLimit"] = NumDeckSlots;// The deck limit displayed on the top right of the deck selection screen
             WriteDeck_num_empty(request);
@@ -114,9 +113,8 @@ namespace YgoMaster
                 return;
             }
             Dictionary<string, object> deck = request.GetOrCreateDictionary("Deck");
-            Dictionary<string, object> list = new Dictionary<string, object>();
+            Dictionary<string, object> list = Utils.GetOrCreateDictionary(deck, "list");
             WriteDeck_list_item(request, list, deckInfo);
-            deck["list"] = list;
             WriteDeck_num_empty(request);
             WriteDeck_last_set(request, id);
         }

@@ -27,6 +27,7 @@
     "MultiplayerPvpClientRunDialogUserOffset": 14372,
     "DisableDeckValidation": false,
     "DontUpdateDeckEditTime": false,
+    "DeckListAlphabetical": false,
     "ShowTopics": true,
     "DeckSlots": 999,
     "UnlockAllCards": false,// 3x of every card (STYLE: Normal)
