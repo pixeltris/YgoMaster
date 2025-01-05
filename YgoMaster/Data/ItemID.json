@@ -179,6 +179,8 @@
     1010084,//Evil★Twin
     1010085,//2025 SEASON
     1010086,//Nightmare Apprentice
+    1010087,//Gimmick Puppet Fantasix Machinix
+    1010088,//Diabellze the Original Sinkeeper
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -221,6 +223,9 @@
     1011040,//DC 2024 SEP Silver Finalist
     1011041,//DC 2024 SEP Bronze Finalist
     1011042,//Xyz Cup Champion
+    1011043,//DC 2024 DEC Gold Finalist
+    1011044,//DC 2024 DEC Silver Finalist
+    1011045,//DC 2024 DEC Bronze Finalist
     1012001,//X-Krawler Synaphysis
     1012002,//Mekk-Knight Spectrum Supreme
     1012003,//Knightmare Gryphon
@@ -284,6 +289,7 @@
     1012063,//Eldlixir of White Destiny
     1012064,//Ally of Justice Cosmic Gateway
     1012065,//Ally Mind
+    1012067,//Skull Servant
     1013001,//PawaPuro
     1013002,//Memories of Intersecting Duels
     1013003,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
@@ -469,6 +475,8 @@
     1031007,//Blue-Eyes White Dragon
     1031008,//Brain Control
     1031009,//Called by the Grave
+    1031010,//Goblin Circus 
+    1031011,//Flock Together
     1032001,//Festive Ornament
     1032002,//Celebration of Spring Breeze
     1032003,//Tropical Seaside
@@ -477,6 +485,7 @@
     1032006,//Flurry of Cherry Blossoms
     1032007,//Neon Sign
     1032008,//Maple Maiden
+    1032009,//Rikka
     1033001,//WCS 2023 Party Favor
     1033002,//WCS 2024 Party Favor
     1033003,//Overlay Unit
@@ -578,6 +587,7 @@
     1070095,//Stardust Dragon
     1070096,//Junk Warrior
     1070097,//Triple Tactics Talent
+    1070098,//Red-Eyes Dark Dragoon
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -608,6 +618,7 @@
     1071028,//Naturia Leodrake
     1071029,//Fabled Leviathan
     1071030,//Ally of Justice Field Marshal
+    1071032,//Skull Servant
     1072001,//Sky Striker Conversion: Flaming Wings of Destruction
     1072002,//Chaos Xyz Evolution －Galactic Gathering of Dragons－
     1072003,//Sky Striker Armor - Black Flash Raiment
@@ -623,6 +634,7 @@
     1073008,//WCS 2024 Celebration
     1073009,//WCS 2024 Party Favor
     1073010,//DC 2024 SEP Celebration
+    1073011,//DC 2024 DEC Celebration
     1075001,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
   ],
   "DECK_CASE": [
@@ -665,8 +677,10 @@
     1082012,//President's Briefcase
     1082013,//Magicians of Bonds and Unity
     1082014,//King's Sarcophagus
+    1082015,//Snake Pattern
     1082016,//Hallo & Ween
     1082017,//Live☆Twin
+    1082018,//Dragon of Pride and Soul
   ],
   "FIELD": [
     1090001,//Forest
@@ -693,6 +707,7 @@
     1090022,//Pyroxene Cave
     1090023,//Pressured Planet Wraitsoth
     1090025,//Blue-Eyes Mausoleum
+    1090028,//Forest of Endless White
     1090030,//Forest of the Traptrix
     1090031,//Ruins of the Sinful Spoils
     1090033,//Evil★Twin
@@ -724,6 +739,7 @@
     1100022,//Pyroxene Cave
     1100023,//Pressured Planet Wraitsoth
     1100025,//Blue-Eyes Mausoleum
+    1100028,//Forest of Endless White
     1100030,//Forest of the Traptrix
     1100031,//Ruins of the Sinful Spoils
     1100033,//Evil★Twin
@@ -742,6 +758,7 @@
     1101013,//Foolish Burial
     1101014,//Soul-Absorbing Bone Tower
     1101016,//Magical Thorn
+    1101019,//Dragon Capture Jar
     1101020,//Opening of the Spirit Gates
     1101025,//Fire King Sanctuary
     1102001,//Colosseum
@@ -772,6 +789,7 @@
     1110022,//Pyroxene Cave
     1110023,//Pressured Planet Wraitsoth
     1110025,//Blue-Eyes Mausoleum
+    1110028,//Forest of Endless White
     1110030,//Forest of the Traptrix
     1110031,//Ruins of the Sinful Spoils
     1110033,//Evil★Twin
@@ -798,8 +816,10 @@
     1111024,//Limiter Removal
     1111026,//Treasured Tree Stump
     1111032,//Xyz Monster Card
+    1111038,//Rikka
     1111039,//Barrier of the Voiceless Voice
     1111040,//Gunkan Sushipyard Seaside Supper Spot
+    1111043,//Tales of the White Forest
     1111045,//Madolche Chickolates
     1112001,//Colosseum
     1112002,//WCS
@@ -889,8 +909,10 @@
     1130052,//Sangen Kaiho
     1130053,//Stardust Dragon
     1130054,//Junk Warrior
+    1130055,//Goblin Circus 
     1130056,//Ties That Bind
     1130057,//Terrors of the Afterroot
+    1130058,//Susurrus of the Sinful Spoils
   ],
   "PACK_TICKET": [
     1140001,//Legacy Pack ticket

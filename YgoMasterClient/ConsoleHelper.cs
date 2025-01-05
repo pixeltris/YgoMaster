@@ -962,7 +962,8 @@ namespace YgoMasterClient
                                 Dictionary<string, object> gateData = Utils.GetDictionary(allGateData, gateId.ToString());
                                 
                                 bool isGoalOnly = Utils.GetValue<int>(gateData, "clear_chapter") == chapterId;
-                                if (Utils.GetValue<int>(chapterData, "mydeck_set_id") != 0 || Utils.GetValue<int>(chapterData, "set_id") != 0)
+                                if ((Utils.GetValue<int>(chapterData, "mydeck_set_id") != 0 || Utils.GetValue<int>(chapterData, "set_id") != 0) &&
+                                    (Utils.GetValue<int>(chapterData, "npc_id") > 0 /*&& Utils.GetValue<int>(chapterData, "difficulty") > 0*/))
                                 {
                                     isGoalOnly = false;
                                 }

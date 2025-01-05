@@ -60,7 +60,7 @@ For creating `YgoMaster/Data/ShopDumps/` from scratch...
 - Keep buying Master Pack bundles / packs until you have no gems
 - Go to the deck editor and enter `dismantle_all_cards SuperRare UltraRare` into the client console - this will dismantle every SR/UR you own
 - Go to the shop and enter `craft_secrets` into the client console - this will craft every missing secret pack
-- In the shop enter `auto_free_pull` into the client console - this will open every free pull secret pack
+- In the shop enter `auto_free_pull` into the client console - this will open every free pull secret pack (you will need to re-enter the shop and do the command multiple times until no more packs open)
 - Re-enter the shop to log `/ayk/api/Shop.get_list`
 - Save the log into `YgoMaster/Data/ShopDumps/Shop-2024-02-22.json` (or whatever the current date is)
 - Get the card list for the Master Pack and save the `/ayk/api/Gacha.get_card_list` log into `YgoMaster/Data/ShopDumps/Gacha-10000001.json`
