@@ -975,9 +975,17 @@ namespace YgoMasterClient
                 mipChain = false;
             }
 
+            bool hasSprite = true;
+
+            if (loadPath.StartsWith("Card/Images/Illust/"))
+            {
+                // Card images need to be just a Texture2D (no sprite)
+                hasSprite = false;
+            }
+
             if (loadImmediate)
             {
-                IL2Array<IntPtr> assetsArray = new IL2Array<IntPtr>(2, objectClassInfo);
+                IL2Array<IntPtr> assetsArray = new IL2Array<IntPtr>(hasSprite ? 2 : 1, objectClassInfo);
                 if (assetsArray.ptr == IntPtr.Zero)
                 {
                     return;
@@ -987,10 +995,13 @@ namespace YgoMasterClient
                 IntPtr newTextureAsset = TextureFromPNG(customAssetPath, assetName, mipChain);
                 assetsArray[0] = newTextureAsset;
 
-                IntPtr newSpriteAsset = SpriteFromTexture(newTextureAsset, assetName, rect);
-                if (newSpriteAsset != IntPtr.Zero)
+                if (hasSprite)
                 {
-                    assetsArray[1] = newSpriteAsset;
+                    IntPtr newSpriteAsset = SpriteFromTexture(newTextureAsset, assetName, rect);
+                    if (newSpriteAsset != IntPtr.Zero)
+                    {
+                        assetsArray[1] = newSpriteAsset;
+                    }
                 }
 
                 FinishLoad(assetsArray, resourcePtr, path, completeHandler);
@@ -1015,7 +1026,7 @@ namespace YgoMasterClient
                     else
                     {
                         //Console.WriteLine("Found. Refs: " + methodGetRefCount.Invoke(resourcePtr).GetValueRef<int>());
-                        IL2Array<IntPtr> assetsArray = new IL2Array<IntPtr>(2, objectClassInfo);
+                        IL2Array<IntPtr> assetsArray = new IL2Array<IntPtr>(hasSprite ? 2 : 1, objectClassInfo);
                         if (assetsArray.ptr == IntPtr.Zero)
                         {
                             customAssetLoadRequests.Remove(path);
@@ -1024,10 +1035,13 @@ namespace YgoMasterClient
 
                         assetsArray[0] = texture;
 
-                        IntPtr newSpriteAsset = SpriteFromTexture(texture, assetName, rect);
-                        if (newSpriteAsset != IntPtr.Zero)
+                        if (hasSprite)
                         {
-                            assetsArray[1] = newSpriteAsset;
+                            IntPtr newSpriteAsset = SpriteFromTexture(texture, assetName, rect);
+                            if (newSpriteAsset != IntPtr.Zero)
+                            {
+                                assetsArray[1] = newSpriteAsset;
+                            }
                         }
 
                         FinishLoad(assetsArray, resourcePtr, path, completeHandler);
