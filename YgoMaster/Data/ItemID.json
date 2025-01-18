@@ -181,6 +181,7 @@
     1010086,//Nightmare Apprentice
     1010087,//Gimmick Puppet Fantasix Machinix
     1010088,//Diabellze the Original Sinkeeper
+    1010089,//Mulcharmy Purulia
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -588,6 +589,8 @@
     1070096,//Junk Warrior
     1070097,//Triple Tactics Talent
     1070098,//Red-Eyes Dark Dragoon
+    1070099,//Light and Darkness Dragonlord
+    1070100,//Terminal World
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -706,6 +709,7 @@
     1090021,//The Revived Sky Temple
     1090022,//Pyroxene Cave
     1090023,//Pressured Planet Wraitsoth
+    1090024,//Ursarctic Big Dipper
     1090025,//Blue-Eyes Mausoleum
     1090028,//Forest of Endless White
     1090030,//Forest of the Traptrix
@@ -738,6 +742,7 @@
     1100021,//The Revived Sky Temple
     1100022,//Pyroxene Cave
     1100023,//Pressured Planet Wraitsoth
+    1100024,//Ursarctic Big Dipper
     1100025,//Blue-Eyes Mausoleum
     1100028,//Forest of Endless White
     1100030,//Forest of the Traptrix
@@ -788,6 +793,7 @@
     1110021,//The Revived Sky Temple
     1110022,//Pyroxene Cave
     1110023,//Pressured Planet Wraitsoth
+    1110024,//Ursarctic Big Dipper
     1110025,//Blue-Eyes Mausoleum
     1110028,//Forest of Endless White
     1110030,//Forest of the Traptrix
@@ -913,6 +919,7 @@
     1130056,//Ties That Bind
     1130057,//Terrors of the Afterroot
     1130058,//Susurrus of the Sinful Spoils
+    1130059,//Varudras, the Final Bringer of the End Times
   ],
   "PACK_TICKET": [
     1140001,//Legacy Pack ticket
