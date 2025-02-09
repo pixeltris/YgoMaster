@@ -475,6 +475,7 @@ namespace YgoMaster
         public int Field;
         public int FieldObj;
         public int AvBase;// Can be 0 (the others should be assigned to some value)
+        public int AvatarId;
 
         public Dictionary<string, object> ToDictionary()
         {
@@ -484,6 +485,7 @@ namespace YgoMaster
             result["field"] = Field;
             result["object"] = FieldObj;
             result["av_base"] = AvBase;
+            result["avatar_id"] = AvatarId > 0 ? AvatarId : -1;
             return result;
         }
 
@@ -494,6 +496,7 @@ namespace YgoMaster
             Field = other.Field;
             FieldObj = other.FieldObj;
             AvBase = other.AvBase;
+            AvatarId = other.AvatarId;
         }
 
         public void Clear()
@@ -503,6 +506,7 @@ namespace YgoMaster
             Field = 0;
             FieldObj = 0;
             AvBase = 0;
+            AvatarId = -1;
         }
 
         public void FromDictionary(Dictionary<string, object> dict)
@@ -516,6 +520,7 @@ namespace YgoMaster
             Field = Utils.GetValue<int>(dict, "field");
             FieldObj = Utils.GetValue<int>(dict, "object");
             AvBase = Utils.GetValue<int>(dict, "av_base");
+            AvatarId = Utils.GetValue<int>(dict, "avatar_id");
         }
 
 #if !YGO_MASTER_CLIENT
@@ -526,15 +531,16 @@ namespace YgoMaster
             Field = Sanitize(player, ItemID.Category.FIELD, Field);
             FieldObj = Sanitize(player, ItemID.Category.FIELD_OBJ, FieldObj);
             AvBase = Sanitize(player, ItemID.Category.AVATAR_HOME, AvBase, true);
+            AvatarId = Sanitize(player, ItemID.Category.AVATAR, AvatarId, true);
         }
 
         int Sanitize(Player player, ItemID.Category category, int value, bool allowZeroValue = false)
         {
-            if (value == 0 && allowZeroValue)
+            if (value <= 0 && allowZeroValue)
             {
                 return value;
             }
-            if (value != 0 && player.Items.Contains(value))
+            if (value >= 0 && player.Items.Contains(value))
             {
                 return value;
             }
@@ -559,6 +565,7 @@ namespace YgoMaster
             Field = (int)ItemID.Value.DefaultField;
             FieldObj = (int)ItemID.Value.DefaultFieldObj;
             AvBase = 0;
+            AvatarId = -1;
         }
     }
 }

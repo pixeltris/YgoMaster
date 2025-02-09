@@ -423,6 +423,7 @@ namespace YgoMaster
                 Dictionary<string, object> dict = DeserializeResponseDictionary(buffer);
                 if (dict != null)
                 {
+                    string result = Json.Serialize(dict);
                     if (Directory.Exists(updateDir) && dict.ContainsKey("code") && dict.ContainsKey("res"))
                     {
                         Dictionary<string, object> dictTemp = new Dictionary<string, object>(dict);
@@ -563,7 +564,7 @@ namespace YgoMaster
                         }
                     }
 
-                    return Json.Serialize(dict);
+                    return result;
                 }
                 else
                 {

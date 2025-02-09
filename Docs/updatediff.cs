@@ -1,4 +1,4 @@
-// Client version 2.1.1
+// Client version 2.2.1
 // This file is generated using the 'updatediff' command in YgoMasterClient. This information is used to determine changes between client versions which impact YgoMaster.
 // Run the command, diff against the old file, and use the changes to update code.
 
@@ -919,6 +919,8 @@ enum DuelListType
     SelAllGadget,
     SelAllIndeck,
     SelAllGunkan,
+    SelAllNormal,
+    SelAllNormal2,
 }
 /// <summary>
 /// YgomGame.Duel.Engine.MenuActType
@@ -1059,6 +1061,7 @@ enum DuelPvpFieldType
     Step,
     SummoningUid,
     PosMask,
+    AffectProp,
     End,
 }
 /// <summary>
@@ -1083,6 +1086,7 @@ enum DuelShowParam
     Card,
     Num,
     AttrMask,
+    Dlg,
 }
 /// <summary>
 /// YgomGame.Duel.Engine.SpSummonType
@@ -1359,6 +1363,7 @@ enum ChallengeCode
     CRITICAL,
     INVALID_PARAM = 2300,
     ERR_OUT_OF_TERM,
+    ERR_INVALID_MISSION_POOL,
 }
 enum CraftCode
 {
@@ -1380,6 +1385,7 @@ enum CupCode
     CRITICAL,
     INVALID_PARAM = 3700,
     ERR_OUT_OF_TERM,
+    ERR_INVALID_MISSION_POOL = 3703,
 }
 enum DeckCode
 {
@@ -1397,6 +1403,7 @@ enum DeckCode
     ERROR_DECK_SAME_CARDS,
     ERROR_DECK_NO,
     ERROR_CARD_ID,
+    ERROR_UNFIND_MAINDECK,
     INVALID_DECK_COUNT = 1440,
     INVALID_DECK_NAME,
     INVALID_DECK_BIKO,
@@ -1429,6 +1436,7 @@ enum DuelLiveCode
     PLAYBACK_FAIL = 3301,
     IN_PREPARATION,
     DISP_DECK_FAIL,
+    ADJUST_MENU_FAIL,
 }
 enum DuelMenuCode
 {
@@ -1457,6 +1465,7 @@ enum DuelTrialCode
     ERR_OUT_OF_TERM,
     ERROR_FIXED_ACCESSORY,
     ERROR_IN_SHOP_MAINTE,
+    ERR_INVALID_MISSION_POOL = 4304,
 }
 enum EnqueteCode
 {
@@ -1503,6 +1512,7 @@ enum ExhibitionCode
     ERR_OUT_OF_TERM,
     ERR_DECK_LIMIT,
     ERROR_FIXED_ACCESSORY,
+    ERR_INVALID_MISSION_POOL,
 }
 enum FriendCode
 {
@@ -1520,6 +1530,9 @@ enum FriendCode
     ALREADY_BLOCKED,
     NO_BLOCK_ACCOUNT,
     BLOCK_MAX,
+    BLOCK_USER,
+    PS_BLOCK_USER,
+    XBOX_BLOCK_USER,
 }
 enum GachaCode
 {
@@ -1667,6 +1680,7 @@ enum RateDuelCode
     CRITICAL,
     INVALID_PARAM = 4900,
     ERR_OUT_OF_TERM,
+    ERR_INVALID_MISSION_POOL,
 }
 enum RdcCode
 {
@@ -1676,6 +1690,7 @@ enum RdcCode
     CRITICAL,
     INVALID_PARAM = 3700,
     ERR_OUT_OF_TERM,
+    ERR_INVALID_MISSION_POOL = 3703,
 }
 enum RoomCode
 {
@@ -1881,6 +1896,7 @@ enum VersusCode
     ERR_OUT_OF_TERM,
     ERROR_FIXED_ACCESSORY,
     ERROR_NOT_JOINNED_GROUP,
+    ERR_INVALID_MISSION_POOL,
 }
 enum WcsCode
 {
@@ -1902,6 +1918,7 @@ enum WcsCode
     ERR_FINAL_INVALID_TEAM_ID,
     ERR_FINAL_OUT_OF_SUPPORT_TERM,
     ERR_FINAL_SUPPORT_ABSENT,
+    ERR_INVALID_MISSION_POOL,
 }
 //==================================
 // Network API
@@ -1976,8 +1993,10 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Deck_delete_deck_multi(System.Int32[] _deck_id_list_)
 //public static YgomSystem.Network.Handle Deck_check_deck_regulation(System.Int32 _deck_id_, System.Int32 _regulation_id_)
 //public static YgomSystem.Network.Handle Deck_set_deck_accessory(System.Int32 _deck_id_, System.Collections.Generic.Dictionary<System.String,System.Object> _param_)
+//public static YgomSystem.Network.Handle Deck_set_accessory(System.Collections.Generic.Dictionary<System.String,System.Object> _param_)
 //public static YgomSystem.Network.Handle Deck_set_select_deck(System.Int32 _mode_, System.Int32 _deck_id_)
 //public static YgomSystem.Network.Handle Deck_CopyStructure(System.Int32 _structure_id_)
+//public static YgomSystem.Network.Handle Deck_copy_structure_multi(System.Int32[] _structure_ids_)
 //public static YgomSystem.Network.Handle Deck_SetFavoriteCards(System.Collections.Generic.Dictionary<System.String,System.Object> _card_list_)
 //public static YgomSystem.Network.Handle Deck_SetLockCards(System.Collections.Generic.Dictionary<System.String,System.Object> _card_list_)
 //public static YgomSystem.Network.Handle Deck_ExportDeck(System.String _N_token_, System.Int32 _deck_id_)
@@ -1993,6 +2012,7 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Craft_get_card_route(System.Int32 _card_id_)
 //public static YgomSystem.Network.Handle Craft_generate_boost(System.Int32 _card_id_, System.Int32 _premium_type_, System.Int32 _cost_cp_, System.Boolean _check_)
 //public static YgomSystem.Network.Handle Friend_follow(System.Int64 _pcode_, System.Int32 _delete_)
+//public static YgomSystem.Network.Handle Friend_follow_other_routes(System.Int64 _pcode_, System.Int32 _route_)
 //public static YgomSystem.Network.Handle Friend_set_pin(System.Int64 _pcode_, System.Int32 _delete_, System.Int32 _update_work_)
 //public static YgomSystem.Network.Handle Friend_get_follower(System.Int64 _date_, System.Int64 _pcode_, System.Int32 _dir_)
 //public static YgomSystem.Network.Handle Friend_get_list(System.Boolean _all_)
@@ -2270,6 +2290,7 @@ enum WcsCode
 //static System.Int32 DLL_DuelDlgGetSelectItemNum()
 //static System.Int32 DLL_DuelDlgGetSelectItemStr(System.Int32 index)
 //static System.Void DLL_DuelDlgSetResult(System.UInt32 result)
+//static System.Int32 DLL_DuelGetAttachedEffectList(System.IntPtr lpAffect)
 //static System.Int32 DLL_DuelGetAttackTargetMask(System.Int32 player, System.Int32 locate)
 //static System.Void DLL_DuelGetCardBasicVal(System.Int32 player, System.Int32 pos, System.Int32 index, YgomGame.Duel.Engine.BasicVal& pVal)
 //static System.Int32 DLL_DuelGetCardFace(System.Int32 player, System.Int32 position, System.Int32 index)

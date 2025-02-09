@@ -836,7 +836,7 @@ namespace YgoMaster
                         };
                         playerData["icon"] = player.IconId;
                         playerData["icon_frame"] = player.IconFrameId;
-                        playerData["avatar"] = player.AvatarId;
+                        playerData["avatar"] = deck.Accessory.AvatarId > 0 ? deck.Accessory.AvatarId : player.AvatarId;
                         playerData["avatar_home"] = deck.Accessory.AvBase;
                         playerData["duel_object"] = deck.Accessory.FieldObj;
                         playerData["deck_case"] = deck.Accessory.Box;
@@ -861,7 +861,7 @@ namespace YgoMaster
                     duelData["sleeve"] = new int[2] { d1.Accessory.Sleeve, d2.Accessory.Sleeve };
                     duelData["icon"] = new int[2] { p1.IconId, p2.IconId };
                     duelData["icon_frame"] = new int[2] { p1.IconFrameId, p2.IconFrameId };
-                    duelData["avatar"] = new int[2] { p1.AvatarId, p2.AvatarId };
+                    duelData["avatar"] = new int[2] { d1.Accessory.AvatarId > 0 ? d1.Accessory.AvatarId : p1.AvatarId, d2.Accessory.AvatarId > 0 ? d2.Accessory.AvatarId : p2.AvatarId };
                     duelData["avatar_home"] = new int[2] { d1.Accessory.AvBase, d2.Accessory.AvBase };
                     duelData["duel_object"] = new int[2] { d1.Accessory.FieldObj, d2.Accessory.FieldObj };
                     duelData["deck_case"] = new int[2] { d1.Accessory.Box, d2.Accessory.Box };
@@ -1218,7 +1218,7 @@ namespace YgoMaster
                 duelSettings.rank[i] = players[i].Rank;
                 duelSettings.DuelistLv[i] = players[i].Rate;
                 duelSettings.name[i] = players[i].Name;
-                duelSettings.avatar[i] = players[i].AvatarId;
+                duelSettings.avatar[i] = decks[i].Accessory.AvatarId > 0 ? decks[i].Accessory.AvatarId : players[i].AvatarId;
                 duelSettings.avatar_home[i] = decks[i].Accessory.AvBase;
                 duelSettings.icon[i] = players[i].IconId;
                 duelSettings.icon_frame[i] = players[i].IconFrameId;

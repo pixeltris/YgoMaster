@@ -333,6 +333,7 @@ namespace YgoMaster
                 if (sleeve[i] == -1) sleeve[i] = Deck[i].Accessory.Sleeve;
                 if (avatar_home[i] == -1) avatar_home[i] = Deck[i].Accessory.AvBase;
                 if (duel_object[i] == -1) duel_object[i] = Deck[i].Accessory.FieldObj;
+                if (avatar[i] == -1) avatar[i] = Deck[i].Accessory.AvatarId;
 
                 if (avatar[i] < 0) avatar[i] = 0;//avatar[i] = 1000001;
                 if (mat[i] <= 0) mat[i] = 1090001;

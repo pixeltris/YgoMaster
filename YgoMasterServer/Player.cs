@@ -27,6 +27,7 @@ namespace YgoMaster
         public int IconFrameId;
         public int AvatarId;
         public int Wallpaper;
+        public HashSet<int> WallpaperHome { get; private set; }
         public DuelBgmMode DuelBgmMode;
         public HashSet<int> Items { get; private set; }
         public HashSet<int> TitleTags { get; private set; }
@@ -35,6 +36,7 @@ namespace YgoMaster
         public Dictionary<int, DeckInfo> Decks { get; private set; }
         public PlayerCards Cards { get; private set; }
         public PlayerShopState ShopState { get; private set; }
+        public int SoloLastPlayedChaterId;
         public Dictionary<int, ChapterStatus> SoloChapters { get; private set; }
         public PlayerCraftPoints CraftPoints { get; private set; }
         public PlayerOrbPoints OrbPoints { get; private set; }
@@ -61,6 +63,7 @@ namespace YgoMaster
         public Player(uint code)
         {
             Code = code;
+            WallpaperHome = new HashSet<int>();
             Items = new HashSet<int>();
             TitleTags = new HashSet<int>();
             CardFavorites = new CardCollection();

@@ -545,7 +545,9 @@ namespace YgoMaster
         SelAllMonst2,
         SelAllGadget,
         SelAllIndeck,
-        SelAllGunkan//v1.7.1
+        SelAllGunkan,//v1.7.1
+        SelAllNormal,//v2.2.1
+        SelAllNormal2//v2.2.1
     }
 
     /// <summary>
@@ -693,6 +695,7 @@ namespace YgoMaster
         Step,
         SummoningUid,
         PosMask,
+        AffectProp,//v2.2.1
         End
     }
 
@@ -718,7 +721,8 @@ namespace YgoMaster
         Attr,
         Card,
         Num,
-        AttrMask
+        AttrMask,
+        Dlg//v2.2.1
     }
 
     /// <summary>

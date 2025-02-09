@@ -424,10 +424,10 @@ namespace YgomGame
         delegate IntPtr Del_RemoveFromDeck1(IntPtr thisPtr, ref YgomGame.Deck.CardBaseData baseData);
         static Hook<Del_RemoveFromDeck1> hookRemoveFromDeck1;
 
-        delegate IntPtr Del_RemoveFromDeck2(IntPtr thisPtr, IntPtr card, bool isDrag, IntPtr pos);
+        delegate IntPtr Del_RemoveFromDeck2(IntPtr thisPtr, IntPtr card, csbool isDrag, IntPtr pos, csbool isFlick);
         static Hook<Del_RemoveFromDeck2> hookRemoveFromDeck2;
 
-        delegate IntPtr Del_AsyncFilterAndSort(IntPtr thisPtr, IntPtr onFinish, bool setAll, IntPtr targetSorter, bool filter);
+        delegate IntPtr Del_AsyncFilterAndSort(IntPtr thisPtr, IntPtr onFinish, csbool setAll, IntPtr targetSorter, csbool filter);
         static Hook<Del_AsyncFilterAndSort> hookAsyncFilterAndSort;
 
         static DeckEditViewController2()
@@ -447,7 +447,7 @@ namespace YgomGame
             hookOnClickSaveButton = new Hook<Del_OnClickSaveButton>(OnClickSaveButton, classInfo.GetMethod("OnClickSaveButton"));
             hookAddToMainOrExtraDeck = new Hook<Del_AddToMainOrExtraDeck>(AddToMainOrExtraDeck, classInfo.GetMethod("AddToMainOrExtraDeck", x => x.GetParameters().Length == 1));
             hookRemoveFromDeck1 = new Hook<Del_RemoveFromDeck1>(RemoveFromDeck1, classInfo.GetMethod("RemoveFromDeck", x => x.GetParameters().Length == 1));
-            hookRemoveFromDeck2 = new Hook<Del_RemoveFromDeck2>(RemoveFromDeck2, classInfo.GetMethod("RemoveFromDeck", x => x.GetParameters().Length == 3));
+            hookRemoveFromDeck2 = new Hook<Del_RemoveFromDeck2>(RemoveFromDeck2, classInfo.GetMethod("RemoveFromDeck", x => x.GetParameters().Length == 4));
             hookAsyncFilterAndSort = new Hook<Del_AsyncFilterAndSort>(AsyncFilterAndSort, classInfo.GetMethod("AsyncFilterAndSort"));
             methodToggleShowAllCards = classInfo.GetMethod("ToggleShowAllCards");
 
@@ -672,7 +672,7 @@ namespace YgomGame
             }
         }
 
-        static IntPtr RemoveFromDeck2(IntPtr thisPtr, IntPtr card, bool isDrag, IntPtr pos)
+        static IntPtr RemoveFromDeck2(IntPtr thisPtr, IntPtr card, csbool isDrag, IntPtr pos, csbool isFlick)
         {
             if (TradeUtils.IsTrading)
             {
@@ -693,7 +693,7 @@ namespace YgomGame
             }
             else
             {
-                return hookRemoveFromDeck2.Original(thisPtr, card, isDrag, pos);
+                return hookRemoveFromDeck2.Original(thisPtr, card, isDrag, pos, isFlick);
             }
         }
 
@@ -832,7 +832,7 @@ namespace YgomGame
             Deck.CardCollectionView.UpdateView(collectionView, updateDataCount, select);
         }
 
-        static IntPtr AsyncFilterAndSort(IntPtr thisPtr, IntPtr onFinish, bool setAll, IntPtr targetSorter, bool filter)
+        static IntPtr AsyncFilterAndSort(IntPtr thisPtr, IntPtr onFinish, csbool setAll, IntPtr targetSorter, csbool filter)
         {
             if (skipNextAsyncFilterAndSort)
             {

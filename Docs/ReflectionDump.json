@@ -134,7 +134,7 @@
     "Namespace": "YgomGame.Duel",
     "Class": [
       "DuelHUD",
-      "<PrepareToDuelProcess>d__140"
+      "<PrepareToDuelProcess>d__154"
     ],
     "Type": "Method",
     "Name": "MoveNext",
@@ -1223,7 +1223,7 @@
     ],
     "Type": "Method",
     "Name": "RemoveFromDeck",
-    "Signature": "public System.Void RemoveFromDeck(YgomGame.Deck.DeckCard card, System.Boolean isDrag, System.Nullable<UnityEngine.Vector3> pos)"
+    "Signature": "public System.Void RemoveFromDeck(YgomGame.Deck.DeckCard card, System.Boolean isDrag, System.Nullable<UnityEngine.Vector3> pos, System.Boolean isFlick)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1233,7 +1233,7 @@
     ],
     "Type": "Method",
     "Name": "AsyncFilterAndSort",
-    "Signature": "System.Threading.Tasks.Task AsyncFilterAndSort(System.Action onFinish, System.Boolean setAll, System.Nullable<SortComparer.Sorter> targetSorter, System.Boolean filter)"
+    "Signature": "System.Threading.Tasks.Task AsyncFilterAndSort(System.Action onFinish, System.Boolean setAll, System.Nullable<YgomGame.Menu.SortComparer.Sorter> targetSorter, System.Boolean filter)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1389,23 +1389,32 @@
     "Assembly": "Assembly-CSharp",
     "Namespace": "YgomGame.Menu",
     "Class": [
-      "ProfileReplayViewController",
-      "<>c__DisplayClass49_0"
+      "ProfileReplayViewController"
     ],
     "Type": "Field",
-    "Name": "dataindex",
-    "Signature": "public dataindex"
+    "Name": "itemIndex",
+    "Signature": "itemIndex"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "ProfileReplayViewController"
+    ],
+    "Type": "Field",
+    "Name": "replayInfos",
+    "Signature": "replayInfos"
   },
   {
     "Assembly": "Assembly-CSharp",
     "Namespace": "YgomGame.Menu",
     "Class": [
       "ProfileReplayViewController",
-      "<>c__DisplayClass49_0"
+      "ProfileReplayInfo"
     ],
     "Type": "Field",
-    "Name": "dataindex",
-    "Signature": "public dataindex"
+    "Name": "did",
+    "Signature": "public did"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1506,186 +1515,6 @@
     "Type": "Method",
     "Name": "Update",
     "Signature": "System.Void Update()"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Credit",
-    "Class": [
-      "CreditViewController"
-    ],
-    "Type": "Method",
-    "Name": "OnBack",
-    "Signature": "public System.Boolean OnBack()"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Menu",
-    "Class": [
-      "BaseMenuViewController"
-    ],
-    "Type": "Method",
-    "Name": "OnBack",
-    "Signature": "public System.Boolean OnBack()"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Credit",
-    "Class": [
-      "CreditViewController"
-    ],
-    "Type": "Method",
-    "Name": "Update",
-    "Signature": "System.Void Update()"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Credit",
-    "Class": [
-      "CreditViewController"
-    ],
-    "Type": "Method",
-    "Name": "OnCreatedView",
-    "Signature": "public System.Void OnCreatedView()"
-  },
-  {
-    "Assembly": "UnityEngine.UI",
-    "Namespace": "UnityEngine.UI",
-    "Class": [
-      "RawImage"
-    ],
-    "Type": "Property",
-    "Name": "texture",
-    "Signature": "public UnityEngine.Texture"
-  },
-  {
-    "Assembly": "UnityEngine.UI",
-    "Namespace": "UnityEngine.UI",
-    "Class": [
-      "RawImage"
-    ],
-    "Type": "Property",
-    "Name": "uvRect",
-    "Signature": "public UnityEngine.Rect"
-  },
-  {
-    "Assembly": "UnityEngine.CoreModule",
-    "Namespace": "UnityEngine",
-    "Class": [
-      "Screen"
-    ],
-    "Type": "Property",
-    "Name": "width",
-    "Signature": "public static System.Int32"
-  },
-  {
-    "Assembly": "UnityEngine.CoreModule",
-    "Namespace": "UnityEngine",
-    "Class": [
-      "Screen"
-    ],
-    "Type": "Property",
-    "Name": "height",
-    "Signature": "public static System.Int32"
-  },
-  {
-    "Assembly": "UnityEngine.InputLegacyModule",
-    "Namespace": "UnityEngine",
-    "Class": [
-      "Input"
-    ],
-    "Type": "Method",
-    "Name": "GetMouseButtonDown",
-    "Signature": "public static System.Boolean GetMouseButtonDown(System.Int32 button)"
-  },
-  {
-    "Assembly": "UnityEngine.InputLegacyModule",
-    "Namespace": "UnityEngine",
-    "Class": [
-      "Input"
-    ],
-    "Type": "Method",
-    "Name": "GetMouseButtonUp",
-    "Signature": "public static System.Boolean GetMouseButtonUp(System.Int32 button)"
-  },
-  {
-    "Assembly": "UnityEngine.InputLegacyModule",
-    "Namespace": "UnityEngine",
-    "Class": [
-      "Input"
-    ],
-    "Type": "Property",
-    "Name": "mousePosition",
-    "Signature": "public static UnityEngine.Vector3"
-  },
-  {
-    "Assembly": "UnityEngine.InputLegacyModule",
-    "Namespace": "UnityEngine",
-    "Class": [
-      "Input"
-    ],
-    "Type": "Property",
-    "Name": "mouseScrollDelta",
-    "Signature": "public static UnityEngine.Vector2"
-  },
-  {
-    "Assembly": "UnityEngine.InputLegacyModule",
-    "Namespace": "UnityEngine",
-    "Class": [
-      "Input"
-    ],
-    "Type": "Method",
-    "Name": "GetKey",
-    "Signature": "public static System.Boolean GetKey(UnityEngine.KeyCode key)"
-  },
-  {
-    "Assembly": "UnityEngine.InputLegacyModule",
-    "Namespace": "UnityEngine",
-    "Class": [
-      "Input"
-    ],
-    "Type": "Method",
-    "Name": "GetKeyDown",
-    "Signature": "public static System.Boolean GetKeyDown(UnityEngine.KeyCode key)"
-  },
-  {
-    "Assembly": "Unity.TextMeshPro",
-    "Namespace": "TMPro",
-    "Class": [
-      "TMP_Text"
-    ],
-    "Type": "Property",
-    "Name": "text",
-    "Signature": "public System.String"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomSystem.UI",
-    "Class": [
-      "TweenViewController"
-    ],
-    "Type": "Method",
-    "Name": "TransitionStart",
-    "Signature": "public System.Void TransitionStart(YgomSystem.UI.ViewController.TransitionType type)"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomSystem.UI",
-    "Class": [
-      "Tween"
-    ],
-    "Type": "Method",
-    "Name": "TargetIsPlaying",
-    "Signature": "public static System.Boolean TargetIsPlaying(UnityEngine.GameObject target, System.String _label, System.Boolean includeChildren, System.Boolean isActive)"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Settings",
-    "Class": [
-      "SettingsUtil"
-    ],
-    "Type": "Method",
-    "Name": "SetResolution",
-    "Signature": "public static System.Void SetResolution(System.Int32 width, System.Int32 height)"
   },
   {
     "Assembly": "Assembly-CSharp",

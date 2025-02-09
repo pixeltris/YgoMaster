@@ -170,6 +170,10 @@ namespace YgoMaster
                 {
                     deck.Accessory.AvBase = value;
                 }
+                if (Utils.TryGetValue(args, "avatar_id", out value))
+                {
+                    deck.Accessory.AvatarId = value;
+                }
                 deck.Accessory.Sanitize(request.Player);
                 Dictionary<string, object> pickCards = Utils.GetDictionary(args, "pick_cards");
                 if (pickCards != null)
@@ -211,6 +215,113 @@ namespace YgoMaster
                 request.Player.Duel.SetDeckId(mode, 0);
             }
             SavePlayer(request.Player);
+        }
+
+        void Act_DeckCopyStructureMulti(GameServerWebRequest request)
+        {
+            int numCreatedDecks = 0;
+            List<int> structureIds = Utils.GetIntList(request.ActParams, "structure_ids");
+            if (structureIds != null)
+            {
+                foreach (int structureId in structureIds)
+                {
+                    DeckInfo deckInfo;
+                    if (StructureDecks.TryGetValue(structureId, out deckInfo) && request.Player.Items.Contains(structureId))
+                    {
+                        numCreatedDecks++;
+                        request.ActParams["deck_id"] = 0;
+                        request.ActParams["name"] = deckInfo.Name;
+                        request.ActParams["deck_list"] = deckInfo.ToDictionary();
+                        request.ActParams["pick_cards"] = deckInfo.DisplayCards.ToIndexDictionary();
+                        request.ActParams["accessory"] = deckInfo.Accessory.ToDictionary();
+                        Act_DeckUpdate(request);
+                    }
+                }
+            }
+            if (numCreatedDecks == 0)
+            {
+                request.ResultCode = (int)ResultCodes.DeckCode.ERROR_DECK_LIMIT;
+            }
+        }
+
+        void Act_DeckSetAccessory(GameServerWebRequest request)
+        {
+            Dictionary<string, object> args = Utils.GetValue(request.ActParams, "param", default(Dictionary<string, object>));
+            if (args != null)
+            {
+                int value;
+                if (Utils.TryGetValue(args, "icon_id", out value) && request.Player.Items.Contains(value))
+                {
+                    request.Player.IconId = value;
+                }
+                if (Utils.TryGetValue(args, "icon_frame_id", out value) && request.Player.Items.Contains(value))
+                {
+                    request.Player.IconFrameId = value;
+                }
+                if (Utils.TryGetValue(args, "avatar_id", out value) && request.Player.Items.Contains(value))
+                {
+                    request.Player.AvatarId = value;
+                }
+                if (Utils.TryGetValue(args, "wallpaper", out value) && request.Player.Items.Contains(value))
+                {
+                    request.Player.Wallpaper = value;
+                }
+                ItemID.Category fieldItemCategory = ItemID.Category.NONE;
+                if (Utils.TryGetValue(args, "field_avatar_base", out value) && request.Player.Items.Contains(value))
+                {
+                    fieldItemCategory = ItemID.Category.AVATAR_HOME;
+                }
+                if (Utils.TryGetValue(args, "field_obj", out value) && request.Player.Items.Contains(value))
+                {
+                    fieldItemCategory = ItemID.Category.FIELD_OBJ;
+                }
+                if (Utils.TryGetValue(args, "field", out value) && request.Player.Items.Contains(value))
+                {
+                    fieldItemCategory = ItemID.Category.FIELD;
+                }
+                if (Utils.TryGetValue(args, "deck_case", out value) && request.Player.Items.Contains(value))
+                {
+                    fieldItemCategory = ItemID.Category.DECK_CASE;
+                }
+                if (Utils.TryGetValue(args, "protector", out value) && request.Player.Items.Contains(value))
+                {
+                    fieldItemCategory = ItemID.Category.PROTECTOR;
+                }
+                if (fieldItemCategory != ItemID.Category.NONE)
+                {
+                    // NOTE: Deck changes should be applied to the "Ranked Duels Deck"
+                    // NOTE: Currently the client isn't showing the copy prompt with this code, probably because the client knows there's no assigned ranked deck
+                    DeckInfo deck = request.Player.Duel.GetDeck(GameMode.SoloSingle);
+                    if (deck != null)
+                    {
+                        switch (fieldItemCategory)
+                        {
+                            case ItemID.Category.AVATAR_HOME:
+                                deck.Accessory.AvBase = value;
+                                break;
+                            case ItemID.Category.FIELD_OBJ:
+                                deck.Accessory.FieldObj = value;
+                                break;
+                            case ItemID.Category.FIELD:
+                                deck.Accessory.Field = value;
+                                break;
+                            case ItemID.Category.DECK_CASE:
+                                deck.Accessory.Box = value;
+                                break;
+                            case ItemID.Category.PROTECTOR:
+                                deck.Accessory.Sleeve = value;
+                                break;
+                        }
+                        SaveDeck(deck);
+                    }
+                    else
+                    {
+                        // TODO: Give error?
+                    }
+                }
+                SavePlayer(request.Player);
+                WriteUser(request);
+            }
         }
     }
 }

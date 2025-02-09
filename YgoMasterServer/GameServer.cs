@@ -316,6 +316,12 @@ namespace YgoMaster
                                     case "Deck.set_select_deck":
                                         Act_SetSelectDeck(gameServerWebRequest);
                                         break;
+                                    case "Deck.copy_structure_multi":// v2.2.1
+                                        Act_DeckCopyStructureMulti(gameServerWebRequest);
+                                        break;
+                                    case "Deck.set_accessory":// v2.2.1
+                                        Act_DeckSetAccessory(gameServerWebRequest);
+                                        break;
                                     case "Shop.get_list":
                                         Act_ShopGetList(gameServerWebRequest);
                                         break;

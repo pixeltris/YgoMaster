@@ -26,15 +26,16 @@ namespace YgoMaster
                     { "follower_num", friends.Count(x => x.Value.HasFlag(FriendState.Follower)) },
                     { "avatar_id", request.Player.AvatarId },
                     { "wallpaper", request.Player.Wallpaper },
-                    { "tag", request.Player.TitleTags.ToArray() }
+                    { "tag", request.Player.TitleTags.ToArray() },
+                    { "wallpaper_home", request.Player.WallpaperHome.ToArray() },
                 }}
             };
         }
 
-        void WriteItem(GameServerWebRequest request)
+        Dictionary<string, object> GetItemHaveDictionary(Player player)
         {
             Dictionary<string, object> have = new Dictionary<string, object>();
-            foreach (int item in request.Player.Items)
+            foreach (int item in player.Items)
             {
                 have[item.ToString()] = 1;
             }
@@ -42,12 +43,17 @@ namespace YgoMaster
             {
                 have[value.ToString()] = 1;
             }
-            have[((int)ItemID.Value.Gem).ToString()] = request.Player.Gems;
-            request.Player.CraftPoints.ToDictionary(have);
-            request.Player.OrbPoints.ToDictionary(have);
+            have[((int)ItemID.Value.Gem).ToString()] = player.Gems;
+            player.CraftPoints.ToDictionary(have);
+            player.OrbPoints.ToDictionary(have);
+            return have;
+        }
+
+        void WriteItem(GameServerWebRequest request)
+        {
             request.Response["Item"] = new Dictionary<string, object>()
             {
-                { "have", have },
+                { "have", GetItemHaveDictionary(request.Player) },
             };
         }
 

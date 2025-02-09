@@ -142,12 +142,17 @@ namespace YgoMaster
                 {
                     duelSettings.noshuffle = false;
                 }
+                duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.AVATAR, player.AvatarId);
                 if (duel.IsMyDeck && !duelSettings.IsCustomDuel)
                 {
                     DeckInfo deck = duel.GetDeck(GameMode.SoloSingle);
                     if (deck != null)
                     {
                         duelSettings.Deck[DuelSettings.PlayerIndex].CopyFrom(deck);
+                        if (deck.Accessory.AvatarId > 0)
+                        {
+                            duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.AVATAR, deck.Accessory.AvatarId);
+                        }
                         duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.AVATAR_HOME, deck.Accessory.AvBase);
                         duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.PROTECTOR, deck.Accessory.Sleeve);
                         duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.FIELD, deck.Accessory.Field);
@@ -159,7 +164,6 @@ namespace YgoMaster
                         }
                     }
                 }
-                duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.AVATAR, player.AvatarId);
                 duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.ICON, player.IconId);
                 duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.ICON_FRAME, player.IconFrameId);
                 duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.WALLPAPER, player.Wallpaper);
@@ -563,6 +567,15 @@ namespace YgoMaster
             duelResult["mode"] = (int)GameMode.Normal;// Use anything other than SoloSingle (as it only shows level / exp)
             Dictionary<string, object> duelResultInfo = Utils.GetOrCreateDictionary(duelResult, "resultInfo");
             duelResultInfo["result"] = 1;
+            if (request.Player.ActiveDuelSettings != null)
+            {
+                int playerIndex = request.Player.ActiveDuelSettings.pcode[0] == request.Player.Code || request.Player.ActiveDuelSettings.pcode[0] == 0 ? 0 : 1;
+                int avatarId = request.Player.ActiveDuelSettings.avatar[playerIndex];
+                if (avatarId > 0)
+                {
+                    duelResultInfo["avatar"] = avatarId;
+                }
+            }
             Dictionary<string, object> duelScoreInfo = Utils.GetOrCreateDictionary(duelResultInfo, "scoreInfo");
             Dictionary<string, object> duelScore = Utils.GetOrCreateDictionary(duelScoreInfo, "score");
             int duelScoreTotal = Utils.GetValue<int>(duelScore, "total");
@@ -756,7 +769,7 @@ namespace YgoMaster
                                         foreach (KeyValuePair<int, int> card in cardRare)
                                         {
                                             if (card.Value == (int)cardRarity && (reward.CardOwnedLimit == 0 ||
-                                                reward.CardOwnedLimit < request.Player.Cards.GetCount(card.Key)))
+                                                reward.CardOwnedLimit > request.Player.Cards.GetCount(card.Key)))
                                             {
                                                 cardIds.Add(card.Key);
                                             }

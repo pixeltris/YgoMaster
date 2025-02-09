@@ -134,6 +134,7 @@ namespace YgoMaster
             ERROR_DECK_SAME_CARDS = 1407,
             ERROR_DECK_NO,//v1.3.1
             ERROR_CARD_ID,//v1.3.1
+            ERROR_UNFIND_MAINDECK,//v2.2.1
             INVALID_DECK_COUNT = 1440,//v1.3.1
             INVALID_DECK_NAME,//v1.3.1
             INVALID_DECK_BIKO,//v1.3.1
@@ -188,6 +189,9 @@ namespace YgoMaster
             ALREADY_BLOCKED = 2007,
             NO_BLOCK_ACCOUNT = 2008,
             BLOCK_MAX = 2009,
+            BLOCK_USER,//v2.2.1
+            PS_BLOCK_USER,//v2.2.1
+            XBOX_BLOCK_USER,//v2.2.1
         }
 
         public enum MissionCode
@@ -315,6 +319,8 @@ namespace YgoMaster
             FATAL = 2,
             CRITICAL = 3,
             INVALID_PARAM = 2300,
+            ERR_OUT_OF_TERM,
+            ERR_INVALID_MISSION_POOL,//v2.2.1
         }
 
         public enum SoloCode
@@ -448,6 +454,7 @@ namespace YgoMaster
             ERR_OUT_OF_TERM = 3004,
             ERR_DECK_LIMIT = 3005,
             ERROR_FIXED_ACCESSORY = 3006,
+            ERR_INVALID_MISSION_POOL,//v2.2.1
         }
 
         public enum DuelpassCode
@@ -470,6 +477,7 @@ namespace YgoMaster
             PLAYBACK_FAIL = 3301,
             IN_PREPARATION,//v2.0.0
             DISP_DECK_FAIL,//v2.0.0
+            ADJUST_MENU_FAIL,//v2.2.1
         }
 
         public enum EnqueteCode

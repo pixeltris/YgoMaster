@@ -18,6 +18,8 @@ Chapter icon:
 - npc_id(!0) + mydeck_set_id(!0) - duel
 - npc_id(!0) + mydeck_set_id(0) + set_id(!0) - practice
 
+Chapter ids need to be based on the gate id * 10000. i.e. the first chapter of gate 29 would be 290001
+
 ```
 {
   "Master": {

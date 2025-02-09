@@ -117,6 +117,19 @@ namespace YgoMaster
                         case "wallpaper":
                             request.Player.Wallpaper = (int)Convert.ChangeType(arg.Value, typeof(int));
                             break;
+                        case "wallpaper_home":
+                            {
+                                List<int> wallpapers = Utils.GetIntList(args, arg.Key);
+                                request.Player.WallpaperHome.Clear();
+                                if (wallpapers != null)
+                                {
+                                    foreach (int wallpaper in wallpapers)
+                                    {
+                                        request.Player.WallpaperHome.Add(wallpaper);
+                                    }
+                                }
+                            }
+                            break;
                         case "tag":
                             request.Player.TitleTags.Clear();
                             foreach (object tagObj in arg.Value as List<object>)

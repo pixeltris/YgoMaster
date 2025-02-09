@@ -755,6 +755,7 @@ namespace YgoMaster
 
             request.Player.SoloChapters[chapterId] = newStatus;
             SavePlayer(request.Player);
+            WriteSoloRecommended(request);
 
             Dictionary<string, object> soloData = request.GetOrCreateDictionary("Solo");
             Dictionary<string, object> clearedData = Utils.GetOrCreateDictionary(soloData, "cleared");
@@ -804,8 +805,261 @@ namespace YgoMaster
                 { "Solo", SoloData }
             };
             request.GetOrCreateDictionary("Solo")["cleared"] = request.Player.SoloChaptersToDictionary();
+            WriteSoloLastPlayDate(request);
+            WriteSoloRecommended(request);
             WriteSolo_deck_info(request);
             request.Remove("Master.solo", "Solo");
+        }
+
+        void WriteSoloLastPlayDate(GameServerWebRequest request)
+        {
+            Dictionary<string, object> lastPlayedDate = new Dictionary<string, object>();
+            if (request.Player.SoloLastPlayedChaterId != 0)
+            {
+                lastPlayedDate[GetChapterGateId(request.Player.SoloLastPlayedChaterId).ToString()] = Utils.GetEpochTime();
+            }
+            else
+            {
+                // If the last played chapter isn't set up it can bug the UI. Set it to the recommendation
+                int gateRec1, gateRec2;
+                GetRecommendedSoloGates(request.Player, out gateRec1, out gateRec2);
+                lastPlayedDate[gateRec1.ToString()] = Utils.GetEpochTime();
+            }
+            request.GetOrCreateDictionary("Solo")["last_play_date"] = lastPlayedDate;
+        }
+
+        void WriteSoloRecommended(GameServerWebRequest request)
+        {
+            int gateRec1, gateRec2;
+            GetRecommendedSoloGates(request.Player, out gateRec1, out gateRec2);
+            request.GetOrCreateDictionary("Solo")["recommend"] = new Dictionary<string, object>()
+            {
+                { "1", gateRec1 },
+                { "2", gateRec2 },
+            };
+        }
+
+        void GetRecommendedSoloGates(Player player, out int gateRec1, out int gateRec2)
+        {
+            // This returs the first two gates with a chapter which isn't clear/complete
+            // TODO: Make this more efficient
+
+            // Most of this code is copied from YgoMasterClient "solo_clear" command
+            gateRec1 = 0;
+            gateRec2 = 0;
+
+            Dictionary<string, object> allChapterData = Utils.GetDictionary(SoloData, "chapter");
+            if (allChapterData == null)
+            {
+                Utils.LogWarning("Failed to find chapter data");
+                return;
+            }
+            Dictionary<int, Dictionary<string, object>> allChapters = new Dictionary<int, Dictionary<string, object>>();
+            Dictionary<int, List<int>> allGatesChapterIds = new Dictionary<int, List<int>>();
+            foreach (KeyValuePair<string, object> gateChapterData in allChapterData)
+            {
+                Dictionary<string, object> chapters = gateChapterData.Value as Dictionary<string, object>;
+                int gateId;
+                if (!int.TryParse(gateChapterData.Key, out gateId) || chapters == null)
+                {
+                    continue;
+                }
+                List<int> chapterIds = new List<int>();
+                foreach (KeyValuePair<string, object> chapter in chapters)
+                {
+                    Dictionary<string, object> chapterData = chapter.Value as Dictionary<string, object>;
+                    int chapterId;
+                    if (!int.TryParse(chapter.Key, out chapterId) || chapterData == null)
+                    {
+                        continue;
+                    }
+                    allChapters[chapterId] = chapterData;
+                    chapterIds.Add(chapterId);
+                }
+                allGatesChapterIds[gateId] = chapterIds;
+            }
+
+            Dictionary<string, object> allGateData = Utils.GetDictionary(SoloData, "gate");
+            if (allGateData == null)
+            {
+                Utils.LogWarning("Failed to find gate data");
+                return;
+            }
+            Func<int, Dictionary<int, ChapterStatus>, int> GetChapterStatus = (int chapterId, Dictionary<int, ChapterStatus> cleared) =>
+            {
+                ChapterStatus result;
+                cleared.TryGetValue(chapterId, out result);
+                return (int)result;
+            };
+
+            Func<int, Dictionary<int, ChapterStatus>, Dictionary<string, object>, bool> AreUnlockConditionsMet = (int unlockId, Dictionary<int, ChapterStatus> cleared, Dictionary<string, object> itemHave) =>
+            {
+                Dictionary<string, object> allUnlockData = Utils.GetDictionary(SoloData, "unlock");
+                Dictionary<string, object> allUnlockItemData = Utils.GetDictionary(SoloData, "unlock_item");
+                if (allUnlockData == null || allUnlockItemData == null)
+                {
+                    Utils.LogWarning("Failed to get all unlock data");
+                    return false;
+                }
+                Dictionary<string, object> unlockData = Utils.GetDictionary(allUnlockData, unlockId.ToString());
+                if (unlockData == null)
+                {
+                    Utils.LogWarning("Failed to get unlock data for unlock_id " + unlockId);
+                    return false;
+                }
+                bool unlockConditionsMet = true;
+                foreach (KeyValuePair<string, object> unlockRequirement in unlockData)
+                {
+                    ChapterUnlockType unlockType;
+                    if (Enum.TryParse(unlockRequirement.Key, out unlockType))
+                    {
+                        switch (unlockType)
+                        {
+                            case ChapterUnlockType.HAS_ITEM:
+                            case ChapterUnlockType.ITEM:
+                                {
+                                    List<object> itemSetList = unlockRequirement.Value as List<object>;
+                                    if (itemSetList == null)
+                                    {
+                                        continue;
+                                    }
+                                    foreach (object itemSet in itemSetList)
+                                    {
+                                        int itemSetId = (int)Convert.ChangeType(itemSet, typeof(int));
+                                        Dictionary<string, object> itemsByCategory = Utils.GetDictionary(allUnlockItemData, itemSetId.ToString());
+                                        if (itemsByCategory == null)
+                                        {
+                                            Utils.LogWarning("Failed to find unlock_item " + itemSetId + " for unlock_id" + unlockId);
+                                            continue;
+                                        }
+                                        foreach (KeyValuePair<string, object> itemCategory in itemsByCategory)
+                                        {
+                                            Dictionary<string, object> items = itemCategory.Value as Dictionary<string, object>;
+                                            ItemID.Category category;
+                                            if (!Enum.TryParse(itemCategory.Key, out category))
+                                            {
+                                                continue;
+                                            }
+                                            foreach (KeyValuePair<string, object> item in items)
+                                            {
+                                                int itemId;
+                                                int count = (int)Convert.ChangeType(item.Value, typeof(int));
+                                                if (!int.TryParse(item.Key, out itemId))
+                                                {
+                                                    continue;
+                                                }
+                                                if (itemHave == null || Utils.GetValue<int>(itemHave, itemId.ToString()) < count)
+                                                {
+                                                    unlockConditionsMet = false;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                break;
+                            case ChapterUnlockType.CHAPTER_OR:
+                                {
+                                    List<int> chapterIds = Utils.GetIntList(unlockData, unlockRequirement.Key);
+                                    if (!chapterIds.Any(x => GetChapterStatus(x, cleared) != 0))
+                                    {
+                                        unlockConditionsMet = false;
+                                    }
+                                }
+                                break;
+                            case ChapterUnlockType.CHAPTER_AND:
+                                {
+                                    List<int> chapterIds = Utils.GetIntList(unlockData, unlockRequirement.Key);
+                                    if (!chapterIds.All(x => GetChapterStatus(x, cleared) != 0))
+                                    {
+                                        unlockConditionsMet = false;
+                                    }
+                                }
+                                break;
+                            case ChapterUnlockType.USER_LEVEL:
+                                {
+                                    // TODO
+                                }
+                                break;
+                        }
+                    }
+                }
+                return unlockConditionsMet;
+            };
+
+            Func<int, Dictionary<int, ChapterStatus>, Dictionary<string, object>, bool> IsGateUnlocked = (int gateId, Dictionary<int, ChapterStatus> cleared, Dictionary<string, object> itemHave) =>
+            {
+                Dictionary<string, object> gateData = Utils.GetDictionary(allGateData, gateId.ToString());
+                if (gateData == null)
+                {
+                    return false;
+                }
+                int unlockId = Utils.GetValue<int>(gateData, "unlock_id");
+                return unlockId == 0 || AreUnlockConditionsMet(unlockId, cleared, itemHave);
+            };
+
+            Func<int, Dictionary<int, ChapterStatus>, Dictionary<string, object>, bool> IsAvailable = (int chapterId, Dictionary<int, ChapterStatus> cleared, Dictionary<string, object> itemHave) =>
+            {
+                int gateId = GetChapterGateId(chapterId);
+                if (!IsGateUnlocked(gateId, cleared, itemHave))
+                {
+                    return false;
+                }
+
+                Dictionary<string, object> chapter;
+                if (!allChapters.TryGetValue(chapterId, out chapter))
+                {
+                    return false;
+                }
+
+                int parentChapterId = Utils.GetValue<int>(chapter, "parent_chapter");
+                if (parentChapterId != 0)
+                {
+                    Dictionary<string, object> parentChapter;
+                    if (!allChapters.TryGetValue(parentChapterId, out parentChapter))
+                    {
+                        return false;
+                    }
+                    if (GetChapterStatus(parentChapterId, cleared) == 0)
+                    {
+                        return false;
+                    }
+                }
+
+                int unlockId = Utils.GetValue<int>(chapter, "unlock_id");
+                if (unlockId != 0)
+                {
+                    return AreUnlockConditionsMet(unlockId, cleared, itemHave);
+                }
+
+                return true;
+            };
+
+            Dictionary<string, object> itemhave = GetItemHaveDictionary(player);
+            foreach (KeyValuePair<int, Dictionary<string, object>> chapter in allChapters)
+            {
+                int gateId = GetChapterGateId(chapter.Key);
+                if (gateRec1 != 0 && gateId == gateRec1)
+                {
+                    continue;
+                }
+                if (GetChapterStatus(chapter.Key, player.SoloChapters) == 0 && IsAvailable(chapter.Key, player.SoloChapters, itemhave))
+                {
+                    if (gateRec1 == 0)
+                    {
+                        gateRec1 = gateId;
+                    }
+                    else if (gateRec2 == 0)
+                    {
+                        gateRec2 = gateId;
+                        break;
+                    }
+                }
+            }
+
+            if (gateRec2 == 0)
+            {
+                gateRec2 = gateRec1;
+            }
         }
 
         void Act_SoloDetail(GameServerWebRequest request)
@@ -865,6 +1119,10 @@ namespace YgoMaster
             int chapterId;
             if (Utils.TryGetValue<int>(request.ActParams, "chapter", out chapterId))
             {
+                request.Player.SoloLastPlayedChaterId = chapterId;
+                SavePlayer(request.Player);
+                WriteSoloLastPlayDate(request);
+
                 int myDeckSetId;
                 int loanerDeckSetId;
                 if (GetChapterSetIds(request, chapterId, out myDeckSetId, out loanerDeckSetId) &&

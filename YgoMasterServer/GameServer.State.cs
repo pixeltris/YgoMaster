@@ -1279,6 +1279,7 @@ namespace YgoMaster
                 data["IconFrameId"] = player.IconFrameId;
                 data["AvatarId"] = player.AvatarId;
                 data["Wallpaper"] = player.Wallpaper;
+                data["WallpaperHome"] = player.WallpaperHome.ToArray();
                 data["DuelBgmMode"] = (int)player.DuelBgmMode;
                 data["CraftPoints"] = player.CraftPoints.ToDictionary();
                 data["OrbPoints"] = player.OrbPoints.ToDictionary();
@@ -1287,6 +1288,7 @@ namespace YgoMaster
                 data["CardFavorites"] = player.CardFavorites.ToDictionary();
                 data["CardLock"] = player.CardLock.ToDictionary();
                 data["Items"] = player.Items.ToArray();
+                data["SoloLastPlayedChaterId"] = player.SoloLastPlayedChaterId;
                 data["SoloChapters"] = player.SoloChaptersToDictionary();
                 data["ShopState"] = player.ShopState.ToDictionary();
                 data["Cards"] = player.Cards.ToDictionary();
@@ -1365,8 +1367,10 @@ namespace YgoMaster
             player.IconFrameId = Utils.GetValue<int>(data, "IconFrameId");
             player.AvatarId = Utils.GetValue<int>(data, "AvatarId");
             player.Wallpaper = Utils.GetValue<int>(data, "Wallpaper");
+            Utils.GetIntHashSet(data, "WallpaperHome", player.WallpaperHome, ignoreZero: true);
             player.DuelBgmMode = (DuelBgmMode)Utils.GetValue<int>(data, "DuelBgmMode");
 
+            player.SoloLastPlayedChaterId = Utils.GetValue<int>(data, "SoloLastPlayedChaterId");
             player.SoloChaptersFromDictionary(Utils.GetDictionary(data, "SoloChapters"));
             if (UnlockAllSoloChapters)
             {
@@ -1641,6 +1645,23 @@ namespace YgoMaster
                     deck.DisplayCards.FromDictionary(Utils.GetDictionary(data, "focus"));
                     deck.FromDictionary(Utils.GetDictionary(data, "contents"));
                     StructureDecks[deck.Id] = deck;
+                }
+            }
+
+            // NOTE: Hacky way to implement "Deck.copy_structure_multi" as otherwise we don't have access to the deck name.
+            // for languages other than English this will mean deck names are copied wrong (will always be english)
+            foreach (string line in File.ReadAllLines(Path.Combine(dataDirectory, "ItemID.json")))
+            {
+                foreach (KeyValuePair<int, DeckInfo> deck in StructureDecks)
+                {
+                    if (line.Contains(deck.Key.ToString()))
+                    {
+                        int indx = line.IndexOf("//");
+                        if (indx > 0)
+                        {
+                            deck.Value.Name = line.Substring(indx + 2).Trim();
+                        }
+                    }
                 }
             }
         }
@@ -2380,6 +2401,40 @@ namespace YgoMaster
             if (data != null)
             {
                 Utils.TryGetValue(data, "Solo", out SoloData);
+                if (SoloData != null)
+                {
+                    /*Dictionary<string, object> allGateData = Utils.GetDictionary(SoloData, "gate");
+                    if (allGateData != null)
+                    {
+                        foreach (KeyValuePair<string, object> gate in allGateData)
+                        {
+                            Dictionary<string, object> gateData = gate.Value as Dictionary<string, object>;
+                            if (gateData != null && !gateData.ContainsKey("open_date"))
+                            {
+                                gateData["open_date"] = Utils.GetEpochTime(DateTime.MinValue);
+                            }
+                        }
+                    }*/
+                    Dictionary<string, object> allChapterData = Utils.GetDictionary(SoloData, "chapter");
+                    if (allChapterData != null)
+                    {
+                        foreach (KeyValuePair<string, object> chapterGate in allChapterData)
+                        {
+                            Dictionary<string, object> chapters = chapterGate.Value as Dictionary<string, object>;
+                            if (chapters != null)
+                            {
+                                foreach (KeyValuePair<string, object> chapter in chapters)
+                                {
+                                    Dictionary<string, object> chapterData = chapter.Value as Dictionary<string, object>;
+                                    if (chapterData != null && !chapterData.ContainsKey("anime"))
+                                    {
+                                        chapterData["anime"] = 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
             LoadSoloDuels();
         }

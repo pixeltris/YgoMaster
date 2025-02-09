@@ -337,6 +337,19 @@ namespace YgoMaster
             UpdateValue(PvpOperationType.DLL_DuelIsThisQuickDuel, Pvp.DLL_DuelIsThisQuickDuel());
             //UpdateValue(PvpOperationType.DLL_DuelIsReplayMode, Pvp.DLL_DuelIsReplayMode());
 
+            // Added v2.2.1 for the "((!))" list view in the bottom right of the duel which shows the activation status of cards like "Maxx C"
+            int attachedEffectListNum = Pvp.DLL_DuelGetAttachedEffectList(null);
+            if (attachedEffectListNum > 0)
+            {
+                byte[] attachedEffectList = new byte[attachedEffectListNum * 8];//Engine.AffectProp - ushort(player),ushort(cardID),ushort(type),ushort(param)
+                Pvp.DLL_DuelGetAttachedEffectList(attachedEffectList);
+                UpdateValue(PvpOperationType.DLL_DuelGetAttachedEffectList, attachedEffectListNum, attachedEffectList);
+            }
+            else
+            {
+                UpdateValue(PvpOperationType.DLL_DuelGetAttachedEffectList, 0, null);
+            }
+
             byte[] buffer;
             using (MemoryStream ms = new MemoryStream())
             using (BinaryWriter bw = new BinaryWriter(ms))
@@ -422,7 +435,7 @@ namespace YgoMaster
         {
             callsThisCycle++;
             PvpEngineOperationResult result = GetOrCreateResult(operationType, args);
-            if (result.Value != value || result.Data == null || !data.SequenceEqual(result.Data))
+            if (result.Value != value || result.Data == null || (result.Data != null && data == null) || !data.SequenceEqual(result.Data))
             {
                 updatesThisCycle++;
                 result.Value = value;
@@ -1453,6 +1466,8 @@ namespace YgoMaster
         static extern void DLL_SetPlayRecordDelegate(NowRecord nowRecord, RecordNext recordNext, RecordBegin recordBegin, IsRecordEnd isRecordEnd);
         [DllImport(DllName)]
         static extern int DLL_SetWorkMemory(IntPtr pWork);
+        [DllImport(DllName)]
+        public static extern int DLL_DuelGetAttachedEffectList(byte[] lpAffect);
     }
 
     enum PvpOperationType
@@ -1587,5 +1602,6 @@ namespace YgoMaster
         DLL_SetEffectDelegate,
         DLL_SetPlayRecordDelegate,
         DLL_SetWorkMemory,
+        DLL_DuelGetAttachedEffectList//v2.2.1
     }
 }

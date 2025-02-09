@@ -398,6 +398,14 @@ namespace YgomSystem.Network
                                 }
                             }
                             break;
+                        case "Duel.end":
+                            {
+                                if (YgomGame.Room.RoomCreateViewController.IsHacked && YgomGame.Room.RoomCreateViewController.Settings.avatar[0] > 0)
+                                {
+                                    YgomSystem.Utility.ClientWork.UpdateJson("DuelResult.resultInfo.avatar", YgomGame.Room.RoomCreateViewController.Settings.avatar[0].ToString());
+                                }
+                            }
+                            break;
                         case "Solo.start":
                             {
                                 DuelSettings settings = new DuelSettings();
@@ -914,7 +922,7 @@ namespace YgomGame.Room
                     {
                         settings.icon_frame[0] = Utils.GetValue<int>(userProfile, "icon_frame_id");
                     }
-                    if (settings.avatar[0] == -1)
+                    if (settings.avatar[0] == -1 && settings.Deck[0].Accessory.AvatarId <= 0)
                     {
                         settings.avatar[0] = Utils.GetValue<int>(userProfile, "avatar_id");
                     }

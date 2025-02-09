@@ -239,6 +239,8 @@ namespace YgoMasterClient
         static Hook<Del_DLL_SetDuelChallenge2> hookDLL_SetDuelChallenge2;
         delegate int Del_DLL_SetWorkMemory(IntPtr pWork);
         static Hook<Del_DLL_SetWorkMemory> hookDLL_SetWorkMemory;
+        delegate int Del_DLL_DuelGetAttachedEffectList(IntPtr lpAffect);
+        static Hook<Del_DLL_DuelGetAttachedEffectList> hookDLL_DuelGetAttachedEffectList;
 
         static void InitProxyFunctions(IntPtr lib)
         {
@@ -356,6 +358,7 @@ namespace YgoMasterClient
             hookDLL_SetDuelChallenge = new Hook<Del_DLL_SetDuelChallenge>(DLL_SetDuelChallenge, PInvoke.GetProcAddress(lib, "DLL_SetDuelChallenge"));
             hookDLL_SetDuelChallenge2 = new Hook<Del_DLL_SetDuelChallenge2>(DLL_SetDuelChallenge2, PInvoke.GetProcAddress(lib, "DLL_SetDuelChallenge2"));
             hookDLL_SetWorkMemory = new Hook<Del_DLL_SetWorkMemory>(DLL_SetWorkMemory, PInvoke.GetProcAddress(lib, "DLL_SetWorkMemory"));
+            hookDLL_DuelGetAttachedEffectList = new Hook<Del_DLL_DuelGetAttachedEffectList>(DLL_DuelGetAttachedEffectList, PInvoke.GetProcAddress(lib, "DLL_DuelGetAttachedEffectList"));
         }
 
         static uint DLL_CardRareGetBufferSize()
@@ -1800,6 +1803,34 @@ namespace YgoMasterClient
                 // TODO
             }
             return hookDLL_SetWorkMemory.Original(pWork);
+        }
+
+        static int DLL_DuelGetAttachedEffectList(IntPtr lpAffect)
+        {
+            if (IsPvpDuel)
+            {
+                PvpEngineOperationResult result = pvpEngineState.GetResult(PvpOperationType.DLL_DuelGetAttachedEffectList);
+                if (result != null && result.Data != null)
+                {
+                    if (lpAffect == IntPtr.Zero)
+                    {
+                        return result.Value;
+                    }
+                    else
+                    {
+                        Marshal.Copy(result.Data, 0, lpAffect, result.Data.Length);
+                        return 0;
+                    }
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else
+            {
+                return hookDLL_DuelGetAttachedEffectList.Original(lpAffect);
+            }
         }
     }
 }

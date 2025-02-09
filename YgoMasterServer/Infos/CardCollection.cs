@@ -177,8 +177,16 @@ namespace YgoMaster
             {
                 return;
             }
-            List<object> ids;
-            List<object> r;
+            if (!FromDictionary<object>(dict, longKeys))
+            {
+                FromDictionary<int>(dict, longKeys);
+            }
+        }
+
+        bool FromDictionary<T>(Dictionary<string, object> dict, bool longKeys)
+        {
+            List<T> ids;
+            List<T> r;
             if (Utils.TryGetValue(dict, longKeys ? "CardIds" : "ids", out ids))
             {
                 Utils.TryGetValue(dict, longKeys ? "Rare" : "r", out r);
@@ -190,12 +198,14 @@ namespace YgoMaster
                 {
                     for (int i = 0; i < ids.Count; i++)
                     {
-                        int cardId = (int)(long)ids[i];
-                        CardStyleRarity styleRarity = (r == null ? CardStyleRarity.Normal : (CardStyleRarity)(long)r[i]);
+                        int cardId = (int)Convert.ChangeType(ids[i], typeof(int));
+                        CardStyleRarity styleRarity = (r == null ? CardStyleRarity.Normal : (CardStyleRarity)(int)Convert.ChangeType(r[i], typeof(int)));
                         collection.Add(new KeyValuePair<int, CardStyleRarity>(cardId, styleRarity));
                     }
                 }
+                return true;
             }
+            return false;
         }
     }
 }
