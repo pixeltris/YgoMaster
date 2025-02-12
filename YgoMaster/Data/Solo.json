@@ -13,30 +13,34 @@
                 "unlock_id": 0,
                 "view_gate": 0,
                 "clear_chapter": 10003,
+                "category": 2,
                 "open_date": -2208988800
               },
               "2": {
                 "priority": 19,
                 "parent_gate": 21,
-                "unlock_id": 8,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 20120,
+                "category": 1,
                 "open_date": -2208988800
               },
               "3": {
                 "priority": 20,
                 "parent_gate": 21,
                 "unlock_id": 10,
-                "view_gate": 5,
+                "view_gate": 1,
                 "clear_chapter": 30126,
+                "category": 1,
                 "open_date": -2208988800
               },
               "4": {
                 "priority": 15,
                 "parent_gate": 0,
-                "unlock_id": 7,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 40018,
+                "category": 1,
                 "open_date": -2208988800
               },
               "5": {
@@ -45,6 +49,7 @@
                 "unlock_id": 1,
                 "view_gate": 1,
                 "clear_chapter": 50021,
+                "category": 1,
                 "open_date": -2208988800
               },
               "6": {
@@ -53,118 +58,133 @@
                 "unlock_id": 1,
                 "view_gate": 1,
                 "clear_chapter": 60025,
+                "category": 1,
                 "open_date": -2208988800
               },
               "7": {
                 "priority": 8,
                 "parent_gate": 0,
-                "unlock_id": 2,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 70037,
+                "category": 1,
                 "open_date": -2208988800
               },
               "8": {
                 "priority": 9,
                 "parent_gate": 0,
-                "unlock_id": 3,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 80043,
+                "category": 1,
                 "open_date": -2208988800
               },
               "9": {
                 "priority": 10,
                 "parent_gate": 0,
-                "unlock_id": 2,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 90049,
+                "category": 1,
                 "open_date": -2208988800
               },
               "10": {
                 "priority": 11,
                 "parent_gate": 0,
-                "unlock_id": 4,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 100055,
+                "category": 1,
                 "open_date": -2208988800
               },
               "11": {
                 "priority": 12,
                 "parent_gate": 0,
-                "unlock_id": 5,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 110061,
+                "category": 1,
                 "open_date": -2208988800
               },
               "12": {
                 "priority": 13,
                 "parent_gate": 64,
-                "unlock_id": 6,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 120067,
+                "category": 1,
                 "open_date": -2208988800
               },
               "13": {
                 "priority": 14,
                 "parent_gate": 0,
-                "unlock_id": 5,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 130073,
+                "category": 1,
                 "open_date": -2208988800
               },
               "14": {
                 "priority": 16,
                 "parent_gate": 0,
-                "unlock_id": 8,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 140079,
+                "category": 1,
                 "open_date": -2208988800
               },
               "15": {
                 "priority": 17,
                 "parent_gate": 0,
-                "unlock_id": 9,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 150085,
+                "category": 1,
                 "open_date": -2208988800
               },
               "16": {
                 "priority": 25,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 160091,
+                "category": 1,
                 "open_date": 1646976600
               },
               "17": {
                 "priority": 23,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 170099,
+                "category": 1,
                 "open_date": 1645075800
               },
               "19": {
                 "priority": 26,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 190109,
+                "category": 1,
                 "open_date": 1649035800
               },
               "20": {
                 "priority": 101,
-                "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "parent_gate": 72,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 200139,
+                "category": 2,
                 "open_date": 1646283600
               },
               "21": {
                 "priority": 18,
                 "parent_gate": 0,
-                "unlock_id": 8,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 230184,
+                "category": 1,
                 "open_date": -2208988800
               },
               "22": {
@@ -173,62 +193,70 @@
                 "unlock_id": 1,
                 "view_gate": 1,
                 "clear_chapter": 220150,
+                "category": 2,
                 "open_date": -2208988800
               },
               "23": {
                 "priority": 21,
                 "parent_gate": 21,
                 "unlock_id": 14,
-                "view_gate": 5,
+                "view_gate": 1,
                 "clear_chapter": 230184,
+                "category": 1,
                 "open_date": 1658982600
               },
               "24": {
                 "priority": 33,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 240195,
+                "category": 1,
                 "open_date": 1666584000
               },
               "25": {
                 "priority": 43,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 250202,
+                "category": 1,
                 "open_date": 1693283400
               },
               "26": {
                 "priority": 27,
                 "parent_gate": 51,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 260211,
+                "category": 1,
                 "open_date": 1653454800
               },
               "27": {
                 "priority": 28,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 270219,
+                "category": 1,
                 "open_date": 1652070600
               },
               "28": {
                 "priority": 29,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 280226,
+                "category": 1,
                 "open_date": 1654839000
               },
               "29": {
                 "priority": 102,
-                "parent_gate": 0,
+                "parent_gate": 72,
                 "unlock_id": 13,
-                "view_gate": 5,
+                "view_gate": 1,
                 "clear_chapter": 290240,
+                "category": 2,
                 "open_date": 1657513800
               },
               "30": {
@@ -237,6 +265,7 @@
                 "unlock_id": 15,
                 "view_gate": 1,
                 "clear_chapter": 300247,
+                "category": 2,
                 "open_date": 1652070600
               },
               "31": {
@@ -245,134 +274,151 @@
                 "unlock_id": 1,
                 "view_gate": 1,
                 "clear_chapter": 300247,
+                "category": 2,
                 "open_date": 1652070600
               },
               "32": {
                 "priority": 31,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 320259,
+                "category": 1,
                 "open_date": 1661749200
               },
               "33": {
                 "priority": 46,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 330268,
+                "category": 1,
                 "open_date": 1698640200
               },
               "34": {
                 "priority": 41,
                 "parent_gate": 65,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 340276,
+                "category": 1,
                 "open_date": 1688356800
               },
               "35": {
                 "priority": 32,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 350283,
+                "category": 1,
                 "open_date": 1662697800
               },
               "36": {
                 "priority": 30,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 360290,
+                "category": 1,
                 "open_date": 1660019400
               },
               "37": {
                 "priority": 34,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 370301,
+                "category": 1,
                 "open_date": 1664515800
               },
               "38": {
                 "priority": 50,
                 "parent_gate": 64,
                 "unlock_id": 20,
-                "view_gate": 5,
+                "view_gate": 1,
                 "clear_chapter": 380307,
+                "category": 1,
                 "open_date": 1706502600
               },
               "39": {
                 "priority": 45,
                 "parent_gate": 51,
                 "unlock_id": 19,
-                "view_gate": 5,
+                "view_gate": 1,
                 "clear_chapter": 390315,
+                "category": 1,
                 "open_date": 1695960000
               },
               "40": {
                 "priority": 35,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 400322,
+                "category": 1,
                 "open_date": 1669003200
               },
               "41": {
                 "priority": 36,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 410329,
+                "category": 1,
                 "open_date": 1670212800
               },
               "42": {
                 "priority": 48,
                 "parent_gate": 65,
                 "unlock_id": 17,
-                "view_gate": 5,
+                "view_gate": 1,
                 "clear_chapter": 420336,
+                "category": 1,
                 "open_date": 1700798400
               },
               "43": {
                 "priority": 37,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 430344,
+                "category": 1,
                 "open_date": 1673325000
               },
               "44": {
                 "priority": 22,
                 "parent_gate": 21,
                 "unlock_id": 16,
-                "view_gate": 5,
+                "view_gate": 1,
                 "clear_chapter": 440355,
+                "category": 1,
                 "open_date": 1679977800
               },
               "45": {
                 "priority": 38,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 450367,
+                "category": 1,
                 "open_date": 1677556800
               },
               "46": {
                 "priority": 40,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 460374,
+                "category": 1,
                 "open_date": 1685332800
               },
               "47": {
                 "priority": 39,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 470382,
+                "category": 1,
                 "open_date": 1683000000
               },
               "48": {
@@ -381,86 +427,97 @@
                 "unlock_id": 1,
                 "view_gate": 1,
                 "clear_chapter": 480391,
+                "category": 2,
                 "open_date": 1676349000
               },
               "49": {
                 "priority": 42,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 490396,
+                "category": 1,
                 "open_date": 1690776000
               },
               "50": {
                 "priority": 49,
                 "parent_gate": 65,
                 "unlock_id": 18,
-                "view_gate": 5,
+                "view_gate": 1,
                 "clear_chapter": 500403,
+                "category": 1,
                 "open_date": 1712030400
               },
               "51": {
                 "priority": 44,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 390315,
+                "category": 1,
                 "open_date": 1695960000
               },
               "52": {
                 "priority": 51,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 520410,
+                "category": 1,
                 "open_date": 1708920000
               },
               "53": {
                 "priority": 52,
                 "parent_gate": 65,
                 "unlock_id": 21,
-                "view_gate": 5,
+                "view_gate": 1,
                 "clear_chapter": 530417,
+                "category": 1,
                 "open_date": 1716955200
               },
               "54": {
                 "priority": 53,
                 "parent_gate": 65,
                 "unlock_id": 22,
-                "view_gate": 5,
+                "view_gate": 1,
                 "clear_chapter": 540424,
+                "category": 1,
                 "open_date": 1722227400
               },
               "55": {
                 "priority": 54,
                 "parent_gate": 65,
                 "unlock_id": 23,
-                "view_gate": 5,
+                "view_gate": 1,
                 "clear_chapter": 550431,
+                "category": 1,
                 "open_date": 1726115400
               },
               "56": {
                 "priority": 55,
                 "parent_gate": 65,
                 "unlock_id": 24,
-                "view_gate": 5,
+                "view_gate": 1,
                 "clear_chapter": 560437,
+                "category": 1,
                 "open_date": 1730260800
               },
               "64": {
                 "priority": 49,
                 "parent_gate": 0,
-                "unlock_id": 6,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 380307,
+                "category": 1,
                 "open_date": 1706502600
               },
               "65": {
                 "priority": 47,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 420336,
+                "category": 1,
                 "open_date": 1700798400
               },
               "66": {
@@ -469,6 +526,7 @@
                 "unlock_id": 1,
                 "view_gate": 1,
                 "clear_chapter": 690505,
+                "category": 2,
                 "open_date": 1716436800
               },
               "67": {
@@ -477,6 +535,7 @@
                 "unlock_id": 1,
                 "view_gate": 1,
                 "clear_chapter": 670501,
+                "category": 2,
                 "open_date": 1716436800
               },
               "68": {
@@ -485,6 +544,7 @@
                 "unlock_id": 1,
                 "view_gate": 1,
                 "clear_chapter": 680503,
+                "category": 2,
                 "open_date": 1716436800
               },
               "69": {
@@ -493,15 +553,35 @@
                 "unlock_id": 1,
                 "view_gate": 1,
                 "clear_chapter": 690505,
+                "category": 2,
                 "open_date": 1716436800
               },
               "70": {
                 "priority": 57,
                 "parent_gate": 0,
-                "unlock_id": 11,
-                "view_gate": 5,
+                "unlock_id": 1,
+                "view_gate": 1,
                 "clear_chapter": 700509,
+                "category": 1,
                 "open_date": 1734926400
+              },
+              "71": {
+                "priority": 59,
+                "parent_gate": 0,
+                "unlock_id": 1,
+                "view_gate": 1,
+                "clear_chapter": 710010,
+                "category": 1,
+                "open_date": 1738816200
+              },
+              "72": {
+                "priority": 100,
+                "parent_gate": 0,
+                "unlock_id": 1,
+                "view_gate": 1,
+                "clear_chapter": 290240,
+                "category": 2,
+                "open_date": 1738816200
               }
             },
             "chapter": {
@@ -513,7 +593,8 @@
                   "set_id": 110,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1000
+                  "npc_id": 1000,
+                  "anime": 0
                 },
                 "10002": {
                   "parent_chapter": 10001,
@@ -522,7 +603,8 @@
                   "set_id": 1120001,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1001
+                  "npc_id": 1001,
+                  "anime": 0
                 },
                 "10003": {
                   "parent_chapter": 10002,
@@ -531,7 +613,8 @@
                   "set_id": 110,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1074
+                  "npc_id": 1074,
+                  "anime": 0
                 }
               },
               "2": {
@@ -542,7 +625,8 @@
                   "set_id": 13060,
                   "unlock_id": 0,
                   "begin_sn": "Sr00020004",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "20006": {
                   "parent_chapter": 20004,
@@ -551,7 +635,8 @@
                   "set_id": 13061,
                   "unlock_id": 0,
                   "begin_sn": "Sr00020006",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "20007": {
                   "parent_chapter": 20151,
@@ -560,7 +645,8 @@
                   "set_id": 13087,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1002
+                  "npc_id": 1002,
+                  "anime": 0
                 },
                 "20008": {
                   "parent_chapter": 20007,
@@ -569,7 +655,8 @@
                   "set_id": 13096,
                   "unlock_id": 0,
                   "begin_sn": "Sr00020008",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "20026": {
                   "parent_chapter": 20008,
@@ -578,7 +665,8 @@
                   "set_id": 13097,
                   "unlock_id": 0,
                   "begin_sn": "Sr00020026",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "20119": {
                   "parent_chapter": 20026,
@@ -587,7 +675,8 @@
                   "set_id": 13088,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1003
+                  "npc_id": 1003,
+                  "anime": 0
                 },
                 "20120": {
                   "parent_chapter": 20119,
@@ -596,7 +685,8 @@
                   "set_id": 13062,
                   "unlock_id": 0,
                   "begin_sn": "Sr00020120",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "20121": {
                   "parent_chapter": 20119,
@@ -605,7 +695,8 @@
                   "set_id": 0,
                   "unlock_id": 12002,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "20122": {
                   "parent_chapter": 20155,
@@ -614,7 +705,8 @@
                   "set_id": 1012001,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1004
+                  "npc_id": 1004,
+                  "anime": 0
                 },
                 "20151": {
                   "parent_chapter": 20006,
@@ -623,7 +715,8 @@
                   "set_id": 1003,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1002
+                  "npc_id": 1002,
+                  "anime": 0
                 },
                 "20152": {
                   "parent_chapter": 20007,
@@ -632,7 +725,8 @@
                   "set_id": 0,
                   "unlock_id": 12001,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "20153": {
                   "parent_chapter": 20152,
@@ -641,7 +735,8 @@
                   "set_id": 1070002,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1072
+                  "npc_id": 1072,
+                  "anime": 0
                 },
                 "20154": {
                   "parent_chapter": 20153,
@@ -650,7 +745,8 @@
                   "set_id": 1012021,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1073
+                  "npc_id": 1073,
+                  "anime": 0
                 },
                 "20155": {
                   "parent_chapter": 20121,
@@ -659,7 +755,8 @@
                   "set_id": 1005,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1003
+                  "npc_id": 1003,
+                  "anime": 0
                 }
               },
               "3": {
@@ -670,7 +767,8 @@
                   "set_id": 13110,
                   "unlock_id": 0,
                   "begin_sn": "Sr00030009",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "30010": {
                   "parent_chapter": 30009,
@@ -679,7 +777,8 @@
                   "set_id": 13290,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1005
+                  "npc_id": 1005,
+                  "anime": 0
                 },
                 "30011": {
                   "parent_chapter": 30010,
@@ -688,7 +787,8 @@
                   "set_id": 13238,
                   "unlock_id": 0,
                   "begin_sn": "Sr00030011",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "30012": {
                   "parent_chapter": 30010,
@@ -697,7 +797,8 @@
                   "set_id": 0,
                   "unlock_id": 12003,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "30013": {
                   "parent_chapter": 30156,
@@ -706,7 +807,8 @@
                   "set_id": 1090006,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1006
+                  "npc_id": 1006,
+                  "anime": 0
                 },
                 "30014": {
                   "parent_chapter": 30013,
@@ -715,7 +817,8 @@
                   "set_id": 1012002,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1007
+                  "npc_id": 1007,
+                  "anime": 0
                 },
                 "30123": {
                   "parent_chapter": 30011,
@@ -724,7 +827,8 @@
                   "set_id": 13612,
                   "unlock_id": 0,
                   "begin_sn": "Sr00030123",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "30124": {
                   "parent_chapter": 30123,
@@ -733,7 +837,8 @@
                   "set_id": 13570,
                   "unlock_id": 0,
                   "begin_sn": "Sr00030124",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "30125": {
                   "parent_chapter": 30124,
@@ -742,7 +847,8 @@
                   "set_id": 13611,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1008
+                  "npc_id": 1008,
+                  "anime": 0
                 },
                 "30126": {
                   "parent_chapter": 30125,
@@ -751,7 +857,8 @@
                   "set_id": 13625,
                   "unlock_id": 0,
                   "begin_sn": "Sr00030126",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "30127": {
                   "parent_chapter": 30125,
@@ -760,7 +867,8 @@
                   "set_id": 0,
                   "unlock_id": 12004,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "30128": {
                   "parent_chapter": 30127,
@@ -769,7 +877,8 @@
                   "set_id": 1000010,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1009
+                  "npc_id": 1009,
+                  "anime": 0
                 },
                 "30129": {
                   "parent_chapter": 30128,
@@ -778,7 +887,8 @@
                   "set_id": 1012003,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1010
+                  "npc_id": 1010,
+                  "anime": 0
                 },
                 "30156": {
                   "parent_chapter": 30012,
@@ -787,7 +897,8 @@
                   "set_id": 1005,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1006
+                  "npc_id": 1006,
+                  "anime": 0
                 }
               },
               "4": {
@@ -798,7 +909,8 @@
                   "set_id": 6117,
                   "unlock_id": 0,
                   "begin_sn": "Sr00040015",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "40017": {
                   "parent_chapter": 40158,
@@ -807,7 +919,8 @@
                   "set_id": 12336,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1035
+                  "npc_id": 1035,
+                  "anime": 0
                 },
                 "40018": {
                   "parent_chapter": 40017,
@@ -816,7 +929,8 @@
                   "set_id": 1120010,
                   "unlock_id": 0,
                   "begin_sn": "Sr00040018",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "40027": {
                   "parent_chapter": 40017,
@@ -825,7 +939,8 @@
                   "set_id": 0,
                   "unlock_id": 10904,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "40028": {
                   "parent_chapter": 40027,
@@ -834,7 +949,8 @@
                   "set_id": 1111002,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1036
+                  "npc_id": 1036,
+                  "anime": 0
                 },
                 "40029": {
                   "parent_chapter": 40028,
@@ -843,7 +959,8 @@
                   "set_id": 1012004,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1037
+                  "npc_id": 1037,
+                  "anime": 0
                 },
                 "40158": {
                   "parent_chapter": 40015,
@@ -852,7 +969,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1035
+                  "npc_id": 1035,
+                  "anime": 0
                 }
               },
               "5": {
@@ -863,7 +981,8 @@
                   "set_id": 11204,
                   "unlock_id": 0,
                   "begin_sn": "Sr00050019",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "50020": {
                   "parent_chapter": 50159,
@@ -872,7 +991,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1041
+                  "npc_id": 1041,
+                  "anime": 0
                 },
                 "50021": {
                   "parent_chapter": 50020,
@@ -881,7 +1001,8 @@
                   "set_id": 1120012,
                   "unlock_id": 0,
                   "begin_sn": "Sr00050021",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "50022": {
                   "parent_chapter": 50020,
@@ -890,7 +1011,8 @@
                   "set_id": 0,
                   "unlock_id": 10804,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "50030": {
                   "parent_chapter": 50022,
@@ -899,7 +1021,8 @@
                   "set_id": 805,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1042
+                  "npc_id": 1042,
+                  "anime": 0
                 },
                 "50031": {
                   "parent_chapter": 50030,
@@ -908,7 +1031,8 @@
                   "set_id": 1012005,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1043
+                  "npc_id": 1043,
+                  "anime": 0
                 },
                 "50159": {
                   "parent_chapter": 50019,
@@ -917,7 +1041,8 @@
                   "set_id": 1003,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1041
+                  "npc_id": 1041,
+                  "anime": 0
                 }
               },
               "6": {
@@ -928,7 +1053,8 @@
                   "set_id": 13578,
                   "unlock_id": 0,
                   "begin_sn": "Sr00060023",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "60024": {
                   "parent_chapter": 60160,
@@ -937,7 +1063,8 @@
                   "set_id": 1203,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1026
+                  "npc_id": 1026,
+                  "anime": 0
                 },
                 "60025": {
                   "parent_chapter": 60024,
@@ -946,7 +1073,8 @@
                   "set_id": 13735,
                   "unlock_id": 0,
                   "begin_sn": "Sr00060025",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "60032": {
                   "parent_chapter": 60024,
@@ -955,7 +1083,8 @@
                   "set_id": 0,
                   "unlock_id": 10904,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "60033": {
                   "parent_chapter": 60032,
@@ -964,7 +1093,8 @@
                   "set_id": 13580,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1027
+                  "npc_id": 1027,
+                  "anime": 0
                 },
                 "60034": {
                   "parent_chapter": 60033,
@@ -973,7 +1103,8 @@
                   "set_id": 1012006,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1028
+                  "npc_id": 1028,
+                  "anime": 0
                 },
                 "60160": {
                   "parent_chapter": 60023,
@@ -982,7 +1113,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1026
+                  "npc_id": 1026,
+                  "anime": 0
                 }
               },
               "7": {
@@ -993,7 +1125,8 @@
                   "set_id": 6900,
                   "unlock_id": 0,
                   "begin_sn": "Sr00070035",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "70036": {
                   "parent_chapter": 70161,
@@ -1002,7 +1135,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1032
+                  "npc_id": 1032,
+                  "anime": 0
                 },
                 "70037": {
                   "parent_chapter": 70036,
@@ -1011,7 +1145,8 @@
                   "set_id": 1120013,
                   "unlock_id": 0,
                   "begin_sn": "Sr00070037",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "70038": {
                   "parent_chapter": 70036,
@@ -1020,7 +1155,8 @@
                   "set_id": 0,
                   "unlock_id": 10804,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "70039": {
                   "parent_chapter": 70038,
@@ -1029,7 +1165,8 @@
                   "set_id": 1000002,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1033
+                  "npc_id": 1033,
+                  "anime": 0
                 },
                 "70040": {
                   "parent_chapter": 70039,
@@ -1038,7 +1175,8 @@
                   "set_id": 1012007,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1034
+                  "npc_id": 1034,
+                  "anime": 0
                 },
                 "70161": {
                   "parent_chapter": 70035,
@@ -1047,7 +1185,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1032
+                  "npc_id": 1032,
+                  "anime": 0
                 }
               },
               "8": {
@@ -1058,7 +1197,8 @@
                   "set_id": 14845,
                   "unlock_id": 0,
                   "begin_sn": "Sr00080041",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "80042": {
                   "parent_chapter": 80162,
@@ -1067,7 +1207,8 @@
                   "set_id": 1103,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1044
+                  "npc_id": 1044,
+                  "anime": 0
                 },
                 "80043": {
                   "parent_chapter": 80042,
@@ -1076,7 +1217,8 @@
                   "set_id": 14847,
                   "unlock_id": 0,
                   "begin_sn": "Sr00080043",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "80044": {
                   "parent_chapter": 80042,
@@ -1085,7 +1227,8 @@
                   "set_id": 0,
                   "unlock_id": 11004,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "80045": {
                   "parent_chapter": 80044,
@@ -1094,7 +1237,8 @@
                   "set_id": 14846,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1045
+                  "npc_id": 1045,
+                  "anime": 0
                 },
                 "80046": {
                   "parent_chapter": 80045,
@@ -1103,7 +1247,8 @@
                   "set_id": 1012008,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1046
+                  "npc_id": 1046,
+                  "anime": 0
                 },
                 "80162": {
                   "parent_chapter": 80041,
@@ -1112,7 +1257,8 @@
                   "set_id": 1303,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1044
+                  "npc_id": 1044,
+                  "anime": 0
                 }
               },
               "9": {
@@ -1123,7 +1269,8 @@
                   "set_id": 11532,
                   "unlock_id": 0,
                   "begin_sn": "Sr00090047",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "90048": {
                   "parent_chapter": 90163,
@@ -1132,7 +1279,8 @@
                   "set_id": 1003,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1029
+                  "npc_id": 1029,
+                  "anime": 0
                 },
                 "90049": {
                   "parent_chapter": 90048,
@@ -1141,7 +1289,8 @@
                   "set_id": 1120014,
                   "unlock_id": 0,
                   "begin_sn": "Sr00090049",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "90050": {
                   "parent_chapter": 90048,
@@ -1150,7 +1299,8 @@
                   "set_id": 0,
                   "unlock_id": 11004,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "90051": {
                   "parent_chapter": 90050,
@@ -1159,7 +1309,8 @@
                   "set_id": 11728,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1030
+                  "npc_id": 1030,
+                  "anime": 0
                 },
                 "90052": {
                   "parent_chapter": 90051,
@@ -1168,7 +1319,8 @@
                   "set_id": 1012009,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1031
+                  "npc_id": 1031,
+                  "anime": 0
                 },
                 "90163": {
                   "parent_chapter": 90047,
@@ -1177,7 +1329,8 @@
                   "set_id": 1203,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1029
+                  "npc_id": 1029,
+                  "anime": 0
                 }
               },
               "10": {
@@ -1188,7 +1341,8 @@
                   "set_id": 1003,
                   "unlock_id": 0,
                   "begin_sn": "Sr00100053",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "100054": {
                   "parent_chapter": 100164,
@@ -1197,7 +1351,8 @@
                   "set_id": 1303,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1017
+                  "npc_id": 1017,
+                  "anime": 0
                 },
                 "100055": {
                   "parent_chapter": 100054,
@@ -1206,7 +1361,8 @@
                   "set_id": 1120011,
                   "unlock_id": 0,
                   "begin_sn": "Sr00100055",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "100056": {
                   "parent_chapter": 100054,
@@ -1215,7 +1371,8 @@
                   "set_id": 0,
                   "unlock_id": 11304,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "100057": {
                   "parent_chapter": 100056,
@@ -1224,7 +1381,8 @@
                   "set_id": 1205,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1018
+                  "npc_id": 1018,
+                  "anime": 0
                 },
                 "100058": {
                   "parent_chapter": 100057,
@@ -1233,7 +1391,8 @@
                   "set_id": 1012010,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1019
+                  "npc_id": 1019,
+                  "anime": 0
                 },
                 "100164": {
                   "parent_chapter": 100053,
@@ -1242,7 +1401,8 @@
                   "set_id": 1103,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1017
+                  "npc_id": 1017,
+                  "anime": 0
                 }
               },
               "11": {
@@ -1253,7 +1413,8 @@
                   "set_id": 4416,
                   "unlock_id": 0,
                   "begin_sn": "Sr00110059",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "110060": {
                   "parent_chapter": 110165,
@@ -1262,7 +1423,8 @@
                   "set_id": 9285,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1023
+                  "npc_id": 1023,
+                  "anime": 0
                 },
                 "110061": {
                   "parent_chapter": 110060,
@@ -1271,7 +1433,8 @@
                   "set_id": 1003,
                   "unlock_id": 0,
                   "begin_sn": "Sr00110061",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "110062": {
                   "parent_chapter": 110060,
@@ -1280,7 +1443,8 @@
                   "set_id": 0,
                   "unlock_id": 11004,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "110063": {
                   "parent_chapter": 110062,
@@ -1289,7 +1453,8 @@
                   "set_id": 1000015,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1024
+                  "npc_id": 1024,
+                  "anime": 0
                 },
                 "110064": {
                   "parent_chapter": 110063,
@@ -1298,7 +1463,8 @@
                   "set_id": 1012011,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1025
+                  "npc_id": 1025,
+                  "anime": 0
                 },
                 "110165": {
                   "parent_chapter": 110059,
@@ -1307,7 +1473,8 @@
                   "set_id": 1203,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1023
+                  "npc_id": 1023,
+                  "anime": 0
                 }
               },
               "12": {
@@ -1318,7 +1485,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "Sr00120065",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "120066": {
                   "parent_chapter": 120166,
@@ -1327,7 +1495,8 @@
                   "set_id": 1203,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1011
+                  "npc_id": 1011,
+                  "anime": 0
                 },
                 "120067": {
                   "parent_chapter": 120066,
@@ -1336,7 +1505,8 @@
                   "set_id": 1120009,
                   "unlock_id": 0,
                   "begin_sn": "Sr00120067",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "120068": {
                   "parent_chapter": 120066,
@@ -1345,7 +1515,8 @@
                   "set_id": 0,
                   "unlock_id": 11204,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "120069": {
                   "parent_chapter": 120068,
@@ -1354,7 +1525,8 @@
                   "set_id": 805,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1012
+                  "npc_id": 1012,
+                  "anime": 0
                 },
                 "120070": {
                   "parent_chapter": 120069,
@@ -1363,7 +1535,8 @@
                   "set_id": 1012012,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1013
+                  "npc_id": 1013,
+                  "anime": 0
                 },
                 "120166": {
                   "parent_chapter": 120065,
@@ -1372,7 +1545,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1011
+                  "npc_id": 1011,
+                  "anime": 0
                 }
               },
               "13": {
@@ -1383,7 +1557,8 @@
                   "set_id": 9647,
                   "unlock_id": 0,
                   "begin_sn": "Sr00130071",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "130072": {
                   "parent_chapter": 130167,
@@ -1392,7 +1567,8 @@
                   "set_id": 10157,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1020
+                  "npc_id": 1020,
+                  "anime": 0
                 },
                 "130073": {
                   "parent_chapter": 130072,
@@ -1401,7 +1577,8 @@
                   "set_id": 1003,
                   "unlock_id": 0,
                   "begin_sn": "Sr00130073",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "130074": {
                   "parent_chapter": 130072,
@@ -1410,7 +1587,8 @@
                   "set_id": 0,
                   "unlock_id": 11004,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "130075": {
                   "parent_chapter": 130074,
@@ -1419,7 +1597,8 @@
                   "set_id": 1000014,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1021
+                  "npc_id": 1021,
+                  "anime": 0
                 },
                 "130076": {
                   "parent_chapter": 130075,
@@ -1428,7 +1607,8 @@
                   "set_id": 1012013,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1022
+                  "npc_id": 1022,
+                  "anime": 0
                 },
                 "130167": {
                   "parent_chapter": 130071,
@@ -1437,7 +1617,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1020
+                  "npc_id": 1020,
+                  "anime": 0
                 }
               },
               "14": {
@@ -1448,7 +1629,8 @@
                   "set_id": 12132,
                   "unlock_id": 0,
                   "begin_sn": "Sr00140077",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "140078": {
                   "parent_chapter": 140168,
@@ -1457,7 +1639,8 @@
                   "set_id": 12133,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1038
+                  "npc_id": 1038,
+                  "anime": 0
                 },
                 "140079": {
                   "parent_chapter": 140078,
@@ -1466,7 +1649,8 @@
                   "set_id": 1103,
                   "unlock_id": 0,
                   "begin_sn": "Sr00140079",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "140080": {
                   "parent_chapter": 140078,
@@ -1475,7 +1659,8 @@
                   "set_id": 0,
                   "unlock_id": 11104,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "140081": {
                   "parent_chapter": 140080,
@@ -1484,7 +1669,8 @@
                   "set_id": 12345,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1039
+                  "npc_id": 1039,
+                  "anime": 0
                 },
                 "140082": {
                   "parent_chapter": 140081,
@@ -1493,7 +1679,8 @@
                   "set_id": 1012014,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1040
+                  "npc_id": 1040,
+                  "anime": 0
                 },
                 "140168": {
                   "parent_chapter": 140077,
@@ -1502,7 +1689,8 @@
                   "set_id": 1003,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1038
+                  "npc_id": 1038,
+                  "anime": 0
                 }
               },
               "15": {
@@ -1513,7 +1701,8 @@
                   "set_id": 11357,
                   "unlock_id": 0,
                   "begin_sn": "Sr00150083",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "150084": {
                   "parent_chapter": 150169,
@@ -1522,7 +1711,8 @@
                   "set_id": 11541,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1047
+                  "npc_id": 1047,
+                  "anime": 0
                 },
                 "150085": {
                   "parent_chapter": 150084,
@@ -1531,7 +1721,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "Sr00150085",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "150086": {
                   "parent_chapter": 150084,
@@ -1540,7 +1731,8 @@
                   "set_id": 0,
                   "unlock_id": 10804,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "150087": {
                   "parent_chapter": 150086,
@@ -1549,7 +1741,8 @@
                   "set_id": 1001004,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1048
+                  "npc_id": 1048,
+                  "anime": 0
                 },
                 "150088": {
                   "parent_chapter": 150087,
@@ -1558,7 +1751,8 @@
                   "set_id": 1012015,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1049
+                  "npc_id": 1049,
+                  "anime": 0
                 },
                 "150169": {
                   "parent_chapter": 150083,
@@ -1567,7 +1761,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1047
+                  "npc_id": 1047,
+                  "anime": 0
                 }
               },
               "16": {
@@ -1578,7 +1773,8 @@
                   "set_id": 1103,
                   "unlock_id": 0,
                   "begin_sn": "Sr00160089",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "160090": {
                   "parent_chapter": 160170,
@@ -1587,7 +1783,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1014
+                  "npc_id": 1014,
+                  "anime": 0
                 },
                 "160091": {
                   "parent_chapter": 160090,
@@ -1596,7 +1793,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "Sr00160091",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "160092": {
                   "parent_chapter": 160090,
@@ -1605,7 +1803,8 @@
                   "set_id": 0,
                   "unlock_id": 12008,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "160093": {
                   "parent_chapter": 160092,
@@ -1614,7 +1813,8 @@
                   "set_id": 1005,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1015
+                  "npc_id": 1015,
+                  "anime": 0
                 },
                 "160094": {
                   "parent_chapter": 160093,
@@ -1623,7 +1823,8 @@
                   "set_id": 1012016,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1016
+                  "npc_id": 1016,
+                  "anime": 0
                 },
                 "160170": {
                   "parent_chapter": 160089,
@@ -1632,7 +1833,8 @@
                   "set_id": 1303,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1014
+                  "npc_id": 1014,
+                  "anime": 0
                 }
               },
               "17": {
@@ -1643,7 +1845,8 @@
                   "set_id": 7591,
                   "unlock_id": 0,
                   "begin_sn": "Sr00170095",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "170096": {
                   "parent_chapter": 170171,
@@ -1652,7 +1855,8 @@
                   "set_id": 7593,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1056
+                  "npc_id": 1056,
+                  "anime": 0
                 },
                 "170097": {
                   "parent_chapter": 170096,
@@ -1661,7 +1865,8 @@
                   "set_id": 7723,
                   "unlock_id": 0,
                   "begin_sn": "Sr00170097",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "170098": {
                   "parent_chapter": 170172,
@@ -1670,7 +1875,8 @@
                   "set_id": 13063,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1059
+                  "npc_id": 1059,
+                  "anime": 0
                 },
                 "170099": {
                   "parent_chapter": 170098,
@@ -1679,7 +1885,8 @@
                   "set_id": 7643,
                   "unlock_id": 0,
                   "begin_sn": "Sr00170099",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "170100": {
                   "parent_chapter": 170096,
@@ -1688,7 +1895,8 @@
                   "set_id": 0,
                   "unlock_id": 12006,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "170130": {
                   "parent_chapter": 170100,
@@ -1697,7 +1905,8 @@
                   "set_id": 905,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1057
+                  "npc_id": 1057,
+                  "anime": 0
                 },
                 "170131": {
                   "parent_chapter": 170130,
@@ -1706,7 +1915,8 @@
                   "set_id": 1012017,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1058
+                  "npc_id": 1058,
+                  "anime": 0
                 },
                 "170132": {
                   "parent_chapter": 170098,
@@ -1715,7 +1925,8 @@
                   "set_id": 0,
                   "unlock_id": 12006,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "170133": {
                   "parent_chapter": 170132,
@@ -1724,7 +1935,8 @@
                   "set_id": 805,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1060
+                  "npc_id": 1060,
+                  "anime": 0
                 },
                 "170134": {
                   "parent_chapter": 170133,
@@ -1733,7 +1945,8 @@
                   "set_id": 1012018,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1061
+                  "npc_id": 1061,
+                  "anime": 0
                 },
                 "170171": {
                   "parent_chapter": 170095,
@@ -1742,7 +1955,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1056
+                  "npc_id": 1056,
+                  "anime": 0
                 },
                 "170172": {
                   "parent_chapter": 170097,
@@ -1751,7 +1965,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1059
+                  "npc_id": 1059,
+                  "anime": 0
                 }
               },
               "19": {
@@ -1762,7 +1977,8 @@
                   "set_id": 6692,
                   "unlock_id": 0,
                   "begin_sn": "Sr00190107",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "190108": {
                   "parent_chapter": 190174,
@@ -1771,7 +1987,8 @@
                   "set_id": 6693,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1053
+                  "npc_id": 1053,
+                  "anime": 0
                 },
                 "190109": {
                   "parent_chapter": 190108,
@@ -1780,7 +1997,8 @@
                   "set_id": 1003,
                   "unlock_id": 0,
                   "begin_sn": "Sr00190109",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "190110": {
                   "parent_chapter": 190108,
@@ -1789,7 +2007,8 @@
                   "set_id": 0,
                   "unlock_id": 10904,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "190111": {
                   "parent_chapter": 190110,
@@ -1798,7 +2017,8 @@
                   "set_id": 13963,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1054
+                  "npc_id": 1054,
+                  "anime": 0
                 },
                 "190112": {
                   "parent_chapter": 190111,
@@ -1807,7 +2027,8 @@
                   "set_id": 1012020,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1055
+                  "npc_id": 1055,
+                  "anime": 0
                 },
                 "190174": {
                   "parent_chapter": 190107,
@@ -1816,7 +2037,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1053
+                  "npc_id": 1053,
+                  "anime": 0
                 }
               },
               "20": {
@@ -1827,7 +2049,8 @@
                   "set_id": 1140104,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1062
+                  "npc_id": 1062,
+                  "anime": 0
                 },
                 "200114": {
                   "parent_chapter": 200113,
@@ -1836,7 +2059,8 @@
                   "set_id": 1140104,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1063
+                  "npc_id": 1063,
+                  "anime": 0
                 },
                 "200115": {
                   "parent_chapter": 200114,
@@ -1845,7 +2069,8 @@
                   "set_id": 1140104,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1064
+                  "npc_id": 1064,
+                  "anime": 0
                 },
                 "200116": {
                   "parent_chapter": 200115,
@@ -1854,7 +2079,8 @@
                   "set_id": 1140104,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1065
+                  "npc_id": 1065,
+                  "anime": 0
                 },
                 "200117": {
                   "parent_chapter": 200116,
@@ -1863,7 +2089,8 @@
                   "set_id": 1140104,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1066
+                  "npc_id": 1066,
+                  "anime": 0
                 },
                 "200118": {
                   "parent_chapter": 200117,
@@ -1872,7 +2099,8 @@
                   "set_id": 1111001,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1067
+                  "npc_id": 1067,
+                  "anime": 0
                 },
                 "200135": {
                   "parent_chapter": 200118,
@@ -1881,7 +2109,8 @@
                   "set_id": 1140104,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1068
+                  "npc_id": 1068,
+                  "anime": 0
                 },
                 "200136": {
                   "parent_chapter": 200135,
@@ -1890,7 +2119,8 @@
                   "set_id": 1140104,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1069
+                  "npc_id": 1069,
+                  "anime": 0
                 },
                 "200137": {
                   "parent_chapter": 200136,
@@ -1899,7 +2129,8 @@
                   "set_id": 1140104,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1070
+                  "npc_id": 1070,
+                  "anime": 0
                 },
                 "200138": {
                   "parent_chapter": 200137,
@@ -1908,7 +2139,8 @@
                   "set_id": 104,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1071
+                  "npc_id": 1071,
+                  "anime": 0
                 },
                 "200139": {
                   "parent_chapter": 200138,
@@ -1917,7 +2149,8 @@
                   "set_id": 1101002,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 }
               },
               "22": {
@@ -1928,7 +2161,8 @@
                   "set_id": 112,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3001
+                  "npc_id": 3001,
+                  "anime": 0
                 },
                 "220141": {
                   "parent_chapter": 220140,
@@ -1937,7 +2171,8 @@
                   "set_id": 112,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3002
+                  "npc_id": 3002,
+                  "anime": 0
                 },
                 "220142": {
                   "parent_chapter": 220141,
@@ -1946,7 +2181,8 @@
                   "set_id": 112,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3003
+                  "npc_id": 3003,
+                  "anime": 0
                 },
                 "220143": {
                   "parent_chapter": 220142,
@@ -1955,7 +2191,8 @@
                   "set_id": 112,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3004
+                  "npc_id": 3004,
+                  "anime": 0
                 },
                 "220144": {
                   "parent_chapter": 0,
@@ -1964,7 +2201,8 @@
                   "set_id": 0,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3005
+                  "npc_id": 3005,
+                  "anime": 0
                 },
                 "220145": {
                   "parent_chapter": 220144,
@@ -1973,7 +2211,8 @@
                   "set_id": 0,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3006
+                  "npc_id": 3006,
+                  "anime": 0
                 },
                 "220146": {
                   "parent_chapter": 220145,
@@ -1982,7 +2221,8 @@
                   "set_id": 0,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3007
+                  "npc_id": 3007,
+                  "anime": 0
                 },
                 "220147": {
                   "parent_chapter": 220146,
@@ -1991,7 +2231,8 @@
                   "set_id": 0,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3008
+                  "npc_id": 3008,
+                  "anime": 0
                 },
                 "220148": {
                   "parent_chapter": 220147,
@@ -2000,7 +2241,8 @@
                   "set_id": 0,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3009
+                  "npc_id": 3009,
+                  "anime": 0
                 },
                 "220149": {
                   "parent_chapter": 220148,
@@ -2009,7 +2251,8 @@
                   "set_id": 0,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3010
+                  "npc_id": 3010,
+                  "anime": 0
                 },
                 "220150": {
                   "parent_chapter": 220149,
@@ -2018,7 +2261,8 @@
                   "set_id": 1000009,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 }
               },
               "23": {
@@ -2029,7 +2273,8 @@
                   "set_id": 13730,
                   "unlock_id": 0,
                   "begin_sn": "Sr00230175",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "230176": {
                   "parent_chapter": 230175,
@@ -2038,7 +2283,8 @@
                   "set_id": 1071001,
                   "unlock_id": 0,
                   "begin_sn": "Sr00230176",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "230177": {
                   "parent_chapter": 230176,
@@ -2047,7 +2293,8 @@
                   "set_id": 1203,
                   "unlock_id": 0,
                   "begin_sn": "Sr00230177",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "230178": {
                   "parent_chapter": 230177,
@@ -2056,7 +2303,8 @@
                   "set_id": 1103,
                   "unlock_id": 0,
                   "begin_sn": "Sr00230178",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "230179": {
                   "parent_chapter": 230178,
@@ -2065,7 +2313,8 @@
                   "set_id": 1003,
                   "unlock_id": 0,
                   "begin_sn": "Sr00230179",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "230180": {
                   "parent_chapter": 230179,
@@ -2074,7 +2323,8 @@
                   "set_id": 13771,
                   "unlock_id": 0,
                   "begin_sn": "Sr00230180",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "230181": {
                   "parent_chapter": 230180,
@@ -2083,7 +2333,8 @@
                   "set_id": 0,
                   "unlock_id": 20001,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "230182": {
                   "parent_chapter": 230181,
@@ -2092,7 +2343,8 @@
                   "set_id": 1303,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1084
+                  "npc_id": 1084,
+                  "anime": 0
                 },
                 "230183": {
                   "parent_chapter": 230182,
@@ -2101,7 +2353,8 @@
                   "set_id": 13789,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1084
+                  "npc_id": 1084,
+                  "anime": 0
                 },
                 "230184": {
                   "parent_chapter": 230183,
@@ -2110,7 +2363,8 @@
                   "set_id": 13957,
                   "unlock_id": 0,
                   "begin_sn": "Sr00230184",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "230185": {
                   "parent_chapter": 230180,
@@ -2119,7 +2373,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "Sr00230185",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "230186": {
                   "parent_chapter": 230185,
@@ -2128,7 +2383,8 @@
                   "set_id": 1071002,
                   "unlock_id": 0,
                   "begin_sn": "Sr00230186",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "230187": {
                   "parent_chapter": 230183,
@@ -2137,7 +2393,8 @@
                   "set_id": 0,
                   "unlock_id": 10806,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "230188": {
                   "parent_chapter": 230187,
@@ -2146,7 +2403,8 @@
                   "set_id": 13958,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1084
+                  "npc_id": 1084,
+                  "anime": 0
                 },
                 "230189": {
                   "parent_chapter": 230188,
@@ -2155,7 +2413,8 @@
                   "set_id": 1110006,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1085
+                  "npc_id": 1085,
+                  "anime": 0
                 },
                 "230190": {
                   "parent_chapter": 230189,
@@ -2164,7 +2423,8 @@
                   "set_id": 1012026,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1086
+                  "npc_id": 1086,
+                  "anime": 0
                 },
                 "230191": {
                   "parent_chapter": 230183,
@@ -2173,7 +2433,8 @@
                   "set_id": 0,
                   "unlock_id": 12012,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "230252": {
                   "parent_chapter": 230191,
@@ -2182,7 +2443,8 @@
                   "set_id": 1100006,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1082
+                  "npc_id": 1082,
+                  "anime": 0
                 },
                 "230253": {
                   "parent_chapter": 230252,
@@ -2191,7 +2453,8 @@
                   "set_id": 1012024,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1083
+                  "npc_id": 1083,
+                  "anime": 0
                 }
               },
               "24": {
@@ -2202,7 +2465,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "Sr00240192",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "240193": {
                   "parent_chapter": 240192,
@@ -2211,7 +2475,8 @@
                   "set_id": 8232,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1093
+                  "npc_id": 1093,
+                  "anime": 0
                 },
                 "240194": {
                   "parent_chapter": 240193,
@@ -2220,7 +2485,8 @@
                   "set_id": 1071003,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1093
+                  "npc_id": 1093,
+                  "anime": 0
                 },
                 "240195": {
                   "parent_chapter": 240194,
@@ -2229,7 +2495,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "Sr00240195",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "240196": {
                   "parent_chapter": 240194,
@@ -2238,7 +2505,8 @@
                   "set_id": 0,
                   "unlock_id": 12010,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "240197": {
                   "parent_chapter": 240196,
@@ -2247,7 +2515,8 @@
                   "set_id": 103,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1094
+                  "npc_id": 1094,
+                  "anime": 0
                 },
                 "240198": {
                   "parent_chapter": 240197,
@@ -2256,7 +2525,8 @@
                   "set_id": 1012023,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1095
+                  "npc_id": 1095,
+                  "anime": 0
                 }
               },
               "25": {
@@ -2267,7 +2537,8 @@
                   "set_id": 10288,
                   "unlock_id": 0,
                   "begin_sn": "Sr00250199",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "250200": {
                   "parent_chapter": 250199,
@@ -2276,7 +2547,8 @@
                   "set_id": 1004,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1087
+                  "npc_id": 1087,
+                  "anime": 0
                 },
                 "250201": {
                   "parent_chapter": 250200,
@@ -2285,7 +2557,8 @@
                   "set_id": 11322,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1087
+                  "npc_id": 1087,
+                  "anime": 0
                 },
                 "250202": {
                   "parent_chapter": 250201,
@@ -2294,7 +2567,8 @@
                   "set_id": 7922,
                   "unlock_id": 0,
                   "begin_sn": "Sr00250202",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "250203": {
                   "parent_chapter": 250201,
@@ -2303,7 +2577,8 @@
                   "set_id": 0,
                   "unlock_id": 11002,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "250204": {
                   "parent_chapter": 250203,
@@ -2312,7 +2587,8 @@
                   "set_id": 1071007,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1088
+                  "npc_id": 1088,
+                  "anime": 0
                 },
                 "250205": {
                   "parent_chapter": 250204,
@@ -2321,7 +2597,8 @@
                   "set_id": 1012027,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1089
+                  "npc_id": 1089,
+                  "anime": 0
                 }
               },
               "26": {
@@ -2332,7 +2609,8 @@
                   "set_id": 7003,
                   "unlock_id": 0,
                   "begin_sn": "Sr00260206",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "260207": {
                   "parent_chapter": 260206,
@@ -2341,7 +2619,8 @@
                   "set_id": 6970,
                   "unlock_id": 0,
                   "begin_sn": "Sr00260207",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "260208": {
                   "parent_chapter": 260207,
@@ -2350,7 +2629,8 @@
                   "set_id": 7007,
                   "unlock_id": 0,
                   "begin_sn": "Sr00260208",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "260209": {
                   "parent_chapter": 260208,
@@ -2359,7 +2639,8 @@
                   "set_id": 1303,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1078
+                  "npc_id": 1078,
+                  "anime": 0
                 },
                 "260210": {
                   "parent_chapter": 260209,
@@ -2368,7 +2649,8 @@
                   "set_id": 7133,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1078
+                  "npc_id": 1078,
+                  "anime": 0
                 },
                 "260211": {
                   "parent_chapter": 260210,
@@ -2377,7 +2659,8 @@
                   "set_id": 7014,
                   "unlock_id": 0,
                   "begin_sn": "Sr00260211",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "260212": {
                   "parent_chapter": 260210,
@@ -2386,7 +2669,8 @@
                   "set_id": 0,
                   "unlock_id": 12011,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "260213": {
                   "parent_chapter": 260212,
@@ -2395,7 +2679,8 @@
                   "set_id": 1111003,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1079
+                  "npc_id": 1079,
+                  "anime": 0
                 },
                 "260214": {
                   "parent_chapter": 260213,
@@ -2404,7 +2689,8 @@
                   "set_id": 1012028,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1080
+                  "npc_id": 1080,
+                  "anime": 0
                 }
               },
               "27": {
@@ -2415,7 +2701,8 @@
                   "set_id": 1003,
                   "unlock_id": 0,
                   "begin_sn": "Sr00270215",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "270216": {
                   "parent_chapter": 270215,
@@ -2424,7 +2711,8 @@
                   "set_id": 5287,
                   "unlock_id": 0,
                   "begin_sn": "Sr00270216",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "270217": {
                   "parent_chapter": 270216,
@@ -2433,7 +2721,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1090
+                  "npc_id": 1090,
+                  "anime": 0
                 },
                 "270218": {
                   "parent_chapter": 270217,
@@ -2442,7 +2731,8 @@
                   "set_id": 7471,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1090
+                  "npc_id": 1090,
+                  "anime": 0
                 },
                 "270219": {
                   "parent_chapter": 270218,
@@ -2451,7 +2741,8 @@
                   "set_id": 14377,
                   "unlock_id": 0,
                   "begin_sn": "Sr00270219",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "270220": {
                   "parent_chapter": 270218,
@@ -2460,7 +2751,8 @@
                   "set_id": 0,
                   "unlock_id": 10806,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "270221": {
                   "parent_chapter": 270220,
@@ -2469,7 +2761,8 @@
                   "set_id": 1001013,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1091
+                  "npc_id": 1091,
+                  "anime": 0
                 },
                 "270222": {
                   "parent_chapter": 270221,
@@ -2478,7 +2771,8 @@
                   "set_id": 1012029,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1092
+                  "npc_id": 1092,
+                  "anime": 0
                 }
               },
               "28": {
@@ -2489,7 +2783,8 @@
                   "set_id": 1203,
                   "unlock_id": 0,
                   "begin_sn": "Sr00280223",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "280224": {
                   "parent_chapter": 280223,
@@ -2498,7 +2793,8 @@
                   "set_id": 1303,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1075
+                  "npc_id": 1075,
+                  "anime": 0
                 },
                 "280225": {
                   "parent_chapter": 280224,
@@ -2507,7 +2803,8 @@
                   "set_id": 7012,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1075
+                  "npc_id": 1075,
+                  "anime": 0
                 },
                 "280226": {
                   "parent_chapter": 280225,
@@ -2516,7 +2813,8 @@
                   "set_id": 6618,
                   "unlock_id": 0,
                   "begin_sn": "Sr00280226",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "280227": {
                   "parent_chapter": 280225,
@@ -2525,7 +2823,8 @@
                   "set_id": 0,
                   "unlock_id": 12007,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "280228": {
                   "parent_chapter": 280227,
@@ -2534,7 +2833,8 @@
                   "set_id": 1071006,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1076
+                  "npc_id": 1076,
+                  "anime": 0
                 },
                 "280229": {
                   "parent_chapter": 280228,
@@ -2543,7 +2843,8 @@
                   "set_id": 1012030,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1077
+                  "npc_id": 1077,
+                  "anime": 0
                 }
               },
               "29": {
@@ -2554,7 +2855,8 @@
                   "set_id": 1140104,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1096
+                  "npc_id": 1096,
+                  "anime": 0
                 },
                 "290231": {
                   "parent_chapter": 290230,
@@ -2563,7 +2865,8 @@
                   "set_id": 1111005,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1097
+                  "npc_id": 1097,
+                  "anime": 0
                 },
                 "290232": {
                   "parent_chapter": 290231,
@@ -2572,7 +2875,8 @@
                   "set_id": 1140104,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1098
+                  "npc_id": 1098,
+                  "anime": 0
                 },
                 "290233": {
                   "parent_chapter": 290232,
@@ -2581,7 +2885,8 @@
                   "set_id": 1140104,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1099
+                  "npc_id": 1099,
+                  "anime": 0
                 },
                 "290234": {
                   "parent_chapter": 290233,
@@ -2590,7 +2895,8 @@
                   "set_id": 1140104,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1100
+                  "npc_id": 1100,
+                  "anime": 0
                 },
                 "290235": {
                   "parent_chapter": 290234,
@@ -2599,7 +2905,8 @@
                   "set_id": 1140104,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1101
+                  "npc_id": 1101,
+                  "anime": 0
                 },
                 "290236": {
                   "parent_chapter": 290235,
@@ -2608,7 +2915,8 @@
                   "set_id": 1140104,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1102
+                  "npc_id": 1102,
+                  "anime": 0
                 },
                 "290237": {
                   "parent_chapter": 290236,
@@ -2617,7 +2925,8 @@
                   "set_id": 1140104,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1103
+                  "npc_id": 1103,
+                  "anime": 0
                 },
                 "290238": {
                   "parent_chapter": 290237,
@@ -2626,7 +2935,8 @@
                   "set_id": 1140104,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1104
+                  "npc_id": 1104,
+                  "anime": 0
                 },
                 "290239": {
                   "parent_chapter": 290238,
@@ -2635,7 +2945,8 @@
                   "set_id": 1140104,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1105
+                  "npc_id": 1105,
+                  "anime": 0
                 },
                 "290240": {
                   "parent_chapter": 290239,
@@ -2644,7 +2955,8 @@
                   "set_id": 1000007,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 }
               },
               "30": {
@@ -2655,7 +2967,8 @@
                   "set_id": 6759,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3011
+                  "npc_id": 3011,
+                  "anime": 0
                 },
                 "300242": {
                   "parent_chapter": 300241,
@@ -2664,7 +2977,8 @@
                   "set_id": 4353,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3013
+                  "npc_id": 3013,
+                  "anime": 0
                 },
                 "300243": {
                   "parent_chapter": 300242,
@@ -2673,7 +2987,8 @@
                   "set_id": 5560,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3014
+                  "npc_id": 3014,
+                  "anime": 0
                 },
                 "300244": {
                   "parent_chapter": 300243,
@@ -2682,7 +2997,8 @@
                   "set_id": 11428,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3016
+                  "npc_id": 3016,
+                  "anime": 0
                 },
                 "300245": {
                   "parent_chapter": 300244,
@@ -2691,7 +3007,8 @@
                   "set_id": 5254,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3017
+                  "npc_id": 3017,
+                  "anime": 0
                 },
                 "300246": {
                   "parent_chapter": 300241,
@@ -2700,7 +3017,8 @@
                   "set_id": 12505,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3012
+                  "npc_id": 3012,
+                  "anime": 0
                 },
                 "300247": {
                   "parent_chapter": 300249,
@@ -2709,7 +3027,8 @@
                   "set_id": 1001003,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "300248": {
                   "parent_chapter": 300243,
@@ -2718,7 +3037,8 @@
                   "set_id": 103,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3015
+                  "npc_id": 3015,
+                  "anime": 0
                 },
                 "300249": {
                   "parent_chapter": 300245,
@@ -2727,7 +3047,8 @@
                   "set_id": 12405,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3018
+                  "npc_id": 3018,
+                  "anime": 0
                 },
                 "300250": {
                   "parent_chapter": 300249,
@@ -2736,7 +3057,8 @@
                   "set_id": 13457,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3019
+                  "npc_id": 3019,
+                  "anime": 0
                 },
                 "300251": {
                   "parent_chapter": 300250,
@@ -2745,7 +3067,8 @@
                   "set_id": 14299,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3020
+                  "npc_id": 3020,
+                  "anime": 0
                 },
                 "300254": {
                   "parent_chapter": 300251,
@@ -2754,7 +3077,8 @@
                   "set_id": 103,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3021
+                  "npc_id": 3021,
+                  "anime": 0
                 }
               },
               "32": {
@@ -2765,7 +3089,8 @@
                   "set_id": 1103,
                   "unlock_id": 0,
                   "begin_sn": "Sr00320255",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "320256": {
                   "parent_chapter": 320255,
@@ -2774,7 +3099,8 @@
                   "set_id": 1203,
                   "unlock_id": 0,
                   "begin_sn": "Sr00320256",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "320257": {
                   "parent_chapter": 320256,
@@ -2783,7 +3109,8 @@
                   "set_id": 1103,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1109
+                  "npc_id": 1109,
+                  "anime": 0
                 },
                 "320258": {
                   "parent_chapter": 320257,
@@ -2792,7 +3119,8 @@
                   "set_id": 9798,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1109
+                  "npc_id": 1109,
+                  "anime": 0
                 },
                 "320259": {
                   "parent_chapter": 320258,
@@ -2801,7 +3129,8 @@
                   "set_id": 1103,
                   "unlock_id": 0,
                   "begin_sn": "Sr00320259",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "320260": {
                   "parent_chapter": 320258,
@@ -2810,7 +3139,8 @@
                   "set_id": 0,
                   "unlock_id": 12014,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "320261": {
                   "parent_chapter": 320260,
@@ -2819,7 +3149,8 @@
                   "set_id": 1071008,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1110
+                  "npc_id": 1110,
+                  "anime": 0
                 },
                 "320262": {
                   "parent_chapter": 320261,
@@ -2828,7 +3159,8 @@
                   "set_id": 1012031,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1111
+                  "npc_id": 1111,
+                  "anime": 0
                 }
               },
               "33": {
@@ -2839,7 +3171,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "Sr00330263",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "330264": {
                   "parent_chapter": 330263,
@@ -2848,7 +3181,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "Sr00330264",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "330265": {
                   "parent_chapter": 330264,
@@ -2857,7 +3191,8 @@
                   "set_id": 12025,
                   "unlock_id": 0,
                   "begin_sn": "Sr00330265",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "330266": {
                   "parent_chapter": 330265,
@@ -2866,7 +3201,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1115
+                  "npc_id": 1115,
+                  "anime": 0
                 },
                 "330267": {
                   "parent_chapter": 330266,
@@ -2875,7 +3211,8 @@
                   "set_id": 11053,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1115
+                  "npc_id": 1115,
+                  "anime": 0
                 },
                 "330268": {
                   "parent_chapter": 330267,
@@ -2884,7 +3221,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "Sr00330268",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "330269": {
                   "parent_chapter": 330267,
@@ -2893,7 +3231,8 @@
                   "set_id": 0,
                   "unlock_id": 12020,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "330270": {
                   "parent_chapter": 330269,
@@ -2902,7 +3241,8 @@
                   "set_id": 1071009,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1116
+                  "npc_id": 1116,
+                  "anime": 0
                 },
                 "330271": {
                   "parent_chapter": 330270,
@@ -2911,7 +3251,8 @@
                   "set_id": 1012032,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1117
+                  "npc_id": 1117,
+                  "anime": 0
                 }
               },
               "34": {
@@ -2922,7 +3263,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "Sr00340272",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "340273": {
                   "parent_chapter": 340272,
@@ -2931,7 +3273,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "Sr00340273",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "340274": {
                   "parent_chapter": 340273,
@@ -2940,7 +3283,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1112
+                  "npc_id": 1112,
+                  "anime": 0
                 },
                 "340275": {
                   "parent_chapter": 340274,
@@ -2949,7 +3293,8 @@
                   "set_id": 7540,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1112
+                  "npc_id": 1112,
+                  "anime": 0
                 },
                 "340276": {
                   "parent_chapter": 340275,
@@ -2958,7 +3303,8 @@
                   "set_id": 7960,
                   "unlock_id": 0,
                   "begin_sn": "Sr00340276",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "340277": {
                   "parent_chapter": 340275,
@@ -2967,7 +3313,8 @@
                   "set_id": 0,
                   "unlock_id": 10806,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "340278": {
                   "parent_chapter": 340277,
@@ -2976,7 +3323,8 @@
                   "set_id": 1071010,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1113
+                  "npc_id": 1113,
+                  "anime": 0
                 },
                 "340279": {
                   "parent_chapter": 340278,
@@ -2985,7 +3333,8 @@
                   "set_id": 1012034,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1114
+                  "npc_id": 1114,
+                  "anime": 0
                 }
               },
               "35": {
@@ -2996,7 +3345,8 @@
                   "set_id": 1103,
                   "unlock_id": 0,
                   "begin_sn": "Sr00350280",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "350281": {
                   "parent_chapter": 350280,
@@ -3005,7 +3355,8 @@
                   "set_id": 1103,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1118
+                  "npc_id": 1118,
+                  "anime": 0
                 },
                 "350282": {
                   "parent_chapter": 350281,
@@ -3014,7 +3365,8 @@
                   "set_id": 8186,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1118
+                  "npc_id": 1118,
+                  "anime": 0
                 },
                 "350283": {
                   "parent_chapter": 350282,
@@ -3023,7 +3375,8 @@
                   "set_id": 1103,
                   "unlock_id": 0,
                   "begin_sn": "Sr00350283",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "350284": {
                   "parent_chapter": 350282,
@@ -3032,7 +3385,8 @@
                   "set_id": 0,
                   "unlock_id": 11110,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "350285": {
                   "parent_chapter": 350284,
@@ -3041,7 +3395,8 @@
                   "set_id": 1071011,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1119
+                  "npc_id": 1119,
+                  "anime": 0
                 },
                 "350286": {
                   "parent_chapter": 350285,
@@ -3050,7 +3405,8 @@
                   "set_id": 1012036,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1120
+                  "npc_id": 1120,
+                  "anime": 0
                 }
               },
               "36": {
@@ -3061,7 +3417,8 @@
                   "set_id": 16941,
                   "unlock_id": 0,
                   "begin_sn": "Sr00360287",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "360288": {
                   "parent_chapter": 360287,
@@ -3070,7 +3427,8 @@
                   "set_id": 16940,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1106
+                  "npc_id": 1106,
+                  "anime": 0
                 },
                 "360289": {
                   "parent_chapter": 360288,
@@ -3079,7 +3437,8 @@
                   "set_id": 16942,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1106
+                  "npc_id": 1106,
+                  "anime": 0
                 },
                 "360290": {
                   "parent_chapter": 360289,
@@ -3088,7 +3447,8 @@
                   "set_id": 16634,
                   "unlock_id": 0,
                   "begin_sn": "Sr00360290",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "360291": {
                   "parent_chapter": 360289,
@@ -3097,7 +3457,8 @@
                   "set_id": 0,
                   "unlock_id": 12013,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "360292": {
                   "parent_chapter": 360291,
@@ -3106,7 +3467,8 @@
                   "set_id": 1071012,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1107
+                  "npc_id": 1107,
+                  "anime": 0
                 },
                 "360293": {
                   "parent_chapter": 360292,
@@ -3115,7 +3477,8 @@
                   "set_id": 1012037,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1108
+                  "npc_id": 1108,
+                  "anime": 0
                 }
               },
               "37": {
@@ -3126,7 +3489,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "Sr00370294",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "370295": {
                   "parent_chapter": 370294,
@@ -3135,7 +3499,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "Sr00370295",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "370296": {
                   "parent_chapter": 370295,
@@ -3144,7 +3509,8 @@
                   "set_id": 5915,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1121
+                  "npc_id": 1121,
+                  "anime": 0
                 },
                 "370297": {
                   "parent_chapter": 370296,
@@ -3153,7 +3519,8 @@
                   "set_id": 5245,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1121
+                  "npc_id": 1121,
+                  "anime": 0
                 },
                 "370298": {
                   "parent_chapter": 370297,
@@ -3162,7 +3529,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "Sr00370296",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "370299": {
                   "parent_chapter": 370298,
@@ -3171,7 +3539,8 @@
                   "set_id": 1140102,
                   "unlock_id": 0,
                   "begin_sn": "Sr00370299",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "370300": {
                   "parent_chapter": 370299,
@@ -3180,7 +3549,8 @@
                   "set_id": 1071013,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1122
+                  "npc_id": 1122,
+                  "anime": 0
                 },
                 "370301": {
                   "parent_chapter": 370300,
@@ -3189,7 +3559,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "Sr00370301",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "370302": {
                   "parent_chapter": 370300,
@@ -3198,7 +3569,8 @@
                   "set_id": 0,
                   "unlock_id": 10812,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "370303": {
                   "parent_chapter": 370302,
@@ -3207,7 +3579,8 @@
                   "set_id": 1010009,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1123
+                  "npc_id": 1123,
+                  "anime": 0
                 }
               },
               "38": {
@@ -3218,7 +3591,8 @@
                   "set_id": 1203,
                   "unlock_id": 0,
                   "begin_sn": "Sr00380304",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "380305": {
                   "parent_chapter": 380304,
@@ -3227,7 +3601,8 @@
                   "set_id": 1203,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1139
+                  "npc_id": 1139,
+                  "anime": 0
                 },
                 "380306": {
                   "parent_chapter": 380305,
@@ -3236,7 +3611,8 @@
                   "set_id": 1140102,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1139
+                  "npc_id": 1139,
+                  "anime": 0
                 },
                 "380307": {
                   "parent_chapter": 380306,
@@ -3245,7 +3621,8 @@
                   "set_id": 1140102,
                   "unlock_id": 0,
                   "begin_sn": "Sr00380307",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "380308": {
                   "parent_chapter": 380306,
@@ -3254,7 +3631,8 @@
                   "set_id": 0,
                   "unlock_id": 11205,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "380309": {
                   "parent_chapter": 380308,
@@ -3263,7 +3641,8 @@
                   "set_id": 1071015,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1140
+                  "npc_id": 1140,
+                  "anime": 0
                 },
                 "380310": {
                   "parent_chapter": 380309,
@@ -3272,7 +3651,8 @@
                   "set_id": 1012041,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1141
+                  "npc_id": 1141,
+                  "anime": 0
                 }
               },
               "39": {
@@ -3283,7 +3663,8 @@
                   "set_id": 1104,
                   "unlock_id": 0,
                   "begin_sn": "Sr00390311",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "390312": {
                   "parent_chapter": 390311,
@@ -3292,7 +3673,8 @@
                   "set_id": 1004,
                   "unlock_id": 0,
                   "begin_sn": "Sr00390312",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "390313": {
                   "parent_chapter": 390312,
@@ -3301,7 +3683,8 @@
                   "set_id": 904,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1136
+                  "npc_id": 1136,
+                  "anime": 0
                 },
                 "390314": {
                   "parent_chapter": 390313,
@@ -3310,7 +3693,8 @@
                   "set_id": 1304,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1136
+                  "npc_id": 1136,
+                  "anime": 0
                 },
                 "390315": {
                   "parent_chapter": 390314,
@@ -3319,7 +3703,8 @@
                   "set_id": 804,
                   "unlock_id": 0,
                   "begin_sn": "Sr00390315",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "390316": {
                   "parent_chapter": 390314,
@@ -3328,7 +3713,8 @@
                   "set_id": 0,
                   "unlock_id": 12011,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "390317": {
                   "parent_chapter": 390316,
@@ -3337,7 +3723,8 @@
                   "set_id": 1071016,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1137
+                  "npc_id": 1137,
+                  "anime": 0
                 },
                 "390318": {
                   "parent_chapter": 390317,
@@ -3346,7 +3733,8 @@
                   "set_id": 1012040,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1138
+                  "npc_id": 1138,
+                  "anime": 0
                 }
               },
               "40": {
@@ -3357,7 +3745,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "Sr00400319",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "400320": {
                   "parent_chapter": 400319,
@@ -3366,7 +3755,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1130
+                  "npc_id": 1130,
+                  "anime": 0
                 },
                 "400321": {
                   "parent_chapter": 400320,
@@ -3375,7 +3765,8 @@
                   "set_id": 10673,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1130
+                  "npc_id": 1130,
+                  "anime": 0
                 },
                 "400322": {
                   "parent_chapter": 400321,
@@ -3384,7 +3775,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "Sr00400322",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "400323": {
                   "parent_chapter": 400321,
@@ -3393,7 +3785,8 @@
                   "set_id": 0,
                   "unlock_id": 10810,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "400324": {
                   "parent_chapter": 400323,
@@ -3402,7 +3795,8 @@
                   "set_id": 1071014,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1131
+                  "npc_id": 1131,
+                  "anime": 0
                 },
                 "400325": {
                   "parent_chapter": 400324,
@@ -3411,7 +3805,8 @@
                   "set_id": 1012042,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1132
+                  "npc_id": 1132,
+                  "anime": 0
                 }
               },
               "41": {
@@ -3422,7 +3817,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "Sr00410326",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "410327": {
                   "parent_chapter": 410326,
@@ -3431,7 +3827,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1133
+                  "npc_id": 1133,
+                  "anime": 0
                 },
                 "410328": {
                   "parent_chapter": 410327,
@@ -3440,7 +3837,8 @@
                   "set_id": 4364,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1133
+                  "npc_id": 1133,
+                  "anime": 0
                 },
                 "410329": {
                   "parent_chapter": 410328,
@@ -3449,7 +3847,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "Sr00410329",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "410330": {
                   "parent_chapter": 410328,
@@ -3458,7 +3857,8 @@
                   "set_id": 0,
                   "unlock_id": 10910,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "410331": {
                   "parent_chapter": 410330,
@@ -3467,7 +3867,8 @@
                   "set_id": 1071019,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1134
+                  "npc_id": 1134,
+                  "anime": 0
                 },
                 "410332": {
                   "parent_chapter": 410331,
@@ -3476,7 +3877,8 @@
                   "set_id": 1012046,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1135
+                  "npc_id": 1135,
+                  "anime": 0
                 }
               },
               "42": {
@@ -3487,7 +3889,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "Sr00420333",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "420334": {
                   "parent_chapter": 420333,
@@ -3496,7 +3899,8 @@
                   "set_id": 1002,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1127
+                  "npc_id": 1127,
+                  "anime": 0
                 },
                 "420335": {
                   "parent_chapter": 420334,
@@ -3505,7 +3909,8 @@
                   "set_id": 1102,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1127
+                  "npc_id": 1127,
+                  "anime": 0
                 },
                 "420336": {
                   "parent_chapter": 420335,
@@ -3514,7 +3919,8 @@
                   "set_id": 1012043,
                   "unlock_id": 0,
                   "begin_sn": "Sr00420336",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "420337": {
                   "parent_chapter": 420335,
@@ -3523,7 +3929,8 @@
                   "set_id": 0,
                   "unlock_id": 20004,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "420338": {
                   "parent_chapter": 420337,
@@ -3532,7 +3939,8 @@
                   "set_id": 1071017,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1128
+                  "npc_id": 1128,
+                  "anime": 0
                 },
                 "420339": {
                   "parent_chapter": 420338,
@@ -3541,7 +3949,8 @@
                   "set_id": 1001018,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1129
+                  "npc_id": 1129,
+                  "anime": 0
                 }
               },
               "43": {
@@ -3552,7 +3961,8 @@
                   "set_id": 1103,
                   "unlock_id": 0,
                   "begin_sn": "Sr00430340",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "430341": {
                   "parent_chapter": 430340,
@@ -3561,7 +3971,8 @@
                   "set_id": 1203,
                   "unlock_id": 0,
                   "begin_sn": "Sr00430341",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "430342": {
                   "parent_chapter": 430341,
@@ -3570,7 +3981,8 @@
                   "set_id": 1303,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1124
+                  "npc_id": 1124,
+                  "anime": 0
                 },
                 "430343": {
                   "parent_chapter": 430342,
@@ -3579,7 +3991,8 @@
                   "set_id": 1103,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1124
+                  "npc_id": 1124,
+                  "anime": 0
                 },
                 "430344": {
                   "parent_chapter": 430343,
@@ -3588,7 +4001,8 @@
                   "set_id": 16824,
                   "unlock_id": 0,
                   "begin_sn": "Sr00430344",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "430345": {
                   "parent_chapter": 430343,
@@ -3597,7 +4011,8 @@
                   "set_id": 0,
                   "unlock_id": 12016,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "430346": {
                   "parent_chapter": 430345,
@@ -3606,7 +4021,8 @@
                   "set_id": 1012045,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1125
+                  "npc_id": 1125,
+                  "anime": 0
                 },
                 "430347": {
                   "parent_chapter": 430346,
@@ -3615,7 +4031,8 @@
                   "set_id": 1012044,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1126
+                  "npc_id": 1126,
+                  "anime": 0
                 }
               },
               "44": {
@@ -3626,7 +4043,8 @@
                   "set_id": 14138,
                   "unlock_id": 0,
                   "begin_sn": "Sr00440348",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "440349": {
                   "parent_chapter": 440348,
@@ -3635,7 +4053,8 @@
                   "set_id": 14153,
                   "unlock_id": 0,
                   "begin_sn": "Sr00440349",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "440350": {
                   "parent_chapter": 440349,
@@ -3644,7 +4063,8 @@
                   "set_id": 14310,
                   "unlock_id": 0,
                   "begin_sn": "Sr00440350",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "440351": {
                   "parent_chapter": 440350,
@@ -3653,7 +4073,8 @@
                   "set_id": 1012025,
                   "unlock_id": 0,
                   "begin_sn": "Sr00440351",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "440352": {
                   "parent_chapter": 440351,
@@ -3662,7 +4083,8 @@
                   "set_id": 1071020,
                   "unlock_id": 0,
                   "begin_sn": "Sr00440352",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "440353": {
                   "parent_chapter": 440356,
@@ -3671,7 +4093,8 @@
                   "set_id": 14527,
                   "unlock_id": 0,
                   "begin_sn": "Sr00440353",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "440354": {
                   "parent_chapter": 440353,
@@ -3680,7 +4103,8 @@
                   "set_id": 14702,
                   "unlock_id": 0,
                   "begin_sn": "Sr00440354",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "440355": {
                   "parent_chapter": 440354,
@@ -3689,7 +4113,8 @@
                   "set_id": 14688,
                   "unlock_id": 0,
                   "begin_sn": "Sr00440355",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "440356": {
                   "parent_chapter": 440352,
@@ -3698,7 +4123,8 @@
                   "set_id": 14325,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1151
+                  "npc_id": 1151,
+                  "anime": 0
                 },
                 "440357": {
                   "parent_chapter": 440349,
@@ -3707,7 +4133,8 @@
                   "set_id": 0,
                   "unlock_id": 20002,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "440358": {
                   "parent_chapter": 440357,
@@ -3716,7 +4143,8 @@
                   "set_id": 14149,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1148
+                  "npc_id": 1148,
+                  "anime": 0
                 },
                 "440359": {
                   "parent_chapter": 440358,
@@ -3725,7 +4153,8 @@
                   "set_id": 14093,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1149
+                  "npc_id": 1149,
+                  "anime": 0
                 },
                 "440360": {
                   "parent_chapter": 440359,
@@ -3734,7 +4163,8 @@
                   "set_id": 1012048,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1150
+                  "npc_id": 1150,
+                  "anime": 0
                 },
                 "440361": {
                   "parent_chapter": 440356,
@@ -3743,7 +4173,8 @@
                   "set_id": 0,
                   "unlock_id": 20003,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "440362": {
                   "parent_chapter": 440361,
@@ -3752,7 +4183,8 @@
                   "set_id": 14648,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1152
+                  "npc_id": 1152,
+                  "anime": 0
                 },
                 "440363": {
                   "parent_chapter": 440362,
@@ -3761,7 +4193,8 @@
                   "set_id": 1012047,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1153
+                  "npc_id": 1153,
+                  "anime": 0
                 }
               },
               "45": {
@@ -3772,7 +4205,8 @@
                   "set_id": 1103,
                   "unlock_id": 0,
                   "begin_sn": "Sr00450364",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "450365": {
                   "parent_chapter": 450364,
@@ -3781,7 +4215,8 @@
                   "set_id": 1103,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1142
+                  "npc_id": 1142,
+                  "anime": 0
                 },
                 "450366": {
                   "parent_chapter": 450365,
@@ -3790,7 +4225,8 @@
                   "set_id": 17468,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1142
+                  "npc_id": 1142,
+                  "anime": 0
                 },
                 "450367": {
                   "parent_chapter": 450366,
@@ -3799,7 +4235,8 @@
                   "set_id": 1103,
                   "unlock_id": 0,
                   "begin_sn": "Sr00450367",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "450368": {
                   "parent_chapter": 450366,
@@ -3808,7 +4245,8 @@
                   "set_id": 0,
                   "unlock_id": 11110,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "450369": {
                   "parent_chapter": 450368,
@@ -3817,7 +4255,8 @@
                   "set_id": 1071023,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1143
+                  "npc_id": 1143,
+                  "anime": 0
                 },
                 "450370": {
                   "parent_chapter": 450369,
@@ -3826,7 +4265,8 @@
                   "set_id": 1012051,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1144
+                  "npc_id": 1144,
+                  "anime": 0
                 }
               },
               "46": {
@@ -3837,7 +4277,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "Sr00460371",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "460372": {
                   "parent_chapter": 460371,
@@ -3846,7 +4287,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1154
+                  "npc_id": 1154,
+                  "anime": 0
                 },
                 "460373": {
                   "parent_chapter": 460372,
@@ -3855,7 +4297,8 @@
                   "set_id": 16822,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1154
+                  "npc_id": 1154,
+                  "anime": 0
                 },
                 "460374": {
                   "parent_chapter": 460373,
@@ -3864,7 +4307,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "Sr00460374",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "460375": {
                   "parent_chapter": 460373,
@@ -3873,7 +4317,8 @@
                   "set_id": 0,
                   "unlock_id": 12006,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "460376": {
                   "parent_chapter": 460375,
@@ -3882,7 +4327,8 @@
                   "set_id": 1071022,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1155
+                  "npc_id": 1155,
+                  "anime": 0
                 },
                 "460377": {
                   "parent_chapter": 460376,
@@ -3891,7 +4337,8 @@
                   "set_id": 1012050,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1156
+                  "npc_id": 1156,
+                  "anime": 0
                 }
               },
               "47": {
@@ -3902,7 +4349,8 @@
                   "set_id": 1003,
                   "unlock_id": 0,
                   "begin_sn": "Sr00470378",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "470379": {
                   "parent_chapter": 470378,
@@ -3911,7 +4359,8 @@
                   "set_id": 6354,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1145
+                  "npc_id": 1145,
+                  "anime": 0
                 },
                 "470380": {
                   "parent_chapter": 470379,
@@ -3920,7 +4369,8 @@
                   "set_id": 4991,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1145
+                  "npc_id": 1145,
+                  "anime": 0
                 },
                 "470381": {
                   "parent_chapter": 470380,
@@ -3929,7 +4379,8 @@
                   "set_id": 1003,
                   "unlock_id": 0,
                   "begin_sn": "Sr00470381",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "470382": {
                   "parent_chapter": 470381,
@@ -3938,7 +4389,8 @@
                   "set_id": 17824,
                   "unlock_id": 0,
                   "begin_sn": "Sr00470382",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "470383": {
                   "parent_chapter": 470380,
@@ -3947,7 +4399,8 @@
                   "set_id": 0,
                   "unlock_id": 11010,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "470384": {
                   "parent_chapter": 470383,
@@ -3956,7 +4409,8 @@
                   "set_id": 1071024,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1146
+                  "npc_id": 1146,
+                  "anime": 0
                 },
                 "470385": {
                   "parent_chapter": 470384,
@@ -3965,7 +4419,8 @@
                   "set_id": 1012052,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1147
+                  "npc_id": 1147,
+                  "anime": 0
                 }
               },
               "48": {
@@ -3976,7 +4431,8 @@
                   "set_id": 6960,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3022
+                  "npc_id": 3022,
+                  "anime": 0
                 },
                 "480387": {
                   "parent_chapter": 480386,
@@ -3985,7 +4441,8 @@
                   "set_id": 5213,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3023
+                  "npc_id": 3023,
+                  "anime": 0
                 },
                 "480388": {
                   "parent_chapter": 480387,
@@ -3994,7 +4451,8 @@
                   "set_id": 8976,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3024
+                  "npc_id": 3024,
+                  "anime": 0
                 },
                 "480389": {
                   "parent_chapter": 480388,
@@ -4003,7 +4461,8 @@
                   "set_id": 5544,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3025
+                  "npc_id": 3025,
+                  "anime": 0
                 },
                 "480390": {
                   "parent_chapter": 480389,
@@ -4012,7 +4471,8 @@
                   "set_id": 0,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3026
+                  "npc_id": 3026,
+                  "anime": 0
                 },
                 "480391": {
                   "parent_chapter": 480390,
@@ -4021,7 +4481,8 @@
                   "set_id": 1111016,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 }
               },
               "49": {
@@ -4032,7 +4493,8 @@
                   "set_id": 1003,
                   "unlock_id": 0,
                   "begin_sn": "Sr00490393",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "490393": {
                   "parent_chapter": 490392,
@@ -4041,7 +4503,8 @@
                   "set_id": 1103,
                   "unlock_id": 0,
                   "begin_sn": "Sr00490394",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "490394": {
                   "parent_chapter": 490393,
@@ -4050,7 +4513,8 @@
                   "set_id": 1303,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1157
+                  "npc_id": 1157,
+                  "anime": 0
                 },
                 "490395": {
                   "parent_chapter": 490394,
@@ -4059,7 +4523,8 @@
                   "set_id": 1203,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1157
+                  "npc_id": 1157,
+                  "anime": 0
                 },
                 "490396": {
                   "parent_chapter": 490395,
@@ -4068,7 +4533,8 @@
                   "set_id": 1071025,
                   "unlock_id": 0,
                   "begin_sn": "Sr00490396",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "490397": {
                   "parent_chapter": 490395,
@@ -4077,7 +4543,8 @@
                   "set_id": 0,
                   "unlock_id": 12021,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "490398": {
                   "parent_chapter": 490397,
@@ -4086,7 +4553,8 @@
                   "set_id": 1010005,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1158
+                  "npc_id": 1158,
+                  "anime": 0
                 },
                 "490399": {
                   "parent_chapter": 490398,
@@ -4095,7 +4563,8 @@
                   "set_id": 1012053,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1159
+                  "npc_id": 1159,
+                  "anime": 0
                 }
               },
               "50": {
@@ -4106,7 +4575,8 @@
                   "set_id": 1003,
                   "unlock_id": 0,
                   "begin_sn": "Sr00500400",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "500401": {
                   "parent_chapter": 500400,
@@ -4115,7 +4585,8 @@
                   "set_id": 1003,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1160
+                  "npc_id": 1160,
+                  "anime": 0
                 },
                 "500402": {
                   "parent_chapter": 500401,
@@ -4124,7 +4595,8 @@
                   "set_id": 17190,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1160
+                  "npc_id": 1160,
+                  "anime": 0
                 },
                 "500403": {
                   "parent_chapter": 500402,
@@ -4133,7 +4605,8 @@
                   "set_id": 1140102,
                   "unlock_id": 0,
                   "begin_sn": "Sr00500403",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "500404": {
                   "parent_chapter": 500402,
@@ -4142,7 +4615,8 @@
                   "set_id": 0,
                   "unlock_id": 11006,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "500405": {
                   "parent_chapter": 500404,
@@ -4151,7 +4625,8 @@
                   "set_id": 1071026,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1161
+                  "npc_id": 1161,
+                  "anime": 0
                 },
                 "500406": {
                   "parent_chapter": 500405,
@@ -4160,7 +4635,8 @@
                   "set_id": 1012054,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1162
+                  "npc_id": 1162,
+                  "anime": 0
                 }
               },
               "52": {
@@ -4171,7 +4647,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "Sr00520407",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "520408": {
                   "parent_chapter": 520407,
@@ -4180,7 +4657,8 @@
                   "set_id": 1103,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1163
+                  "npc_id": 1163,
+                  "anime": 0
                 },
                 "520409": {
                   "parent_chapter": 520408,
@@ -4189,7 +4667,8 @@
                   "set_id": 18867,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1163
+                  "npc_id": 1163,
+                  "anime": 0
                 },
                 "520410": {
                   "parent_chapter": 520409,
@@ -4198,7 +4677,8 @@
                   "set_id": 1012055,
                   "unlock_id": 0,
                   "begin_sn": "Sr00520410",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "520411": {
                   "parent_chapter": 520409,
@@ -4207,7 +4687,8 @@
                   "set_id": 0,
                   "unlock_id": 20005,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "520412": {
                   "parent_chapter": 520411,
@@ -4216,7 +4697,8 @@
                   "set_id": 1071027,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1164
+                  "npc_id": 1164,
+                  "anime": 0
                 },
                 "520413": {
                   "parent_chapter": 520412,
@@ -4225,7 +4707,8 @@
                   "set_id": 1001024,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1165
+                  "npc_id": 1165,
+                  "anime": 0
                 }
               },
               "53": {
@@ -4236,7 +4719,8 @@
                   "set_id": 1003,
                   "unlock_id": 0,
                   "begin_sn": "Sr00530414",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "530415": {
                   "parent_chapter": 530414,
@@ -4245,7 +4729,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1166
+                  "npc_id": 1166,
+                  "anime": 0
                 },
                 "530416": {
                   "parent_chapter": 530415,
@@ -4254,7 +4739,8 @@
                   "set_id": 1071028,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1166
+                  "npc_id": 1166,
+                  "anime": 0
                 },
                 "530417": {
                   "parent_chapter": 530416,
@@ -4263,7 +4749,8 @@
                   "set_id": 1012056,
                   "unlock_id": 0,
                   "begin_sn": "Sr00530417",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "530418": {
                   "parent_chapter": 530416,
@@ -4272,7 +4759,8 @@
                   "set_id": 0,
                   "unlock_id": 20006,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "530419": {
                   "parent_chapter": 530418,
@@ -4281,7 +4769,8 @@
                   "set_id": 1001025,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1167
+                  "npc_id": 1167,
+                  "anime": 0
                 },
                 "530420": {
                   "parent_chapter": 530419,
@@ -4290,7 +4779,8 @@
                   "set_id": 1030030,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1168
+                  "npc_id": 1168,
+                  "anime": 0
                 }
               },
               "54": {
@@ -4301,7 +4791,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "Sr00540421",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "540422": {
                   "parent_chapter": 540421,
@@ -4310,7 +4801,8 @@
                   "set_id": 903,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1169
+                  "npc_id": 1169,
+                  "anime": 0
                 },
                 "540423": {
                   "parent_chapter": 540422,
@@ -4319,7 +4811,8 @@
                   "set_id": 1140102,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1169
+                  "npc_id": 1169,
+                  "anime": 0
                 },
                 "540424": {
                   "parent_chapter": 540423,
@@ -4328,7 +4821,8 @@
                   "set_id": 1140102,
                   "unlock_id": 0,
                   "begin_sn": "Sr00540424",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "540425": {
                   "parent_chapter": 540423,
@@ -4337,7 +4831,8 @@
                   "set_id": 0,
                   "unlock_id": 10908,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "540426": {
                   "parent_chapter": 540425,
@@ -4346,7 +4841,8 @@
                   "set_id": 1071029,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1170
+                  "npc_id": 1170,
+                  "anime": 0
                 },
                 "540427": {
                   "parent_chapter": 540426,
@@ -4355,7 +4851,8 @@
                   "set_id": 1001026,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1171
+                  "npc_id": 1171,
+                  "anime": 0
                 }
               },
               "55": {
@@ -4366,7 +4863,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "Sr00550428",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "550429": {
                   "parent_chapter": 550428,
@@ -4375,7 +4873,8 @@
                   "set_id": 1204,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1172
+                  "npc_id": 1172,
+                  "anime": 0
                 },
                 "550430": {
                   "parent_chapter": 550429,
@@ -4384,7 +4883,8 @@
                   "set_id": 1140102,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1172
+                  "npc_id": 1172,
+                  "anime": 0
                 },
                 "550431": {
                   "parent_chapter": 550430,
@@ -4393,7 +4893,8 @@
                   "set_id": 1140102,
                   "unlock_id": 0,
                   "begin_sn": "Sr00550431",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "550432": {
                   "parent_chapter": 550430,
@@ -4402,7 +4903,8 @@
                   "set_id": 0,
                   "unlock_id": 12022,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "550433": {
                   "parent_chapter": 550432,
@@ -4411,7 +4913,8 @@
                   "set_id": 1071030,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1173
+                  "npc_id": 1173,
+                  "anime": 0
                 },
                 "550434": {
                   "parent_chapter": 550433,
@@ -4420,7 +4923,8 @@
                   "set_id": 1001019,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1174
+                  "npc_id": 1174,
+                  "anime": 0
                 }
               },
               "56": {
@@ -4431,7 +4935,8 @@
                   "set_id": 803,
                   "unlock_id": 0,
                   "begin_sn": "Sr00560435",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "560436": {
                   "parent_chapter": 560435,
@@ -4440,7 +4945,8 @@
                   "set_id": 1140102,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1178
+                  "npc_id": 1178,
+                  "anime": 0
                 },
                 "560437": {
                   "parent_chapter": 560436,
@@ -4449,7 +4955,8 @@
                   "set_id": 1140102,
                   "unlock_id": 0,
                   "begin_sn": "Sr00560437",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "560438": {
                   "parent_chapter": 560436,
@@ -4458,7 +4965,8 @@
                   "set_id": 0,
                   "unlock_id": 12006,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "560439": {
                   "parent_chapter": 560438,
@@ -4467,7 +4975,8 @@
                   "set_id": 1012064,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1179
+                  "npc_id": 1179,
+                  "anime": 0
                 },
                 "560440": {
                   "parent_chapter": 560439,
@@ -4476,7 +4985,8 @@
                   "set_id": 1030031,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1180
+                  "npc_id": 1180,
+                  "anime": 0
                 }
               },
               "67": {
@@ -4487,7 +4997,8 @@
                   "set_id": 1140102,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3027
+                  "npc_id": 3027,
+                  "anime": 0
                 },
                 "670501": {
                   "parent_chapter": 670500,
@@ -4496,7 +5007,8 @@
                   "set_id": 1012061,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3028
+                  "npc_id": 3028,
+                  "anime": 0
                 }
               },
               "68": {
@@ -4507,7 +5019,8 @@
                   "set_id": 1140102,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3027
+                  "npc_id": 3027,
+                  "anime": 0
                 },
                 "680503": {
                   "parent_chapter": 680502,
@@ -4516,7 +5029,8 @@
                   "set_id": 1012062,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3028
+                  "npc_id": 3028,
+                  "anime": 0
                 }
               },
               "69": {
@@ -4527,7 +5041,8 @@
                   "set_id": 1140102,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3027
+                  "npc_id": 3027,
+                  "anime": 0
                 },
                 "690505": {
                   "parent_chapter": 690504,
@@ -4536,7 +5051,8 @@
                   "set_id": 1012063,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 3028
+                  "npc_id": 3028,
+                  "anime": 0
                 }
               },
               "70": {
@@ -4547,7 +5063,8 @@
                   "set_id": 801,
                   "unlock_id": 0,
                   "begin_sn": "Sr00700506",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "700507": {
                   "parent_chapter": 700506,
@@ -4556,7 +5073,8 @@
                   "set_id": 801,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1175
+                  "npc_id": 1175,
+                  "anime": 0
                 },
                 "700508": {
                   "parent_chapter": 700507,
@@ -4565,7 +5083,8 @@
                   "set_id": 1140102,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1175
+                  "npc_id": 1175,
+                  "anime": 0
                 },
                 "700509": {
                   "parent_chapter": 700508,
@@ -4574,7 +5093,8 @@
                   "set_id": 801,
                   "unlock_id": 0,
                   "begin_sn": "Sr00700509",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "700510": {
                   "parent_chapter": 700508,
@@ -4583,7 +5103,8 @@
                   "set_id": 0,
                   "unlock_id": 10802,
                   "begin_sn": "",
-                  "npc_id": 0
+                  "npc_id": 0,
+                  "anime": 0
                 },
                 "700511": {
                   "parent_chapter": 700510,
@@ -4592,7 +5113,8 @@
                   "set_id": 1012067,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1176
+                  "npc_id": 1176,
+                  "anime": 0
                 },
                 "700512": {
                   "parent_chapter": 700511,
@@ -4601,7 +5123,110 @@
                   "set_id": 1071032,
                   "unlock_id": 0,
                   "begin_sn": "",
-                  "npc_id": 1177
+                  "npc_id": 1177,
+                  "anime": 0
+                }
+              },
+              "71": {
+                "710001": {
+                  "parent_chapter": 0,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1140102,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00710001",
+                  "npc_id": 0,
+                  "anime": 1
+                },
+                "710002": {
+                  "parent_chapter": 710001,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1140102,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00710002",
+                  "npc_id": 0,
+                  "anime": 0
+                },
+                "710003": {
+                  "parent_chapter": 710002,
+                  "difficulty": 1,
+                  "mydeck_set_id": 0,
+                  "set_id": 1012068,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1184,
+                  "anime": 0
+                },
+                "710004": {
+                  "parent_chapter": 710003,
+                  "difficulty": 3,
+                  "mydeck_set_id": 1140102,
+                  "set_id": 1082020,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1184,
+                  "anime": 0
+                },
+                "710005": {
+                  "parent_chapter": 710004,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1140102,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00710005",
+                  "npc_id": 0,
+                  "anime": 1
+                },
+                "710006": {
+                  "parent_chapter": 710005,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1140102,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00710006",
+                  "npc_id": 0,
+                  "anime": 0
+                },
+                "710007": {
+                  "parent_chapter": 710006,
+                  "difficulty": 3,
+                  "mydeck_set_id": 1140102,
+                  "set_id": 1012069,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1185,
+                  "anime": 0
+                },
+                "710008": {
+                  "parent_chapter": 710007,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1012070,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00710009",
+                  "npc_id": 0,
+                  "anime": 0
+                },
+                "710009": {
+                  "parent_chapter": 710008,
+                  "difficulty": 3,
+                  "mydeck_set_id": 1071033,
+                  "set_id": 1130071,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1186,
+                  "anime": 0
+                },
+                "710010": {
+                  "parent_chapter": 710009,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 104,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00710010",
+                  "npc_id": 0,
+                  "anime": 1
                 }
               }
             },
@@ -7199,6 +7824,21 @@
                   "1012067": 1
                 }
               },
+              "1012068": {
+                "4": {
+                  "1012068": 1
+                }
+              },
+              "1012069": {
+                "4": {
+                  "1012069": 1
+                }
+              },
+              "1012070": {
+                "4": {
+                  "1012070": 1
+                }
+              },
               "1020012": {
                 "5": {
                   "1020012": 1
@@ -7369,6 +8009,11 @@
                   "1071032": 1
                 }
               },
+              "1071033": {
+                "7": {
+                  "1071033": 1
+                }
+              },
               "1090006": {
                 "9": {
                   "1090006": 1
@@ -7452,6 +8097,16 @@
               "1100006": {
                 "10": {
                   "1100006": 1
+                }
+              },
+              "1082020": {
+                "8": {
+                  "1082020": 1
+                }
+              },
+              "1130071": {
+                "13": {
+                  "1130071": 1
                 }
               }
             }

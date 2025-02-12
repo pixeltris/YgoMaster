@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -128,6 +130,35 @@ namespace YgoMaster
                 return true;
             }
             return false;
+        }
+
+        Dictionary<string, object> GetMovieInfo(int chapterId)
+        {
+            int gateId = GetChapterGateId(chapterId);
+            Dictionary<string, object> allChapterData = Utils.GetDictionary(SoloData, "chapter");
+            if (allChapterData == null)
+            {
+                return null;
+            }
+            Dictionary<string, object> chapterGateData = Utils.GetDictionary(allChapterData, gateId.ToString());
+            if (chapterGateData == null)
+            {
+                return null;
+            }
+            Dictionary<string, object> chapterData = Utils.GetDictionary(chapterGateData, chapterId.ToString());
+            if (chapterData == null)
+            {
+                return null;
+            }
+            if (Utils.GetValue<bool>(chapterData, "anime"))
+            {
+                string movieFile = Path.Combine(dataDirectory, "SoloMovies", chapterId + ".json");
+                if (File.Exists(movieFile))
+                {
+                    return MiniJSON.Json.DeserializeStripped(File.ReadAllText(movieFile)) as Dictionary<string, object>;
+                }
+            }
+            return null;
         }
 
         bool GetChapterSetIds(GameServerWebRequest request, int chapterId, out int myDeckSetId, out int loanerDeckSetId)
@@ -1056,6 +1087,33 @@ namespace YgoMaster
                 }
             }
 
+            // If all gates are clear/complete just pick the last gates
+            if (gateRec1 == 0)
+            {
+                Dictionary<int, int> firstChapters = new Dictionary<int, int>();
+                foreach (KeyValuePair<int, Dictionary<string, object>> chapter in allChapters)
+                {
+                    int gateId = GetChapterGateId(chapter.Key);
+                    if (!firstChapters.ContainsKey(gateId))
+                    {
+                        firstChapters[gateId] = chapter.Key;
+                    }
+                }
+                int[] gateIds = allGateData.Keys
+                    .Select(x => int.Parse(x))
+                    .Where(x => firstChapters.ContainsKey(x) && IsAvailable(firstChapters[x], player.SoloChapters, itemhave))
+                    .OrderByDescending(x => x)
+                    .ToArray();
+                if (gateIds.Length >= 1)
+                {
+                    gateRec1 = gateIds[0];
+                }
+                if (gateIds.Length >= 2)
+                {
+                    gateRec2 = gateIds[1];
+                }
+            }
+
             if (gateRec2 == 0)
             {
                 gateRec2 = gateRec1;
@@ -1138,6 +1196,13 @@ namespace YgoMaster
                 }
                 else if (IsValidNonDuelChapter(chapterId))
                 {
+                    Dictionary<string, object> movieInfo = GetMovieInfo(chapterId);
+                    if (movieInfo != null)
+                    {
+                        Dictionary<string, object> soloData = request.GetOrCreateDictionary("Solo");
+                        Dictionary<string, object> chaptersData = Utils.GetOrCreateDictionary(soloData, "chapter");
+                        chaptersData[chapterId.ToString()] = movieInfo;
+                    }
                     SoloUpdateChapterStatus(request, chapterId, DuelResultType.None, DuelFinishType.None);
                 }
                 else
