@@ -36,23 +36,7 @@ Certain logs will be dumped as json into `%USERPROFILE%/Documents/Fiddler2/Captu
 
 ## Shop
 
-- Download the latest shops list from [here](https://github.com/pixeltris/YgoMaster/issues/129) and place them `YgoMaster/Data/ShopDumps/`
-- Click `SHOP` to log `/ayk/api/Shop.get_list`
-- Rename the `YgoMasterUpdate/Shop.json` log to the update date and copy it into `YgoMaster/Data/ShopDumps/`
-- In game select `Master Pack` and click `Cards included in this pack`. Log `Gacha.get_card_list` to generate `Gacha-10000001.json` and copy it into ShopDumps
-- In game select `Legacy Pack` and click `Cards included in this pack`. Log `Gacha.get_card_list` to generate `Gacha-10003001.json` and copy it into ShopDumps
-- Run the `YgoMaster.exe --mergeshops` command to merge `YgoMaster/Data/ShopDumps/` into `YgoMaster/Data/AllShopsMerged.json`. Copy out what is needed
-- Zip up your `ShopDumps` folder and update the link at the top of this section. Then delete your `ShopDumps` folder.
-
-For any new packs with new pack images...
-
-- In the client console run `packimages` which will create `dump-packimages.txt` in the game folder. Copy the contents into `Shop.json` `PackShopImages`.
-
-For shop pack odds...
-
-- Log the odds from clicking the button in-game and copy the data into `ShopPackOdds.json`.
-
-For creating `YgoMaster/Data/ShopDumps/` from scratch...
+For updating `Shop.json`...
 
 - Create a new Steam account
 - Complete the tutorial
@@ -62,10 +46,19 @@ For creating `YgoMaster/Data/ShopDumps/` from scratch...
 - Go to the shop and enter `craft_secrets` into the client console - this will craft every missing secret pack
 - In the shop enter `auto_free_pull` into the client console - this will open every free pull secret pack (you will need to re-enter the shop and do the command multiple times until no more packs open)
 - Re-enter the shop to log `/ayk/api/Shop.get_list`
-- Save the log into `YgoMaster/Data/ShopDumps/Shop-2024-02-22.json` (or whatever the current date is)
-- Get the card list for the Master Pack and save the `/ayk/api/Gacha.get_card_list` log into `YgoMaster/Data/ShopDumps/Gacha-10000001.json`
-- Get the card list for Legacy Pack and save the `/ayk/api/Gacha.get_card_list` log into `YgoMaster/Data/ShopDumps/Gacha-10003001.json`
-- Follow the above `YgoMaster.exe --mergeshops` instructions
+- Save the log into `YgoMaster/Data/ShopDumps/Shop.json`
+- In game select `Master Pack` and click `Cards included in this pack`. Log `Gacha.get_card_list` to generate `Gacha-10000001.json` and copy it into ShopDumps
+- In game select `Legacy Pack` and click `Cards included in this pack`. Log `Gacha.get_card_list` to generate `Gacha-10003001.json` and copy it into ShopDumps
+- Run the `YgoMaster.exe --mergeshops` command to merge `YgoMaster/Data/ShopDumps/` into `YgoMaster/Data/AllShopsMerged.json`
+- Copy everything from `YgoMaster/Data/AllShopsMerged.json` and paste it into `YgoMaster/Data/Shop.json` replacing anything that already exists (except from the top entries)
+
+For any new packs with new pack images...
+
+- In the client console run `packimages` which will create `dump-packimages.txt` in the game folder. Copy the contents into `Shop.json` under the json entry `PackShopImages`.
+
+For shop pack odds...
+
+- Log the odds from clicking the button in-game and copy the data into `ShopPackOdds.json`.
 
 ## Docs/AltCardsYdk.json
 
