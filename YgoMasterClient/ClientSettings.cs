@@ -45,6 +45,7 @@ namespace YgoMasterClient
         public static bool DuelClientDisableChains;
         public static double DuelClientSpectatorRapidTimeMultiplayer;
         public static double DuelClientTimeMultiplier;
+        public static int ReplayControlsXOffset;
         public static bool ReplayControlsAlwaysEnabled;
         public static double ReplayControlsTimeMultiplier;
         public static double TimeMultiplier;
@@ -162,6 +163,7 @@ namespace YgoMasterClient
             DuelClientDisableChains = Utils.GetValue<bool>(data, "DuelClientDisableChains");
             DuelClientSpectatorRapidTimeMultiplayer = Utils.GetValue<double>(data, "DuelClientSpectatorRapidTimeMultiplayer");
             DuelClientTimeMultiplier = Utils.GetValue<double>(data, "DuelClientTimeMultiplier");
+            ReplayControlsXOffset = Utils.GetValue<int>(data, "ReplayControlsXOffset");
             ReplayControlsAlwaysEnabled = Utils.GetValue<bool>(data, "ReplayControlsAlwaysEnabled");
             ReplayControlsTimeMultiplier = Utils.GetValue<double>(data, "ReplayControlsTimeMultiplier");
             TimeMultiplier = Utils.GetValue<double>(data, "TimeMultiplier");

@@ -2281,12 +2281,15 @@ namespace UnityEngine
             return result != null ? result.ptr : IntPtr.Zero;
         }
 
-        public static IntPtr FindGameObjectByName(IntPtr thisPtr, string name, bool reverseSearch = false, bool recursive = true)
+        public static IntPtr FindGameObjectByName(IntPtr thisPtr, string name, bool reverseSearch = false, bool recursive = true, bool excludeSelf = false)
         {
-            string thisName = UnityObject.GetName(thisPtr);
-            if (thisName == name)
+            if (!excludeSelf)
             {
-                return thisPtr;
+                string thisName = UnityObject.GetName(thisPtr);
+                if (thisName == name)
+                {
+                    return thisPtr;
+                }
             }
             IntPtr transform = UnityEngine.GameObject.GetTranform(thisPtr);
             int childCount = UnityEngine.Transform.GetChildCount(transform);
@@ -2326,7 +2329,7 @@ namespace UnityEngine
                 for (int i = 0; i < splitted.Length; i++)
                 {
                     string objName = splitted[i];
-                    obj = FindGameObjectByName(obj, objName, false, false);
+                    obj = FindGameObjectByName(obj, objName, false, false, true);
                     if (obj == IntPtr.Zero)
                     {
                         break;

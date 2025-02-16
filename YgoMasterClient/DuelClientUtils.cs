@@ -7,6 +7,7 @@ using IL2CPP;
 using System.Runtime.InteropServices;
 using YgoMaster;
 using System.IO;
+using UnityEngine;
 
 namespace UnityEngine
 {
@@ -185,6 +186,13 @@ namespace YgomGame.Duel
     {
         static IL2Method methodOnChangeWatcherNum;
 
+        delegate void Del_DuelStart(IntPtr thisPtr);
+        static Hook<Del_DuelStart> hookDuelStart;
+
+        static IL2Property rectTransforOffsetMin;
+        static IL2Property rectTransforOffsetMax;
+
+
         public static IntPtr Instance
         {
             get { return DuelClient.HUD; }
@@ -195,6 +203,12 @@ namespace YgomGame.Duel
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("DuelHUD", "YgomGame.Duel");
             methodOnChangeWatcherNum = classInfo.GetMethod("OnChangeWatcherNum");
+            hookDuelStart = new Hook<Del_DuelStart>(DuelStart, classInfo.GetMethod("DuelStart"));
+
+            IL2Assembly coreModuleAssembly = Assembler.GetAssembly("UnityEngine.CoreModule");
+            IL2Class rectTransformClassInfo = coreModuleAssembly.GetClass("RectTransform", "UnityEngine");
+            rectTransforOffsetMin = rectTransformClassInfo.GetProperty("offsetMin");
+            rectTransforOffsetMax = rectTransformClassInfo.GetProperty("offsetMax");
         }
 
         public static void OnChangeWatcherNum(int num)
@@ -205,6 +219,25 @@ namespace YgomGame.Duel
                 return;
             }
             methodOnChangeWatcherNum.Invoke(instance, new IntPtr[] { new IntPtr(&num) });
+        }
+
+        static void DuelStart(IntPtr thisPtr)
+        {
+            hookDuelStart.Original(thisPtr);
+            if (ClientSettings.ReplayControlsXOffset != 0)
+            {
+                IntPtr obj = GameObject.FindGameObjectByPath(Component.GetGameObject(thisPtr), "DuelHUD(Clone).Root.ReplayControl.BG");
+                if (obj != IntPtr.Zero)
+                {
+                    IntPtr transform = GameObject.GetTranform(obj);
+                    AssetHelper.Vector2 offsetMin = rectTransforOffsetMin.GetGetMethod().Invoke(transform).GetValueRef<AssetHelper.Vector2>();
+                    AssetHelper.Vector2 offsetMax = rectTransforOffsetMax.GetGetMethod().Invoke(transform).GetValueRef<AssetHelper.Vector2>();
+                    offsetMin.x -= ClientSettings.ReplayControlsXOffset;
+                    offsetMax.x -= ClientSettings.ReplayControlsXOffset;
+                    rectTransforOffsetMin.GetSetMethod().Invoke(transform, new IntPtr[] { new IntPtr(&offsetMin) });
+                    rectTransforOffsetMax.GetSetMethod().Invoke(transform, new IntPtr[] { new IntPtr(&offsetMax) });
+                }
+            }
         }
     }
 
