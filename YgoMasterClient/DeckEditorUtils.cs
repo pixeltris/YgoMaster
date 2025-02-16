@@ -403,6 +403,8 @@ namespace YgomGame
         static bool skipNextAsyncFilterAndSort;
         static IL2Method methodToggleShowAllCards;
 
+        static IL2Class cardBaseDataClassInfo;
+
         delegate void Del_NotificationStackRemove(IntPtr thisPtr);
         static Hook<Del_NotificationStackRemove> hookNotificationStackRemove;
 
@@ -430,6 +432,9 @@ namespace YgomGame
         delegate IntPtr Del_AsyncFilterAndSort(IntPtr thisPtr, IntPtr onFinish, csbool setAll, IntPtr targetSorter, csbool filter);
         static Hook<Del_AsyncFilterAndSort> hookAsyncFilterAndSort;
 
+        delegate IntPtr Del_getRelatedCardList(IntPtr thisPtr, int cardID, csbool fullStyle);
+        static Hook<Del_getRelatedCardList> hookgetRelatedCardList;
+
         static DeckEditViewController2()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
@@ -449,7 +454,10 @@ namespace YgomGame
             hookRemoveFromDeck1 = new Hook<Del_RemoveFromDeck1>(RemoveFromDeck1, classInfo.GetMethod("RemoveFromDeck", x => x.GetParameters().Length == 1));
             hookRemoveFromDeck2 = new Hook<Del_RemoveFromDeck2>(RemoveFromDeck2, classInfo.GetMethod("RemoveFromDeck", x => x.GetParameters().Length == 4));
             hookAsyncFilterAndSort = new Hook<Del_AsyncFilterAndSort>(AsyncFilterAndSort, classInfo.GetMethod("AsyncFilterAndSort"));
+            hookgetRelatedCardList = new Hook<Del_getRelatedCardList>(getRelatedCardList, classInfo.GetMethod("getRelatedCardList"));
             methodToggleShowAllCards = classInfo.GetMethod("ToggleShowAllCards");
+
+            cardBaseDataClassInfo = assembly.GetClass("CardBaseData", "YgomGame.Deck");
 
             imageType = CastUtils.IL2Typeof("Image", "UnityEngine.UI", "UnityEngine.UI");
             textMeshType = CastUtils.IL2Typeof("ExtendedTextMeshProUGUI", "YgomSystem.YGomTMPro", "Assembly-CSharp");
@@ -879,6 +887,26 @@ namespace YgomGame
             {
                 YgomSystem.UI.ViewControllerManager.PopChildViewController(manager, view);
             }
+        }
+
+        static IntPtr getRelatedCardList(IntPtr thisPtr, int cardID, csbool fullStyle)
+        {
+            /*Console.WriteLine("Get related card list for " + cardID + " fullStyle:" + fullStyle);
+            IL2ListExplicit list = new IL2ListExplicit(IntPtr.Zero, cardBaseDataClassInfo, true);
+            for (int i = 0; i < 2; i++)
+            {
+                Deck.CardBaseData cbd = new Deck.CardBaseData();
+                cbd.CardID = i == 0 ? 4007 : 4041;
+                cbd.PremiumID = (int)CardStyleRarity.None;
+                cbd.IsOwned = false;
+                cbd.Obtained = 0;
+                cbd.Inventory = 0;
+                cbd.Rarity = 0;
+                cbd.IsRental = false;
+                list.Add(new IntPtr(&cbd));
+            }
+            return list.ptr;*/
+            return hookgetRelatedCardList.Original(thisPtr, cardID, fullStyle);
         }
     }
 }
