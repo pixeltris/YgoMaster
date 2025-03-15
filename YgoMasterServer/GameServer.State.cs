@@ -2403,18 +2403,26 @@ namespace YgoMaster
                 Utils.TryGetValue(data, "Solo", out SoloData);
                 if (SoloData != null)
                 {
-                    /*Dictionary<string, object> allGateData = Utils.GetDictionary(SoloData, "gate");
+                    Dictionary<string, object> allGateData = Utils.GetDictionary(SoloData, "gate");
                     if (allGateData != null)
                     {
                         foreach (KeyValuePair<string, object> gate in allGateData)
                         {
                             Dictionary<string, object> gateData = gate.Value as Dictionary<string, object>;
-                            if (gateData != null && !gateData.ContainsKey("open_date"))
+                            if (gateData != null)
                             {
-                                gateData["open_date"] = Utils.GetEpochTime(DateTime.MinValue);
+                                /*if (!gateData.ContainsKey("open_date"))
+                                {
+                                    gateData["open_date"] = Utils.GetEpochTime(DateTime.MinValue);
+                                }*/
+                                if (!gateData.ContainsKey("category"))
+                                {
+                                    // Category needs to be set otherwise the gate wont show up anywhere
+                                    gateData["category"] = 1;// "Stories"
+                                }
                             }
                         }
-                    }*/
+                    }
                     Dictionary<string, object> allChapterData = Utils.GetDictionary(SoloData, "chapter");
                     if (allChapterData != null)
                     {
@@ -2665,6 +2673,19 @@ namespace YgoMaster
             foreach (KeyValuePair<int, Dictionary<string, object>> secretPackShopItem in packShopSecretsOnly)
             {
                 packShop[secretPackShopItem.Key] = secretPackShopItem.Value;
+            }
+            int[] secretPackIds = packShop.Keys.OrderBy(x => x).ToArray();
+            for (int i = 0; i < secretPackIds.Length - 1; i++)
+            {
+                int secretPackId = secretPackIds[i];
+                int nextSecretPackId = secretPackIds[i + 1];
+                if (nextSecretPackId != secretPackId + 1 && nextSecretPackId - secretPackId < 10)
+                {
+                    for (int j = secretPackId + 1; j < nextSecretPackId; j++)
+                    {
+                        Console.WriteLine("[WARNING] Missing secret pack shop id " + j);
+                    }
+                }
             }
             foreach (KeyValuePair<int, List<int>> cardList in extraCardLists)
             {

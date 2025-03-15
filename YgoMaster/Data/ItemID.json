@@ -193,6 +193,7 @@
     1010094,//Hey, Trunade!
     1010095,//Fiendsmith Engraver
     1010096,//Synchro Fusionist
+    1010097,//Spirit Illusion
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -238,6 +239,9 @@
     1011043,//DC 2024 DEC Gold Finalist
     1011044,//DC 2024 DEC Silver Finalist
     1011045,//DC 2024 DEC Bronze Finalist
+    1011046,//DC 2025 MAR Gold Finalist
+    1011047,//DC 2025 MAR Silver Finalist
+    1011048,//DC 2025 MAR Bronze Finalist
     1012001,//X-Krawler Synaphysis
     1012002,//Mekk-Knight Spectrum Supreme
     1012003,//Knightmare Gryphon
@@ -502,6 +506,7 @@
     1031010,//Goblin Circus
     1031011,//Flock Together
     1031012,//Sky Striker Ace - Raye
+    1031014,//Detonating Kuriboh
     1032001,//Festive Ornament
     1032002,//Celebration of Spring Breeze
     1032003,//Tropical Seaside
@@ -620,6 +625,7 @@
     1070102,//Aluber the Dogmatic
     1070103,//Fiendsmith
     1070104,//Kochobo's Hinamatsuri
+    1070105,//Blue-Eyes Ultimate Spirit Dragon
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -668,6 +674,7 @@
     1073009,//WCS 2024 Party Favor
     1073010,//DC 2024 SEP Celebration
     1073011,//DC 2024 DEC Celebration
+    1073012,//DC 2025 MAR Celebration
     1075001,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
   ],
   "DECK_CASE": [
@@ -865,6 +872,7 @@
     1111040,//Gunkan Sushipyard Seaside Supper Spot
     1111043,//Tales of the White Forest
     1111045,//Madolche Chickolates
+    1111048,//LIGHT
     1111057,//Shield of the Millennium Dynasty
     1112001,//Colosseum
     1112002,//WCS
@@ -964,6 +972,7 @@
     1130060,//The Unstoppable Exodia Incarnate
     1130061,//Sky Striker Ace - Raye
     1130063,//Dogmatika Encounter
+    1130064,//Majesty of the White Dragons
     1130070,//Elemental HERO Neos
     1130071,//Sky Striker Maneuver - Scissors Cross
   ],

@@ -1,4 +1,4 @@
-// Client version 2.2.1
+// Client version 2.2.2
 // This file is generated using the 'updatediff' command in YgoMasterClient. This information is used to determine changes between client versions which impact YgoMaster.
 // Run the command, diff against the old file, and use the changes to update code.
 

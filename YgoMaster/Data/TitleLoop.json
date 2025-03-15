@@ -1,9 +1,6 @@
 {
   "logos": [
-    {
-      "p": "Images/SplashLogo/OCG25thLogo",
-      "bg": "000000"
-    }
+    
   ],
   "scenarios": [
     "00020004",
