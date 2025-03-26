@@ -614,7 +614,8 @@ namespace YgoMasterClient
                                 }
                                 break;
                             case DuelViewType.RunDialog:
-                                if (pvpEngineState.RunDialogUser == MyID)
+                                // 1 = YgomGame.Duel.Engine.DialogType.Info
+                                if (pvpEngineState.RunDialogUser == MyID || pvpEngineState.Param1 == 1)
                                 {
                                     goto default;
                                 }
