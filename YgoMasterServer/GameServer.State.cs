@@ -276,6 +276,10 @@ namespace YgoMaster
         /// Forces the deck list to be sorted alphabetically
         /// </summary>
         public bool DeckListAlphabetical;
+        /// <summary>
+        /// Forces the deck list to be sorted by deck box then alphabetically
+        /// </summary>
+        public bool DeckListByBoxThenAlphabetical;
 
         void LoadSettings()
         {
@@ -414,6 +418,7 @@ namespace YgoMaster
             DisableDeckValidation = Utils.GetValue<bool>(values, "DisableDeckValidation");
             DontUpdateDeckEditTime = Utils.GetValue<bool>(values, "DontUpdateDeckEditTime");
             DeckListAlphabetical = Utils.GetValue<bool>(values, "DeckListAlphabetical");
+            DeckListByBoxThenAlphabetical = Utils.GetValue<bool>(values, "DeckListByBoxThenAlphabetical");
             TradeAllowOtherPlayerToAddYourCards = Utils.GetValue<bool>(values, "TradeAllowOtherPlayerToAddYourCards");
             TradeAllowOtherPlayerToRemoveYourCards = Utils.GetValue<bool>(values, "TradeAllowOtherPlayerToRemoveYourCards");
             TradeEnterRoomRequestDelayInSeconds = Utils.GetValue<float>(values, "TradeEnterRoomRequestDelayInSeconds");
@@ -1525,10 +1530,7 @@ namespace YgoMaster
                     LoadDeck(player, file);
                 }
             }
-            if (DeckListAlphabetical)
-            {
-                SortDecksAlphabetically(player);
-            }
+            SortDecks(player);
             player.Duel.SelectedDeckFromDictionary(Utils.GetDictionary(data, "SelectedDeck"));
 
             if (MultiplayerEnabled)
@@ -1601,14 +1603,28 @@ namespace YgoMaster
             }
         }
 
-        void SortDecksAlphabetically(Player player, GameServerWebRequest request = null)
+        void SortDecks(Player player, GameServerWebRequest request = null)
         {
-            int et = 1;
-            foreach (DeckInfo deck in player.Decks.Values.OrderByDescending(x => x.Name))
+            bool sorted = false;
+            if (DeckListAlphabetical)
             {
-                deck.TimeEdited = et++;
+                sorted = true;
+                int et = 1;
+                foreach (DeckInfo deck in player.Decks.Values.OrderByDescending(x => x.Name))
+                {
+                    deck.TimeEdited = et++;
+                }
             }
-            if (request != null)
+            if (DeckListByBoxThenAlphabetical)
+            {
+                sorted = true;
+                int et = 1;
+                foreach (DeckInfo deck in player.Decks.Values.OrderByDescending(x => x.Accessory.Box).ThenByDescending(x => x.Name))
+                {
+                    deck.TimeEdited = et++;
+                }
+            }
+            if (request != null && sorted)
             {
                 Dictionary<string, object> deck = request.GetOrCreateDictionary("Deck");
                 Dictionary<string, object> list = Utils.GetOrCreateDictionary(deck, "list");

@@ -28,6 +28,7 @@
     "DisableDeckValidation": false,
     "DontUpdateDeckEditTime": false,
     "DeckListAlphabetical": false,
+    "DeckListByBoxThenAlphabetical": false,
     "ShowTopics": true,
     "DeckSlots": 999,
     "UnlockAllCards": false,// 3x of every card (STYLE: Normal)

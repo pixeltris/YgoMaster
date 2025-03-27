@@ -117,10 +117,7 @@ namespace YgoMaster
             {
                 deck.TimeEdited = Utils.GetEpochTime();
             }
-            if (DeckListAlphabetical)
-            {
-                SortDecksAlphabetically(request.Player, request);
-            }
+            SortDecks(request.Player, request);
             SaveDeck(deck);
             WriteDeck(request, deck.Id);
             WriteDeckList(request, deck.Id);
@@ -153,6 +150,10 @@ namespace YgoMaster
                         }
                     }
                     deck.Accessory.Box = value;
+                    if (DeckListByBoxThenAlphabetical)
+                    {
+                        SortDecks(request.Player, request);
+                    }
                 }
                 if (Utils.TryGetValue(args, "protector", out value))
                 {
@@ -307,6 +308,10 @@ namespace YgoMaster
                                 break;
                             case ItemID.Category.DECK_CASE:
                                 deck.Accessory.Box = value;
+                                if (DeckListByBoxThenAlphabetical)
+                                {
+                                    SortDecks(request.Player, request);
+                                }
                                 break;
                             case ItemID.Category.PROTECTOR:
                                 deck.Accessory.Sleeve = value;
