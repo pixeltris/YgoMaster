@@ -2690,7 +2690,7 @@ namespace YgoMaster
             {
                 packShop[secretPackShopItem.Key] = secretPackShopItem.Value;
             }
-            int[] secretPackIds = packShop.Keys.OrderBy(x => x).ToArray();
+            int[] secretPackIds = packShopSecretsOnly.Keys.OrderBy(x => x).ToArray();
             for (int i = 0; i < secretPackIds.Length - 1; i++)
             {
                 int secretPackId = secretPackIds[i];

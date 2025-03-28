@@ -194,6 +194,8 @@
     1010095,//Fiendsmith Engraver
     1010096,//Synchro Fusionist
     1010097,//Spirit Illusion
+    1010098,//Performage Plushfire
+    1010100,//Silent Magician LV8
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -305,6 +307,7 @@
     1012063,//Eldlixir of White Destiny
     1012064,//Ally of Justice Cosmic Gateway
     1012065,//Ally Mind
+    1012066,//Mist Valley Thunder Lord
     1012067,//Skull Servant
     1012068,//Dominant Expansionist Empire
     1012069,//Sky Striker Ace - Roze
@@ -626,6 +629,11 @@
     1070103,//Fiendsmith
     1070104,//Kochobo's Hinamatsuri
     1070105,//Blue-Eyes Ultimate Spirit Dragon
+    1070106,//Neverending Nightmare Absorber
+    1070107,//Red-Eyes Black Fullmetal Dragon
+    1070108,//Performage Trapeze High Magician
+    1070110,//Tearlaments Kitkallos
+    1070111,//Traptrix Rafflesia
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -656,6 +664,7 @@
     1071028,//Naturia Leodrake
     1071029,//Fabled Leviathan
     1071030,//Ally of Justice Field Marshal
+    1071031,//Mist Valley Apex Avian
     1071032,//Skull Servant
     1071033,//Sky Striker Ace - Raye
     1072001,//Sky Striker Conversion: Flaming Wings of Destruction
@@ -806,6 +815,7 @@
     1101013,//Foolish Burial
     1101014,//Soul-Absorbing Bone Tower
     1101016,//Magical Thorn
+    1101017,//Time Machine
     1101019,//Dragon Capture Jar
     1101020,//Opening of the Spirit Gates
     1101025,//Fire King Sanctuary
@@ -870,6 +880,7 @@
     1111038,//Rikka
     1111039,//Barrier of the Voiceless Voice
     1111040,//Gunkan Sushipyard Seaside Supper Spot
+    1111041,//Shrine of Mist Valley
     1111043,//Tales of the White Forest
     1111045,//Madolche Chickolates
     1111048,//LIGHT
@@ -973,8 +984,11 @@
     1130061,//Sky Striker Ace - Raye
     1130063,//Dogmatika Encounter
     1130064,//Majesty of the White Dragons
+    1130066,//Dominus Purge
+    1130067,//Dominus Impulse
     1130070,//Elemental HERO Neos
     1130071,//Sky Striker Maneuver - Scissors Cross
+    1130072,//Traptrix Sera
   ],
   "PACK_TICKET": [
     1140001,//Legacy Pack ticket
