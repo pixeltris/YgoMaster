@@ -81,6 +81,7 @@
     1001029,//Crystal Beast Ruby Carbuncle
     1001030,//Blaze Accelerator
     1001031,//Ryko, Lightsworn Hunter
+    1001032,//King's Sarcophagus
     1002001,//Soccer Ball
     1002002,//Basketball
     1002003,//Record Player
@@ -195,6 +196,7 @@
     1010096,//Synchro Fusionist
     1010097,//Spirit Illusion
     1010098,//Performage Plushfire
+    1010099,//Like the Diabell
     1010100,//Silent Magician LV8
     1011001,//Soccer Ball
     1011002,//Trophy
@@ -497,6 +499,7 @@
     1030031,//Ally of Justice Cosmic Gateway
     1030032,//White Frame
     1030033,//Yellow & Lime Frame
+    1030034,//Blue & Purple Frame
     1031001,//The Path of the Blue Sky Striker
     1031002,//The Path of the Red Sky Striker
     1031003,//Magic Cylinder
@@ -509,6 +512,7 @@
     1031010,//Goblin Circus
     1031011,//Flock Together
     1031012,//Sky Striker Ace - Raye
+    1031013,//Mirror Force
     1031014,//Detonating Kuriboh
     1032001,//Festive Ornament
     1032002,//Celebration of Spring Breeze
@@ -632,8 +636,10 @@
     1070106,//Neverending Nightmare Absorber
     1070107,//Red-Eyes Black Fullmetal Dragon
     1070108,//Performage Trapeze High Magician
+    1070109,//Full Armored Dark Knight Lancer
     1070110,//Tearlaments Kitkallos
     1070111,//Traptrix Rafflesia
+    1070112,//RGB Rainbowlution
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -761,6 +767,7 @@
     1090023,//Pressured Planet Wraitsoth
     1090024,//Ursarctic Big Dipper
     1090025,//Blue-Eyes Mausoleum
+    1090026,//Forest of Cherry Pink
     1090028,//Forest of Endless White
     1090030,//Forest of the Traptrix
     1090031,//Ruins of the Sinful Spoils
@@ -795,6 +802,7 @@
     1100023,//Pressured Planet Wraitsoth
     1100024,//Ursarctic Big Dipper
     1100025,//Blue-Eyes Mausoleum
+    1100026,//Forest of Cherry Pink
     1100028,//Forest of Endless White
     1100030,//Forest of the Traptrix
     1100031,//Ruins of the Sinful Spoils
@@ -819,7 +827,9 @@
     1101019,//Dragon Capture Jar
     1101020,//Opening of the Spirit Gates
     1101025,//Fire King Sanctuary
+    1101032,//Centur-Ion Emeth VI
     1101034,//Kochobo's Hinamatsuri
+    1101035,//Floral Crown
     1102001,//Colosseum
     1102002,//WCS
   ],
@@ -849,6 +859,7 @@
     1110023,//Pressured Planet Wraitsoth
     1110024,//Ursarctic Big Dipper
     1110025,//Blue-Eyes Mausoleum
+    1110026,//Forest of Cherry Pink
     1110028,//Forest of Endless White
     1110030,//Forest of the Traptrix
     1110031,//Ruins of the Sinful Spoils
@@ -986,6 +997,8 @@
     1130064,//Majesty of the White Dragons
     1130066,//Dominus Purge
     1130067,//Dominus Impulse
+    1130068,//Primite Howl
+    1130069,//Goblin Bikers Gone Wild
     1130070,//Elemental HERO Neos
     1130071,//Sky Striker Maneuver - Scissors Cross
     1130072,//Traptrix Sera
