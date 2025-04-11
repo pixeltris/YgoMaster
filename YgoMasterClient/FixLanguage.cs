@@ -73,6 +73,8 @@ namespace YgoMasterClient
                         break;
                     }
                 }
+                // NOTE: If this doesn't work out in all cases check for AssetHelper.FileExists("Card/Images/Illust/ocg/20555") (Cyber Angel Benten)
+                YgomSystem.Utility.ClientWork.UpdateValue("$.Persistence.System.illust", ncg.ContainsKey("ocg") ? "ocg" : "tcg");
             }
             catch
             {
