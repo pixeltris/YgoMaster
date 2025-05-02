@@ -90,6 +90,8 @@ namespace YgoMasterClient
         public static bool DontAutoRunServerExe;
         public static bool ReflectionValidatorDump;
         public static bool ReflectionValidatorValidate;
+        public static bool DisableSoloVisualNovel;
+        public static bool DisableSoloVisualNovelNextButtonSound;
 
         public static string FilePath
         {
@@ -208,6 +210,8 @@ namespace YgoMasterClient
             DontAutoRunServerExe = Utils.GetValue<bool>(data, "DontAutoRunServerExe");
             ReflectionValidatorDump = Utils.GetValue<bool>(data, "ReflectionValidatorDump");
             ReflectionValidatorValidate = Utils.GetValue<bool>(data, "ReflectionValidatorValidate");
+            DisableSoloVisualNovel = Utils.GetValue<bool>(data, "DisableSoloVisualNovel");
+            DisableSoloVisualNovelNextButtonSound = Utils.GetValue<bool>(data, "DisableSoloVisualNovelNextButtonSound");
 
             return LoadText();
         }

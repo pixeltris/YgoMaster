@@ -126,14 +126,19 @@ namespace IL2CPP
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
             public extern static IntPtr il2cpp_class_get_declaring_type(IntPtr klass);
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+            [return: MarshalAs(UnmanagedType.I1)]
             public extern static bool il2cpp_class_has_attribute(IntPtr klass, IntPtr attr_class);
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+            [return: MarshalAs(UnmanagedType.I1)]
             public extern static bool il2cpp_class_is_enum(IntPtr klass);
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
             public extern static int il2cpp_class_get_type_token(IntPtr method);
 
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
             public extern static IntPtr il2cpp_class_from_type(IntPtr type);
+            [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+            [return: MarshalAs(UnmanagedType.I1)]
+            public extern static bool il2cpp_class_is_subclass_of(IntPtr klass, IntPtr klassc, [MarshalAs(UnmanagedType.I1)] bool check_interfaces);
         }
 
         public static class Property
@@ -170,6 +175,7 @@ namespace IL2CPP
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
             public extern static int il2cpp_method_get_token(IntPtr method);
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+            [return: MarshalAs(UnmanagedType.I1)]
             public extern static bool il2cpp_method_has_attribute(IntPtr method, IntPtr attr_class);
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
             public extern static IntPtr il2cpp_method_get_class(IntPtr method);
@@ -204,6 +210,7 @@ namespace IL2CPP
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
             public extern static int il2cpp_field_get_offset(IntPtr field);
             [DllImport("GameAssembly", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+            [return: MarshalAs(UnmanagedType.I1)]
             public extern static bool il2cpp_field_has_attribute(IntPtr field, IntPtr attr_class);
 
             public static T il2cpp_field_get_value_object_ref<T>(IntPtr field, IntPtr obj) where T : struct

@@ -638,6 +638,20 @@ namespace YgoMasterClient
             height = methodGetHeight.Invoke(texture).GetValueRef<int>();
         }
 
+        public static void GetSpriteSize(IntPtr sprite, out int width, out int height)
+        {
+            IntPtr texture = GetSpriteTexture(sprite);
+            if (texture != IntPtr.Zero)
+            {
+                GetTextureSize(texture, out width, out height);
+            }
+            else
+            {
+                width = 0;
+                height = 0;
+            }
+        }
+
         static bool TryLoadCustomFile(IntPtr thisPtr, IntPtr pathPtr, IntPtr systemTypeInstance, IntPtr completeHandler, bool disableErrorNotify, out uint result, bool loadImmediate)
         {
             result = 0;
@@ -694,6 +708,10 @@ namespace YgoMasterClient
                     assetType = AssetType.Protector;
                 }
                 customAssetPath = Path.Combine(Program.ClientDataDir, loadPath + extension);
+                if (extension == ".png" && !File.Exists(customAssetPath))
+                {
+                    customAssetPath = Path.ChangeExtension(customAssetPath, ".jpg");
+                }
             }
             if (customAssetPath != null && File.Exists(customAssetPath))
             {
@@ -959,6 +977,7 @@ namespace YgoMasterClient
 
             Rect rect = default(Rect);
             bool mipChain = true;
+            bool setPointFilterMode = false;
 
             // Card packs have some weird artifacting if the sprite isn't the correct size
             // NOTE: Explicitly check for "CardPackTex" to allow for custom images which ignore this code
@@ -973,6 +992,11 @@ namespace YgoMasterClient
                     rect = new Rect(7.292893f, 0, 496.4142f, 1024);
                 }
                 mipChain = false;
+            }
+            if (loadPath.StartsWith("LinkEvolution/"))
+            {
+                // Prevent blurry images. NOTE: Removed as this screws up when scaling the images
+                //setPointFilterMode = true;
             }
 
             bool hasSprite = true;
@@ -993,6 +1017,11 @@ namespace YgoMasterClient
 
                 string assetName = Path.GetFileNameWithoutExtension(customAssetPath);
                 IntPtr newTextureAsset = TextureFromPNG(customAssetPath, assetName, mipChain);
+                if (setPointFilterMode)
+                {
+                    int filterMode = FilterMode_Point;
+                    methodSetFilterMode.Invoke(newTextureAsset, new IntPtr[] { new IntPtr(&filterMode) });
+                }
                 assetsArray[0] = newTextureAsset;
 
                 if (hasSprite)
@@ -1025,6 +1054,12 @@ namespace YgoMasterClient
                     }
                     else
                     {
+                        if (setPointFilterMode)
+                        {
+                            int filterMode = FilterMode_Point;
+                            methodSetFilterMode.Invoke(texture, new IntPtr[] { new IntPtr(&filterMode) });
+                        }
+
                         //Console.WriteLine("Found. Refs: " + methodGetRefCount.Invoke(resourcePtr).GetValueRef<int>());
                         IL2Array<IntPtr> assetsArray = new IL2Array<IntPtr>(hasSprite ? 2 : 1, objectClassInfo);
                         if (assetsArray.ptr == IntPtr.Zero)
@@ -1104,16 +1139,17 @@ namespace YgoMasterClient
 
         public static void Update()
         {
-            if (asyncLoadTextureRequests.Count > 0)
+            /*if (asyncLoadTextureRequests.Count > 0)
             {
                 Console.WriteLine("asyncLoadTextureRequests: " + asyncLoadTextureRequests.Count);
             }
             if (assetLoadRequests.Count > 0)
             {
                 Console.WriteLine("assetLoadRequests: " + assetLoadRequests.Count);
-            }
+            }*/
 
-            for (int i = asyncLoadTextureRequests.Count - 1; i >= 0; i--)
+            const int maxPerFrame = 2;
+            for (int i = asyncLoadTextureRequests.Count - 1, j = 0; i >= 0; i--)
             {
                 AsyncLoadTextureRequest request = asyncLoadTextureRequests[i];
                 int result = webRequestGetResult.Invoke(request.WebRequest).GetValueRef<int>();
@@ -1125,7 +1161,11 @@ namespace YgoMasterClient
                     request.Callback(texture);
                     webRequestDispose.Invoke(request.WebRequest);
                     asyncLoadTextureRequests.RemoveAt(i);
-                    break;// Limit how many you do per frame
+                    j++;
+                    if (j >= maxPerFrame)
+                    {
+                        break;// Limit how many you do per frame
+                    }
                 }
             }
 
@@ -1797,6 +1837,12 @@ namespace YgoMasterClient
             customAssetLoadRequests.Remove(path);
         }
 
+        public static uint Load(string path, IntPtr completeHandler)
+        {
+            IntPtr mgr = fieldResourceManagerInstance.GetValue().ptr;
+            return Load(mgr, new IL2String(path).ptr, IntPtr.Zero, completeHandler, false);
+        }
+
         static uint Load(IntPtr thisPtr, IntPtr path, IntPtr systemTypeInstance, IntPtr completeHandler, csbool disableErrorNotify)
         {
             if (ClientSettings.AssetHelperLog && path != IntPtr.Zero)
@@ -1837,6 +1883,23 @@ namespace YgoMasterClient
         {
             IntPtr mgr = fieldResourceManagerInstance.GetValue().ptr;
             LoadImmediate(mgr, new IL2String(path).ptr, IntPtr.Zero, IntPtr.Zero, false);
+            IL2Object result = methodGetAsset.Invoke(mgr, new IntPtr[] { new IL2String(path).ptr, IntPtr.Zero });
+            return result != null ? result.ptr : IntPtr.Zero;
+        }
+
+        public static IntPtr LoadImmediateAssets(string path)
+        {
+            IntPtr mgr = fieldResourceManagerInstance.GetValue().ptr;
+            LoadImmediate(mgr, new IL2String(path).ptr, IntPtr.Zero, IntPtr.Zero, false);
+            IntPtr workPathPtr = IntPtr.Zero;
+            IntPtr resourcePtr = hookGetResource.Original(mgr, new IL2String(path).ptr, (IntPtr)(&workPathPtr));
+            IL2Object result = methodGetAssets.Invoke(resourcePtr, new IntPtr[] { new IL2String(path).ptr, IntPtr.Zero });
+            return result != null ? result.ptr : IntPtr.Zero;
+        }
+
+        public static IntPtr GetAsset(string path)
+        {
+            IntPtr mgr = fieldResourceManagerInstance.GetValue().ptr;
             IL2Object result = methodGetAsset.Invoke(mgr, new IntPtr[] { new IL2String(path).ptr, IntPtr.Zero });
             return result != null ? result.ptr : IntPtr.Zero;
         }

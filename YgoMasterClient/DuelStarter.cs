@@ -116,6 +116,9 @@ namespace YgomGame.Solo
         delegate void Del_SelectTurn(IntPtr thisPtr);
         static Hook<Del_SelectTurn> hookSelectTurn;
 
+        delegate void Del_OnCreatedView(IntPtr thisPtr);
+        static Hook<Del_OnCreatedView> hookOnCreatedView;
+
         static SoloStartProductionViewController()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
@@ -124,6 +127,7 @@ namespace YgomGame.Solo
             finalStepValue = classInfo.GetNestedType("Step").GetField("Final").GetValue().GetValueRef<int>();
             methodDispFirstorSecond = classInfo.GetMethod("DispFirstorSecond");
             hookSelectTurn = new Hook<Del_SelectTurn>(SelectTurn, classInfo.GetMethod("SelectTurn"));
+            hookOnCreatedView = new Hook<Del_OnCreatedView>(OnCreatedView, classInfo.GetMethod("OnCreatedView"));
         }
 
         static void SelectTurn(IntPtr thisPtr)
@@ -149,7 +153,19 @@ namespace YgomGame.Solo
                     return;
                 }
             }
+
+            if (SoloVisualNovel.Run(thisPtr))
+            {
+                return;
+            }
             hookSelectTurn.Original(thisPtr);
+        }
+
+        static void OnCreatedView(IntPtr thisPtr)
+        {
+            SoloVisualNovel.SetJsonFileNames();
+            SoloVisualNovel.Init();
+            hookOnCreatedView.Original(thisPtr);
         }
     }
 }
@@ -2269,6 +2285,27 @@ namespace UnityEngine
             return null;
         }
 
+        public static IntPtr[] GetComponents(IntPtr thisPtr, IntPtr klass)
+        {
+            List<IntPtr> components = new List<IntPtr>();
+            IL2Object result = methodGetComponentsTObject.Invoke(thisPtr, new IntPtr[] { methodGetComponentsTObject.ptr });
+            if (result != null)
+            {
+                IL2Array<IntPtr> array = new IL2Array<IntPtr>(result.ptr);
+                int len = array.Length;
+                for (int i = 0; i < len; i++)
+                {
+                    IntPtr obj = array[i];
+                    IntPtr objKlass = Import.Object.il2cpp_object_get_class(obj);
+                    if (objKlass == klass || Import.Class.il2cpp_class_is_subclass_of(objKlass, klass, false))
+                    {
+                        components.Add(obj);
+                    }
+                }
+            }
+            return components.ToArray();
+        }
+
         public static IntPtr GetComponent(IntPtr thisPtr, IntPtr type)
         {
             IL2Object result = methodGetComponent.Invoke(thisPtr, new IntPtr[] { type });
@@ -2433,10 +2470,13 @@ namespace UnityEngine
         static IL2Method methodSetParent;
         static IL2Method methodGetPosition;
         static IL2Method methodSetPosition;
+        static IL2Method methodGetLocalPosition;
         static IL2Method methodSetLocalPosition;
+        static IL2Method methodGetLocalScale;
         static IL2Method methodSetLocalScale;
         static IL2Method methodGetSiblingIndex;
         static IL2Method methodSetSiblingIndex;
+        static IL2Method methodSetAsLastSibling;
 
         static IL2Class serializedFieldClassInfo;
 
@@ -2450,10 +2490,13 @@ namespace UnityEngine
             methodSetParent = classInfo.GetProperty("parent").GetSetMethod();
             methodGetPosition = classInfo.GetProperty("position").GetGetMethod();
             methodSetPosition = classInfo.GetProperty("position").GetSetMethod();
+            methodGetLocalPosition = classInfo.GetProperty("localPosition").GetGetMethod();
             methodSetLocalPosition = classInfo.GetProperty("localPosition").GetSetMethod();
+            methodGetLocalScale = classInfo.GetProperty("localScale").GetGetMethod();
             methodSetLocalScale = classInfo.GetProperty("localScale").GetSetMethod();
             methodGetSiblingIndex = classInfo.GetMethod("GetSiblingIndex");
             methodSetSiblingIndex = classInfo.GetMethod("SetSiblingIndex");
+            methodSetAsLastSibling = classInfo.GetMethod("SetAsLastSibling");
 
             serializedFieldClassInfo = Assembler.GetAssembly("UnityEngine.CoreModule").GetClass("SerializeField");
         }
@@ -2491,9 +2534,21 @@ namespace UnityEngine
             methodSetPosition.Invoke(thisPtr, new IntPtr[] { new IntPtr(&position) });
         }
 
+        public static Vector3 GetLocalPosition(IntPtr thisPtr)
+        {
+            IL2Object result = methodGetLocalPosition.Invoke(thisPtr);
+            return result != null ? result.GetValueRef<Vector3>() : default(Vector3);
+        }
+
         public static void SetLocalPosition(IntPtr thisPtr, Vector3 position)
         {
             methodSetLocalPosition.Invoke(thisPtr, new IntPtr[] { new IntPtr(&position) });
+        }
+
+        public static Vector3 GetLocalScale(IntPtr thisPtr)
+        {
+            IL2Object result = methodGetLocalScale.Invoke(thisPtr);
+            return result != null ? result.GetValueRef<Vector3>() : default(Vector3);
         }
 
         public static void SetLocalScale(IntPtr thisPtr, Vector3 scale)
@@ -2509,6 +2564,11 @@ namespace UnityEngine
         public static void SetSiblingIndex(IntPtr thisPtr, int index)
         {
             methodSetSiblingIndex.Invoke(thisPtr, new IntPtr[] { new IntPtr(&index) });
+        }
+
+        public static void SetAsLastSibling(IntPtr thisPtr)
+        {
+            methodSetAsLastSibling.Invoke(thisPtr);
         }
 
         public static void Dump(IntPtr transform, int depth = 0)

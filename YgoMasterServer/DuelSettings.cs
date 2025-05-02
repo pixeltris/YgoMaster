@@ -55,6 +55,10 @@ namespace YgoMaster
         public List<string> PreserveP1ForLoanerDeck { get; private set; }
         public List<string> PreserveP1ForMyDeck { get; private set; }
 
+        // Used by SoloVisualNovel.cs (LinkEvolution dialogs)
+        public string dialog_intro;
+        public string dialog_outro;
+
         static string[] ignoreZero = { "life", "hnum" };
 
         // Use the same names as in the packet (using reflection here to reduce the amount of manual work)
@@ -724,7 +728,9 @@ namespace YgoMaster
                 { "sleeve", sleeve },
                 { "mat", mat },
                 { "duel_object", duel_object },
-                { "avatar_home", avatar_home }
+                { "avatar_home", avatar_home },
+                { "dialog_intro", dialog_intro },
+                { "dialog_outro", dialog_outro }
             };
             return result;
         }

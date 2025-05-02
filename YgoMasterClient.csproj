@@ -61,6 +61,7 @@
     <Compile Include="YgoMasterClient\IL2CPP\ReflectionValidator.cs" />
     <Compile Include="YgoMasterClient\FixLanguage.cs" />
     <Compile Include="YgoMasterClient\SimpleProxy.cs" />
+    <Compile Include="YgoMasterClient\SoloVisualNovel.cs" />
     <Compile Include="YgoMasterClient\SoundInterceptor.cs" />
     <Compile Include="YgoMasterClient\TradeUtils.cs" />
     <Compile Include="YgoMasterClient\ClientSettings.Text.cs" />

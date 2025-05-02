@@ -3270,6 +3270,8 @@ namespace YgoMaster
                         duelData["icon"] = new List<int>() { 0, ItemID.GetRandomId(rand, ItemID.Category.ICON) };
                         duelData["icon_frame"] = new List<int>() { 0, ItemID.GetRandomId(rand, ItemID.Category.ICON_FRAME) };
                         duelData["avatar"] = new List<int>() { 0, ItemID.GetRandomId(rand, ItemID.Category.AVATAR) };
+                        duelData["dialog_intro"] = Utils.GetValue<string>(duelOverviewData.Value, "dialogIntro");
+                        duelData["dialog_outro"] = Utils.GetValue<string>(duelOverviewData.Value, "dialogOutro");
                         Dictionary<string, object> duelDataContainer = new Dictionary<string, object>();
                         duelDataContainer["Duel"] = duelData;
                         string outputDuelFileName = Path.Combine(soloDuelsDir, chapterId + ".json");

@@ -27,7 +27,11 @@ namespace YgoMasterClient
             Func = hook;
             FuncPtr = Marshal.GetFunctionPointerForDelegate((Delegate)(object)hook);
             OriginalPtr = IntPtr.Zero;
-            PInvoke.WL_CreateHook(address, FuncPtr, ref OriginalPtr);
+            int result = PInvoke.WL_CreateHook(address, FuncPtr, ref OriginalPtr);
+            if (result == 3)
+            {
+                throw new Exception("Hook already exists for " + hook);
+            }
             Original = (T)(object)Marshal.GetDelegateForFunctionPointer(OriginalPtr, typeof(T));
         }
     }

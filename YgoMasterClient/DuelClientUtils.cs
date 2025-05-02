@@ -77,13 +77,18 @@ namespace YgomGame.Duel
         static IL2Field fieldInstance;
         static IL2Field fieldStep;
         static IL2Field fieldReplayRealtime;
+        static IL2Property propertyEffectWorker;
         static IL2Method methodGetDuelHUD;
         static IL2Method methodSetDuelSpeed;
+
+        static IL2Property RunEffectWorker_isRetryRequired;
 
         delegate void Del_InitEngineStep(IntPtr thisPtr);
         static Hook<Del_InitEngineStep> hookInitEngineStep;
         delegate void Del_EvalEachSteps(IntPtr thisPtr);
         static Hook<Del_EvalEachSteps> hookEvalEachSteps;
+        delegate void Del_EndStep(IntPtr thisPtr);
+        static Hook<Del_EndStep> hookEndStep;
 
         public static IntPtr Instance
         {
@@ -149,13 +154,19 @@ namespace YgomGame.Duel
             fieldInstance = classInfo.GetField("instance");
             fieldStep = classInfo.GetField("m_Step");
             fieldReplayRealtime = classInfo.GetField("replayRealtime");
+            propertyEffectWorker = classInfo.GetProperty("effectWorker");
             methodGetDuelHUD = classInfo.GetProperty("duelHUD").GetGetMethod();
             hookInitEngineStep = new Hook<Del_InitEngineStep>(InitEngineStep, classInfo.GetMethod("InitEngineStep"));
             hookEvalEachSteps = new Hook<Del_EvalEachSteps>(EvalEachSteps, classInfo.GetMethod("EvalEachSteps"));
+            hookEndStep = new Hook<Del_EndStep>(EndStep, classInfo.GetMethod("EndStep"));
+
+            RunEffectWorker_isRetryRequired = assembly.GetClass("RunEffectWorker", "YgomGame.Duel").GetProperty("isRetryRequired");
         }
 
         static void InitEngineStep(IntPtr thisPtr)
         {
+            SoloVisualNovel.IsRetryDuel = false;
+            doneInitEngineStep = true;
             hookInitEngineStep.Original(thisPtr);
             DuelDll.OnInitEngineStep();
         }
@@ -168,6 +179,30 @@ namespace YgomGame.Duel
                 return;
             }
             hookEvalEachSteps.Original(thisPtr);
+        }
+
+        static bool doneInitEngineStep;
+        static void EndStep(IntPtr thisPtr)
+        {
+            if (doneInitEngineStep)
+            {
+                doneInitEngineStep = false;
+                IntPtr runEffectWorker = propertyEffectWorker.GetGetMethod().Invoke(thisPtr).ptr;
+                SoloVisualNovel.IsRetryDuel = RunEffectWorker_isRetryRequired.GetGetMethod().Invoke(runEffectWorker).GetValueRef<csbool>();
+                bool isWinDuel = YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Duel.result") != 0;
+                if (!SoloVisualNovel.IsRetryDuel && isWinDuel)
+                {
+                    YgomGame.Tutorial.CardFlyingViewController.IsHacked = true;
+                    YgomGame.Tutorial.CardFlyingViewController.duelClient = thisPtr;
+                    IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
+                    YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "Tutorial/CardFlying");
+                }
+            }
+            if (YgomGame.Tutorial.CardFlyingViewController.IsHacked || YgomGame.Tutorial.CardFlyingViewController.hackedInstance != IntPtr.Zero)
+            {
+                return;
+            }
+            hookEndStep.Original(thisPtr);
         }
 
         public static void SetDuelSpeed(DuelSpeed duelSpeed)

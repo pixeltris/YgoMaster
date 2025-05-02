@@ -525,6 +525,14 @@ namespace YgoMasterClient
         /// How to fix this error:\ngithub.com/pixeltris/YgoMaster/blob/master/Docs/FileLoadError.md\n\n
         /// </summary>
         public static string CustomTextFileLoadErrorEx;
+        /// <summary>
+        /// Next
+        /// </summary>
+        public static string CustomTextVisualNovelNext;
+        /// <summary>
+        /// Skip
+        /// </summary>
+        public static string CustomTextVisualNovelSkip;
 
         static bool LoadText()
         {
@@ -683,6 +691,9 @@ namespace YgoMasterClient
             DuelSettings.DefaultNameCPU = Utils.GetValue<string>(data, "CustomTextDuelSettingsDefaultNameCPU");
 
             CustomTextFileLoadErrorEx = Utils.GetValue<string>(data, "CustomTextFileLoadErrorEx", "How to fix this error:\ngithub.com/pixeltris/YgoMaster/blob/master/Docs/FileLoadError.md\n\n");
+
+            CustomTextVisualNovelNext = Utils.GetValue<string>(data, "CustomTextVisualNovelNext");
+            CustomTextVisualNovelSkip = Utils.GetValue<string>(data, "CustomTextVisualNovelSkip");
 
             return true;
         }

@@ -67,6 +67,7 @@ namespace YgoMasterClient
             hookUpdate.Original(thisPtr);
             AssetHelper.Update();
             DuelEmoteHelper.Update();
+            YgomGame.Tutorial.CardFlyingViewController.Update();
 
             if (hasActionToRun || lastActionCheck < DateTime.UtcNow - TimeSpan.FromSeconds(2))
             {

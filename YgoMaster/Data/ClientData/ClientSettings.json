@@ -73,4 +73,6 @@
     "DontAutoRunServerExe": false,
     "ReflectionValidatorDump": false,
     "ReflectionValidatorValidate": false,
+    "DisableSoloVisualNovel": false,
+    "DisableSoloVisualNovelNextButtonSound": false,// The sound of the "Next" button being pressed constantly can be annoying. Use this to disable the sound
 }
