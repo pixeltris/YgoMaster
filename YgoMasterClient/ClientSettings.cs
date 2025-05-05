@@ -92,6 +92,7 @@ namespace YgoMasterClient
         public static bool ReflectionValidatorValidate;
         public static bool DisableSoloVisualNovel;
         public static bool DisableSoloVisualNovelNextButtonSound;
+        public static bool SoloRemoveDuelTutorials;
 
         public static string FilePath
         {
@@ -212,6 +213,7 @@ namespace YgoMasterClient
             ReflectionValidatorValidate = Utils.GetValue<bool>(data, "ReflectionValidatorValidate");
             DisableSoloVisualNovel = Utils.GetValue<bool>(data, "DisableSoloVisualNovel");
             DisableSoloVisualNovelNextButtonSound = Utils.GetValue<bool>(data, "DisableSoloVisualNovelNextButtonSound");
+            SoloRemoveDuelTutorials = Utils.GetValue<bool>(data, "SoloRemoveDuelTutorials");
 
             return LoadText();
         }

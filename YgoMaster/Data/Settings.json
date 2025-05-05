@@ -36,7 +36,6 @@
     "UnlockAllCardsHighestRarity": false,// 3x of every card (STYLE: N/R = Shine, UR/SR = Royal)
     "UnlockAllItems": false,// Gives every item in ItemID.json
     "UnlockAllSoloChapters": false,// Sets every solo chapter to complete
-    "SoloRemoveDuelTutorials": false,
     "SoloDisableNoShuffle": false,
     "SoloShowGateClearForAllSecretPacks": false,
     "SoloRewardsInDuelResult": false,

@@ -55,7 +55,6 @@ namespace YgoMaster
         bool UnlockAllCardsShine;
         bool UnlockAllItems;
         bool UnlockAllSoloChapters;
-        bool SoloRemoveDuelTutorials;
         bool SoloDisableNoShuffle;
         HashSet<int> DefaultItems;
         int DefaultGems;
@@ -406,7 +405,6 @@ namespace YgoMaster
             UnlockAllCardsShine = Utils.GetValue<bool>(values, "UnlockAllCardsShine");
             UnlockAllItems = Utils.GetValue<bool>(values, "UnlockAllItems");
             UnlockAllSoloChapters = Utils.GetValue<bool>(values, "UnlockAllSoloChapters");
-            SoloRemoveDuelTutorials = Utils.GetValue<bool>(values, "SoloRemoveDuelTutorials");
             SoloDisableNoShuffle = Utils.GetValue<bool>(values, "SoloDisableNoShuffle");
             SoloShowGateClearForAllSecretPacks = Utils.GetValue<bool>(values, "SoloShowGateClearForAllSecretPacks");
             SoloRewardsInDuelResult = Utils.GetValue<bool>(values, "SoloRewardsInDuelResult");

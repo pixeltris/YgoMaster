@@ -134,10 +134,6 @@ namespace YgoMaster
             {
                 duelSettings = new DuelSettings();
                 duelSettings.CopyFrom(ds);
-                if (SoloRemoveDuelTutorials)
-                {
-                    duelSettings.chapter = 0;
-                }
                 if (SoloDisableNoShuffle)
                 {
                     duelSettings.noshuffle = false;
