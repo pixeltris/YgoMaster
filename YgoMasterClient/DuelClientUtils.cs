@@ -264,7 +264,7 @@ namespace YgomGame.Duel
                 IntPtr obj = GameObject.FindGameObjectByPath(Component.GetGameObject(thisPtr), "DuelHUD(Clone).Root.ReplayControl.BG");
                 if (obj != IntPtr.Zero)
                 {
-                    IntPtr transform = GameObject.GetTranform(obj);
+                    IntPtr transform = GameObject.GetTransform(obj);
                     AssetHelper.Vector2 offsetMin = rectTransforOffsetMin.GetGetMethod().Invoke(transform).GetValueRef<AssetHelper.Vector2>();
                     AssetHelper.Vector2 offsetMax = rectTransforOffsetMax.GetGetMethod().Invoke(transform).GetValueRef<AssetHelper.Vector2>();
                     offsetMin.x -= ClientSettings.ReplayControlsXOffset;

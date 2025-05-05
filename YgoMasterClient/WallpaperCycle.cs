@@ -136,7 +136,7 @@ namespace YgoMasterClient
 
         static void PlayTween(IntPtr gameObject, string label)
         {
-            IntPtr parent = Component.GetGameObject(Transform.GetParent(Transform.GetParent(GameObject.GetTranform(gameObject))));
+            IntPtr parent = Component.GetGameObject(Transform.GetParent(Transform.GetParent(GameObject.GetTransform(gameObject))));
             bool includeChildren = false;
             bool wakeup = false;
             methodTargetPlayLabel.Invoke(new IntPtr[] { parent, new IL2String(label).ptr, new IntPtr(&includeChildren), new IntPtr(&wakeup) });

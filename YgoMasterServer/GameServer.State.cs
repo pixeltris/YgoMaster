@@ -3091,6 +3091,13 @@ namespace YgoMaster
 
             Utils.TryCreateDirectory(soloDuelsDir);
 
+            string dfymooText = "";
+            string dfymooFile = Path.Combine(dataDirectory, "ClientData", "LinkEvolution", "chars.dfymoo");
+            if (File.Exists(dfymooFile))
+            {
+                dfymooText = File.ReadAllText(dfymooFile).ToLower();
+            }
+
             StringBuilder soloStrings = new StringBuilder();
             Dictionary<string, object> data = new Dictionary<string, object>();
             Dictionary<string, object> masterData = new Dictionary<string, object>();
@@ -3294,6 +3301,24 @@ namespace YgoMaster
                         chapterData["unlock_id"] = 0;
                         chapterData["begin_sn"] = "";
                         chapterData["npc_id"] = 1;// Not sure if this value matter
+
+                        string char1 = Utils.GetValue<string>(duelOverviewData.Value, "char1");
+                        string char2 = Utils.GetValue<string>(duelOverviewData.Value, "char2");
+                        if (!string.IsNullOrEmpty(char1) && !string.IsNullOrEmpty(char2))
+                        {
+                            char1 += "_neutral";
+                            char2 += "_neutral";
+                            if (dfymooText.Contains(char1.ToLower()) && dfymooText.Contains(char2.ToLower()))
+                            {
+                                chapterData["p1_img"] = char1;
+                                chapterData["p2_img"] = char2;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Couldn't find char img for " + char1 + ", " + char2);
+                            }
+                        }
+
                         gateChapterData[chapterId.ToString()] = chapterData;
 
                         if (j == 0)

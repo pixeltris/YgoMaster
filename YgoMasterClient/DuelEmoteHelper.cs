@@ -276,7 +276,7 @@ namespace YgoMasterClient
             else
             {
                 IntPtr gameObj = GameObject.New();
-                IntPtr transform = GameObject.GetTranform(gameObj);
+                IntPtr transform = GameObject.GetTransform(gameObj);
                 UnityEngine.Transform.SetPosition(transform, pos);
 
                 bool isforui = false;

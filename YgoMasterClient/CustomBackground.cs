@@ -101,8 +101,8 @@ namespace YgoMasterClient
 
             IntPtr newObj = GameObject.New();
             UnityObject.SetName(newObj, name);
-            IntPtr newObjTransform = GameObject.GetTranform(newObj);
-            Transform.SetParent(newObjTransform, GameObject.GetTranform(targetObj));
+            IntPtr newObjTransform = GameObject.GetTransform(newObj);
+            Transform.SetParent(newObjTransform, GameObject.GetTransform(targetObj));
             Transform.SetSiblingIndex(newObjTransform, 0);
             Transform.SetLocalPosition(newObjTransform, new Vector3(0, 0, 0));
             Transform.SetLocalScale(newObjTransform, new Vector3(0.5f, 0.5f, 1));

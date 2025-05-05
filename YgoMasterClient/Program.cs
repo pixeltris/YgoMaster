@@ -325,6 +325,7 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(FixLanguage));
                 nativeTypes.Add(typeof(SoundInterceptor));
                 nativeTypes.Add(typeof(SoloVisualNovel));
+                nativeTypes.Add(typeof(SoloVisualNovelChapterView));
                 nativeTypes.Add(typeof(YgomGame.Tutorial.CardFlyingViewController));
                 nativeTypes.Add(typeof(YgomGame.Utility.ItemUtil));
                 nativeTypes.Add(typeof(YgomSystem.Utility.TextData));

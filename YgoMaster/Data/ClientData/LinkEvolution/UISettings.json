@@ -32,4 +32,6 @@
 	"CharacterTweenMoveDuration": 0.55,
 	"FadeInDuration": 0.4,
 	"FadeOutDuration": 0.3,
+	"ChapterSelectCharsOffsetY": 13,
+	"ChapterSelectDisableWallpaper": true
 }

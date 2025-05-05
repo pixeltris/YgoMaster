@@ -2186,6 +2186,7 @@ namespace UnityEngine
         static IL2Method methodInstantiate;
         static IL2Method methodInstantiate2;
         static IL2Method methodDestroy;
+        static IL2Method methodDontDestroyOnLoad;
 
         static UnityObject()
         {
@@ -2197,6 +2198,7 @@ namespace UnityEngine
             methodInstantiate = classInfo.GetMethod("Instantiate", x => x.GetParameters().Length == 1 && x.GetParameters()[0].Type.Name == classInfo.FullName);
             methodInstantiate2 = classInfo.GetMethod("Instantiate", x => x.GetParameters().Length == 2 && x.GetParameters()[0].Type.Name == classInfo.FullName);
             methodDestroy = classInfo.GetMethod("Destroy");
+            methodDontDestroyOnLoad = classInfo.GetMethod("DontDestroyOnLoad");
         }
 
         public static string GetName(IntPtr thisPtr)
@@ -2225,6 +2227,11 @@ namespace UnityEngine
         public static void Destroy(IntPtr obj, float t = 0)
         {
             methodDestroy.Invoke(new IntPtr[] { obj, new IntPtr(&t) });
+        }
+
+        public static void DontDestroyOnLoad(IntPtr obj)
+        {
+            methodDontDestroyOnLoad.Invoke(new IntPtr[] { obj });
         }
     }
 
@@ -2268,7 +2275,7 @@ namespace UnityEngine
             return result != null ? result.ptr : IntPtr.Zero;
         }
 
-        public static IntPtr GetTranform(IntPtr thisPtr)
+        public static IntPtr GetTransform(IntPtr thisPtr)
         {
             IL2Object result = methodGetTransform.Invoke(thisPtr);
             return result != null ? result.ptr : IntPtr.Zero;
@@ -2328,7 +2335,7 @@ namespace UnityEngine
                     return thisPtr;
                 }
             }
-            IntPtr transform = UnityEngine.GameObject.GetTranform(thisPtr);
+            IntPtr transform = UnityEngine.GameObject.GetTransform(thisPtr);
             int childCount = UnityEngine.Transform.GetChildCount(transform);
             int start = reverseSearch ? childCount - 1 : 0;
             int end = reverseSearch ? -1 : childCount;
@@ -2382,7 +2389,7 @@ namespace UnityEngine
 
         public static void DestroyChildObjects(IntPtr thisPtr)
         {
-            IntPtr transform = UnityEngine.GameObject.GetTranform(thisPtr);
+            IntPtr transform = UnityEngine.GameObject.GetTransform(thisPtr);
             int childCount = UnityEngine.Transform.GetChildCount(transform);
             for (int i = childCount - 1; i >= 0; i--)
             {
@@ -2395,7 +2402,7 @@ namespace UnityEngine
         public static List<IntPtr> GetChildren(IntPtr thisPtr)
         {
             List<IntPtr> result = new List<IntPtr>();
-            IntPtr transform = GameObject.GetTranform(thisPtr);
+            IntPtr transform = GameObject.GetTransform(thisPtr);
             int childCount = Transform.GetChildCount(transform);
             for (int i = 0; i < childCount; i++)
             {
@@ -2408,7 +2415,7 @@ namespace UnityEngine
 
         public static IntPtr GetParentObject(IntPtr thisPtr)
         {
-            IntPtr transform = GameObject.GetTranform(thisPtr);
+            IntPtr transform = GameObject.GetTransform(thisPtr);
             if (transform == IntPtr.Zero)
             {
                 return IntPtr.Zero;
@@ -2423,7 +2430,7 @@ namespace UnityEngine
 
         public static IntPtr GetRootObject(IntPtr thisPtr)
         {
-            IntPtr transform = GameObject.GetTranform(thisPtr);
+            IntPtr transform = GameObject.GetTransform(thisPtr);
             while (true)
             {
                 IntPtr parent = Transform.GetParent(transform);
@@ -2438,14 +2445,14 @@ namespace UnityEngine
 
         public static string DumpFromRoot(IntPtr thisPtr)
         {
-            IntPtr rootTransform = GameObject.GetTranform(GetRootObject(thisPtr));
+            IntPtr rootTransform = GameObject.GetTransform(GetRootObject(thisPtr));
             Dictionary<string, object> result = Transform.ToDictionary(rootTransform);
             return MiniJSON.Json.Format(MiniJSON.Json.Serialize(result));
         }
 
         public static string Dump(IntPtr thisPtr)
         {
-            IntPtr transform = GameObject.GetTranform(thisPtr);
+            IntPtr transform = GameObject.GetTransform(thisPtr);
             Dictionary<string, object> result = Transform.ToDictionary(transform);
             return MiniJSON.Json.Format(MiniJSON.Json.Serialize(result));
         }

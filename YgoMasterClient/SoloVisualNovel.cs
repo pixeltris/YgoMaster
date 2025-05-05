@@ -568,7 +568,7 @@ namespace YgoMasterClient
                     return false;
                 }
 
-                IntPtr safeAreaTransform = GameObject.GetTranform(safeArea);
+                IntPtr safeAreaTransform = GameObject.GetTransform(safeArea);
 
                 containerObj = GameObject.New();
                 UnityObject.SetName(containerObj, "SoloVisualNovel");
@@ -576,7 +576,7 @@ namespace YgoMasterClient
                 GameObject.AddComponent(containerObj, canvasGroupType);
                 SetupTweenAlpha(GameObject.AddComponent(containerObj, TweenAlpha_Type), TweenScreenFadeOut, 1, 0, Utils.GetValue<float>(uiSettings, "FadeOutDuration"));
                 SetupTweenAlpha(GameObject.AddComponent(containerObj, TweenAlpha_Type), TweenScreenFadeIn, 0, 1, Utils.GetValue<float>(uiSettings, "FadeInDuration"));
-                IntPtr containerTransform = GameObject.GetTranform(containerObj);
+                IntPtr containerTransform = GameObject.GetTransform(containerObj);
                 Transform.SetParent(containerTransform, safeAreaTransform);
                 SetSize(containerTransform, "ContainerTransform");
 
@@ -585,7 +585,7 @@ namespace YgoMasterClient
                 mainAreaObj = GameObject.New();
                 UnityObject.SetName(mainAreaObj, "Main");
                 GameObject.AddComponent(mainAreaObj, rectMask2DType);
-                IntPtr mainAreaTransform = GameObject.GetTranform(mainAreaObj);
+                IntPtr mainAreaTransform = GameObject.GetTransform(mainAreaObj);
                 Transform.SetParent(mainAreaTransform, containerTransform);
                 SetSize(mainAreaTransform, "MainTransform");
 
@@ -593,22 +593,22 @@ namespace YgoMasterClient
                 UnityObject.SetName(backgroundObj, "Background");
                 bgImageComp = GameObject.AddComponent(backgroundObj, imageType);
                 SetBgImage(GetFirstBg());
-                Transform.SetParent(GameObject.GetTranform(backgroundObj), mainAreaTransform);
-                SetSize(GameObject.GetTranform(backgroundObj), "BgTransform");
+                Transform.SetParent(GameObject.GetTransform(backgroundObj), mainAreaTransform);
+                SetSize(GameObject.GetTransform(backgroundObj), "BgTransform");
 
                 // Need a container for infn8 otherwise it seems to get added above the text area
                 IntPtr infn8ContainerObj = GameObject.New();
                 UnityObject.SetName(infn8ContainerObj, "Infn8Container");
                 GameObject.AddComponent(infn8ContainerObj, rectTransformType);
-                Transform.SetParent(GameObject.GetTranform(infn8ContainerObj), containerTransform);
-                SetFull(GameObject.GetTranform(infn8ContainerObj));
+                Transform.SetParent(GameObject.GetTransform(infn8ContainerObj), containerTransform);
+                SetFull(GameObject.GetTransform(infn8ContainerObj));
 
                 IntPtr charactersObj = GameObject.New();
                 UnityObject.SetName(charactersObj, "Characters");
                 GameObject.AddComponent(charactersObj, rectTransformType);
-                Transform.SetParent(GameObject.GetTranform(charactersObj), mainAreaTransform);
-                SetFull(GameObject.GetTranform(charactersObj));
-                CreateCharactersObjects(GameObject.GetTranform(infn8ContainerObj), GameObject.GetTranform(charactersObj));
+                Transform.SetParent(GameObject.GetTransform(charactersObj), mainAreaTransform);
+                SetFull(GameObject.GetTransform(charactersObj));
+                CreateCharactersObjects(GameObject.GetTransform(infn8ContainerObj), GameObject.GetTransform(charactersObj));
 
                 IntPtr bgFrameObj = GameObject.New();
                 UnityObject.SetName(bgFrameObj, "BgFrame");
@@ -624,8 +624,8 @@ namespace YgoMasterClient
                         Image_type.GetSetMethod().Invoke(bgFrameImage, new IntPtr[] { new IntPtr(&bgFrameImageType) });
                     }
                 }
-                Transform.SetParent(GameObject.GetTranform(bgFrameObj), mainAreaTransform);
-                SetSize(GameObject.GetTranform(bgFrameObj), "BgFrameTransform");
+                Transform.SetParent(GameObject.GetTransform(bgFrameObj), mainAreaTransform);
+                SetSize(GameObject.GetTransform(bgFrameObj), "BgFrameTransform");
 
                 IntPtr textAreaObj = GameObject.New();
                 UnityObject.SetName(textAreaObj, "TextArea");
@@ -639,7 +639,7 @@ namespace YgoMasterClient
                         Image_SetSprite.Invoke(textAreaBgImage, new IntPtr[] { textAreaBgSprite });
                     }
                 }
-                IntPtr textAreaTransform = GameObject.GetTranform(textAreaObj);
+                IntPtr textAreaTransform = GameObject.GetTransform(textAreaObj);
                 Transform.SetParent(textAreaTransform, containerTransform);
                 SetSize(textAreaTransform, "TextAreaTransform");
 
@@ -658,8 +658,8 @@ namespace YgoMasterClient
                         Image_type.GetSetMethod().Invoke(textAreaLineImage, new IntPtr[] { new IntPtr(&textAreaLineImageType) });
                     }
                 }
-                Transform.SetParent(GameObject.GetTranform(textAreaLineObj), textAreaTransform);
-                SetSize(GameObject.GetTranform(textAreaLineObj), "TextAreaLineTransform");
+                Transform.SetParent(GameObject.GetTransform(textAreaLineObj), textAreaTransform);
+                SetSize(GameObject.GetTransform(textAreaLineObj), "TextAreaLineTransform");
 
                 IntPtr frameObj = GameObject.New();
                 UnityObject.SetName(frameObj, "Frame");
@@ -675,28 +675,28 @@ namespace YgoMasterClient
                         Image_type.GetSetMethod().Invoke(frameImage, new IntPtr[] { new IntPtr(&frameImageType) });
                     }
                 }
-                Transform.SetParent(GameObject.GetTranform(frameObj), textAreaTransform);
-                SetSize(GameObject.GetTranform(frameObj), "TextAreaFrameTransform");
+                Transform.SetParent(GameObject.GetTransform(frameObj), textAreaTransform);
+                SetSize(GameObject.GetTransform(frameObj), "TextAreaFrameTransform");
 
                 IntPtr textTitleObj = GameObject.New();
                 UnityObject.SetName(textTitleObj, "Title");
                 textTitleComponent = GameObject.AddComponent(textTitleObj, ExtendedTextMeshProUGUI_Type);
-                Transform.SetParent(GameObject.GetTranform(textTitleObj), textAreaTransform);
+                Transform.SetParent(GameObject.GetTransform(textTitleObj), textAreaTransform);
                 TMP_Text_font.GetSetMethod().Invoke(textTitleComponent, new IntPtr[] { titleFont });
-                SetSize(GameObject.GetTranform(textTitleObj), "TitleTransform");
+                SetSize(GameObject.GetTransform(textTitleObj), "TitleTransform");
                 float titleFontSize = Utils.GetValue<float>(uiSettings, "TitleSize");
                 TMP_Text_fontSize.GetSetMethod().Invoke(textTitleComponent, new IntPtr[] { new IntPtr(&titleFontSize) });
 
                 IntPtr textBodyObj = GameObject.New();
                 UnityObject.SetName(textBodyObj, "Body");
                 textBodyComponent = GameObject.AddComponent(textBodyObj, ExtendedTextMeshProUGUI_Type);
-                Transform.SetParent(GameObject.GetTranform(textBodyObj), textAreaTransform);
+                Transform.SetParent(GameObject.GetTransform(textBodyObj), textAreaTransform);
                 TMP_Text_font.GetSetMethod().Invoke(textBodyComponent, new IntPtr[] { bodyFont });
                 float fontSize = Utils.GetValue<float>(uiSettings, "BodySize");
                 TMP_Text_fontSize.GetSetMethod().Invoke(textBodyComponent, new IntPtr[] { new IntPtr(&fontSize) });
                 float lineSpacing = Utils.GetValue<float>(uiSettings, "BodyLineSpacing");
                 TMP_Text_lineSpacing.GetSetMethod().Invoke(textBodyComponent, new IntPtr[] { new IntPtr(&lineSpacing) });
-                SetSize(GameObject.GetTranform(textBodyObj), "BodyTransform");
+                SetSize(GameObject.GetTransform(textBodyObj), "BodyTransform");
 
                 IntPtr selector = GameObject.GetComponent(GameObject.FindGameObjectByPath(Component.GetGameObject(thisPtr), isFlyingCardView ? "CardFlyingUI(Clone)" : "SoloStartProductionUI(Clone)"), Selector_Type);
                 AddButtons(containerTransform, selector);
@@ -781,7 +781,7 @@ namespace YgoMasterClient
             GameObject.AddComponent(characterObj, rectTransformType);
             GameObject.AddComponent(characterObj, canvasGroupType);
             UnityObject.SetName(characterObj, name);
-            Transform.SetParent(GameObject.GetTranform(characterObj), charactersTransform);
+            Transform.SetParent(GameObject.GetTransform(characterObj), charactersTransform);
 
             IntPtr imageComp = GameObject.AddComponent(characterObj, imageType);
             AddCharacterTweens(characterObj);
@@ -804,16 +804,16 @@ namespace YgoMasterClient
                 }
 
                 float sizeX = (float)((double)spriteSize.x / (double)screenWidth);
-                CharTweenPos tween = tweenCharPos[GameObject.GetTranform(characterObj)];
+                CharTweenPos tween = tweenCharPos[GameObject.GetTransform(characterObj)];
                 tween.sizeY = (float)((double)spriteSize.y / (double)screenHeight);
                 tween.offsetY = name == "infn8" ? characterInfn8OffsetY : characterOffsetY;
                 // places the character slightly left of the screen (the 0.5 is the thing which sets it to left of screen, half width unsures half of the sprite isnt on screen)
                 float currentPos = (0.5f + (sizeX / 2.0f));
-                SetSize(GameObject.GetTranform(characterObj),
+                SetSize(GameObject.GetTransform(characterObj),
                     new AssetHelper.Vector2(0 - currentPos, 0), new AssetHelper.Vector2(1 - currentPos, tween.sizeY),
                     new AssetHelper.Vector2(0, tween.offsetY), new AssetHelper.Vector2(0, tween.offsetY));
-                SetPivot(GameObject.GetTranform(characterObj), new AssetHelper.Vector2(0.5f, 0));
-                tweenCharPos[GameObject.GetTranform(characterObj)].current = currentPos;
+                SetPivot(GameObject.GetTransform(characterObj), new AssetHelper.Vector2(0.5f, 0));
+                tweenCharPos[GameObject.GetTransform(characterObj)].current = currentPos;
             }
 
             GameObject.SetActive(characterObj, false);
@@ -826,7 +826,7 @@ namespace YgoMasterClient
             IntPtr characterObj = GameObject.New();
             GameObject.AddComponent(characterObj, rectTransformType);
             UnityObject.SetName(characterObj, name);
-            Transform.SetParent(GameObject.GetTranform(characterObj), charactersTransform);
+            Transform.SetParent(GameObject.GetTransform(characterObj), charactersTransform);
 
             IntPtr imageComp = GameObject.AddComponent(characterObj, imageType);
 
@@ -849,10 +849,10 @@ namespace YgoMasterClient
 
                 // TODO: Stretch when screen resolution is greater than 1080p? (some images are created as 1920x1080 to fill the screen)
                 float anchorWidth = (float)((double)spriteSize.x / (double)screenWidth);
-                SetSize(GameObject.GetTranform(characterObj),
+                SetSize(GameObject.GetTransform(characterObj),
                     new AssetHelper.Vector2((0.5f - (anchorWidth / 2)), 0), new AssetHelper.Vector2((0.5f - (anchorWidth / 2)) + anchorWidth, 1),
                     new AssetHelper.Vector2(0, 0), new AssetHelper.Vector2(0, 0));
-                SetPivot(GameObject.GetTranform(characterObj), new AssetHelper.Vector2(0.5f, 0.5f));
+                SetPivot(GameObject.GetTransform(characterObj), new AssetHelper.Vector2(0.5f, 0.5f));
             }
 
             GameObject.SetActive(characterObj, false);
@@ -946,7 +946,7 @@ namespace YgoMasterClient
             {
                 return;
             }
-            Vector3 from = Transform.GetLocalScale(GameObject.GetTranform(obj));
+            Vector3 from = Transform.GetLocalScale(GameObject.GetTransform(obj));
             Vector3 to = new Vector3(scale, scale, scale);
             Tween_Reset.Invoke(tween);
             Tween_duration.SetValue(tween, new IntPtr(&duration));
@@ -995,7 +995,7 @@ namespace YgoMasterClient
             AddTweenAlpha(characterObj, TweenFade);
             AddTweenPos(characterObj, TweenMove);
             AddTweenScale(characterObj, TweenScale);
-            tweenCharPos[GameObject.GetTranform(characterObj)] = new CharTweenPos();
+            tweenCharPos[GameObject.GetTransform(characterObj)] = new CharTweenPos();
         }
 
         static void TweenPositionOnSetValue(IntPtr thisPtr, float par)
@@ -1059,7 +1059,7 @@ namespace YgoMasterClient
                                         // TODO: Support FADEIN/FADEOUT for PROP_ON / PROP_OFF (though the regular game doesn't even have these)
                                         lastPropOn = entry.Image;
                                         GameObject.SetActive(propObj, true);
-                                        Transform.SetAsLastSibling(GameObject.GetTranform(propObj));
+                                        Transform.SetAsLastSibling(GameObject.GetTransform(propObj));
                                     }
                                 }
                                 break;
@@ -1221,7 +1221,7 @@ namespace YgoMasterClient
                     IntPtr charObj;
                     if (character != null && characterGameObjects.TryGetValue(character, out charObj))
                     {
-                        Transform.SetAsLastSibling(GameObject.GetTranform(charObj));
+                        Transform.SetAsLastSibling(GameObject.GetTransform(charObj));
                     }
                 }
 
@@ -1229,7 +1229,7 @@ namespace YgoMasterClient
                 {
                     if (GameObject.IsActive(prop.Value))
                     {
-                        Transform.SetAsLastSibling(GameObject.GetTranform(prop.Value));
+                        Transform.SetAsLastSibling(GameObject.GetTransform(prop.Value));
                     }
                 }
 
@@ -1251,7 +1251,7 @@ namespace YgoMasterClient
                 float screenScaleFrom = 0.5f;
                 float screenScaleTo = 1;
                 float screenScaleDelay = 0.5f;
-                Vector3 screenScale = Transform.GetLocalScale(GameObject.GetTranform(mainAreaObj));
+                Vector3 screenScale = Transform.GetLocalScale(GameObject.GetTransform(mainAreaObj));
                 if (talkingScript != null && talkingScript.Char == "infn8")
                 {
                     if (screenScale.x != screenScaleFrom)
@@ -1309,7 +1309,7 @@ namespace YgoMasterClient
             IntPtr charObj;
             if (characterGameObjects.TryGetValue(characterName, out charObj))
             {
-                Vector3 currentScale = Transform.GetLocalScale(GameObject.GetTranform(charObj));
+                Vector3 currentScale = Transform.GetLocalScale(GameObject.GetTransform(charObj));
                 if (currentScale.x != scale)// TODO: Use an epsilon here?
                 {
                     PlayTweenScale(charObj, TweenScale, characterTweenScaleDuration, scale);
@@ -1363,18 +1363,18 @@ namespace YgoMasterClient
 
         static void CharTeleTo(IntPtr charObj, float offsetX)
         {
-            CharTweenPos tween = tweenCharPos[GameObject.GetTranform(charObj)];
+            CharTweenPos tween = tweenCharPos[GameObject.GetTransform(charObj)];
             tween.current = offsetX;
             string name = characterGameObjects.FirstOrDefault(x => x.Value == charObj).Key;
-            SetSize(GameObject.GetTranform(charObj),
+            SetSize(GameObject.GetTransform(charObj),
                 new AssetHelper.Vector2(0 + offsetX, 0), new AssetHelper.Vector2(1 + offsetX, tween.sizeY),
                 new AssetHelper.Vector2(0, tween.offsetY), new AssetHelper.Vector2(0, tween.offsetY));
         }
 
         static void CharTweenTo(IntPtr charObj, float offsetX)
         {
-            tweenCharPos[GameObject.GetTranform(charObj)].from = tweenCharPos[GameObject.GetTranform(charObj)].current;
-            tweenCharPos[GameObject.GetTranform(charObj)].to = offsetX;
+            tweenCharPos[GameObject.GetTransform(charObj)].from = tweenCharPos[GameObject.GetTransform(charObj)].current;
+            tweenCharPos[GameObject.GetTransform(charObj)].to = offsetX;
             PlayTweenPosition(charObj, TweenMove, characterTweenMoveDuration);
         }
 
@@ -1556,7 +1556,7 @@ namespace YgoMasterClient
             IntPtr layoutGroupComp = GameObject.GetComponent(GameObject.FindGameObjectByPath(obj, "ChildButtonGroup"), HorizontalOrVerticalLayoutGroup_Type);
             float btnVerticalSpacing = 8;
             HorizontalOrVerticalLayoutGroup_spacing.GetSetMethod().Invoke(layoutGroupComp, new IntPtr[] { new IntPtr(&btnVerticalSpacing) });
-            Transform.SetParent(GameObject.GetTranform(obj), parentTransform);
+            Transform.SetParent(GameObject.GetTransform(obj), parentTransform);
 
             AddButton(obj, selector, "ChildButtonGroup.ChildButtonSlot1.AutoButton", ClientSettings.CustomTextVisualNovelNext, NextOnClick, ClientSettings.DisableSoloVisualNovelNextButtonSound);
             AddButton(obj, selector, "ChildButtonGroup.ChildButtonSlot2.LogButton", ClientSettings.CustomTextVisualNovelSkip, SkipOnClick);
@@ -1565,7 +1565,7 @@ namespace YgoMasterClient
             UnityObject.Destroy(GameObject.FindGameObjectByPath(obj, "ChildButtonGroup.ChildButtonSlot3"));
             UnityObject.Destroy(GameObject.FindGameObjectByPath(obj, "ChildButtonGroup.RootButton"));
             AssetHelper.Unload("Scenarios/Player/Viewer/Prefabs/ScenarioUI");
-            SetSize(GameObject.GetTranform(obj), "ButtonsTransform");
+            SetSize(GameObject.GetTransform(obj), "ButtonsTransform");
         }
 
         static void AddButton(IntPtr buttonsObj, IntPtr selector, string buttonPath, string text, Delegate clickCallback, bool disableClickSound = false)

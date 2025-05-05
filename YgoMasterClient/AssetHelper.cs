@@ -567,7 +567,7 @@ namespace YgoMasterClient
             return null;
         }
 
-        static IntPtr TextureFromPNG(string filePath, string assetName, bool mipChain = true)
+        public static IntPtr TextureFromPNG(string filePath, string assetName, bool mipChain = true)
         {
             IL2Object bytes = methodReadAllBytes.Invoke(new IntPtr[] { new IL2String(filePath).ptr });
             if (bytes != null)
@@ -589,7 +589,7 @@ namespace YgoMasterClient
             return IntPtr.Zero;
         }
 
-        static IntPtr SpriteFromTexture(IntPtr texture, string assetName, Rect rect = default(Rect), float pixelsPerUnit = 0)
+        public static IntPtr SpriteFromTexture(IntPtr texture, string assetName, Rect rect = default(Rect), float pixelsPerUnit = 0)
         {
             if (texture == IntPtr.Zero)
             {
@@ -1585,7 +1585,7 @@ namespace YgoMasterClient
                     {
                         obj = UnityEngine.GameObject.New();
                     }
-                    UnityEngine.Transform.SetParent(UnityEngine.GameObject.GetTranform(obj), UnityEngine.GameObject.GetTranform(parentObj));
+                    UnityEngine.Transform.SetParent(UnityEngine.GameObject.GetTransform(obj), UnityEngine.GameObject.GetTransform(parentObj));
                     UnityEngine.UnityObject.SetName(obj, objName);
                 }
                 if (Utils.GetValue<bool>(objSettings, "Disable"))
@@ -1594,7 +1594,7 @@ namespace YgoMasterClient
                 }
                 else if (Utils.GetValue<bool>(objSettings, "Destroy"))
                 {
-                    UnityEngine.Transform.SetParent(UnityEngine.GameObject.GetTranform(obj), IntPtr.Zero);
+                    UnityEngine.Transform.SetParent(UnityEngine.GameObject.GetTransform(obj), IntPtr.Zero);
                     UnityEngine.UnityObject.Destroy(obj);
                 }
                 else
@@ -1783,8 +1783,8 @@ namespace YgoMasterClient
                         IntPtr targetSibling = UnityEngine.GameObject.FindGameObjectByName(parentObj, targetSiblingName.Replace("{BASEID}", baseIdString), false, false);
                         if (targetSibling != IntPtr.Zero)
                         {
-                            IntPtr transform = UnityEngine.GameObject.GetTranform(obj);
-                            IntPtr targetSiblingTransform = UnityEngine.GameObject.GetTranform(targetSibling);
+                            IntPtr transform = UnityEngine.GameObject.GetTransform(obj);
+                            IntPtr targetSiblingTransform = UnityEngine.GameObject.GetTransform(targetSibling);
                             int index = UnityEngine.Transform.GetSiblingIndex(targetSiblingTransform);
                             UnityEngine.Transform.SetSiblingIndex(transform, targetSiblingBefore ? index : index + 1);
                         }

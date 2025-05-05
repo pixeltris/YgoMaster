@@ -526,9 +526,9 @@ namespace YgomGame
             }
             // TODO: Add error handling in the case that some of the details of this change after a patch
             IntPtr craftPointGroupObj = UnityEngine.GameObject.FindGameObjectByName(UnityEngine.Component.GetGameObject(thisPtr), "CraftPointGroup");
-            IntPtr windowObj = UnityEngine.Component.GetGameObject(UnityEngine.Transform.GetParent(UnityEngine.GameObject.GetTranform(craftPointGroupObj)));
+            IntPtr windowObj = UnityEngine.Component.GetGameObject(UnityEngine.Transform.GetParent(UnityEngine.GameObject.GetTransform(craftPointGroupObj)));
 
-            IntPtr craftPointGroupObj2 = UnityEngine.UnityObject.Instantiate(craftPointGroupObj, UnityEngine.GameObject.GetTranform(windowObj));
+            IntPtr craftPointGroupObj2 = UnityEngine.UnityObject.Instantiate(craftPointGroupObj, UnityEngine.GameObject.GetTransform(windowObj));
             UnityEngine.UnityObject.Destroy(UnityEngine.GameObject.GetComponent(craftPointGroupObj2, imageType));// Get rid of the backgound
 
             // Get rid of unused objects
