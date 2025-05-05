@@ -77,6 +77,7 @@ namespace YgomGame.Duel
         static IL2Field fieldInstance;
         static IL2Field fieldStep;
         static IL2Field fieldReplayRealtime;
+        static IL2Field fieldDictResult;
         static IL2Property propertyEffectWorker;
         static IL2Method methodGetDuelHUD;
         static IL2Method methodSetDuelSpeed;
@@ -154,6 +155,7 @@ namespace YgomGame.Duel
             fieldInstance = classInfo.GetField("instance");
             fieldStep = classInfo.GetField("m_Step");
             fieldReplayRealtime = classInfo.GetField("replayRealtime");
+            fieldDictResult = classInfo.GetField("dicResult");
             propertyEffectWorker = classInfo.GetProperty("effectWorker");
             methodGetDuelHUD = classInfo.GetProperty("duelHUD").GetGetMethod();
             hookInitEngineStep = new Hook<Del_InitEngineStep>(InitEngineStep, classInfo.GetMethod("InitEngineStep"));
@@ -189,8 +191,14 @@ namespace YgomGame.Duel
                 doneInitEngineStep = false;
                 IntPtr runEffectWorker = propertyEffectWorker.GetGetMethod().Invoke(thisPtr).ptr;
                 SoloVisualNovel.IsRetryDuel = RunEffectWorker_isRetryRequired.GetGetMethod().Invoke(runEffectWorker).GetValueRef<csbool>();
-                bool isWinDuel = YgomSystem.Utility.ClientWork.GetByJsonPath<int>("Duel.result") != 0;
-                if (!SoloVisualNovel.IsRetryDuel && isWinDuel)
+                bool isWinDuel = false;
+                IL2Object resultObj = fieldDictResult.GetValue(thisPtr);
+                if (resultObj != null)
+                {
+                    Dictionary<string, object> resultData = MiniJSON.Json.Deserialize(YgomMiniJSON.Json.Serialize(resultObj.ptr)) as Dictionary<string, object>;
+                    isWinDuel = Utils.GetValue<int>(resultData, "res") == (int)DuelResultType.Win;
+                }
+                if (isWinDuel)
                 {
                     YgomGame.Tutorial.CardFlyingViewController.IsHacked = true;
                     YgomGame.Tutorial.CardFlyingViewController.duelClient = thisPtr;
