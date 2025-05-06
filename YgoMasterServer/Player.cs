@@ -126,7 +126,7 @@ namespace YgoMaster
             }
         }
 
-        public void AddItem(int itemId, int amount)
+        public bool AddItem(int itemId, int amount)
         {
             ItemID.Category category = ItemID.GetCategoryFromID(itemId);
             switch (category)
@@ -149,15 +149,14 @@ namespace YgoMaster
                         case ItemID.Value.OrbFire: OrbPoints.Add(OrbType.Fire, amount); break;
                         case ItemID.Value.OrbWind: OrbPoints.Add(OrbType.Wind, amount); break;
                     }
-                    break;
+                    return true;
                 case ItemID.Category.STRUCTURE:
                     throw new Exception("Use GiveStructureDeck to add structure decks");
                 case ItemID.Category.CARD:
                     Cards.Add(itemId, amount, PlayerCardKind.Dismantle, CardStyleRarity.Normal);
-                    break;
+                    return true;
                 default:
-                    Items.Add(itemId);
-                    break;
+                    return Items.Add(itemId);
             }
         }
     }

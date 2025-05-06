@@ -133,6 +133,7 @@ namespace YgoMaster
         public ShopItemIconType IconType;
         public string IconData;
         public string Preview;
+        public string Decoration;
         public HashSet<int> SearchCategory { get; private set; }
         public List<ShopItemPrice> Prices { get; private set; }
 
@@ -154,7 +155,7 @@ namespace YgoMaster
         /// </summary>
         public int SecretBuyLimit;
         /// <summary>
-        /// Number of times this can be bought (applicable only to card packs, 0 means unlimited)
+        /// Number of times this can be bought
         /// </summary>
         public int Buylimit;
 
@@ -204,6 +205,14 @@ namespace YgoMaster
         /// Disable the ultra rare guarantee (which is determined based on whether the previous 10 pack didn't have an UR)
         /// </summary>
         public bool DisableUltraRareGuarantee;
+
+        /// <summary>
+        /// The type of bundle (10SR, 30UR, etc)
+        /// </summary>
+        public ShopBundleType BundleType;
+        public int BundleNormalCardListId;
+        public int BundlePickupCardListId;
+        public List<ShopBundleItem> SetItems = new List<ShopBundleItem>();
 
         public ShopItemInfo()
         {
@@ -364,6 +373,7 @@ namespace YgoMaster
         public int Price;
         public int ItemAmount = 1;
         public int MultiBuyLimit = 1;
+        public List<int> PopArgs;
 
         public int GetAvailableBuyAmount(Player player)
         {
@@ -566,5 +576,24 @@ namespace YgoMaster
         /// Additional packs (to be used under the Bonus Pack sub category)
         /// </summary>
         Bonus
+    }
+
+    enum ShopBundleType
+    {
+        None,
+        IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_10_SR,
+        IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_10_SR_SET,
+        IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_30_SR_SET,
+        IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_10_UR,
+        IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_NUM_RARE_RARENUM_SET,
+        IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_NUM_URNUM_SET
+    }
+
+    class ShopBundleItem
+    {
+        public int ItemCategory;
+        public int ItemId;
+        public int Num;
+        public bool Period;
     }
 }

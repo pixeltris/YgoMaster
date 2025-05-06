@@ -12,7 +12,7 @@
 	"BgTransform": "0,0, 1,1, 0,0, 0,0",
 	"BgFrameImage": "GUI_Global_Window_Frame_NoCorner",//GUI_Global_Window_Frame,GUI_Global_Window_Frame_NoCorner,GUI_Global_Window_Line,GUI_Global_ActionSheet_Frame
 	"BgFrameTransform": "0,0, 1,1, 0,0, 0,0",
-	"TextAreaBgImage": "GUI_Global_Window_Base"
+	"TextAreaBgImage": "GUI_Global_Window_Base",
 	"TextAreaTransform": "0,0, 1,0.22, 350,0, -350,0",
 	"TextAreaLineImage": "GUI_Global_Window_Line",
 	"TextAreaLineTransform": "0,0, 1,1, 0,0, 0,0",

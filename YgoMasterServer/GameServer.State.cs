@@ -2021,6 +2021,15 @@ namespace YgoMaster
                 {
                     info.Preview = MiniJSON.Json.Serialize(previewObj);
                 }
+                object decorationObj = Utils.GetValue<object>(data, "decoration");
+                if (decorationObj is string)
+                {
+                    info.Decoration = decorationObj as string;
+                }
+                else if (previewObj != null)
+                {
+                    info.Decoration = MiniJSON.Json.Serialize(decorationObj);
+                }
                 List<int> unlockSecrets = Utils.GetIntList(data, "unlockSecrets");// custom
                 if (unlockSecrets != null && unlockSecrets.Count > 0)
                 {
@@ -2179,12 +2188,74 @@ namespace YgoMaster
                         break;
                     case "SpecialShop":
                         info.Category = ShopCategory.Special;
+                        info.Id = Utils.GetValue<int>(data, "shopId");
+                        if (info.Id > 0)
+                        {
+                            info.Id -= info.BaseShopId;
+                        }
+                        if (info.Buylimit == 0)
+                        {
+                            info.Buylimit = Utils.GetValue<int>(data, "limit_buy_count");
+                        }
+                        if (info.Buylimit == 0)
+                        {
+                            info.Buylimit = 1;
+                        }
+                        if (info.TargetCategory == 1)
+                        {
+                            foreach (Dictionary<string, object> priceData in Utils.GetDictionaryCollection(data, "prices"))
+                            {
+                                string pop = Utils.GetValue<string>(priceData, "POP");
+                                Enum.TryParse<ShopBundleType>(pop, true, out info.BundleType);
+                            }
+                            if (info.BundleType == ShopBundleType.None)
+                            {
+                                // Unsupported bundle type
+                                continue;
+                            }
+                            List<Dictionary<string, object>> setItems = Utils.GetDictionaryCollection(data, "setItems");
+                            if (setItems != null)
+                            {
+                                foreach (Dictionary<string, object> itemData in setItems)
+                                {
+                                    ShopBundleItem item = new ShopBundleItem();
+                                    item.ItemCategory = Utils.GetValue<int>(itemData, "item_category");
+                                    item.ItemId = Utils.GetValue<int>(itemData, "item_id");
+                                    item.Num = Utils.GetValue<int>(itemData, "num");
+                                    item.Period = Utils.GetValue<bool>(itemData, "is_period");
+                                    info.SetItems.Add(item);
+                                }
+                            }
+                            // NOTE: For this to work SpecialShop should always be loaded after other packs
+                            if (Utils.GetValue<int>(data, "pickupCardListId") != 0 && !string.IsNullOrEmpty(info.IconData))
+                            {
+                                int mrk;
+                                string packImageInfo = info.IconData.Split(new char[] { '&' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.StartsWith("pack=") && x.Contains("_"));
+                                if (!string.IsNullOrEmpty(packImageInfo) && int.TryParse(packImageInfo.Split('_')[1], out mrk))
+                                {
+                                    ShopItemInfo packShop = Shop.PackShop.Values.FirstOrDefault(x => x.IconMrk == mrk);
+                                    info.BundlePickupCardListId = packShop.ShopId;
+                                }
+                            }
+                            ShopItemInfo standardPack = Shop.PackShop.Values.FirstOrDefault(x => x.PackType == ShopPackType.Standard);
+                            if (standardPack != null)
+                            {
+                                info.BundleNormalCardListId = standardPack.ShopId;
+                            }
+                        }
+                        else
+                        {
+                            // Only supporting bundles for now
+                            // TODO: Deck box (category 15)
+                            continue;
+                        }
                         break;
                 }
                 switch (type)
                 {
                     case "PackShop":
                     case "StructureShop":
+                    case "SpecialShop":
                         info.NameText = Utils.GetValue<string>(data, "nameTextId");
                         info.DescShortText = Utils.GetValue<string>(data, "descShortTextId");
                         info.DescFullText = Utils.GetValue<string>(data, "descFullTextId");
@@ -2212,6 +2283,7 @@ namespace YgoMaster
                     {
                         Utils.TryGetValue(priceData, "itemAmount", out price.ItemAmount);
                     }
+                    price.PopArgs = Utils.GetIntList(priceData, "POPArgs");
                     price.ItemAmount = Math.Max(1, price.ItemAmount);
                     info.Prices.Add(price);
                 }
@@ -2269,7 +2341,7 @@ namespace YgoMaster
                 if (shopItems.ContainsKey(info.ShopId))
                 {
                     Utils.LogWarning("Duplicate shop id " + info.ShopId);
-                    return;
+                    continue;
                 }
                 shopItems[info.ShopId] = info;
             }
@@ -2767,7 +2839,7 @@ namespace YgoMaster
             }
             if (specialShop != null)
             {
-                //allShops["SpecialShop"] = specialShop;// TODO
+                allShops["SpecialShop"] = specialShop;
             }
             foreach (KeyValuePair<string, Dictionary<int, Dictionary<string, object>>> shop in allShops)
             {

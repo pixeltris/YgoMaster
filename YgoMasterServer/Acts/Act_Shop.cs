@@ -82,94 +82,96 @@ namespace YgoMaster
                 switch (shopItem.Category)
                 {
                     case ShopCategory.Pack:
-                        if (packBuyLimit == 0 && shopItem.Buylimit > 0)
                         {
-                            buyLimit = 1;
-                            have = 1;
-                        }
-                        int normalCardListId = shopItem.ShopId;
-                        int pickupCardListId = 0;
-                        ShopOddsInfo odds = shopItem.GetOdds(Shop);
-                        if (odds != null)
-                        {
-                            if (odds.CardRateList.FirstOrDefault(x => x.Standard) != null)
+                            if (packBuyLimit == 0 && shopItem.Buylimit > 0)
                             {
-                                normalCardListId = Shop.StandardPack.ShopId;
-                                pickupCardListId = shopItem.ShopId;
+                                buyLimit = 1;
+                                have = 1;
                             }
-                        }
-
-                        int numCardsObtained;
-                        double percentComplete = shopItem.GetPercentComplete(request.Player, out numCardsObtained);
-                        double percentToNextPack = shopItem.UnlockSecretsAtPercent - percentComplete;
-                        Func<string, string> updateShopText = (string str) =>
-                        {
-                            if (string.IsNullOrEmpty(str))
+                            int normalCardListId = shopItem.ShopId;
+                            int pickupCardListId = 0;
+                            ShopOddsInfo odds = shopItem.GetOdds(Shop);
+                            if (odds != null)
                             {
-                                return str;
-                            }
-                            str = str.Replace("{BUYS_REMAIN}", packBuyLimit.ToString());
-                            str = str.Replace("{CARDS_OBTAINED}", numCardsObtained.ToString());
-                            str = str.Replace("{CARDS}", shopItem.Cards.Keys.Count.ToString());
-                            str = str.Replace("{PERCENT_COMPLETE}", percentComplete.ToString("N0"));
-                            str = str.Replace("{PERCENT_COMPLETE_N1}", percentComplete.ToString("N1"));
-                            str = str.Replace("{PERCENT_COMPLETE_N2}", percentComplete.ToString("N2"));
-                            str = str.Replace("{PERCENT_TO_PACK}", percentToNextPack.ToString("N0"));
-                            str = str.Replace("{PERCENT_TO_PACK_N1}", percentToNextPack.ToString("N1"));
-                            str = str.Replace("{PERCENT_TO_PACK_N2}", percentToNextPack.ToString("N2"));
-                            return Utils.FixIdString(str);
-                        };
-
-                        packShop[shopItem.ShopId.ToString()] = data;
-                        data["packId"] = shopItem.Id;
-                        data["packType"] = (int)shopItem.PackType;
-                        data["nameTextId"] = updateShopText(shopItem.NameText);
-                        if (shopItem.DescTextGenerated)
-                        {
-                            List<string> desc = new List<string>();
-                            if (shopItem.ReleaseDate != default(DateTime))
-                            {
-                                desc.Add(shopItem.ReleaseDate.ToString("MMMM dd yyyy"));
-                            }
-                            //desc.Add(shopItem.Cards.Count + " cards");
-                            //desc.Add(numCardsObtained + " owned");
-                            desc.Add(numCardsObtained + " / " + shopItem.Cards.Count + " owned");
-                            if (shopItem.UnlockSecrets.Count > 0)
-                            {
-                                if (shopItem.UnlockSecretsAtPercent > 0)
+                                if (odds.CardRateList.FirstOrDefault(x => x.Standard) != null)
                                 {
-                                    if (percentComplete < shopItem.UnlockSecretsAtPercent && !shopItem.HasUnlockedAllSecrets(request.Player, Shop))
-                                    {
-                                        desc.Add((shopItem.UnlockSecretsAtPercent - percentComplete).ToString("N1") + "% left until the next pack");
-                                    }
-                                }
-                                else if (shopItem.UnlockSecretsAtNumDuels > 0)
-                                {
-                                    if (!shopItem.HasUnlockedAllSecrets(request.Player, Shop))
-                                    {
-                                        desc.Add(Math.Max(0, shopItem.UnlockSecretsAtNumDuels - request.Player.ShopState.DuelsCompletedForNextSecretUnlock) + " duels until the next pack");
-                                    }
+                                    normalCardListId = Shop.StandardPack.ShopId;
+                                    pickupCardListId = shopItem.ShopId;
                                 }
                             }
-                            string descStr = Utils.FixIdString(string.Join("\n", desc));
-                            data["descShortTextId"] = descStr;
-                            data["descFullTextId"] = descStr;
+
+                            int numCardsObtained;
+                            double percentComplete = shopItem.GetPercentComplete(request.Player, out numCardsObtained);
+                            double percentToNextPack = shopItem.UnlockSecretsAtPercent - percentComplete;
+                            Func<string, string> updateShopText = (string str) =>
+                            {
+                                if (string.IsNullOrEmpty(str))
+                                {
+                                    return str;
+                                }
+                                str = str.Replace("{BUYS_REMAIN}", packBuyLimit.ToString());
+                                str = str.Replace("{CARDS_OBTAINED}", numCardsObtained.ToString());
+                                str = str.Replace("{CARDS}", shopItem.Cards.Keys.Count.ToString());
+                                str = str.Replace("{PERCENT_COMPLETE}", percentComplete.ToString("N0"));
+                                str = str.Replace("{PERCENT_COMPLETE_N1}", percentComplete.ToString("N1"));
+                                str = str.Replace("{PERCENT_COMPLETE_N2}", percentComplete.ToString("N2"));
+                                str = str.Replace("{PERCENT_TO_PACK}", percentToNextPack.ToString("N0"));
+                                str = str.Replace("{PERCENT_TO_PACK_N1}", percentToNextPack.ToString("N1"));
+                                str = str.Replace("{PERCENT_TO_PACK_N2}", percentToNextPack.ToString("N2"));
+                                return Utils.FixIdString(str);
+                            };
+
+                            packShop[shopItem.ShopId.ToString()] = data;
+                            data["packId"] = shopItem.Id;
+                            data["packType"] = (int)shopItem.PackType;
+                            data["nameTextId"] = updateShopText(shopItem.NameText);
+                            if (shopItem.DescTextGenerated)
+                            {
+                                List<string> desc = new List<string>();
+                                if (shopItem.ReleaseDate != default(DateTime))
+                                {
+                                    desc.Add(shopItem.ReleaseDate.ToString("MMMM dd yyyy"));
+                                }
+                                //desc.Add(shopItem.Cards.Count + " cards");
+                                //desc.Add(numCardsObtained + " owned");
+                                desc.Add(numCardsObtained + " / " + shopItem.Cards.Count + " owned");
+                                if (shopItem.UnlockSecrets.Count > 0)
+                                {
+                                    if (shopItem.UnlockSecretsAtPercent > 0)
+                                    {
+                                        if (percentComplete < shopItem.UnlockSecretsAtPercent && !shopItem.HasUnlockedAllSecrets(request.Player, Shop))
+                                        {
+                                            desc.Add((shopItem.UnlockSecretsAtPercent - percentComplete).ToString("N1") + "% left until the next pack");
+                                        }
+                                    }
+                                    else if (shopItem.UnlockSecretsAtNumDuels > 0)
+                                    {
+                                        if (!shopItem.HasUnlockedAllSecrets(request.Player, Shop))
+                                        {
+                                            desc.Add(Math.Max(0, shopItem.UnlockSecretsAtNumDuels - request.Player.ShopState.DuelsCompletedForNextSecretUnlock) + " duels until the next pack");
+                                        }
+                                    }
+                                }
+                                string descStr = Utils.FixIdString(string.Join("\n", desc));
+                                data["descShortTextId"] = descStr;
+                                data["descFullTextId"] = descStr;
+                            }
+                            else
+                            {
+                                data["descShortTextId"] = updateShopText(shopItem.DescShortText);
+                                data["descFullTextId"] = updateShopText(shopItem.DescFullText);
+                            }
+                            data["power"] = shopItem.Power;
+                            data["flexibility"] = shopItem.Flexibility;
+                            data["difficulty"] = shopItem.Difficulty;
+                            //data["foundTime"]data["limitTime"] <--- these might potentially change the sort order, but no other impact
+                            data["pack_card_num"] = shopItem.CardNum;
+                            data["normalCardListId"] = normalCardListId;
+                            data["pickupCardListId"] = pickupCardListId;
+                            data["isFinalizedUR"] = request.Player.ShopState.IsUltraRareGuaranteed(shopItem.Id);
+                            data["isSpecialTime"] = shopItem.IsSpecialTime;
+                            targetCategory = (int)shopItem.PackType;
                         }
-                        else
-                        {
-                            data["descShortTextId"] = updateShopText(shopItem.DescShortText);
-                            data["descFullTextId"] = updateShopText(shopItem.DescFullText);
-                        }
-                        data["power"] = shopItem.Power;
-                        data["flexibility"] = shopItem.Flexibility;
-                        data["difficulty"] = shopItem.Difficulty;
-                        //data["foundTime"]data["limitTime"] <--- these might potentially change the sort order, but no other impact
-                        data["pack_card_num"] = shopItem.CardNum;
-                        data["normalCardListId"] = normalCardListId;
-                        data["pickupCardListId"] = pickupCardListId;
-                        data["isFinalizedUR"] = request.Player.ShopState.IsUltraRareGuaranteed(shopItem.Id);
-                        data["isSpecialTime"] = shopItem.IsSpecialTime;
-                        targetCategory = (int)shopItem.PackType;
                         break;
                     case ShopCategory.Structure:
                         structureShop[shopItem.ShopId.ToString()] = data;
@@ -196,15 +198,48 @@ namespace YgoMaster
                         targetCategory = (int)ItemID.GetCategoryFromID(shopItem.Id);
                         break;
                     case ShopCategory.Special:
-                        specialShop[shopItem.ShopId.ToString()] = data;
-                        // TODO (same as Pack but also has "setItems" / "isSPProb")
-                        continue;
+                        {
+                            targetCategory = 1;
+                            buyLimit = shopItem.Buylimit;
+                            have = Math.Min(shopItem.Buylimit, (int)request.Player.ShopState.GetPurchasedCount(shopItem));
+                            specialShop[shopItem.ShopId.ToString()] = data;
+                            data["nameTextId"] = shopItem.NameText;
+                            data["descFullTextId"] = shopItem.DescFullText;
+                            data["power"] = shopItem.Power;
+                            data["flexibility"] = shopItem.Flexibility;
+                            data["difficulty"] = shopItem.Difficulty;
+                            data["pack_card_num"] = shopItem.CardNum;
+                            data["normalCardListId"] = shopItem.BundleNormalCardListId;
+                            data["pickupCardListId"] = shopItem.BundlePickupCardListId;
+                            data["isSPProb"] = true;
+                            data["isFinalizedUR"] = false;
+                            switch (shopItem.BundleType)
+                            {
+                                case ShopBundleType.IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_NUM_URNUM_SET:
+                                case ShopBundleType.IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_NUM_RARE_RARENUM_SET:
+                                    data["isMulti"] = true;
+                                    break;
+                            }
+                            List<Dictionary<string, object>> setItems = new List<Dictionary<string, object>>();
+                            foreach (ShopBundleItem item in shopItem.SetItems)
+                            {
+                                setItems.Add(new Dictionary<string, object>()
+                                {
+                                    { "item_category", item.ItemCategory },
+                                    { "item_id", item.ItemId },
+                                    { "num", item.Num },
+                                    { "is_period", item.Period }
+                                });
+                            }
+                            data["setItems"] = setItems;
+                        }
+                        break;
                 }
                 data["targetCategory"] = targetCategory;
                 data["targetId"] = shopItem.Id;
                 data["shopId"] = shopItem.ShopId;
                 data["category"] = (int)shopItem.Category;
-                data["productType"] = (int)shopItem.Category;
+                data["productType"] = (int)shopItem.ProductType;
                 data["targetPeriodFlag"] = false;
                 data["subCategory"] = shopItem.SubCategory;
                 data["iconMrk"] = shopItem.IconMrk;
@@ -213,10 +248,14 @@ namespace YgoMaster
                 {
                     data["iconData"] = shopItem.IconData;
                 }
-                if (!string.IsNullOrEmpty(shopItem.Preview))
+                if (!string.IsNullOrEmpty(shopItem.Preview) && shopItem.Preview != "null")
                 {
                     // Prior to v1.4.1 this was a string in many cases. It's no longer a string (shop fails to load)
                     data["preview"] = MiniJSON.Json.Deserialize(shopItem.Preview);
+                }
+                if (!string.IsNullOrEmpty(shopItem.Decoration) && shopItem.Decoration != "null")
+                {
+                    data["decoration"] = MiniJSON.Json.Deserialize(shopItem.Decoration);
                 }
                 data["searchCategory"] = shopItem.SearchCategory.ToArray();
                 data["limitdate_ts"] = expireTime;
@@ -264,6 +303,37 @@ namespace YgoMaster
                             pop = "IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_10_SR_SET";// "At least 1 SR guaranteed"
                         }
                     }
+                    else if (shopItem.Category == ShopCategory.Special)
+                    {
+                        pop = shopItem.BundleType.ToString();
+                        switch (shopItem.BundleType)
+                        {
+                            case ShopBundleType.IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_10_UR:
+                            case ShopBundleType.IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_NUM_URNUM_SET:
+                                buttonType = ShopItemPriceButtonType.Pink;
+                                break;
+                            case ShopBundleType.IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_10_SR:
+                            case ShopBundleType.IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_10_SR_SET:
+                            case ShopBundleType.IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_30_SR_SET:
+                                buttonType = ShopItemPriceButtonType.Yellow;
+                                break;
+                            case ShopBundleType.IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_NUM_RARE_RARENUM_SET:
+                                if (price.PopArgs != null && price.PopArgs.Count >= 3)
+                                {
+                                    //{0} Packs (At least {2} <rarity id='{1}'/> guaranteed)
+                                    switch ((CardRarity)price.PopArgs[2])
+                                    {
+                                        case CardRarity.SuperRare:
+                                            buttonType = ShopItemPriceButtonType.Yellow;
+                                            break;
+                                        case CardRarity.UltraRare:
+                                            buttonType = ShopItemPriceButtonType.Pink;
+                                            break;
+                                    }
+                                }
+                                break;
+                        }
+                    }
                     int priceValue = price.Price;
                     if (price.MultiBuyLimit > 1)
                     {
@@ -298,6 +368,10 @@ namespace YgoMaster
                     if (!string.IsNullOrEmpty(pop))
                     {
                         priceData["POP"] = Utils.FixIdString(pop);
+                        if (price.PopArgs != null)
+                        {
+                            priceData["POPArgs"] = price.PopArgs;
+                        }
                     }
                     prices[price.Id.ToString()] = priceData;
                 }
@@ -342,7 +416,7 @@ namespace YgoMaster
                         itemData = accessoryShop;
                         break;
                     case ShopCategory.Special:
-                        categoryStr = "specialShop";
+                        categoryStr = "SpecialShop";
                         itemData = specialShop;
                         break;
                 }
@@ -460,7 +534,7 @@ namespace YgoMaster
                             }
                             break;
                         case ShopCategory.Special:
-                            Utils.LogInfo("TODO: Handle special shop category");
+                            success = Act_ShopPurchase_Pack(request, price, shopItem);
                             break;
                     }
                 }
@@ -517,460 +591,559 @@ namespace YgoMaster
                 Utils.LogWarning("Packet count 0 for " + shopItem.Id + " gems:" + request.Player.Gems + " price:" + price.Price + " multiBuyLimit:" + price.MultiBuyLimit);
                 return false;
             }
-            ShopOddsInfo odds = shopItem.GetOdds(Shop);
+            bool isUltraRareGuaranteed = false;
+            int rarityGuaranteedCount = 1;
+            ShopItemInfo targetShopItem = shopItem;
+            bool isBundle = false;
+            if (shopItem.Category == ShopCategory.Special)
+            {
+                isBundle = true;
+                targetShopItem = null;
+                if (shopItem.BundlePickupCardListId > 0)
+                {
+                    Shop.PackShop.TryGetValue(shopItem.BundlePickupCardListId, out targetShopItem);
+                }
+                if (targetShopItem == null)
+                {
+                    Shop.PackShop.TryGetValue(shopItem.BundleNormalCardListId, out targetShopItem);
+                }
+                switch (shopItem.BundleType)
+                {
+                    case ShopBundleType.IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_10_SR:
+                    case ShopBundleType.IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_10_SR_SET:
+                    case ShopBundleType.IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_30_SR_SET:
+                        packCount = 10;
+                        break;
+                    case ShopBundleType.IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_10_UR:
+                        packCount = 10;
+                        isUltraRareGuaranteed = true;
+                        break;
+                    case ShopBundleType.IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_NUM_RARE_RARENUM_SET:
+                        if (price.PopArgs == null || price.PopArgs.Count < 3)
+                        {
+                            Utils.LogWarning("Bad POPArgs for shop bundle " + shopItem.Id);
+                            return false;
+                        }
+                        packCount = price.PopArgs[0];
+                        isUltraRareGuaranteed = price.PopArgs[1] == (int)CardRarity.UltraRare;
+                        rarityGuaranteedCount = price.PopArgs[2];
+                        break;
+                    case ShopBundleType.IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_NUM_URNUM_SET:
+                        if (price.PopArgs == null || price.PopArgs.Count < 2)
+                        {
+                            Utils.LogWarning("Bad POPArgs for shop bundle " + shopItem.Id);
+                            return false;
+                        }
+                        packCount = price.PopArgs[0];
+                        rarityGuaranteedCount = price.PopArgs[1];
+                        isUltraRareGuaranteed = true;
+                        break;
+                    default:
+                        Utils.LogWarning("Invalid bundle type '" + shopItem.BundleType + "' for special bundle pack for shop " + shopItem.Id);
+                        return false;
+                }
+            }
+            if (targetShopItem == null)
+            {
+                Utils.LogWarning("Failed to find pack for bundle " + shopItem.Id);
+                return false;
+            }
+            ShopOddsInfo odds = targetShopItem.GetOdds(Shop);
             if (odds == null)
             {
                 Utils.LogWarning("Failed to find pack odds for " + shopItem.Id);
                 return false;
             }
-            else
+            request.Player.Gems -= price.Price * price.GetAvailableBuyAmount(request.Player);
+
+            Dictionary<int, int> standardPackCardRare = GetCardRarities(request.Player, Shop.StandardPack);
+            Dictionary<int, int> packCardRare = GetCardRarities(request.Player, targetShopItem);
+            if (Shop.PerPackRarities)
             {
-                request.Player.Gems -= price.Price * price.GetAvailableBuyAmount(request.Player);
+                // TODO: Also need to write standard pack if this pack is a secret pack (pickup)
+                WritePerPackRarities(request, packCardRare);
+            }
 
-                Dictionary<int, int> standardPackCardRare = GetCardRarities(request.Player, Shop.StandardPack);
-                Dictionary<int, int> packCardRare = GetCardRarities(request.Player, shopItem);
-                if (Shop.PerPackRarities)
-                {
-                    // TODO: Also need to write standard pack if this pack is a secret pack (pickup)
-                    WritePerPackRarities(request, packCardRare);
-                }
+            // 1 = Blue smoke
+            // 2 = Orange smoke
+            // 3 = A lot of orange smoke
+            int smokeType = rand.Next(100) < 15 ? 2 : 1;
+            if (packCount >= shopExtraGuaranteePackCount)
+            {
+                smokeType = 3;
+            }
 
-                // 1 = Blue smoke
-                // 2 = Orange smoke
-                // 3 = A lot of orange smoke
-                int smokeType = rand.Next(100) < 15 ? 2 : 1;
-                if (packCount >= shopExtraGuaranteePackCount)
-                {
-                    smokeType = 3;
-                }
-
-                HashSet<int> foundSecrets = new HashSet<int>();// Hashset of shop ids
-                HashSet<int> cardIdsToUpdate = new HashSet<int>();
-                HashSet<int> newCardIds = new HashSet<int>();
-                Dictionary<ShopItemInfo, List<Dictionary<string, object>>> packInfos = new Dictionary<ShopItemInfo, List<Dictionary<string, object>>>();
-                HashSet<ShopItemInfo> pickupPacks = new HashSet<ShopItemInfo>();
-                bool showSecretFoundResult = false;
-                bool pulledUltraRare = false;
-                bool isUltraRareGuaranteed = packCount == shopExtraGuaranteePackCount && request.Player.ShopState.IsUltraRareGuaranteed(shopItem.Id) &&
+            HashSet<int> foundSecrets = new HashSet<int>();// Hashset of shop ids
+            HashSet<int> cardIdsToUpdate = new HashSet<int>();
+            HashSet<int> newCardIds = new HashSet<int>();
+            Dictionary<ShopItemInfo, List<Dictionary<string, object>>> packInfos = new Dictionary<ShopItemInfo, List<Dictionary<string, object>>>();
+            HashSet<ShopItemInfo> pickupPacks = new HashSet<ShopItemInfo>();
+            bool showSecretFoundResult = false;
+            bool pulledUltraRare = false;
+            if (!isUltraRareGuaranteed && !isBundle)
+            {
+                isUltraRareGuaranteed = packCount == shopExtraGuaranteePackCount && request.Player.ShopState.IsUltraRareGuaranteed(shopItem.Id) &&
                     !Shop.DisableUltraRareGuarantee && !shopItem.DisableUltraRareGuarantee;
-                Dictionary<CardRarity, int> numCardsByRarity = shopItem.GetNumCardsByRarity(packCardRare);
-                for (int packIndex = 0; packIndex < packCount; packIndex++)
+            }
+            Dictionary<CardRarity, int> numCardsByRarity = targetShopItem.GetNumCardsByRarity(packCardRare);
+            for (int packIndex = 0; packIndex < packCount; packIndex++)
+            {
+                HashSet<int> seenCardIdsThisPack = new HashSet<int>();
+                CardRarity highestCardBackRarity = CardRarity.Normal;
+                CardRarity highestCardRarity = CardRarity.Normal;
+                List<object> cardInfos = new List<object>();
+                List<ShopOddsRarity> matches = new List<ShopOddsRarity>();
+                CardRarity rarityGuarantee = CardRarity.UltraRare;
+                // Find the lowest possible rarity of the pack
+                foreach (int cardId in targetShopItem.Cards.Keys)
                 {
-                    HashSet<int> seenCardIdsThisPack = new HashSet<int>();
-                    CardRarity highestCardBackRarity = CardRarity.Normal;
-                    CardRarity highestCardRarity = CardRarity.Normal;
-                    List<object> cardInfos = new List<object>();
-                    List<ShopOddsRarity> matches = new List<ShopOddsRarity>();
-                    CardRarity rarityGuarantee = CardRarity.UltraRare;
-                    // Find the lowest possible rarity of the pack
-                    foreach (int cardId in shopItem.Cards.Keys)
+                    CardRarity rarity;
+                    if (TryGetCardRarity(cardId, packCardRare, out rarity))
                     {
-                        CardRarity rarity;
-                        if (TryGetCardRarity(cardId, packCardRare, out rarity))
+                        if (rarity < rarityGuarantee)
                         {
-                            if (rarity < rarityGuarantee)
+                            rarityGuarantee = rarity;
+                            if (rarityGuarantee == CardRarity.Normal)
                             {
-                                rarityGuarantee = rarity;
-                                if (rarityGuarantee == CardRarity.Normal)
-                                {
-                                    break;
-                                }
+                                break;
                             }
                         }
                     }
-                    for (int cardIndex = 0; cardIndex < shopItem.CardNum; cardIndex++)
+                }
+                for (int cardIndex = 0; cardIndex < targetShopItem.CardNum; cardIndex++)
+                {
+                    // TODO: Improve the code which determines which odds to use as it currently isn't super flexible
+                    if (cardIndex == targetShopItem.CardNum - 1)
                     {
-                        // TODO: Improve the code which determines which odds to use as it currently isn't super flexible
-                        if (cardIndex == shopItem.CardNum - 1)
+                        if (CardRarity.Rare > rarityGuarantee)
                         {
-                            if (CardRarity.Rare > rarityGuarantee)
+                            rarityGuarantee = CardRarity.Rare;
+                        }
+                        if ((packIndex + 1) % shopExtraGuaranteePackCount == 0)
+                        {
+                            bool ur = isUltraRareGuaranteed && ((packIndex + 1) / shopExtraGuaranteePackCount) <= rarityGuaranteedCount && rarityGuaranteedCount > 0;
+                            CardRarity newRarityGuarantee = ur ? CardRarity.UltraRare : CardRarity.SuperRare;
+                            if (newRarityGuarantee > rarityGuarantee)
                             {
-                                rarityGuarantee = CardRarity.Rare;
-                            }
-                            if ((packIndex + 1) == shopExtraGuaranteePackCount)
-                            {
-                                CardRarity newRarityGuarantee = isUltraRareGuaranteed ? CardRarity.UltraRare : CardRarity.SuperRare;
-                                if (newRarityGuarantee > rarityGuarantee)
-                                {
-                                    rarityGuarantee = newRarityGuarantee;
-                                }
+                                rarityGuarantee = newRarityGuarantee;
                             }
                         }
-                        matches.Clear();
-                        int num = cardIndex + 1;
-                        foreach (ShopOddsRarity item in odds.CardRateList)
+                    }
+                    matches.Clear();
+                    int num = cardIndex + 1;
+                    foreach (ShopOddsRarity item in odds.CardRateList)
+                    {
+                        if (num >= item.StartNum && num <= item.EndNum)
                         {
-                            if (num >= item.StartNum && num <= item.EndNum)
+                            if (item.GuaranteeRareMin > 0 || item.GuaranteeRareMax > 0)
                             {
-                                if (item.GuaranteeRareMin > 0 || item.GuaranteeRareMax > 0)
-                                {
-                                    if (rarityGuarantee >= item.GuaranteeRareMin && rarityGuarantee <= item.GuaranteeRareMax)
-                                    {
-                                        matches.Add(item);
-                                    }
-                                }
-                                else
+                                if (rarityGuarantee >= item.GuaranteeRareMin && rarityGuarantee <= item.GuaranteeRareMax)
                                 {
                                     matches.Add(item);
                                 }
                             }
-                        }
-                        ShopOddsRarity match = null;
-                        if (matches.Count > 0)
-                        {
-                            match = matches.OrderByDescending(x => x.GuaranteeRareMin).First();
-                        }
-                        else if (odds.CardRateList.Count > 0)
-                        {
-                            match = odds.CardRateList.OrderBy(x => x.GuaranteeRareMin).FirstOrDefault(x => num >= x.StartNum && num <= x.EndNum);
-                            if (match != null)
+                            else
                             {
-                                // NOTE: Removing this log for now as it'll always occur for a default odds guarantee of SuperRare or higher (see TODO above)
-                                //LogInfo("Using fallback case for rarity odds on card index " + cardIndex);
+                                matches.Add(item);
                             }
                         }
-                        if (match == null)
+                    }
+                    ShopOddsRarity match = null;
+                    if (matches.Count > 0)
+                    {
+                        match = matches.OrderByDescending(x => x.GuaranteeRareMin).First();
+                    }
+                    else if (odds.CardRateList.Count > 0)
+                    {
+                        match = odds.CardRateList.OrderBy(x => x.GuaranteeRareMin).FirstOrDefault(x => num >= x.StartNum && num <= x.EndNum);
+                        if (match != null)
                         {
-                            Utils.LogWarning("Failed to determine odds for card index " + cardIndex + " on pack id " + shopItem.Id);
-                            //continue;
-                            match = odds.CardRateList[0];
+                            // NOTE: Removing this log for now as it'll always occur for a default odds guarantee of SuperRare or higher (see TODO above)
+                            //LogInfo("Using fallback case for rarity odds on card index " + cardIndex);
                         }
-                        Dictionary<CardRarity, double> rarityAccumaltiveRate = new Dictionary<CardRarity, double>();
-                        double totalRarityPercent = 0;
-                        double subtractPercent = 0;
-                        foreach (KeyValuePair<CardRarity, double> rate in match.Rate.OrderBy(x => x.Key))
+                    }
+                    if (match == null)
+                    {
+                        Utils.LogWarning("Failed to determine odds for card index " + cardIndex + " on pack id " + targetShopItem.Id);
+                        //continue;
+                        match = odds.CardRateList[0];
+                    }
+                    Dictionary<CardRarity, double> rarityAccumaltiveRate = new Dictionary<CardRarity, double>();
+                    double totalRarityPercent = 0;
+                    double subtractPercent = 0;
+                    foreach (KeyValuePair<CardRarity, double> rate in match.Rate.OrderBy(x => x.Key))
+                    {
+                        if (rate.Value <= 0 || numCardsByRarity[rate.Key] == 0)
                         {
-                            if (rate.Value <= 0 || numCardsByRarity[rate.Key] == 0)
-                            {
-                                // Remove the percentage from the calculation as otherwise it'll produce skewed results
-                                subtractPercent += Math.Max(0, rate.Value);
-                                continue;
-                            }
-                            totalRarityPercent += rate.Value;
-                            rarityAccumaltiveRate[rate.Key] = totalRarityPercent;
+                            // Remove the percentage from the calculation as otherwise it'll produce skewed results
+                            subtractPercent += Math.Max(0, rate.Value);
+                            continue;
                         }
+                        totalRarityPercent += rate.Value;
+                        rarityAccumaltiveRate[rate.Key] = totalRarityPercent;
+                    }
+                    if (rarityAccumaltiveRate.Count == 0)
+                    {
+                        Utils.LogWarning("Missing odds for card index " + cardIndex + " on pack id " + targetShopItem.Id);
+                    }
+                    double rarityPercent = rand.NextDouble() * (100 - subtractPercent);
+                    CardRarity rarity = CardRarity.None;
+                    foreach (KeyValuePair<CardRarity, double> rate in rarityAccumaltiveRate.OrderBy(x => x.Key))
+                    {
+                        if (rarityPercent < rate.Value)
+                        {
+                            rarity = rate.Key;
+                            break;
+                        }
+                    }
+                    //LogInfo("rarityPercent: " + rarityPercent + " value: " + rarity);
+                    if (rarity == CardRarity.None)
+                    {
                         if (rarityAccumaltiveRate.Count == 0)
                         {
-                            Utils.LogWarning("Missing odds for card index " + cardIndex + " on pack id " + shopItem.Id);
+                            Utils.LogWarning("Skip as all rarities cleared out for index " + cardIndex);
+                            continue;
                         }
-                        double rarityPercent = rand.NextDouble() * (100 - subtractPercent);
-                        CardRarity rarity = CardRarity.None;
-                        foreach (KeyValuePair<CardRarity, double> rate in rarityAccumaltiveRate.OrderBy(x => x.Key))
+                        rarity = rarityAccumaltiveRate.Keys.OrderByDescending(x => x).First();
+                    }
+                    if (match.Standard)
+                    {
+                        pickupPacks.Add(targetShopItem);
+                    }
+                    int foundCardId = 0;
+                    List<int> shuffledCards = Utils.Shuffle(rand, new List<int>(match.Standard ? Shop.StandardPack.Cards.Keys : targetShopItem.Cards.Keys));
+                    List<CardRarity> raritiesToTry = new List<CardRarity>();
+                    {
+                        CardRarity tempRarity = rarity;
+                        while (tempRarity >= CardRarity.Normal)
                         {
-                            if (rarityPercent < rate.Value)
+                            raritiesToTry.Add(tempRarity);
+                            tempRarity--;
+                        }
+                        if (Shop.UpgradeRarityWhenNotFound)
+                        {
+                            tempRarity = rarity + 1;
+                            while (tempRarity <= CardRarity.UltraRare)
                             {
-                                rarity = rate.Key;
+                                raritiesToTry.Add(tempRarity);
+                                tempRarity++;
+                            }
+                        }
+                    }
+                    CardRarity originalRarity = rarity;
+                    while (raritiesToTry.Count > 0)
+                    {
+                        rarity = raritiesToTry[0];
+                        foreach (int cardId in shuffledCards)
+                        {
+                            CardRarity cardRarity;
+                            if (TryGetCardRarity(cardId, match.Standard ? standardPackCardRare : packCardRare, out cardRarity) && cardRarity == rarity)
+                            {
+                                if (Shop.NoDuplicatesPerPack && seenCardIdsThisPack.Contains(cardId) && cardRarity < CardRarity.SuperRare)
+                                {
+                                    continue;
+                                }
+                                seenCardIdsThisPack.Add(cardId);
+                                foundCardId = cardId;
                                 break;
                             }
                         }
-                        //LogInfo("rarityPercent: " + rarityPercent + " value: " + rarity);
-                        if (rarity == CardRarity.None)
+                        if (foundCardId != 0)
                         {
-                            if (rarityAccumaltiveRate.Count == 0)
-                            {
-                                Utils.LogWarning("Skip as all rarities cleared out for index " + cardIndex);
-                                continue;
-                            }
-                            rarity = rarityAccumaltiveRate.Keys.OrderByDescending(x => x).First();
+                            break;
                         }
-                        if (match.Standard)
+                        raritiesToTry.RemoveAt(0);
+                    }
+                    if (foundCardId == 0)
+                    {
+                        Utils.LogWarning("Failed to find card id for card index " + cardIndex + " on pack id " + targetShopItem.Id);
+                        continue;
+                    }
+                    if (rarity > originalRarity)
+                    {
+                        Utils.LogWarning("Upgraded rarity from " + originalRarity + " to " + rarity + ". Consider using a different shop odds for this pack");
+                    }
+                    if (rarity == CardRarity.UltraRare)
+                    {
+                        pulledUltraRare = true;
+                    }
+                    CardStyleRarity styleRarity = CardStyleRarity.Normal;
+                    if (!Shop.DisableCardStyleRarity)
+                    {
+                        foreach (ShopOddsStyleRarity item in odds.CardStyleRarityRateList)
                         {
-                            pickupPacks.Add(shopItem);
-                        }
-                        int foundCardId = 0;
-                        List<int> shuffledCards = Utils.Shuffle(rand, new List<int>(match.Standard ? Shop.StandardPack.Cards.Keys : shopItem.Cards.Keys));
-                        List<CardRarity> raritiesToTry = new List<CardRarity>();
-                        {
-                            CardRarity tempRarity = rarity;
-                            while (tempRarity >= CardRarity.Normal)
+                            if (item.Rarities.Contains(rarity))
                             {
-                                raritiesToTry.Add(tempRarity);
-                                tempRarity--;
-                            }
-                            if (Shop.UpgradeRarityWhenNotFound)
-                            {
-                                tempRarity = rarity + 1;
-                                while (tempRarity <= CardRarity.UltraRare)
+                                Dictionary<CardStyleRarity, double> styleRarityAccumaltiveRate = new Dictionary<CardStyleRarity, double>();
+                                double styleRarityTotalPercent = 0;
+                                foreach (KeyValuePair<CardStyleRarity, double> rate in item.Rate.OrderBy(x => x.Key))
                                 {
-                                    raritiesToTry.Add(tempRarity);
-                                    tempRarity++;
-                                }
-                            }
-                        }
-                        CardRarity originalRarity = rarity;
-                        while (raritiesToTry.Count > 0)
-                        {
-                            rarity = raritiesToTry[0];
-                            foreach (int cardId in shuffledCards)
-                            {
-                                CardRarity cardRarity;
-                                if (TryGetCardRarity(cardId, match.Standard ? standardPackCardRare : packCardRare, out cardRarity) && cardRarity == rarity)
-                                {
-                                    if (Shop.NoDuplicatesPerPack && seenCardIdsThisPack.Contains(cardId) && cardRarity < CardRarity.SuperRare)
+                                    if (rate.Value <= 0)
                                     {
                                         continue;
                                     }
-                                    seenCardIdsThisPack.Add(cardId);
-                                    foundCardId = cardId;
-                                    break;
+                                    styleRarityTotalPercent += rate.Value;
+                                    styleRarityAccumaltiveRate[rate.Key] = styleRarityTotalPercent;
                                 }
-                            }
-                            if (foundCardId != 0)
-                            {
+                                if (styleRarityAccumaltiveRate.Count == 0)
+                                {
+                                    Utils.LogWarning("Invalid style rarity odds for card index " + cardIndex + " on pack id " + targetShopItem.Id);
+                                }
+                                else
+                                {
+                                    double styleRarityPercent = rand.NextDouble() * 100;
+                                    foreach (KeyValuePair<CardStyleRarity, double> rate in styleRarityAccumaltiveRate.OrderBy(x => x.Key))
+                                    {
+                                        if (styleRarityPercent < rate.Value)
+                                        {
+                                            styleRarity = rate.Key;
+                                            break;
+                                        }
+                                    }
+                                    //LogInfo("styleRarityPercent: " + styleRarityPercent + " value: " + styleRarity);
+                                }
                                 break;
                             }
-                            raritiesToTry.RemoveAt(0);
                         }
-                        if (foundCardId == 0)
+                    }
+                    bool isNewCard = false;
+                    if (request.Player.Cards.GetCount(foundCardId) == 0 || newCardIds.Contains(foundCardId))
+                    {
+                        isNewCard = true;
+                        newCardIds.Add(foundCardId);
+                    }
+                    request.Player.Cards.Add(foundCardId, 1, PlayerCardKind.Dismantle, styleRarity);
+                    cardIdsToUpdate.Add(foundCardId);
+                    HashSet<int> thisCardFoundSecrets = new HashSet<int>();
+                    HashSet<int> thisCardFoundSecretsExtend = new HashSet<int>();
+                    List<ShopItemInfo> secretPacks;
+                    if (rarity >= CardRarity.SuperRare && Shop.SecretPacksByCardId.TryGetValue(foundCardId, out secretPacks))
+                    {
+                        foreach (ShopItemInfo secretPack in secretPacks)
                         {
-                            Utils.LogWarning("Failed to find card id for card index " + cardIndex + " on pack id " + shopItem.Id);
-                            continue;
-                        }
-                        if (rarity > originalRarity)
-                        {
-                            Utils.LogWarning("Upgraded rarity from " + originalRarity + " to " + rarity + ". Consider using a different shop odds for this pack");
-                        }
-                        if (rarity == CardRarity.UltraRare)
-                        {
-                            pulledUltraRare = true;
-                        }
-                        CardStyleRarity styleRarity = CardStyleRarity.Normal;
-                        if (!Shop.DisableCardStyleRarity)
-                        {
-                            foreach (ShopOddsStyleRarity item in odds.CardStyleRarityRateList)
+                            switch (secretPack.SecretType)
                             {
-                                if (item.Rarities.Contains(rarity))
-                                {
-                                    Dictionary<CardStyleRarity, double> styleRarityAccumaltiveRate = new Dictionary<CardStyleRarity, double>();
-                                    double styleRarityTotalPercent = 0;
-                                    foreach (KeyValuePair<CardStyleRarity, double> rate in item.Rate.OrderBy(x => x.Key))
+                                case ShopItemSecretType.FindOrCraft:
+                                case ShopItemSecretType.Find:
+                                    if (request.Player.ShopState.GetAvailability(Shop, secretPack) == PlayerShopItemAvailability.Available)
                                     {
-                                        if (rate.Value <= 0)
-                                        {
-                                            continue;
-                                        }
-                                        styleRarityTotalPercent += rate.Value;
-                                        styleRarityAccumaltiveRate[rate.Key] = styleRarityTotalPercent;
-                                    }
-                                    if (styleRarityAccumaltiveRate.Count == 0)
-                                    {
-                                        Utils.LogWarning("Invalid style rarity odds for card index " + cardIndex + " on pack id " + shopItem.Id);
+                                        thisCardFoundSecretsExtend.Add(secretPack.ShopId);
                                     }
                                     else
                                     {
-                                        double styleRarityPercent = rand.NextDouble() * 100;
-                                        foreach (KeyValuePair<CardStyleRarity, double> rate in styleRarityAccumaltiveRate.OrderBy(x => x.Key))
-                                        {
-                                            if (styleRarityPercent < rate.Value)
-                                            {
-                                                styleRarity = rate.Key;
-                                                break;
-                                            }
-                                        }
-                                        //LogInfo("styleRarityPercent: " + styleRarityPercent + " value: " + styleRarity);
+                                        request.Player.ShopState.New(secretPack);
+                                        foundSecrets.Add(secretPack.ShopId);
+                                        thisCardFoundSecrets.Add(secretPack.ShopId);
                                     }
+                                    request.Player.ShopState.Unlock(secretPack);
+                                    showSecretFoundResult = true;
                                     break;
-                                }
                             }
                         }
-                        bool isNewCard = false;
-                        if (request.Player.Cards.GetCount(foundCardId) == 0 || newCardIds.Contains(foundCardId))
-                        {
-                            isNewCard = true;
-                            newCardIds.Add(foundCardId);
-                        }
-                        request.Player.Cards.Add(foundCardId, 1, PlayerCardKind.Dismantle, styleRarity);
-                        cardIdsToUpdate.Add(foundCardId);
-                        HashSet<int> thisCardFoundSecrets = new HashSet<int>();
-                        HashSet<int> thisCardFoundSecretsExtend = new HashSet<int>();
-                        List<ShopItemInfo> secretPacks;
-                        if (rarity >= CardRarity.SuperRare && Shop.SecretPacksByCardId.TryGetValue(foundCardId, out secretPacks))
-                        {
-                            foreach (ShopItemInfo secretPack in secretPacks)
-                            {
-                                switch (secretPack.SecretType)
-                                {
-                                    case ShopItemSecretType.FindOrCraft:
-                                    case ShopItemSecretType.Find:
-                                        if (request.Player.ShopState.GetAvailability(Shop, secretPack) == PlayerShopItemAvailability.Available)
-                                        {
-                                            thisCardFoundSecretsExtend.Add(secretPack.ShopId);
-                                        }
-                                        else
-                                        {
-                                            request.Player.ShopState.New(secretPack);
-                                            foundSecrets.Add(secretPack.ShopId);
-                                            thisCardFoundSecrets.Add(secretPack.ShopId);
-                                        }
-                                        request.Player.ShopState.Unlock(secretPack);
-                                        showSecretFoundResult = true;
-                                        break;
-                                }
-                            }
-                        }
-                        List<ShopItemInfo> additionalUnlockedSecrets = shopItem.DoUnlockSecrets(request.Player, Shop);
-                        if (additionalUnlockedSecrets != null && additionalUnlockedSecrets.Count > 0)
-                        {
-                            foreach (ShopItemInfo additionalUnlock in additionalUnlockedSecrets)
-                            {
-                                foundSecrets.Add(additionalUnlock.ShopId);
-                                thisCardFoundSecrets.Add(additionalUnlock.ShopId);
-                                showSecretFoundResult = true;
-                            }
-                        }
-                        CardRarity backSideRarity = rarity;
-                        if (Shop.PackOddsVisuals.RarityJebait && Shop.PackOddsVisuals.RarityOnCardBack &&
-                            rarity > CardRarity.Rare && rand.Next(100) < 20)
-                        {
-                            backSideRarity--;
-                        }
-                        if (rarity > highestCardRarity)
-                        {
-                            highestCardRarity = rarity;
-                        }
-                        if (backSideRarity > highestCardBackRarity)
-                        {
-                            highestCardBackRarity = backSideRarity;
-                        }
-                        cardInfos.Add(new Dictionary<string, object>()
-                        {
-                            { "mrk", foundCardId },
-                            { "rarity", (int)rarity },
-                            { "backSideRarity", Shop.PackOddsVisuals.RarityOnCardBack ? (int)backSideRarity : 1 },
-                            { "foundSecrets", thisCardFoundSecrets.ToArray() },
-                            { "extendSecrets", thisCardFoundSecretsExtend.ToArray() },
-                            { "new", isNewCard },
-                            { "premiumType", (int)styleRarity }
-                        });
                     }
-                    if (cardInfos.Count > 0)
+                    List<ShopItemInfo> additionalUnlockedSecrets = targetShopItem.DoUnlockSecrets(request.Player, Shop);
+                    if (additionalUnlockedSecrets != null && additionalUnlockedSecrets.Count > 0)
                     {
-                        bool showRarityOnPack = Shop.PackOddsVisuals.RarityOnPack;
-                        bool doCutin = highestCardBackRarity >= CardRarity.SuperRare && rand.Next(100) < 5;
-                        bool jebaitRarity = Shop.PackOddsVisuals.RarityJebait && (packCount == 1 || packIndex < packCount - 1) &&
-                            highestCardBackRarity >= CardRarity.SuperRare && rand.Next(100) < 20;
-                        bool jebaitRarityBg = jebaitRarity && rand.Next(2) == 0;
+                        foreach (ShopItemInfo additionalUnlock in additionalUnlockedSecrets)
+                        {
+                            foundSecrets.Add(additionalUnlock.ShopId);
+                            thisCardFoundSecrets.Add(additionalUnlock.ShopId);
+                            showSecretFoundResult = true;
+                        }
+                    }
+                    CardRarity backSideRarity = rarity;
+                    if (Shop.PackOddsVisuals.RarityJebait && Shop.PackOddsVisuals.RarityOnCardBack &&
+                        rarity > CardRarity.Rare && rand.Next(100) < 20)
+                    {
+                        backSideRarity--;
+                    }
+                    if (rarity > highestCardRarity)
+                    {
+                        highestCardRarity = rarity;
+                    }
+                    if (backSideRarity > highestCardBackRarity)
+                    {
+                        highestCardBackRarity = backSideRarity;
+                    }
+                    cardInfos.Add(new Dictionary<string, object>()
+                    {
+                        { "mrk", foundCardId },
+                        { "rarity", (int)rarity },
+                        { "backSideRarity", Shop.PackOddsVisuals.RarityOnCardBack ? (int)backSideRarity : 1 },
+                        { "foundSecrets", thisCardFoundSecrets.ToArray() },
+                        { "extendSecrets", thisCardFoundSecretsExtend.ToArray() },
+                        { "new", isNewCard },
+                        { "premiumType", (int)styleRarity }
+                    });
+                }
+                if (cardInfos.Count > 0)
+                {
+                    bool showRarityOnPack = Shop.PackOddsVisuals.RarityOnPack;
+                    bool doCutin = highestCardBackRarity >= CardRarity.SuperRare && rand.Next(100) < 5;
+                    bool jebaitRarity = Shop.PackOddsVisuals.RarityJebait && (packCount == 1 || packIndex < packCount - 1) &&
+                        highestCardBackRarity >= CardRarity.SuperRare && rand.Next(100) < 20;
+                    bool jebaitRarityBg = jebaitRarity && rand.Next(2) == 0;
 
-                        // 1 = Blue lighting bolt to the left
-                        // 2 = Blue lighting bolt to left / right
-                        // 3 = Blue lighting bolt to left / right and purple middle left
-                        int thunderType = 1;
-                        if (highestCardBackRarity >= CardRarity.SuperRare)
+                    // 1 = Blue lighting bolt to the left
+                    // 2 = Blue lighting bolt to left / right
+                    // 3 = Blue lighting bolt to left / right and purple middle left
+                    int thunderType = 1;
+                    if (highestCardBackRarity >= CardRarity.SuperRare)
+                    {
+                        thunderType = rand.Next(2, 4);
+                    }
+                    else
+                    {
+                        thunderType = rand.Next(1, 3);
+                    }
+                    // 1 = Normal
+                    // 2 = Monster cutting animation
+                    int cutType = doCutin ? 2 : 1;
+                    // 1 = Normal
+                    // 2 = White flash
+                    // 3 = White flash followed by yellow background
+                    // 4 = White flash followed by rainbow background
+                    int rarityUpBgType = jebaitRarity && jebaitRarityBg ? (int)highestCardBackRarity : 1;
+                    // 1 = Normal
+                    // 2 = White flash over the card pack
+                    // 3 = White flash over the card pack (x2), gets big and emits a yellow effect
+                    // 4 = White flash over the card pack (x2), gets big and emits a rainbow effect
+                    int rarityUpType = jebaitRarity && !jebaitRarityBg ? (int)highestCardBackRarity : 1;
+                    Dictionary<string, object> effects = new Dictionary<string, object>()
+                    {
+                        { "thunder", showRarityOnPack ? thunderType : rand.Next(1, 4) },
+                        { "rarityup", showRarityOnPack ? rarityUpType : 1 },
+                        { "cut", cutType },
+                        { "rarityupBg", showRarityOnPack ? rarityUpBgType : 1 },
+                        { "rarity", (jebaitRarity || !showRarityOnPack ? 1 : (int)highestCardBackRarity) },
+                    };
+                    List<Dictionary<string, object>> packList;
+                    if (!packInfos.TryGetValue(targetShopItem, out packList))
+                    {
+                        packInfos[targetShopItem] = packList = new List<Dictionary<string, object>>();
+                    }
+                    packList.Add(new Dictionary<string, object>()
+                    {
+                        { "effects", effects },
+                        { "cardInfo", cardInfos },
+                    });
+                }
+            }
+            bool isNextPackUR = !isBundle && packCount == shopExtraGuaranteePackCount && !pulledUltraRare && !Shop.DisableUltraRareGuarantee && !targetShopItem.DisableUltraRareGuarantee;
+            if (packInfos.Count > 0)
+            {
+                Dictionary<string, object> gacha = request.GetOrCreateDictionary("Gacha");
+
+                // TODO: Improve the pack splitting (each set of 10 will have the same effect)
+                List<object> packs = new List<object>();
+                foreach (KeyValuePair<ShopItemInfo, List<Dictionary<string, object>>> pack in packInfos)
+                {
+                    for (int i = 0; i < pack.Value.Count; i += 10)
+                    {
+                        packs.Add(new Dictionary<string, object>()
                         {
-                            thunderType = rand.Next(2, 4);
-                        }
-                        else
-                        {
-                            thunderType = rand.Next(1, 3);
-                        }
-                        // 1 = Normal
-                        // 2 = Monster cutting animation
-                        int cutType = doCutin ? 2 : 1;
-                        // 1 = Normal
-                        // 2 = White flash
-                        // 3 = White flash followed by yellow background
-                        // 4 = White flash followed by rainbow background
-                        int rarityUpBgType = jebaitRarity && jebaitRarityBg ? (int)highestCardBackRarity : 1;
-                        // 1 = Normal
-                        // 2 = White flash over the card pack
-                        // 3 = White flash over the card pack (x2), gets big and emits a yellow effect
-                        // 4 = White flash over the card pack (x2), gets big and emits a rainbow effect
-                        int rarityUpType = jebaitRarity && !jebaitRarityBg ? (int)highestCardBackRarity : 1;
-                        Dictionary<string, object> effects = new Dictionary<string, object>()
-                        {
-                            { "thunder", showRarityOnPack ? thunderType : rand.Next(1, 4) },
-                            { "rarityup", showRarityOnPack ? rarityUpType : 1 },
-                            { "cut", cutType },
-                            { "rarityupBg", showRarityOnPack ? rarityUpBgType : 1 },
-                            { "rarity", (jebaitRarity || !showRarityOnPack ? 1 : (int)highestCardBackRarity) },
-                        };
-                        List<Dictionary<string, object>> packList;
-                        if (!packInfos.TryGetValue(shopItem, out packList))
-                        {
-                            packInfos[shopItem] = packList = new List<Dictionary<string, object>>();
-                        }
-                        packList.Add(new Dictionary<string, object>()
-                        {
-                            { "effects", effects },
-                            { "cardInfo", cardInfos },
+                            { "packInfo", pack.Value.GetRange(i, Math.Min(10, pack.Value.Count - i)) },
+                            { "effects", new Dictionary<string, object>()
+                            {
+                                { "isPickup", pickupPacks.Contains(pack.Key) },
+                                { "imageName", targetShopItem.PackImageName },
+                                { "smokeType", smokeType }
+                            } },
                         });
                     }
                 }
-                bool isNextPackUR = packCount == shopExtraGuaranteePackCount && !pulledUltraRare && !Shop.DisableUltraRareGuarantee && !shopItem.DisableUltraRareGuarantee;
-                if (packInfos.Count > 0)
-                {
-                    Dictionary<string, object> gacha = request.GetOrCreateDictionary("Gacha");
 
-                    // TODO: Improve the pack splitting (each set of 10 will have the same effect)
-                    List<object> packs = new List<object>();
-                    foreach (KeyValuePair<ShopItemInfo, List<Dictionary<string, object>>> pack in packInfos)
+                Dictionary<string, object> drawInfo = Utils.GetOrCreateDictionary(gacha, "drawInfo");
+                drawInfo["packs"] = packs;
+                drawInfo["options"] = new Dictionary<string, object>()
+                {
+                    { "skippable", true },
+                };
+
+                List<object> setItems = new List<object>();
+                if (isBundle)
+                {
+                    foreach (ShopBundleItem item in shopItem.SetItems)
                     {
-                        for (int i = 0; i < pack.Value.Count; i += 10)
+                        bool added = false;
+                        switch ((ItemID.Category)item.ItemCategory)
                         {
-                            packs.Add(new Dictionary<string, object>()
-                            {
-                                { "packInfo", pack.Value.GetRange(i, Math.Min(10, pack.Value.Count - i)) },
-                                { "effects", new Dictionary<string, object>()
+                            case ItemID.Category.STRUCTURE:
+                                DeckInfo deck;
+                                if (StructureDecks.TryGetValue(item.ItemId, out deck))
                                 {
-                                    { "isPickup", pickupPacks.Contains(pack.Key) },
-                                    { "imageName", shopItem.PackImageName },
-                                    { "smokeType", smokeType }
-                                } },
+                                    GiveStructureDeck(request, deck.Id);
+                                    added = true;
+                                }
+                                break;
+                            case ItemID.Category.CARD:
+                                {
+                                    request.Player.Cards.Add(item.ItemId, item.Num, PlayerCardKind.NoDismantle, CardStyleRarity.Normal);
+                                    cardIdsToUpdate.Add(item.ItemId);
+                                    added = true;
+                                }
+                                break;
+                            default:
+                                if (request.Player.AddItem(item.ItemId, item.Num))
+                                {
+                                    WriteItem(request, item.ItemId);
+                                    added = true;
+                                }
+                                break;
+                        }
+                        if (added)
+                        {
+                            setItems.Add(new Dictionary<string, object>()
+                            {
+                                { "is_period", item.Period },
+                                { "item_category", item.ItemCategory },
+                                { "item_id", item.ItemId },
+                                { "num", item.Num },
+                                { "is_present_send", false },
                             });
                         }
                     }
-
-                    Dictionary<string, object> drawInfo = Utils.GetOrCreateDictionary(gacha, "drawInfo");
-                    drawInfo["packs"] = packs;
-                    drawInfo["options"] = new Dictionary<string, object>()
-                    {
-                        { "skippable", true },
-                    };
-
-                    gacha["resultInfo"] = new Dictionary<string, object>()
-                    {
-                        { "isSendGift", false },
-                        { "showSecretFoundResult", showSecretFoundResult },
-                        { "isNextFinalizedUR", isNextPackUR },
-                        { "NextFinalizedURNameTextId", "IDS_CARDPACK_ID0001_NAME" },
-                    };
                 }
-                WriteCards_have(request, cardIdsToUpdate);
-                request.Response["Item"] = new Dictionary<string, object>()
+
+                gacha["resultInfo"] = new Dictionary<string, object>()
                 {
-                    { "have", new Dictionary<string, object>() {
-                        { ((int)ItemID.Value.Gem).ToString(), request.Player.Gems },
-                    }}
+                    { "isSendGift", false },
+                    { "showSecretFoundResult", showSecretFoundResult },
+                    { "isNextFinalizedUR", isNextPackUR },
+                    { "NextFinalizedURNameTextId", "IDS_CARDPACK_ID0001_NAME" },
+                    { "setItems", setItems }
                 };
-                HashSet<int> shopIdsToUpdate = new HashSet<int>();
-                if (packCount == shopExtraGuaranteePackCount && !Shop.DisableUltraRareGuarantee && !shopItem.DisableUltraRareGuarantee)
-                {
-                    request.Player.ShopState.SetUltraRareGaurantee(shopItem.Id, isNextPackUR);
-                    shopIdsToUpdate.Add(shopItem.ShopId);// Update for either state change (SR->UR / UR->SR)
-                }
-                if (shopItem.Buylimit > 0 || (shopItem.SecretBuyLimit > 0 && shopItem.SecretType != ShopItemSecretType.None))
-                {
-                    // To update indicators for the buy limit
-                    shopIdsToUpdate.Add(shopItem.ShopId);
-                }
-                if (shopItem.UnlockSecrets.Count > 0 || shopItem.DescTextGenerated)
-                {
-                    // To update indicators for the next pack unlock
-                    shopIdsToUpdate.Add(shopItem.ShopId);
-                }
-                foreach (int secretShopId in foundSecrets)
-                {
-                    shopIdsToUpdate.Add(secretShopId);
-                }
-                if (shopItem.Prices.Any(x => x.MultiBuyLimit > 1))
-                {
-                    // To update shops with a varied buy limit
-                    shopIdsToUpdate.Add(shopItem.ShopId);
-                }
-                foreach (int shopIdToUpdate in shopIdsToUpdate)
-                {
-                    Act_ShopGetList(request, shopIdToUpdate);
-                }
+            }
+            WriteCards_have(request, cardIdsToUpdate);
+            WriteItem(request, (int)ItemID.Value.Gem);
+            HashSet<int> shopIdsToUpdate = new HashSet<int>();
+            if (packCount == shopExtraGuaranteePackCount && !Shop.DisableUltraRareGuarantee && !shopItem.DisableUltraRareGuarantee && !isBundle)
+            {
+                request.Player.ShopState.SetUltraRareGaurantee(shopItem.Id, isNextPackUR);
+                shopIdsToUpdate.Add(shopItem.ShopId);// Update for either state change (SR->UR / UR->SR)
+            }
+            if (shopItem.Buylimit > 0 || (shopItem.SecretBuyLimit > 0 && shopItem.SecretType != ShopItemSecretType.None))
+            {
+                // To update indicators for the buy limit
+                shopIdsToUpdate.Add(shopItem.ShopId);
+            }
+            if (targetShopItem.UnlockSecrets.Count > 0 || targetShopItem.DescTextGenerated)
+            {
+                // To update indicators for the next pack unlock
+                shopIdsToUpdate.Add(targetShopItem.ShopId);
+            }
+            foreach (int secretShopId in foundSecrets)
+            {
+                shopIdsToUpdate.Add(secretShopId);
+            }
+            if (shopItem.Prices.Any(x => x.MultiBuyLimit > 1))
+            {
+                // To update shops with a varied buy limit
+                shopIdsToUpdate.Add(shopItem.ShopId);
+            }
+            foreach (int shopIdToUpdate in shopIdsToUpdate)
+            {
+                Act_ShopGetList(request, shopIdToUpdate);
             }
             return true;
         }
