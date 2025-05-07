@@ -1174,18 +1174,18 @@ namespace YgoMasterClient
                                 }
                                 else if (!characterPositions.Values.Contains(CharacterPosition.LeftBack))
                                 {
-                                    CharMoveTo(characterPositions.Where(x => x.Value == CharacterPosition.Left).Select(x => x.Key).First(), CharacterPosition.LeftBack);
+                                    SwapPos(CharacterPosition.Left, CharacterPosition.LeftBack);
                                     CharMoveTo(entry.Char, CharacterPosition.Left);
                                 }
                                 else if (!characterPositions.Values.Contains(CharacterPosition.RightBack))
                                 {
-                                    CharMoveTo(characterPositions.Where(x => x.Value == CharacterPosition.Right).Select(x => x.Key).First(), CharacterPosition.RightBack);
+                                    SwapPos(CharacterPosition.Right, CharacterPosition.RightBack);
                                     CharMoveTo(entry.Char, CharacterPosition.Right);
                                 }
                                 else
                                 {
-                                    CharMoveTo(characterPositions.Where(x => x.Value == CharacterPosition.LeftBack).Select(x => x.Key).First(), CharacterPosition.None);
-                                    CharMoveTo(characterPositions.Where(x => x.Value == CharacterPosition.Left).Select(x => x.Key).First(), CharacterPosition.LeftBack);
+                                    SwapPos(CharacterPosition.Left, CharacterPosition.None);
+                                    SwapPos(CharacterPosition.Left, CharacterPosition.LeftBack);
                                     CharMoveTo(entry.Char, CharacterPosition.Left);
                                 }
                             }
@@ -1194,12 +1194,12 @@ namespace YgoMasterClient
                                 // Always move the talking character to the front
                                 if (charPos == CharacterPosition.LeftBack)
                                 {
-                                    CharMoveTo(characterPositions.Where(x => x.Value == CharacterPosition.Left).Select(x => x.Key).First(), CharacterPosition.LeftBack);
+                                    SwapPos(CharacterPosition.Left, CharacterPosition.LeftBack);
                                     CharMoveTo(entry.Char, CharacterPosition.Left);
                                 }
                                 else if (charPos == CharacterPosition.RightBack)
                                 {
-                                    CharMoveTo(characterPositions.Where(x => x.Value == CharacterPosition.Right).Select(x => x.Key).First(), CharacterPosition.RightBack);
+                                    SwapPos(CharacterPosition.Right, CharacterPosition.RightBack);
                                     CharMoveTo(entry.Char, CharacterPosition.Right);
                                 }
                             }
@@ -1314,6 +1314,15 @@ namespace YgoMasterClient
                 {
                     PlayTweenScale(charObj, TweenScale, characterTweenScaleDuration, scale);
                 }
+            }
+        }
+
+        static void SwapPos(CharacterPosition from, CharacterPosition to)
+        {
+            string fromChar = characterPositions.Where(x => x.Value == from).Select(x => x.Key).FirstOrDefault();
+            if (!string.IsNullOrEmpty(fromChar))
+            {
+                CharMoveTo(fromChar, to);
             }
         }
 

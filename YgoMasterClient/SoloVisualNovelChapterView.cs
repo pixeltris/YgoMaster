@@ -156,6 +156,8 @@ namespace YgoMasterClient
                 return;
             }
 
+            int numChaptersWithCustomImages = 0;
+
             IntPtr chapterMap = SoloSelectChapterViewController_chapterMap.GetValue(thisPtr).ptr;
             int gateId = ChapterMap_gateID.GetValue(chapterMap).GetValueRef<int>();
 
@@ -209,11 +211,13 @@ namespace YgoMasterClient
                         Vector3 anchorPos = new Vector3(0, 0, 0);
                         RectTransform_anchoredPosition3D.GetSetMethod().Invoke(charsTransform, new IntPtr[] { new IntPtr(&anchorPos) });
                         Transform.SetLocalScale(charsTransform, new Vector3(1, 1, 1));
+
+                        numChaptersWithCustomImages++;
                     }
                 }
             }
 
-            if (disableWallpaper)
+            if (disableWallpaper && numChaptersWithCustomImages > 0)
             {
                 IntPtr obj = Component.GetGameObject(thisPtr);
                 IntPtr wallpaper = GameObject.FindGameObjectByPath(obj, "SoloSelectChapterUI(Clone).Wallpaper");
