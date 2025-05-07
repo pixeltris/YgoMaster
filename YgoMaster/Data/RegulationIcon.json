@@ -300,6 +300,34 @@
     "icon": "RegulationLogoEvent",
     "enable_room": "0"
   },
+  "145": {
+    "id": "145",
+    "regulation_id": 145,
+    "name": "IDS_REGULATION_NAME_VERSUS_004_1",
+    "icon": "RegulationLogoEvent",
+    "enable_room": "1"
+  },
+  "146": {
+    "id": "146",
+    "regulation_id": 146,
+    "name": "IDS_REGULATION_NAME_VERSUS_004_2",
+    "icon": "RegulationLogoEvent",
+    "enable_room": "1"
+  },
+  "147": {
+    "id": "147",
+    "regulation_id": 147,
+    "name": "IDS_REGULATION_NAME_VERSUS_004_3",
+    "icon": "RegulationLogoEvent",
+    "enable_room": "1"
+  },
+  "148": {
+    "id": "148",
+    "regulation_id": 148,
+    "name": "IDS_DUELTRIAL_REG_030",
+    "icon": "RegulationLogoEvent",
+    "enable_room": "0"
+  },
   "1002": {
     "id": "1002",
     "regulation_id": 1036,

@@ -40,6 +40,7 @@
     1000022,//Revendread Slayer
     1000023,//Toadally Awesome
     1000024,//Blue-Eyes White Dragon
+    1000025,//Machina Citadel
     1000026,//Spright Blue
     1000027,//Unchained Abomination
     1000028,//White Aura Dolphin
@@ -317,6 +318,7 @@
     1013001,//PawaPuro
     1013002,//Memories of Intersecting Duels
     1013003,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
+    1013004,//Sky Striker Ace - Kagari
   ],
   "PROFILE_TAG": [
     1020001,//Beginner Duelist
@@ -339,7 +341,7 @@
     1020018,//Strategy Expert
     1020019,//Unfathomable
     1020020,//Synchro Festival 2022
-    1020022,//<color=#9933CC>Fusion Festival 2022</color>
+    1020022,//Fusion Festival 2022
     1020023,//Limit One Festival 2022
     1020024,//EX-ZERO Festival 2022
     1020025,//DC 2022 AUG Top 10
@@ -463,7 +465,20 @@
     1020143,//DC 2024 DEC 2nd Stage Duelist
     1020144,//Chronicler
     1020145,//Unstoppable Incarnation
+    1020146,//Duelist Crusher
+    1020147,//DC 2025 MAR Top 10
+    1020148,//DC 2025 MAR Top 100
+    1020149,//DC 2025 MAR Top 500
+    1020150,//DC 2025 MAR Top 1000
+    1020151,//DC 2025 MAR Top 10000
+    1020152,//DC 2025 MAR 2nd Stage Duelist
+    1020153,//Primary Colors
+    1020154,//Icy Edge Whetted in the Shadow
+    1020155,//Blistering Bolt Crashing upon the Earth
+    1020156,//Apocalyptic Fire Driven by the Wind
+    1020157,//Berserker
     1021001,//Starting Out
+    1021002,//Top Performer
   ],
   "ICON_FRAME": [
     1030001,//Beginner's Frame
@@ -826,6 +841,7 @@
     1101017,//Time Machine
     1101019,//Dragon Capture Jar
     1101020,//Opening of the Spirit Gates
+    1101023,//Back to Square One
     1101025,//Fire King Sanctuary
     1101032,//Centur-Ion Emeth VI
     1101034,//Kochobo's Hinamatsuri
@@ -894,6 +910,7 @@
     1111041,//Shrine of Mist Valley
     1111043,//Tales of the White Forest
     1111045,//Madolche Chickolates
+    1111047,//DARK
     1111048,//LIGHT
     1111057,//Shield of the Millennium Dynasty
     1112001,//Colosseum
@@ -995,6 +1012,7 @@
     1130061,//Sky Striker Ace - Raye
     1130063,//Dogmatika Encounter
     1130064,//Majesty of the White Dragons
+    1130065,//Varar, Vaalmonican Concord
     1130066,//Dominus Purge
     1130067,//Dominus Impulse
     1130068,//Primite Howl

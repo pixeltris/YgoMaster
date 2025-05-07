@@ -152,6 +152,7 @@ namespace YgoMasterClient
                     break;
                 case "packimages":// Attempts to discover all card pack images (which are based on a given card id)
                     {
+                        Console.WriteLine("Dumping pack image names...");
                         // TODO: Improve this (get a card id list as currently this will be very slow)
                         StringBuilder sb = new StringBuilder();
                         sb.Append("\"PackShopImages\": [");
