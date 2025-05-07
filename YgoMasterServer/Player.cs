@@ -895,6 +895,7 @@ namespace YgoMaster
         // For solo/story...
         public int ChapterId;
         public bool IsMyDeck;
+        public bool IsCustomSoloDuel;
 
         public PlayerDuelState(Player player)
         {

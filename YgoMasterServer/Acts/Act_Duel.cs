@@ -351,7 +351,7 @@ namespace YgoMaster
                 {
                     case GameMode.SoloSingle:
                         bool chapterStatusChanged = false;
-                        if (request.Player.Duel.ChapterId != 0 && res != DuelResultType.None)
+                        if (request.Player.Duel.ChapterId != 0 && res != DuelResultType.None && !request.Player.Duel.IsCustomSoloDuel)
                         {
                             ChapterStatus oldChapterStatus;
                             request.Player.SoloChapters.TryGetValue(request.Player.Duel.ChapterId, out oldChapterStatus);

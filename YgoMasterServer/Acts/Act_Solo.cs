@@ -1177,7 +1177,11 @@ namespace YgoMaster
             int chapterId;
             if (Utils.TryGetValue<int>(request.ActParams, "chapter", out chapterId))
             {
-                request.Player.SoloLastPlayedChaterId = chapterId;
+                request.Player.Duel.IsCustomSoloDuel = Utils.GetValue<bool>(request.ActParams, "customduel");
+                if (!request.Player.Duel.IsCustomSoloDuel)
+                {
+                    request.Player.SoloLastPlayedChaterId = chapterId;
+                }
                 SavePlayer(request.Player);
                 WriteSoloLastPlayDate(request);
 
@@ -1203,7 +1207,10 @@ namespace YgoMaster
                         Dictionary<string, object> chaptersData = Utils.GetOrCreateDictionary(soloData, "chapter");
                         chaptersData[chapterId.ToString()] = movieInfo;
                     }
-                    SoloUpdateChapterStatus(request, chapterId, DuelResultType.None, DuelFinishType.None);
+                    if (!request.Player.Duel.IsCustomSoloDuel)
+                    {
+                        SoloUpdateChapterStatus(request, chapterId, DuelResultType.None, DuelFinishType.None);
+                    }
                 }
                 else
                 {

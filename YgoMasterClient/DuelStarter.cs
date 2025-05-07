@@ -759,7 +759,15 @@ namespace YgomGame.Room
                 duelSettingsManager.SettingsClone = null;
                 duelSettingsManager.DuelSettingsFromUI();
 
-                YgomSystem.Network.Request.Entry("Solo.start", "{\"chapter\":" + ClientSettings.DuelStarterLiveChapterId + "}");
+                Dictionary<string, object> data = new Dictionary<string, object>()
+                {
+                    { "chapter", ClientSettings.DuelStarterLiveChapterId }
+                };
+                if (!Program.IsLive)
+                {
+                    data["customduel"] = true;
+                }
+                YgomSystem.Network.Request.Entry("Solo.start", MiniJSON.Json.Serialize(data));
             }
             else
             {
