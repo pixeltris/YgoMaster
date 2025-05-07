@@ -11,6 +11,7 @@ namespace YgoMasterClient
 {
     static partial class ClientSettings
     {
+        public static string SupportedGameVersion;
         public static string BaseIP;
         public static int BasePort;
         public static int ProxyPort;
@@ -119,6 +120,7 @@ namespace YgoMasterClient
                 return false;
             }
 
+            SupportedGameVersion = Utils.GetValue<string>(data, "SupportedGameVersion");
             BaseIP = Utils.GetValue<string>(data, "BaseIP");
             BasePort = Utils.GetValue<int>(data, "BasePort");
             UpdateProxyPort();

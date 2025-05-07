@@ -396,7 +396,45 @@ namespace YgoMasterClient
             }
             catch (Exception e)
             {
-                ShowMessageBox(e.ToString());
+                string clientVersion = null;
+                try
+                {
+                    IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+                    if (assembly != null)
+                    {
+                        IL2Class Version_Class = assembly.GetClass("Version", "YgomSystem.Utility");
+                        if (Version_Class != null)
+                        {
+                            IL2Property Version_AppCommonVersion = Version_Class.GetProperty("AppCommonVersion");
+                            if (Version_AppCommonVersion != null)
+                            {
+                                IL2Object obj = Version_AppCommonVersion.GetGetMethod().Invoke();
+                                if (obj != null)
+                                {
+                                    clientVersion = new IL2String(obj.ptr).ToString();
+                                }
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                }
+
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("Game version: " + clientVersion);
+                sb.AppendLine("Supported version: " + ClientSettings.SupportedGameVersion);
+                sb.AppendLine();
+                if (clientVersion != ClientSettings.SupportedGameVersion)
+                {
+                    sb.AppendLine("--------------------- READ ME ---------------------");
+                    sb.AppendLine("Unsupported game version. Game updates typically break YgoMaster. You'll need to download the latest version of YgoMaster or wait until a new release. Or download the latest version of the game using Steam if \"supported version\" is greater than \"game version\".");
+                    sb.AppendLine("---------------------------------------------------");
+                    sb.AppendLine();
+                }
+                sb.AppendLine(e.ToString());
+
+                ShowMessageBox(sb.ToString());
                 Environment.Exit(0);
                 return 1;
             }

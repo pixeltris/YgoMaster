@@ -1468,6 +1468,10 @@ namespace YgoMaster
         static extern int DLL_SetWorkMemory(IntPtr pWork);
         [DllImport(DllName)]
         public static extern int DLL_DuelGetAttachedEffectList(byte[] lpAffect);
+        [DllImport(DllName)]
+        private static extern void DLL_DuelChangeCardIDByUniqueID(int uniqueId, int cardId);//v2.3.0 TODO:?
+        [DllImport(DllName)]
+        private static extern void DLL_SetRareByUniqueID(int uniqueId, int rare);//v2.3.0 TODO:?
     }
 
     enum PvpOperationType

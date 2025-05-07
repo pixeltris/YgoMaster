@@ -79,6 +79,7 @@ namespace YgoMaster
         WCS,
         VERSUS,
         WCS_FINAL,
+        DICERALLY,//v2.3.0
     }
 
     /// <summary>

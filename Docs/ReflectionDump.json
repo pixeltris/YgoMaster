@@ -85,6 +85,26 @@
     "Class": [
       "DuelClient"
     ],
+    "Type": "Field",
+    "Name": "dicResult",
+    "Signature": "dicResult"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
+      "DuelClient"
+    ],
+    "Type": "Property",
+    "Name": "effectWorker",
+    "Signature": "public YgomGame.Duel.RunEffectWorker"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
+      "DuelClient"
+    ],
     "Type": "Property",
     "Name": "duelHUD",
     "Signature": "public YgomGame.Duel.DuelHUD"
@@ -113,6 +133,26 @@
     "Assembly": "Assembly-CSharp",
     "Namespace": "YgomGame.Duel",
     "Class": [
+      "DuelClient"
+    ],
+    "Type": "Method",
+    "Name": "EndStep",
+    "Signature": "System.Void EndStep()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
+      "RunEffectWorker"
+    ],
+    "Type": "Property",
+    "Name": "isRetryRequired",
+    "Signature": "public System.Boolean"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
       "CameraShaker"
     ],
     "Type": "Method",
@@ -134,7 +174,7 @@
     "Namespace": "YgomGame.Duel",
     "Class": [
       "DuelHUD",
-      "<PrepareToDuelProcess>d__154"
+      "<PrepareToDuelProcess>d__155"
     ],
     "Type": "Method",
     "Name": "MoveNext",
@@ -329,6 +369,36 @@
     "Type": "Method",
     "Name": "OnChangeWatcherNum",
     "Signature": "public System.Void OnChangeWatcherNum(System.Int32 num)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
+      "DuelHUD"
+    ],
+    "Type": "Method",
+    "Name": "DuelStart",
+    "Signature": "public System.Void DuelStart()"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "RectTransform"
+    ],
+    "Type": "Property",
+    "Name": "offsetMin",
+    "Signature": "public UnityEngine.Vector2"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "RectTransform"
+    ],
+    "Type": "Property",
+    "Name": "offsetMax",
+    "Signature": "public UnityEngine.Vector2"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -805,6 +875,16 @@
   },
   {
     "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Solo",
+    "Class": [
+      "SoloStartProductionViewController"
+    ],
+    "Type": "Method",
+    "Name": "OnCreatedView",
+    "Signature": "public System.Void OnCreatedView()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
     "Namespace": "YgomGame.Duel",
     "Class": [
       "EngineInitializerByServer"
@@ -1203,7 +1283,7 @@
     ],
     "Type": "Method",
     "Name": "AddToMainOrExtraDeck",
-    "Signature": "public YgomGame.Deck.DeckCard AddToMainOrExtraDeck(YgomGame.Deck.CardBaseData baseData)"
+    "Signature": "public YgomGame.Deck.DeckCard AddToMainOrExtraDeck(YgomGame.Deck.CardBaseData baseData, System.Boolean isUndo)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1213,7 +1293,7 @@
     ],
     "Type": "Method",
     "Name": "RemoveFromDeck",
-    "Signature": "public YgomGame.Deck.DeckCard RemoveFromDeck(YgomGame.Deck.CardBaseData baseData)"
+    "Signature": "public YgomGame.Deck.DeckCard RemoveFromDeck(YgomGame.Deck.CardBaseData baseData, System.Boolean isUndo)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1234,6 +1314,16 @@
     "Type": "Method",
     "Name": "AsyncFilterAndSort",
     "Signature": "System.Threading.Tasks.Task AsyncFilterAndSort(System.Action onFinish, System.Boolean setAll, System.Nullable<YgomGame.Menu.SortComparer.Sorter> targetSorter, System.Boolean filter)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame",
+    "Class": [
+      "DeckEditViewController2"
+    ],
+    "Type": "Method",
+    "Name": "getRelatedCardList",
+    "Signature": "System.Collections.Generic.List<YgomGame.Deck.CardBaseData> getRelatedCardList(System.Int32 cardID, System.Boolean fullStyle)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3113,8 +3203,731 @@
       "Sound"
     ],
     "Type": "Method",
+    "Name": "PlaySE",
+    "Signature": "public static System.Int32 PlaySE(System.String label)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
+      "Sound"
+    ],
+    "Type": "Method",
+    "Name": "Stop",
+    "Signature": "public static System.Void Stop(System.String label, System.Single fade)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
+      "Sound"
+    ],
+    "Type": "Method",
     "Name": "PlayBGM",
     "Signature": "public static System.Void PlayBGM(YgomGame.Duel.Sound.DuelBGM idx, System.Single delay)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "USnd",
+    "Class": [
+      "AudioManager"
+    ],
+    "Type": "Method",
+    "Name": "Play",
+    "Signature": "public static System.Int32 Play(System.String labelName, System.Single delay)"
+  },
+  {
+    "Assembly": "UnityEngine.UI",
+    "Namespace": "UnityEngine.UI",
+    "Class": [
+      "Image"
+    ],
+    "Type": "Property",
+    "Name": "sprite",
+    "Signature": "public UnityEngine.Sprite"
+  },
+  {
+    "Assembly": "UnityEngine.UI",
+    "Namespace": "UnityEngine.UI",
+    "Class": [
+      "HorizontalOrVerticalLayoutGroup"
+    ],
+    "Type": "Property",
+    "Name": "spacing",
+    "Signature": "public System.Single"
+  },
+  {
+    "Assembly": "UnityEngine.UI",
+    "Namespace": "UnityEngine.UI",
+    "Class": [
+      "Image"
+    ],
+    "Type": "Property",
+    "Name": "type",
+    "Signature": "public UnityEngine.UI.Image.Type"
+  },
+  {
+    "Assembly": "UnityEngine.UI",
+    "Namespace": "UnityEngine.UI",
+    "Class": [
+      "Image"
+    ],
+    "Type": "Property",
+    "Name": "preserveAspect",
+    "Signature": "public System.Boolean"
+  },
+  {
+    "Assembly": "UnityEngine.UIModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "CanvasGroup"
+    ],
+    "Type": "Property",
+    "Name": "alpha",
+    "Signature": "public System.Single"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "RectTransform"
+    ],
+    "Type": "Property",
+    "Name": "anchoredPosition",
+    "Signature": "public UnityEngine.Vector2"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "RectTransform"
+    ],
+    "Type": "Property",
+    "Name": "offsetMin",
+    "Signature": "public UnityEngine.Vector2"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "RectTransform"
+    ],
+    "Type": "Property",
+    "Name": "offsetMax",
+    "Signature": "public UnityEngine.Vector2"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "RectTransform"
+    ],
+    "Type": "Property",
+    "Name": "anchorMin",
+    "Signature": "public UnityEngine.Vector2"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "RectTransform"
+    ],
+    "Type": "Property",
+    "Name": "anchorMax",
+    "Signature": "public UnityEngine.Vector2"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "RectTransform"
+    ],
+    "Type": "Property",
+    "Name": "pivot",
+    "Signature": "public UnityEngine.Vector2"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "RectTransform"
+    ],
+    "Type": "Property",
+    "Name": "sizeDelta",
+    "Signature": "public UnityEngine.Vector2"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine.U2D",
+    "Class": [
+      "SpriteAtlas"
+    ],
+    "Type": "Method",
+    "Name": "GetSprite",
+    "Signature": "public UnityEngine.Sprite GetSprite(System.String name)"
+  },
+  {
+    "Assembly": "Unity.TextMeshPro",
+    "Namespace": "TMPro",
+    "Class": [
+      "TMP_FontAsset"
+    ],
+    "Type": "Method",
+    "Name": "CreateFontAsset",
+    "Signature": "public static TMPro.TMP_FontAsset CreateFontAsset(UnityEngine.Font font)"
+  },
+  {
+    "Assembly": "Unity.TextMeshPro",
+    "Namespace": "TMPro",
+    "Class": [
+      "TMP_Text"
+    ],
+    "Type": "Property",
+    "Name": "font",
+    "Signature": "public TMPro.TMP_FontAsset"
+  },
+  {
+    "Assembly": "Unity.TextMeshPro",
+    "Namespace": "TMPro",
+    "Class": [
+      "TMP_Text"
+    ],
+    "Type": "Property",
+    "Name": "fontSize",
+    "Signature": "public System.Single"
+  },
+  {
+    "Assembly": "Unity.TextMeshPro",
+    "Namespace": "TMPro",
+    "Class": [
+      "TMP_Text"
+    ],
+    "Type": "Property",
+    "Name": "lineSpacing",
+    "Signature": "public System.Single"
+  },
+  {
+    "Assembly": "Unity.TextMeshPro",
+    "Namespace": "TMPro",
+    "Class": [
+      "TMP_Text"
+    ],
+    "Type": "Property",
+    "Name": "horizontalAlignment",
+    "Signature": "public TMPro.HorizontalAlignmentOptions"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "SelectionButton"
+    ],
+    "Type": "Field",
+    "Name": "onClick",
+    "Signature": "public onClick"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "SelectionButton"
+    ],
+    "Type": "Field",
+    "Name": "_soundLabelClick",
+    "Signature": "_soundLabelClick"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine.Events",
+    "Class": [
+      "UnityEvent"
+    ],
+    "Type": "Method",
+    "Name": "AddListener",
+    "Signature": "public System.Void AddListener(UnityEngine.Events.UnityAction call)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "Selector"
+    ],
+    "Type": "Method",
+    "Name": "AddItem",
+    "Signature": "public System.Void AddItem(YgomSystem.UI.SelectionItem item)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "SelectionItem"
+    ],
+    "Type": "Field",
+    "Name": "_selector",
+    "Signature": "_selector"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Screen"
+    ],
+    "Type": "Property",
+    "Name": "width",
+    "Signature": "public static System.Int32"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Screen"
+    ],
+    "Type": "Property",
+    "Name": "height",
+    "Signature": "public static System.Int32"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "Tween"
+    ],
+    "Type": "Field",
+    "Name": "label",
+    "Signature": "public label"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "Tween"
+    ],
+    "Type": "Field",
+    "Name": "duration",
+    "Signature": "public duration"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "Tween"
+    ],
+    "Type": "Field",
+    "Name": "easing",
+    "Signature": "public easing"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "Tween"
+    ],
+    "Type": "Method",
+    "Name": "PlayLabel",
+    "Signature": "public System.Void PlayLabel(System.String _label)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "Tween"
+    ],
+    "Type": "Method",
+    "Name": "Reset",
+    "Signature": "public System.Void Reset()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "Tween"
+    ],
+    "Type": "Method",
+    "Name": "Play",
+    "Signature": "public System.Void Play()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "Tween"
+    ],
+    "Type": "Method",
+    "Name": "Stop",
+    "Signature": "public System.Void Stop()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "Tween"
+    ],
+    "Type": "Method",
+    "Name": "IsPlaying",
+    "Signature": "public System.Boolean IsPlaying(System.String _label, System.Boolean isActive)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenAlpha"
+    ],
+    "Type": "Field",
+    "Name": "from",
+    "Signature": "public from"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenAlpha"
+    ],
+    "Type": "Field",
+    "Name": "to",
+    "Signature": "public to"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenPosition"
+    ],
+    "Type": "Field",
+    "Name": "from",
+    "Signature": "public from"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenPosition"
+    ],
+    "Type": "Field",
+    "Name": "to",
+    "Signature": "public to"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenPosition"
+    ],
+    "Type": "Field",
+    "Name": "rtrans",
+    "Signature": "rtrans"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenPosition"
+    ],
+    "Type": "Method",
+    "Name": "OnSetValue",
+    "Signature": "public System.Void OnSetValue(System.Single par)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenScale"
+    ],
+    "Type": "Field",
+    "Name": "from",
+    "Signature": "public from"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "TweenScale"
+    ],
+    "Type": "Field",
+    "Name": "to",
+    "Signature": "public to"
+  },
+  {
+    "Assembly": "UnityEngine.UI",
+    "Namespace": "UnityEngine.UI",
+    "Class": [
+      "Image"
+    ],
+    "Type": "Property",
+    "Name": "sprite",
+    "Signature": "public UnityEngine.Sprite"
+  },
+  {
+    "Assembly": "UnityEngine.UI",
+    "Namespace": "UnityEngine.UI",
+    "Class": [
+      "Mask"
+    ],
+    "Type": "Property",
+    "Name": "showMaskGraphic",
+    "Signature": "public System.Boolean"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Texture"
+    ],
+    "Type": "Property",
+    "Name": "height",
+    "Signature": "public System.Int32"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "RectTransform"
+    ],
+    "Type": "Property",
+    "Name": "anchoredPosition3D",
+    "Signature": "public UnityEngine.Vector3"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "RectTransform"
+    ],
+    "Type": "Property",
+    "Name": "anchorMin",
+    "Signature": "public UnityEngine.Vector2"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "RectTransform"
+    ],
+    "Type": "Property",
+    "Name": "anchorMax",
+    "Signature": "public UnityEngine.Vector2"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "RectTransform"
+    ],
+    "Type": "Property",
+    "Name": "offsetMin",
+    "Signature": "public UnityEngine.Vector2"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "RectTransform"
+    ],
+    "Type": "Property",
+    "Name": "offsetMax",
+    "Signature": "public UnityEngine.Vector2"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "RectTransform"
+    ],
+    "Type": "Property",
+    "Name": "pivot",
+    "Signature": "public UnityEngine.Vector2"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "RectTransform"
+    ],
+    "Type": "Property",
+    "Name": "sizeDelta",
+    "Signature": "public UnityEngine.Vector2"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Sprite"
+    ],
+    "Type": "Property",
+    "Name": "rect",
+    "Signature": "public UnityEngine.Rect"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Solo",
+    "Class": [
+      "SoloSelectChapterViewController"
+    ],
+    "Type": "Method",
+    "Name": "OnCreatedView",
+    "Signature": "public System.Void OnCreatedView()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Solo",
+    "Class": [
+      "SoloSelectChapterViewController"
+    ],
+    "Type": "Field",
+    "Name": "chapterMap",
+    "Signature": "chapterMap"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Solo",
+    "Class": [
+      "SoloSelectChapterViewController",
+      "ChapterMap"
+    ],
+    "Type": "Field",
+    "Name": "chapterDataDic",
+    "Signature": "public chapterDataDic"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Solo",
+    "Class": [
+      "SoloSelectChapterViewController",
+      "ChapterMap"
+    ],
+    "Type": "Field",
+    "Name": "gateID",
+    "Signature": "public gateID"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Solo",
+    "Class": [
+      "SoloSelectChapterViewController",
+      "Chapter"
+    ],
+    "Type": "Field",
+    "Name": "go",
+    "Signature": "public go"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
+      "DuelTutorialSetting"
+    ],
+    "Type": "Method",
+    "Name": "IsTutorialChapter",
+    "Signature": "public System.Boolean IsTutorialChapter(System.Int32 chapter)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Tutorial",
+    "Class": [
+      "CardFlyingViewController"
+    ],
+    "Type": "Method",
+    "Name": "OnCreatedView",
+    "Signature": "public System.Void OnCreatedView()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Tutorial",
+    "Class": [
+      "CardFlyingViewController"
+    ],
+    "Type": "Field",
+    "Name": "_labelCtrl",
+    "Signature": "_labelCtrl"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.Timeline",
+    "Class": [
+      "LabeledPlayableController"
+    ],
+    "Type": "Method",
+    "Name": "PlayLabel",
+    "Signature": "public System.Void PlayLabel(System.String label)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
+      "DuelClient"
+    ],
+    "Type": "Method",
+    "Name": "InitTermStep",
+    "Signature": "System.Void InitTermStep()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
+      "DuelClient"
+    ],
+    "Type": "Field",
+    "Name": "m_DuelEndTransTimeline",
+    "Signature": "m_DuelEndTransTimeline"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.Timeline",
+    "Class": [
+      "LabeledPlayableController"
+    ],
+    "Type": "Field",
+    "Name": "m_PlayLabel",
+    "Signature": "m_PlayLabel"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.Timeline",
+    "Class": [
+      "LabeledPlayableController"
+    ],
+    "Type": "Method",
+    "Name": "Create",
+    "Signature": "public static YgomSystem.Timeline.LabeledPlayableController Create(UnityEngine.Playables.PlayableDirector target)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.Timeline",
+    "Class": [
+      "TimelineObject"
+    ],
+    "Type": "Property",
+    "Name": "playableDirector",
+    "Signature": "public UnityEngine.Playables.PlayableDirector"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem",
+    "Class": [
+      "Sound"
+    ],
+    "Type": "Property",
+    "Name": "Instance",
+    "Signature": "public static YgomSystem.Sound"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem",
+    "Class": [
+      "Sound"
+    ],
+    "Type": "Method",
+    "Name": "PlayBGM",
+    "Signature": "public System.Int32 PlayBGM(System.String label, System.Single delay)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem",
+    "Class": [
+      "Sound"
+    ],
+    "Type": "Method",
+    "Name": "StopBGM",
+    "Signature": "public System.Void StopBGM(System.Single fade)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3470,6 +4283,16 @@
     "Assembly": "UnityEngine.CoreModule",
     "Namespace": "UnityEngine",
     "Class": [
+      "Object"
+    ],
+    "Type": "Method",
+    "Name": "DontDestroyOnLoad",
+    "Signature": "public static System.Void DontDestroyOnLoad(UnityEngine.Object target)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
       "GameObject"
     ],
     "Type": "Method",
@@ -3623,6 +4446,26 @@
       "Transform"
     ],
     "Type": "Property",
+    "Name": "localPosition",
+    "Signature": "public UnityEngine.Vector3"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Transform"
+    ],
+    "Type": "Property",
+    "Name": "localScale",
+    "Signature": "public UnityEngine.Vector3"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Transform"
+    ],
+    "Type": "Property",
     "Name": "localScale",
     "Signature": "public UnityEngine.Vector3"
   },
@@ -3645,6 +4488,16 @@
     "Type": "Method",
     "Name": "SetSiblingIndex",
     "Signature": "public System.Void SetSiblingIndex(System.Int32 index)"
+  },
+  {
+    "Assembly": "UnityEngine.CoreModule",
+    "Namespace": "UnityEngine",
+    "Class": [
+      "Transform"
+    ],
+    "Type": "Method",
+    "Name": "SetAsLastSibling",
+    "Signature": "public System.Void SetAsLastSibling()"
   },
   {
     "Assembly": "UnityEngine.CoreModule",

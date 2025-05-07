@@ -241,6 +241,10 @@ namespace YgoMasterClient
         static Hook<Del_DLL_SetWorkMemory> hookDLL_SetWorkMemory;
         delegate int Del_DLL_DuelGetAttachedEffectList(IntPtr lpAffect);
         static Hook<Del_DLL_DuelGetAttachedEffectList> hookDLL_DuelGetAttachedEffectList;
+        delegate void Del_DLL_DuelChangeCardIDByUniqueID(int uniqueId, int cardId);
+        static Hook<Del_DLL_DuelChangeCardIDByUniqueID> hookDLL_DuelChangeCardIDByUniqueID;
+        delegate void Del_DLL_SetRareByUniqueID(int uniqueId, int rare);
+        static Hook<Del_DLL_SetRareByUniqueID> hookDLL_SetRareByUniqueID;
 
         static void InitProxyFunctions(IntPtr lib)
         {
@@ -359,6 +363,8 @@ namespace YgoMasterClient
             hookDLL_SetDuelChallenge2 = new Hook<Del_DLL_SetDuelChallenge2>(DLL_SetDuelChallenge2, PInvoke.GetProcAddress(lib, "DLL_SetDuelChallenge2"));
             hookDLL_SetWorkMemory = new Hook<Del_DLL_SetWorkMemory>(DLL_SetWorkMemory, PInvoke.GetProcAddress(lib, "DLL_SetWorkMemory"));
             hookDLL_DuelGetAttachedEffectList = new Hook<Del_DLL_DuelGetAttachedEffectList>(DLL_DuelGetAttachedEffectList, PInvoke.GetProcAddress(lib, "DLL_DuelGetAttachedEffectList"));
+            hookDLL_DuelChangeCardIDByUniqueID = new Hook<Del_DLL_DuelChangeCardIDByUniqueID>(DLL_DuelChangeCardIDByUniqueID, PInvoke.GetProcAddress(lib, "DLL_DuelChangeCardIDByUniqueID"));
+            hookDLL_SetRareByUniqueID = new Hook<Del_DLL_SetRareByUniqueID>(DLL_SetRareByUniqueID, PInvoke.GetProcAddress(lib, "DLL_SetRareByUniqueID"));
         }
 
         static uint DLL_CardRareGetBufferSize()
@@ -1830,6 +1836,30 @@ namespace YgoMasterClient
             else
             {
                 return hookDLL_DuelGetAttachedEffectList.Original(lpAffect);
+            }
+        }
+
+        static void DLL_DuelChangeCardIDByUniqueID(int uniqueId, int cardId)
+        {
+            if (IsPvpDuel)
+            {
+                // Ignore
+            }
+            else
+            {
+                hookDLL_DuelChangeCardIDByUniqueID.Original(uniqueId, cardId);
+            }
+        }
+
+        static void DLL_SetRareByUniqueID(int uniqueId, int rare)
+        {
+            if (IsPvpDuel)
+            {
+                // Ignore
+            }
+            else
+            {
+                hookDLL_SetRareByUniqueID.Original(uniqueId, rare);
             }
         }
     }

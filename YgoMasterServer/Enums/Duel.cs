@@ -249,6 +249,7 @@ namespace YgoMaster
         Kyouai,//v1.9.0
         Access,//v1.9.0
         Shukudai,//V2.0.0
+        Shiki,//v2.3.0
         Max
     }
 
@@ -489,6 +490,8 @@ namespace YgoMaster
         Survival_1on2,
         NoRandom = 16,//v1.9.0
         OldRule = 32,//v1.9.0
+        OldRule2 = 64,//v2.3.0
+        OldField = 128,//v2.3.0
     }
 
     /// <summary>
@@ -639,6 +642,7 @@ namespace YgoMaster
         INPUTGUARD,//v1.9.0
         DATA = 50,
         REPLAY = 60,
+        FLIPINFO,
         TIMEUP = 97,
         FINISH = 98,
         POLL = 99,

@@ -1,4 +1,5 @@
 {
+    "SupportedGameVersion": "2.3.0",
     "BaseIP": "localhost",
     "BasePort": 4989,
     "SessionServerPort": 4988,
@@ -18,7 +19,7 @@
     "AssetHelperDisableFileErrorPopup": false,
     "DeckEditorDisableLimits": false,
     "DeckEditorConvertStyleRarity": true,
-    "DeckEditorShowStats": true,
+    "DeckEditorShowStats": false,
     "DeckEditorDisableSorting": false,// NOTE: Only use for testing specific card draws. This isn't implemented properly and breaks normal deck editor functionality
     "DuelStarterShowFirstPlayer": true,
     "DuelStarterLiveChapterId": 10002,

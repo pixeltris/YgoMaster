@@ -27,41 +27,49 @@ namespace YgoMaster
 
         public enum AccountCode
         {
-            NONE = 0,
-            ERROR = 1,
-            FATAL = 2,
-            CRITICAL = 3,
+            NONE,
+            ERROR,
+            FATAL,
+            CRITICAL,
             NO_PLATFORM = 1100,
-            NO_TOKEN = 1101,
-            INVALID_TOKEN = 1102,
+            NO_TOKEN,
+            INVALID_TOKEN,
             AGREE_MISMATCH = 1104,
-            PLATFORM_EXISTING = 1105,
+            PLATFORM_EXISTING,
             PFM_INHERIT_SUCCESS = 1140,
-            PFM_INHERIT_NOT_REGISTER = 1141,
-            PFM_INHERIT_ALREADY_REGISTERED = 1142,
-            PFM_INHERIT_ERR_INVALID_PLATFORM = 1143,
-            PFM_INHERIT_ERR_SHA_NON_REG = 1144,
-            PFM_INHERIT_ERR_INHERIT_FAILED = 1145,
+            PFM_INHERIT_NOT_REGISTER,
+            PFM_INHERIT_ALREADY_REGISTERED,
+            PFM_INHERIT_ERR_INVALID_PLATFORM,
+            PFM_INHERIT_ERR_SHA_NON_REG,
+            PFM_INHERIT_ERR_INHERIT_FAILED,
             KID_INHERIT_SUCCESS = 1150,
-            KID_INHERIT_NOT_LINKED = 1151,
-            KID_INHERIT_LINKED = 1152,
-            KID_INHERIT_INHERIT_WAIT = 1153,
-            KID_INHERIT_API_NEED_AGREE = 1154,
-            KID_INHERIT_API_UNAVAILABLE = 1155,
-            KID_INHERIT_NO_DATA = 1156,
-            KID_INHERIT_API_FAILED = 1157,
-            KID_INHERIT_NONCE_ERR = 1158,
-            KID_INHERIT_FAILED = 1159,
-            KID_INHERIT_PF_RELATION_FAILED_PS = 1160,
-            KID_INHERIT_PF_RELATION_FAILED_NINTENDO = 1161,
-            KID_INHERIT_PF_RELATION_FAILED_XBOX = 1162,
-            KID_INHERIT_PF_RELATION_FAILED_STEAM = 1163,
-            PLATFORM_ERROR = 1170,
-            PLATFORM_REAUTH = 1171,
-            PLATFORM_REBOOT = 1172,
-            ERR_PLATFORM_AUTH_EXPIRED = 1173,
-            ERR_PLATFORM_SERVICE_AUTH_EXPIRED = 1174,
+            KID_INHERIT_NOT_LINKED,
+            KID_INHERIT_LINKED,
+            KID_INHERIT_INHERIT_WAIT,
+            KID_INHERIT_API_NEED_AGREE,
+            KID_INHERIT_API_UNAVAILABLE,
+            KID_INHERIT_NO_DATA,
+            KID_INHERIT_API_FAILED,
+            KID_INHERIT_NONCE_ERR,
+            KID_INHERIT_FAILED,
+            KID_INHERIT_PF_RELATION_FAILED_PS,
+            KID_INHERIT_PF_RELATION_FAILED_NINTENDO,
+            KID_INHERIT_PF_RELATION_FAILED_XBOX,
+            KID_INHERIT_PF_RELATION_FAILED_STEAM,
+            KID_INHERIT_FAILED_BY_COUNTRY,
+            INHERIT_COUNT_LIMIT = 1169,//v2.3.0
+            PLATFORM_ERROR,
+            PLATFORM_REAUTH,
+            PLATFORM_REBOOT,
+            ERR_PLATFORM_AUTH_EXPIRED,
+            ERR_PLATFORM_SERVICE_AUTH_EXPIRED,
             ERR_EXCESSIVE_REPORT = 1180,
+            ERR_SAME_TARGET_REPORT,
+            ERR_GAME_SETTINGS_FAILED = 1185,
+            PASSWD_LOCK = 1190,
+            PASSWD_LOCK_INCORRECT,
+            PASSWD_LOCK_EXPIRED,
+            DEEPLINK_TITLE_BACK,
         }
 
         public enum UserCode
@@ -146,6 +154,20 @@ namespace YgoMaster
             NEURON_MAINTENANCE,//v1.3.1
             NO_CONSTRUCT_DATA = 1460,//v2.1.0
             AUTO_CONSTRUCT_TIMEOUT,//v2.1.0
+            AUTO_CONSTRUCT_NOT_ENOUGH,//v2.3.0
+        }
+
+        enum DicerallyCode
+        {
+            NONE,
+            ERROR,
+            FATAL,
+            CRITICAL,
+            INVALID_PARAM = 5100,
+            ERR_OUT_OF_TERM,
+            ERROR_FIXED_ACCESSORY,
+            ERR_INVALID_MISSION_POOL,
+            ERROR_PROCESSING_FAILED,
         }
 
         public enum CraftCode
@@ -159,6 +181,9 @@ namespace YgoMaster
             ERROR_UPDATE_FAILED = 1802,
             ERROR_COMPENSATION_TIMELIMIT,
             ERROR_BOOST_CRAFT_FAILED,//v2.1.0
+            ERROR_LOCKED_CARD_CONTAINED,//v2.3.0
+            ERROR_INVALID_PARAM,//v2.3.0
+            ERROR_COMPENSATION_EXCLUDE_START,//v2.3.0
         }
 
         public enum GachaCode
@@ -343,6 +368,23 @@ namespace YgoMaster
             FATAL = 2,
             CRITICAL = 3,
             ERR_INVALID_PARAM = 2500,
+        }
+
+        enum PromoCodesCode
+        {
+            NONE,
+            ERROR,
+            FATAL,
+            CRITICAL,
+            ERR_INVALID_PARAM = 4200,
+            ERR_OUT_OF_TERM,
+            ERR_ALREADY_RECEIVED,
+            ERR_INVALID_CODE,
+            ERR_ALREADY_USED,
+            ERR_INVALID_PLATFORM,
+            ERR_REQUESTED_MULTIPLE,
+            ERR_FAILED_FOR_THRESHOLD,
+            ERR_MASTER_OUT_OF_TERM,//v2.3.0
         }
 
         public enum DuelMenuCode

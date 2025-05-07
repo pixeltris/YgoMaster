@@ -420,10 +420,10 @@ namespace YgomGame
         delegate void Del_OnClickSaveButton(IntPtr thisPtr);
         static Hook<Del_OnClickSaveButton> hookOnClickSaveButton;
 
-        delegate IntPtr Del_AddToMainOrExtraDeck(IntPtr thisPtr, ref YgomGame.Deck.CardBaseData baseData);
+        delegate IntPtr Del_AddToMainOrExtraDeck(IntPtr thisPtr, ref YgomGame.Deck.CardBaseData baseData, csbool isUndo);
         static Hook<Del_AddToMainOrExtraDeck> hookAddToMainOrExtraDeck;
 
-        delegate IntPtr Del_RemoveFromDeck1(IntPtr thisPtr, ref YgomGame.Deck.CardBaseData baseData);
+        delegate IntPtr Del_RemoveFromDeck1(IntPtr thisPtr, ref YgomGame.Deck.CardBaseData baseData, csbool isUndo);
         static Hook<Del_RemoveFromDeck1> hookRemoveFromDeck1;
 
         delegate IntPtr Del_RemoveFromDeck2(IntPtr thisPtr, IntPtr card, csbool isDrag, IntPtr pos, csbool isFlick);
@@ -450,8 +450,8 @@ namespace YgomGame
             hookNotificationStackRemove = new Hook<Del_NotificationStackRemove>(NotificationStackRemove, classInfo.GetMethod("NotificationStackRemove"));
             hookNeedSave = new Hook<Del_NeedSave>(NeedSave, classInfo.GetMethod("NeedSave"));
             hookOnClickSaveButton = new Hook<Del_OnClickSaveButton>(OnClickSaveButton, classInfo.GetMethod("OnClickSaveButton"));
-            hookAddToMainOrExtraDeck = new Hook<Del_AddToMainOrExtraDeck>(AddToMainOrExtraDeck, classInfo.GetMethod("AddToMainOrExtraDeck", x => x.GetParameters().Length == 1));
-            hookRemoveFromDeck1 = new Hook<Del_RemoveFromDeck1>(RemoveFromDeck1, classInfo.GetMethod("RemoveFromDeck", x => x.GetParameters().Length == 1));
+            hookAddToMainOrExtraDeck = new Hook<Del_AddToMainOrExtraDeck>(AddToMainOrExtraDeck, classInfo.GetMethod("AddToMainOrExtraDeck", x => x.GetParameters().Length == 2));
+            hookRemoveFromDeck1 = new Hook<Del_RemoveFromDeck1>(RemoveFromDeck1, classInfo.GetMethod("RemoveFromDeck", x => x.GetParameters().Length == 2));
             hookRemoveFromDeck2 = new Hook<Del_RemoveFromDeck2>(RemoveFromDeck2, classInfo.GetMethod("RemoveFromDeck", x => x.GetParameters().Length == 4));
             hookAsyncFilterAndSort = new Hook<Del_AsyncFilterAndSort>(AsyncFilterAndSort, classInfo.GetMethod("AsyncFilterAndSort"));
             hookgetRelatedCardList = new Hook<Del_getRelatedCardList>(getRelatedCardList, classInfo.GetMethod("getRelatedCardList"));
@@ -618,7 +618,7 @@ namespace YgomGame
             }
         }
 
-        static IntPtr AddToMainOrExtraDeck(IntPtr thisPtr, ref YgomGame.Deck.CardBaseData cardData)
+        static IntPtr AddToMainOrExtraDeck(IntPtr thisPtr, ref YgomGame.Deck.CardBaseData cardData, csbool isUndo)
         {
             if (TradeUtils.IsTrading)
             {
@@ -642,7 +642,7 @@ namespace YgomGame
             }
             else
             {
-                return hookAddToMainOrExtraDeck.Original(thisPtr, ref cardData);
+                return hookAddToMainOrExtraDeck.Original(thisPtr, ref cardData, isUndo);
             }
         }
 
@@ -656,7 +656,7 @@ namespace YgomGame
             UpdateCollectionView(true, false);
         }
 
-        static IntPtr RemoveFromDeck1(IntPtr thisPtr, ref YgomGame.Deck.CardBaseData cardData)
+        static IntPtr RemoveFromDeck1(IntPtr thisPtr, ref YgomGame.Deck.CardBaseData cardData, csbool isUndo)
         {
             if (TradeUtils.IsTrading)
             {
@@ -676,7 +676,7 @@ namespace YgomGame
             }
             else
             {
-                return hookRemoveFromDeck1.Original(thisPtr, ref cardData);
+                return hookRemoveFromDeck1.Original(thisPtr, ref cardData, isUndo);
             }
         }
 
