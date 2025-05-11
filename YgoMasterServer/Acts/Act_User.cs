@@ -245,64 +245,23 @@ namespace YgoMaster
         static List<object> ProcessJsonNotificationsFiles(string directoryPath)
         {
             var responseTopics = new List<object>();
-
-            // Ensure the directory exists
             if (Directory.Exists(directoryPath))
             {
-                // Get all JSON files in the directory
-                //string[] jsonFiles = Directory.GetFiles(directoryPath, "*.json");
-                List<string> jsonFiles = new List<string>(Directory.GetFiles(directoryPath, "*.json"));
-
-
-                foreach (var jsonFile in jsonFiles)
+                foreach (string file in Directory.GetFiles(directoryPath, "*.json"))
+                {
+                    try
                     {
-                        // Read JSON data from the file
-                        string jsonData = File.ReadAllText(jsonFile);
-
-                        // Deserialize JSON data
-                        var jsonObject = MiniJSON.Json.Deserialize(jsonData) as Dictionary<string, object>;
-
-                        // Get the value of the "Title" key
-                        var title = jsonObject["Title"] as string;
-                        // Get the value of the "BackImage" key
-                        var imagePath = jsonObject["BackImage"] as string;
-                        // Get sort value key
-                        var sort = jsonObject["Sort"];
-
-                        // Get and Set the Pattern Value from key
-                        TopicsBannerPatern bannerPattern = Utils.GetValue<TopicsBannerPatern>(jsonObject, "Pattern");
-
-                        // Get the value of the "Contents" key
-                        var contents = jsonObject["Contents"] as List<object>;
-                        // Get Contents Key
-                        var serializedJson = "{\"contents\":" + MiniJSON.Json.Serialize(contents)+"}";
-
-
-                        // Create the body variable
-                        var body = new Dictionary<string, object>()
-                    {
-                        { "sort", sort },
-                        { "body",  serializedJson},
-                        { "banner", new Dictionary<string, object>() {
-                        { "prefPath", "Prefabs/Notification/Topics/BannerNotify" },
-                        { "pattern", bannerPattern },
-                        { "prefArgsJson", new Dictionary<string, object>() {
-                            { "BackImage", imagePath },
-                            { "Title", title },
-                        }}
-                    }},
-                };
-
-                        // Add the body to the response Topics
-                        responseTopics.Add(body);
+                        Dictionary<string, object> data = MiniJSON.Json.Deserialize(File.ReadAllText(file)) as Dictionary<string, object>;
+                        if (data != null)
+                        {
+                            responseTopics.Add(data);
+                        }
                     }
-
+                    catch
+                    {
+                    }
+                }
             }
-            else
-            {
-                Console.WriteLine("Error: Notification Directory does not exist.");
-            }
-
             return responseTopics;
         }
 
