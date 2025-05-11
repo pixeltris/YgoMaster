@@ -40,7 +40,63 @@ namespace YgoMasterClient
             string[] splitted = consoleInput.Split();
             switch (splitted[0].ToLower())
             {
-                case "itemid":// Creates json for values in IDS_ITEM (all item ids)
+                case "itemid":// Dumps all IDS enums
+                    {
+                        Console.WriteLine("Getting item ids...");
+                        bool dumpInvalid = false;
+                        if (splitted.Length > 1)
+                        {
+                            bool.TryParse(splitted[1], out dumpInvalid);
+                        }
+                        Dictionary<ItemID.Category, List<string>> categories = new Dictionary<ItemID.Category, List<string>>();
+                        foreach (ItemID.Category category in Enum.GetValues(typeof(ItemID.Category)))
+                        {
+                            switch (category)
+                            {
+                                case ItemID.Category.NONE:
+                                case ItemID.Category.CARD:
+                                    continue;
+                            }
+                            int offset = YgomGame.Utility.ItemUtil.GetCategoryOffset(category);
+                            for (int id = offset; id <= offset + 9999; id++)
+                            {
+                                if (YgomGame.Utility.ItemUtil.GetCategoryFromID(id) != category)
+                                {
+                                    continue;
+                                }
+                                string name = YgomGame.Utility.ItemUtil.GetItemName(id);
+                                if (string.IsNullOrWhiteSpace(name))
+                                {
+                                    continue;
+                                }
+                                if (!categories.ContainsKey(category))
+                                {
+                                    categories[category] = new List<string>();
+                                }
+                                bool invalid = string.IsNullOrEmpty(name) || name == "deleted" || name == "coming soon" || name.StartsWith("ICON_FRAME");
+                                if (invalid && !dumpInvalid)
+                                {
+                                    continue;
+                                }
+                                string prefix = "    " + (invalid ? "//" : "");
+                                categories[category].Add(prefix + id + ",//" + name);
+                            }
+                            Console.WriteLine("Done " + category);
+                        }
+                        StringBuilder res = new StringBuilder();
+                        res.AppendLine("{");
+                        foreach (KeyValuePair<ItemID.Category, List<string>> cat in categories.OrderBy(x => x.Key))
+                        {
+                            res.AppendLine("  \"" + cat.Key + "\": [");
+                            res.AppendLine(string.Join(Environment.NewLine, cat.Value));
+                            res.AppendLine("  ],");
+                        }
+                        res.AppendLine("}");
+                        File.WriteAllText("ItemID.json", res.ToString());
+                        Console.WriteLine("Done");
+                    }
+                    break;
+                case "itemid_old":// Creates json for values in IDS_ITEM (all item ids)
                     {
                         bool dumpInvalid = false;
                         if (splitted.Length > 1)

@@ -518,6 +518,7 @@ namespace YgomGame.Utility
         static IL2Method methodGetItemName;
         static IL2Method methodGetItemDesc;
         static IL2Method methodGetCategoryFromID;
+        static IL2Method methodGetCategoryOffset;
 
         static ItemUtil()
         {
@@ -526,6 +527,7 @@ namespace YgomGame.Utility
             methodGetItemName = classInfo.GetMethod("GetItemName", x => x.GetParameters().Length == 2);
             methodGetItemDesc = classInfo.GetMethod("GetItemDesc", x => x.GetParameters().Length == 2);
             methodGetCategoryFromID = classInfo.GetMethod("GetCategoryFromID");
+            methodGetCategoryOffset = classInfo.GetMethod("GetCategoryOffset");
         }
 
         public static string GetItemName(int itemID)
@@ -543,6 +545,11 @@ namespace YgomGame.Utility
         public static ItemID.Category GetCategoryFromID(int itemID)
         {
             return (ItemID.Category)methodGetCategoryFromID.Invoke(new IntPtr[] { new IntPtr(&itemID) }).GetValueRef<int>();
+        }
+
+        public static int GetCategoryOffset(ItemID.Category category)
+        {
+            return methodGetCategoryOffset.Invoke(new IntPtr[] { new IntPtr(&category) }).GetValueRef<int>();
         }
     }
 }
