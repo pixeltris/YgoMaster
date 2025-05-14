@@ -40,8 +40,9 @@ namespace YgoMasterClient
             string[] splitted = consoleInput.Split();
             switch (splitted[0].ToLower())
             {
-                case "itemid":// Dumps all IDS enums
+                case "itemid":// Creates json for values in IDS_ITEM (all item ids)
                     {
+                        // TODO: Get the exact values from internal data rather than probing by id
                         Console.WriteLine("Getting item ids...");
                         bool dumpInvalid = false;
                         if (splitted.Length > 1)
