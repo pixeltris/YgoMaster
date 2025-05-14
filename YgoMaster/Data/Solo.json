@@ -591,6 +591,24 @@
                 "clear_chapter": 290240,
                 "category": 2,
                 "open_date": 1738816200
+              },
+              "73": {
+                "priority": 8,
+                "parent_gate": 66,
+                "unlock_id": 1,
+                "view_gate": 1,
+                "clear_chapter": 730002,
+                "category": 2,
+                "open_date": 1747026000
+              },
+              "74": {
+                "priority": 8,
+                "parent_gate": 66,
+                "unlock_id": 1,
+                "view_gate": 1,
+                "clear_chapter": 740002,
+                "category": 2,
+                "open_date": 1747026000
               }
             },
             "chapter": {
@@ -5318,6 +5336,50 @@
                   "begin_sn": "Sr00710010",
                   "npc_id": 0,
                   "anime": 1
+                }
+              },
+              "73": {
+                "730001": {
+                  "parent_chapter": 0,
+                  "difficulty": 1,
+                  "mydeck_set_id": 0,
+                  "set_id": 1140102,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 3029,
+                  "anime": 0
+                },
+                "730002": {
+                  "parent_chapter": 730001,
+                  "difficulty": 3,
+                  "mydeck_set_id": 0,
+                  "set_id": 1012071,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 3029,
+                  "anime": 0
+                }
+              },
+              "74": {
+                "740001": {
+                  "parent_chapter": 0,
+                  "difficulty": 1,
+                  "mydeck_set_id": 0,
+                  "set_id": 1140102,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 3029,
+                  "anime": 0
+                },
+                "740002": {
+                  "parent_chapter": 740001,
+                  "difficulty": 3,
+                  "mydeck_set_id": 0,
+                  "set_id": 1012072,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 3029,
+                  "anime": 0
                 }
               }
             },

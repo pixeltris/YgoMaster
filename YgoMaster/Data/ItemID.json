@@ -1,7 +1,4 @@
 {
-  "NONE": [
-    0,//Not Set
-  ],
   "CONSUME": [
     1,//GEM
     2,//GEM
@@ -98,6 +95,7 @@
     1003001,//Gaia The Fierce Knight
     1003002,//Tri-Brigade Shuraig the Ominous Omen
     1003003,//Sky Striker Ace - Raye
+    1003004,//Fiendsmith Engraver
   ],
   "ICON": [
     1010001,//Duelist
@@ -199,6 +197,7 @@
     1010098,//Performage Plushfire
     1010099,//Like the Diabell
     1010100,//Silent Magician LV8
+    1010101,//P.U.N.K. JAM FEVER!
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -315,6 +314,8 @@
     1012068,//Dominant Expansionist Empire
     1012069,//Sky Striker Ace - Roze
     1012070,//Sky Striker Ace - Shizuku
+    1012071,//Rescue-ACE Impulse
+    1012072,//Exosister Elis
     1013001,//PawaPuro
     1013002,//Memories of Intersecting Duels
     1013003,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
@@ -477,6 +478,7 @@
     1020155,//Blistering Bolt Crashing upon the Earth
     1020156,//Apocalyptic Fire Driven by the Wind
     1020157,//Berserker
+    1020158,//All or Nothing
     1021001,//Starting Out
     1021002,//Top Performer
   ],
@@ -655,6 +657,8 @@
     1070110,//Tearlaments Kitkallos
     1070111,//Traptrix Rafflesia
     1070112,//RGB Rainbowlution
+    1070113,//Dark Supremacy
+    1070114,//Double Wild
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -706,6 +710,7 @@
     1073011,//DC 2024 DEC Celebration
     1073012,//DC 2025 MAR Celebration
     1075001,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
+    1075002,//THE CHRONICLES: Sky Striker Ace
   ],
   "DECK_CASE": [
     1080001,//Duelist Card Case Red
@@ -908,10 +913,13 @@
     1111039,//Barrier of the Voiceless Voice
     1111040,//Gunkan Sushipyard Seaside Supper Spot
     1111041,//Shrine of Mist Valley
+    1111042,//Depresspard
     1111043,//Tales of the White Forest
     1111045,//Madolche Chickolates
     1111047,//DARK
     1111048,//LIGHT
+    1111050,//WATER
+    1111056,//Legend of the Sovereign Seas
     1111057,//Shield of the Millennium Dynasty
     1112001,//Colosseum
     1112002,//WCS
@@ -1020,6 +1028,8 @@
     1130070,//Elemental HERO Neos
     1130071,//Sky Striker Maneuver - Scissors Cross
     1130072,//Traptrix Sera
+    1130073,//Argostars
+    1130074,//Firestorms Over Atlantis
   ],
   "PACK_TICKET": [
     1140001,//Legacy Pack ticket

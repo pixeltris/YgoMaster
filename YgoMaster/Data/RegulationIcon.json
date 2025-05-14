@@ -57,7 +57,7 @@
   },
   "10": {
     "id": "9",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
@@ -328,1227 +328,1269 @@
     "icon": "RegulationLogoEvent",
     "enable_room": "0"
   },
+  "149": {
+    "id": "149",
+    "regulation_id": 149,
+    "name": "IDS_DICERALLY_REG_001",
+    "icon": "RegulationLogoEvent",
+    "enable_room": "1"
+  },
   "1002": {
     "id": "1002",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1003": {
     "id": "1003",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1004": {
     "id": "1004",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1005": {
     "id": "1005",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1006": {
     "id": "1006",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1007": {
     "id": "1007",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1008": {
     "id": "1008",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1009": {
     "id": "1009",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1010": {
     "id": "1010",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1011": {
     "id": "1011",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1012": {
     "id": "1012",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1013": {
     "id": "1013",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1014": {
     "id": "1014",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1015": {
     "id": "1015",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1016": {
     "id": "1016",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1017": {
     "id": "1017",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1018": {
     "id": "1018",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1019": {
     "id": "1019",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1020": {
     "id": "1020",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1021": {
     "id": "1021",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1022": {
     "id": "1022",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1023": {
     "id": "1023",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1024": {
     "id": "1024",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1025": {
     "id": "1025",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "0"
   },
   "1026": {
     "id": "1026",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "1"
   },
   "1027": {
     "id": "1027",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "1"
   },
   "1028": {
     "id": "1028",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "1"
   },
   "1029": {
     "id": "1029",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "1"
   },
   "1030": {
     "id": "1030",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "1"
   },
   "1031": {
     "id": "1031",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "1"
   },
   "1032": {
     "id": "1032",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "1"
   },
   "1033": {
     "id": "1033",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "1"
   },
   "1034": {
     "id": "1034",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "1"
   },
   "1035": {
     "id": "1035",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "1"
   },
   "1036": {
     "id": "1036",
-    "regulation_id": 1036,
+    "regulation_id": 1037,
+    "name": "IDS_CARDMENU_REGULATION_NORMAL",
+    "icon": "RegulationLogoStandard",
+    "enable_room": "1"
+  },
+  "1037": {
+    "id": "1037",
+    "regulation_id": 1037,
     "name": "IDS_CARDMENU_REGULATION_NORMAL",
     "icon": "RegulationLogoStandard",
     "enable_room": "1"
   },
   "2001": {
     "id": "2001",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2002": {
     "id": "2002",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2003": {
     "id": "2003",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2004": {
     "id": "2004",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2005": {
     "id": "2005",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2006": {
     "id": "2006",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2007": {
     "id": "2007",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2008": {
     "id": "2008",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2009": {
     "id": "2009",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2010": {
     "id": "2010",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2011": {
     "id": "2011",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2012": {
     "id": "2012",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2013": {
     "id": "2013",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2014": {
     "id": "2014",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2015": {
     "id": "2015",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2016": {
     "id": "2016",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2017": {
     "id": "2017",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2018": {
     "id": "2018",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2019": {
     "id": "2019",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2020": {
     "id": "2020",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2021": {
     "id": "2021",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2022": {
     "id": "2022",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2023": {
     "id": "2023",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2024": {
     "id": "2024",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2025": {
     "id": "2025",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "0"
   },
   "2026": {
     "id": "2026",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "1"
   },
   "2027": {
     "id": "2027",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "1"
   },
   "2028": {
     "id": "2028",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "1"
   },
   "2029": {
     "id": "2029",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "1"
   },
   "2030": {
     "id": "2030",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "1"
   },
   "2031": {
     "id": "2031",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "1"
   },
   "2033": {
     "id": "2033",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "1"
   },
   "2034": {
     "id": "2034",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "1"
   },
   "2035": {
     "id": "2035",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "1"
   },
   "2036": {
     "id": "2036",
-    "regulation_id": 2036,
+    "regulation_id": 2037,
+    "name": "IDS_REGULATION_FUSION",
+    "icon": "RegulationLogoFusion",
+    "enable_room": "1"
+  },
+  "2037": {
+    "id": "2037",
+    "regulation_id": 2037,
     "name": "IDS_REGULATION_FUSION",
     "icon": "RegulationLogoFusion",
     "enable_room": "1"
   },
   "3001": {
     "id": "3001",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3002": {
     "id": "3002",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3003": {
     "id": "3003",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3004": {
     "id": "3004",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3005": {
     "id": "3005",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3006": {
     "id": "3006",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3007": {
     "id": "3007",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3008": {
     "id": "3008",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3009": {
     "id": "3009",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3010": {
     "id": "3010",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3011": {
     "id": "3011",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3012": {
     "id": "3012",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3013": {
     "id": "3013",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3014": {
     "id": "3014",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3015": {
     "id": "3015",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3016": {
     "id": "3016",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3017": {
     "id": "3017",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3018": {
     "id": "3018",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3019": {
     "id": "3019",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3020": {
     "id": "3020",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3021": {
     "id": "3021",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3022": {
     "id": "3022",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3023": {
     "id": "3023",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3024": {
     "id": "3024",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3025": {
     "id": "3025",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "0"
   },
   "3026": {
     "id": "3026",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "1"
   },
   "3027": {
     "id": "3027",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "1"
   },
   "3028": {
     "id": "3028",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "1"
   },
   "3029": {
     "id": "3029",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "1"
   },
   "3030": {
     "id": "3030",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "1"
   },
   "3031": {
     "id": "3031",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "1"
   },
   "3033": {
     "id": "3033",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "1"
   },
   "3034": {
     "id": "3034",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "1"
   },
   "3035": {
     "id": "3035",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "1"
   },
   "3036": {
     "id": "3036",
-    "regulation_id": 3036,
+    "regulation_id": 3037,
+    "name": "IDS_REGULATION_SYNCHRO",
+    "icon": "RegulationLogoSynchro",
+    "enable_room": "1"
+  },
+  "3037": {
+    "id": "3037",
+    "regulation_id": 3037,
     "name": "IDS_REGULATION_SYNCHRO",
     "icon": "RegulationLogoSynchro",
     "enable_room": "1"
   },
   "4001": {
     "id": "4001",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4002": {
     "id": "4002",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4003": {
     "id": "4003",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4004": {
     "id": "4004",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4005": {
     "id": "4005",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4006": {
     "id": "4006",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4007": {
     "id": "4007",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4008": {
     "id": "4008",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4009": {
     "id": "4009",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4010": {
     "id": "4010",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4011": {
     "id": "4011",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4012": {
     "id": "4012",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4013": {
     "id": "4013",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4014": {
     "id": "4014",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4015": {
     "id": "4015",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4016": {
     "id": "4016",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4017": {
     "id": "4017",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4018": {
     "id": "4018",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4019": {
     "id": "4019",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4020": {
     "id": "4020",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4021": {
     "id": "4021",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4022": {
     "id": "4022",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4023": {
     "id": "4023",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4024": {
     "id": "4024",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4025": {
     "id": "4025",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "0"
   },
   "4026": {
     "id": "4026",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "1"
   },
   "4027": {
     "id": "4027",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "1"
   },
   "4028": {
     "id": "4028",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "1"
   },
   "4029": {
     "id": "4029",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "1"
   },
   "4030": {
     "id": "4030",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "1"
   },
   "4031": {
     "id": "4031",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "1"
   },
   "4033": {
     "id": "4033",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "1"
   },
   "4034": {
     "id": "4034",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "1"
   },
   "4035": {
     "id": "4035",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "1"
   },
   "4036": {
     "id": "4036",
-    "regulation_id": 4036,
+    "regulation_id": 4037,
+    "name": "IDS_REGULATION_XYZ",
+    "icon": "RegulationLogoXyz",
+    "enable_room": "1"
+  },
+  "4037": {
+    "id": "4037",
+    "regulation_id": 4037,
     "name": "IDS_REGULATION_XYZ",
     "icon": "RegulationLogoXyz",
     "enable_room": "1"
   },
   "5001": {
     "id": "5001",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5002": {
     "id": "5002",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5003": {
     "id": "5003",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5004": {
     "id": "5004",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5005": {
     "id": "5005",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5006": {
     "id": "5006",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5007": {
     "id": "5007",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5008": {
     "id": "5008",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5009": {
     "id": "5009",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5010": {
     "id": "5010",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5011": {
     "id": "5011",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5012": {
     "id": "5012",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5013": {
     "id": "5013",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5014": {
     "id": "5014",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5015": {
     "id": "5015",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5016": {
     "id": "5016",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5017": {
     "id": "5017",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5018": {
     "id": "5018",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5019": {
     "id": "5019",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5020": {
     "id": "5020",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5021": {
     "id": "5021",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5022": {
     "id": "5022",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5023": {
     "id": "5023",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5024": {
     "id": "5024",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5025": {
     "id": "5025",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "0"
   },
   "5026": {
     "id": "5026",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "1"
   },
   "5027": {
     "id": "5027",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "1"
   },
   "5028": {
     "id": "5028",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "1"
   },
   "5029": {
     "id": "5029",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "1"
   },
   "5030": {
     "id": "5030",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "1"
   },
   "5031": {
     "id": "5031",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "1"
   },
   "5033": {
     "id": "5033",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "1"
   },
   "5034": {
     "id": "5034",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "1"
   },
   "5035": {
     "id": "5035",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "1"
   },
   "5036": {
     "id": "5036",
-    "regulation_id": 5036,
+    "regulation_id": 5037,
+    "name": "IDS_REGULATION_LINK",
+    "icon": "RegulationLogoLink",
+    "enable_room": "1"
+  },
+  "5037": {
+    "id": "5037",
+    "regulation_id": 5037,
     "name": "IDS_REGULATION_LINK",
     "icon": "RegulationLogoLink",
     "enable_room": "1"
