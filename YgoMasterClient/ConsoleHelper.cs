@@ -1449,6 +1449,11 @@ namespace YgoMasterClient
                         Console.WriteLine("CurrentCpSR:" + currentCpSR + " CurrentCpUR:" + currentCpUR);
                         Console.WriteLine("Crafting " + cardsToCraft.Count + " cards to obtain " + packsObtained.Count + " / " + packs.Count + " packs");
 
+                        if (cardsToCraft.Count == 0)
+                        {
+                            return;
+                        }
+
                         if (packsObtained.Count != packs.Count)
                         {
                             Console.WriteLine("Not crafting as this wont give all the desired packs. Missing packs: " +
@@ -1471,7 +1476,7 @@ namespace YgoMasterClient
                             };
                         }
                         csbool check = false;
-                        Craft_generate_multi.Invoke(new IntPtr[] { YgomMiniJSON.Json.Deserialize(MiniJSON.Json.Serialize(cardListData)), new IntPtr(&check) });
+                        Craft_generate_multi.Invoke(new IntPtr[] { YgomMiniJSON.Json.Deserialize(MiniJSON.Json.Serialize(cardListData)), new IntPtr(&check), IntPtr.Zero });
                     }
                     break;
                 case "auto_free_pull":// Opens every pack with a free pull
