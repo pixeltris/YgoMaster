@@ -198,7 +198,7 @@ namespace YgomGame.Duel
                     Dictionary<string, object> resultData = MiniJSON.Json.Deserialize(YgomMiniJSON.Json.Serialize(resultObj.ptr)) as Dictionary<string, object>;
                     isWinDuel = Utils.GetValue<int>(resultData, "res") == (int)DuelResultType.Win;
                 }
-                if (isWinDuel)
+                if (isWinDuel && !SoloVisualNovel.IsRetryDuel && !string.IsNullOrEmpty(SoloVisualNovel.OutroJsonName))
                 {
                     YgomGame.Tutorial.CardFlyingViewController.IsHacked = true;
                     YgomGame.Tutorial.CardFlyingViewController.duelClient = thisPtr;
