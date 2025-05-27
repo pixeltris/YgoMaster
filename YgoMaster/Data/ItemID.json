@@ -198,6 +198,10 @@
     1010099,//Like the Diabell
     1010100,//Silent Magician LV8
     1010101,//P.U.N.K. JAM FEVER!
+    1010102,//The Fallen & The Virtuous
+    1010103,//Red Supernova Dragon
+    1010107,//Aluber the Jester of Despia
+    1010108,//Blazing Cartesia, the Virtuous
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -659,6 +663,7 @@
     1070112,//RGB Rainbowlution
     1070113,//Dark Supremacy
     1070114,//Double Wild
+    1070115,//The Fallen & The Virtuous
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -740,6 +745,7 @@
     1080026,//Origin of the Galaxy
     1080027,//Heroes' Union
     1080028,//Blaze of Albaz
+    1080029,//Crimson Powerforce
     1082001,//Xyz Black
     1082002,//The Millennium Puzzle
     1082003,//Duelist Card Case Blue
@@ -760,6 +766,7 @@
     1082018,//Dragon of Pride and Soul
     1082019,//Sky Striker Ace - Raye
     1082020,//Sky Striker Ace - Roze
+    1082021,//Abyssal Land
   ],
   "FIELD": [
     1090001,//Forest
@@ -793,6 +800,7 @@
     1090031,//Ruins of the Sinful Spoils
     1090033,//Evil★Twin
     1090034,//Striking Stratagem Simulation Area
+    1090036,//Despia, Theater of the Branded
     1092001,//Colosseum
     1092002,//WCS
   ],
@@ -828,6 +836,7 @@
     1100031,//Ruins of the Sinful Spoils
     1100033,//Evil★Twin
     1100034,//Striking Stratagem Simulation Area
+    1100036,//Despia, Theater of the Branded
     1101001,//Trap Hole
     1101002,//Magical Hats
     1101003,//Summon Limit
@@ -886,6 +895,7 @@
     1110031,//Ruins of the Sinful Spoils
     1110033,//Evil★Twin
     1110034,//Striking Stratagem Simulation Area
+    1110036,//Despia, Theater of the Branded
     1111001,//Destiny Board
     1111002,//Bug Matrix
     1111003,//Shien's Dojo
@@ -955,6 +965,7 @@
     1120026,//Origin of the Galaxy
     1120027,//Heroes' Union
     1120028,//Blaze of Albaz
+    1120029,//Crimson Powerforce
   ],
   "WALLPAPER": [
     1130001,//Blue-Eyes Alternative White Dragon
@@ -1030,6 +1041,9 @@
     1130072,//Traptrix Sera
     1130073,//Argostars
     1130074,//Firestorms Over Atlantis
+    1130075,//The Fallen & The Virtuous
+    1130081,//Aluber the Jester of Despia
+    1130082,//Blazing Cartesia, the Virtuous
   ],
   "PACK_TICKET": [
     1140001,//Legacy Pack ticket
