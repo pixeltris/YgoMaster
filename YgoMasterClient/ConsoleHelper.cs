@@ -42,8 +42,10 @@ namespace YgoMasterClient
             {
                 case "itemid":// Creates json for values in IDS_ITEM (all item ids)
                     {
-                        // TODO: Get the exact values from internal data rather than probing by id
+                        // TODO: Get the exact values from internal data rather than probing by id (NOTE: Can't really do this as keys are a CRC32)
                         Console.WriteLine("Getting item ids...");
+                        YgomSystem.Utility.TextData.LoadGroup("IDS_ITEM");
+                        YgomSystem.Utility.TextData.LoadGroup("IDS_ITEMDESC");
                         bool dumpInvalid = false;
                         if (splitted.Length > 1)
                         {
@@ -262,8 +264,43 @@ namespace YgoMasterClient
                     break;
                 case "textdump":// Dumps all IDS enums
                     {
+                        YgomSystem.Utility.TextData.LoadGroup("IDS_ITEM");
+                        YgomSystem.Utility.TextData.LoadGroup("IDS_ITEMDESC");
+                        Dictionary<int, string> itemNames = new Dictionary<int, string>();
+                        Dictionary<int, string> itemDesc = new Dictionary<int, string>();
+                        foreach (ItemID.Category category in Enum.GetValues(typeof(ItemID.Category)))
+                        {
+                            switch (category)
+                            {
+                                case ItemID.Category.CONSUME:
+                                case ItemID.Category.NONE:
+                                case ItemID.Category.CARD:
+                                    continue;
+                            }
+                            int offset = YgomGame.Utility.ItemUtil.GetCategoryOffset(category);
+                            for (int id = offset; id <= offset + 9999; id++)
+                            {
+                                if (YgomGame.Utility.ItemUtil.GetCategoryFromID(id) != category)
+                                {
+                                    continue;
+                                }
+                                string name = YgomGame.Utility.ItemUtil.GetItemName(id);
+                                if (!string.IsNullOrWhiteSpace(name))
+                                {
+                                    itemNames[id] = name;
+                                }
+                                string desc = YgomGame.Utility.ItemUtil.GetItemDesc(id);
+                                if (!string.IsNullOrWhiteSpace(desc))
+                                {
+                                    itemDesc[id] = desc;
+                                }
+                            }
+                            Console.WriteLine("Done " + category);
+                        }
+
                         foreach (IL2Class classInfo in Assembler.GetAssembly("Assembly-CSharp").GetClasses())
                         {
+                            HashSet<int> seenItemIds = new HashSet<int>();
                             if (classInfo.IsEnum && classInfo.Namespace == "YgomGame.TextIDs" && classInfo.Name.StartsWith("IDS"))
                             {
                                 StringBuilder sb = new StringBuilder();
@@ -275,10 +312,43 @@ namespace YgoMasterClient
                                         continue;
                                     }
                                     string name = classInfo.Name + "." + field.Name;
+                                    if (field.Name.StartsWith("ID") && field.Name.Length == 9)//ID1000001
+                                    {
+                                        int id;
+                                        if (int.TryParse(field.Name.Substring(2), out id))
+                                        {
+                                            seenItemIds.Add(id);
+                                        }
+                                    }
                                     string str = YgomSystem.Utility.TextData.GetText(name);
                                     if (!string.IsNullOrEmpty(str))
                                     {
                                         sb.AppendLine("[" + name + "]" + Environment.NewLine + str);
+                                    }
+                                }
+                                Dictionary<int, string> dict = null;
+                                if (classInfo.Name == "IDS_ITEMDESC")
+                                {
+                                    dict = itemDesc;
+                                }
+                                if (classInfo.Name == "IDS_ITEM")
+                                {
+                                    dict = itemNames;
+                                }
+                                if (dict != null)
+                                {
+                                    foreach (KeyValuePair<int, string> item in dict)
+                                    {
+                                        if (!seenItemIds.Contains(item.Key))
+                                        {
+                                            if (dict == itemNames)
+                                            {
+                                                Console.WriteLine("ID " + item.Key + " (" + ItemID.GetCategoryFromID(item.Key) + ") is not in client enums");
+                                            }
+                                            // TODO: Make sure these are placed in the correct order rather than all at the bottom of the file
+                                            string name = classInfo.Name + ".ID" + item.Key;
+                                            sb.AppendLine("[" + name + "]" + Environment.NewLine + item.Value);
+                                        }
                                     }
                                 }
                                 if (sb.Length > 0)
