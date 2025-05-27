@@ -169,6 +169,7 @@ namespace YgoMaster
                 { "Structure", structure },// All structure decks
                 { "Regulation", Regulation },// Forbidden / limited cards
                 { "RegulationIcon", RegulationIcon },
+                { "AccessorySet", AccessorySet },
             };
             request.Response["Regulation"] = RegulationInfo;
             request.Response["DuelMenu"] = new Dictionary<string, object>()

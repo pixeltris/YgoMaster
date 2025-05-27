@@ -69,6 +69,7 @@ namespace YgoMaster
         Dictionary<string, object> Regulation;
         Dictionary<string, object> RegulationIcon;
         Dictionary<string, object> RegulationInfo;
+        Dictionary<string, object> AccessorySet;
         Dictionary<string, object> SoloData;
         Dictionary<int, DuelSettings> SoloDuels;// <chapterid, DuelSettings>
         Dictionary<int, CardCategory> CardCategories;// <categoryId, CardCategory>
@@ -519,7 +520,47 @@ namespace YgoMaster
             {
                 RegulationInfo = MiniJSON.Json.DeserializeStripped(File.ReadAllText(regulationInfoFile)) as Dictionary<string, object>;
             }
-            
+
+            string accessorySetFile = Path.Combine(dataDirectory, "AccessorySet.json");
+            if (File.Exists(accessorySetFile))
+            {
+                AccessorySet = MiniJSON.Json.DeserializeStripped(File.ReadAllText(accessorySetFile)) as Dictionary<string, object>;
+            }
+            else
+            {
+                AccessorySet = new Dictionary<string, object>();
+                if (ItemID.Values.ContainsKey(ItemID.Category.FIELD) &&
+                    ItemID.Values.ContainsKey(ItemID.Category.FIELD_OBJ) &&
+                    ItemID.Values.ContainsKey(ItemID.Category.AVATAR_HOME))
+                {
+                    Dictionary<string, object> accessory_set_list = Utils.GetOrCreateDictionary(AccessorySet, "accessory_set_list");
+                    Dictionary<string, object> item_list = Utils.GetOrCreateDictionary(AccessorySet, "item_list");
+                    foreach (int fieldId in ItemID.Values[ItemID.Category.FIELD])
+                    {
+                        int baseId = fieldId - 1090000;
+                        if (baseId <= 0)
+                        {
+                            continue;
+                        }
+                        int objId = ItemID.GetFieldObjFromField(fieldId);
+                        int avatarId = ItemID.GetFieldAvatarBaseFromField(fieldId);
+                        if (ItemID.Values[ItemID.Category.FIELD_OBJ].Contains(objId) &&
+                            ItemID.Values[ItemID.Category.AVATAR_HOME].Contains(avatarId))
+                        {
+                            accessory_set_list[baseId.ToString()] = new Dictionary<string, object>()
+                            {
+                                { "field", fieldId },
+                                { "object", objId },
+                                { "av_base", avatarId },
+                            };
+                            item_list[fieldId.ToString()] = baseId;
+                            item_list[objId.ToString()] = baseId;
+                            item_list[avatarId.ToString()] = baseId;
+                        }
+                    }
+                }
+            }
+
             string TitleLoopFile = Path.Combine(dataDirectory, "TitleLoop.json");
             if (File.Exists(TitleLoopFile))
             {

@@ -463,6 +463,10 @@ namespace YgoMaster
                                         {
                                             File.WriteAllText(Path.Combine(updateDir, "RegulationIcon.json"), FormatJson(MiniJSON.Json.Serialize(masterData["RegulationIcon"])));
                                         }
+                                        if (masterData.ContainsKey("AccessorySet") && masterData["AccessorySet"] as Dictionary<string, object> != null)
+                                        {
+                                            File.WriteAllText(Path.Combine(updateDir, "AccessorySet.json"), FormatJson(MiniJSON.Json.Serialize(masterData["AccessorySet"])));
+                                        }
                                         if (masterData.ContainsKey("CardCr") && masterData["CardCr"] as List<object> != null)
                                         {
                                             File.WriteAllText(Path.Combine(updateDir, "CardCraftableList.json"), FormatJson(MiniJSON.Json.Serialize(masterData["CardCr"])));
