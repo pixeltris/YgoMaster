@@ -189,7 +189,7 @@ namespace YgoMasterClient
         static Del_AudioClip_CUSTOM_Construct_Internal AudioClip_CUSTOM_Construct_Internal;
         delegate void Del_AudioClip_CUSTOM_CreateUserSound(IntPtr thisPtr, IntPtr name, int lengthSamples, int channels, int frequency, csbool stream);
         static Del_AudioClip_CUSTOM_CreateUserSound AudioClip_CUSTOM_CreateUserSound;
-        delegate csbool Del_AudioClip_CUSTOM_SetData(IntPtr clip, IntPtr data, int numsamples, int samplesOffset);
+        delegate bool Del_AudioClip_CUSTOM_SetData(IntPtr clip, IntPtr data, int numsamples, int samplesOffset);
         static Del_AudioClip_CUSTOM_SetData AudioClip_CUSTOM_SetData;
         //class ScriptingBackendNativeObjectPtrOpaque * __cdecl AudioClip_CUSTOM_Construct_Internal(void)
         //void __cdecl AudioClip_CUSTOM_CreateUserSound(class ScriptingBackendNativeObjectPtrOpaque *,class ScriptingBackendNativeStringPtrOpaque *,int,int,int,unsigned char)
