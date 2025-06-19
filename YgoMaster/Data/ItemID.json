@@ -250,6 +250,9 @@
     1011046,//DC 2025 MAR Gold Finalist
     1011047,//DC 2025 MAR Silver Finalist
     1011048,//DC 2025 MAR Bronze Finalist
+    1011049,//WCS 2025 Qualifiers Gold Finalist
+    1011050,//WCS 2025 Qualifiers Silver Finalist
+    1011051,//WCS 2025 Qualifiers Bronze Finalist
     1012001,//X-Krawler Synaphysis
     1012002,//Mekk-Knight Spectrum Supreme
     1012003,//Knightmare Gryphon
@@ -320,6 +323,7 @@
     1012070,//Sky Striker Ace - Shizuku
     1012071,//Rescue-ACE Impulse
     1012072,//Exosister Elis
+    1012073,//Flamvell Baby
     1013001,//PawaPuro
     1013002,//Memories of Intersecting Duels
     1013003,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
@@ -483,6 +487,12 @@
     1020156,//Apocalyptic Fire Driven by the Wind
     1020157,//Berserker
     1020158,//All or Nothing
+    1020159,//WCS 2025 Qualifiers Top 10
+    1020160,//WCS 2025 Qualifiers Top 100
+    1020161,//WCS 2025 Qualifiers Top 500
+    1020162,//WCS 2025 Qualifiers Top 1000
+    1020163,//WCS 2025 Qualifiers Top 10000
+    1020164,//WCS 2025 Qualifiers DLv. MAX
     1021001,//Starting Out
     1021002,//Top Performer
   ],
@@ -521,6 +531,7 @@
     1030032,//White Frame
     1030033,//Yellow & Lime Frame
     1030034,//Blue & Purple Frame
+    1030035,//Rekindling
     1031001,//The Path of the Blue Sky Striker
     1031002,//The Path of the Red Sky Striker
     1031003,//Magic Cylinder
@@ -664,6 +675,8 @@
     1070113,//Dark Supremacy
     1070114,//Double Wild
     1070115,//The Fallen & The Virtuous
+    1070116,//Materiactor Exagard
+    1070117,//Crystron Quariongandrax
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -697,6 +710,7 @@
     1071031,//Mist Valley Apex Avian
     1071032,//Skull Servant
     1071033,//Sky Striker Ace - Raye
+    1071034,//Flamvell Uruquizas
     1072001,//Sky Striker Conversion: Flaming Wings of Destruction
     1072002,//Chaos Xyz Evolution －Galactic Gathering of Dragons－
     1072003,//Sky Striker Armor - Black Flash Raiment
@@ -714,6 +728,7 @@
     1073010,//DC 2024 SEP Celebration
     1073011,//DC 2024 DEC Celebration
     1073012,//DC 2025 MAR Celebration
+    1073013,//WCS 2025 Qualifiers Celebration
     1075001,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
     1075002,//THE CHRONICLES: Sky Striker Ace
   ],
@@ -855,6 +870,7 @@
     1101017,//Time Machine
     1101019,//Dragon Capture Jar
     1101020,//Opening of the Spirit Gates
+    1101022,//Scrap Recycler & Garbage Collector
     1101023,//Back to Square One
     1101025,//Fire King Sanctuary
     1101032,//Centur-Ion Emeth VI
@@ -931,6 +947,8 @@
     1111050,//WATER
     1111056,//Legend of the Sovereign Seas
     1111057,//Shield of the Millennium Dynasty
+    1111061,//Mimighoul Room
+    1111062,//Flamvell, the Scarlet Warriors
     1112001,//Colosseum
     1112002,//WCS
     1113001,//WCS 2023 Party Favor

@@ -42,7 +42,7 @@ For updating `Shop.json`...
 - Complete the tutorial
 - Go to the SOLO screen and enter `solo_clear` into the client console - this will take some time to complete and will complete all solo content
 - Keep buying Master Pack bundles / packs until you have no gems
-- Go to the deck editor and enter `dismantle_all_cards SuperRare UltraRare` into the client console - this will dismantle every SR/UR you own
+- Go to the deck editor and enter `dismantle_all_cards SuperRare UltraRare` into the client console - this will dismantle every SR/UR you own (you will need to use this command multiple times as it doesn't seem to dismantle all as it should)
 - Go to the shop and enter `craft_secrets` into the client console - this will craft every missing secret pack
 - In the shop enter `auto_free_pull` into the client console - this will open every free pull secret pack (you will need to re-enter the shop and do the command multiple times until no more packs open)
 - Re-enter the shop to log `/ayk/api/Shop.get_list`

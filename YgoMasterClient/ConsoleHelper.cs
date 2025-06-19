@@ -1242,8 +1242,15 @@ namespace YgoMasterClient
                                 {
                                     Console.WriteLine("Dismantle " + rarity.Value + " " + rarity.Key);
                                 }
+                                Dictionary<string, object> sublist = new Dictionary<string, object>();
+                                for (int i = 0; i < cardList.Count && i < 60; i++)
+                                {
+                                    var el = cardList.ElementAt(0);
+                                    sublist[el.Key] = el.Value;
+                                    cardList.Remove(el.Key);
+                                }
                                 IL2Array<int> compenstationList = new IL2Array<int>(0);
-                                Craft_exchange_multi.Invoke(new IntPtr[] { YgomMiniJSON.Json.Deserialize(MiniJSON.Json.Serialize(cardList)), compenstationList.ptr });
+                                Craft_exchange_multi.Invoke(new IntPtr[] { YgomMiniJSON.Json.Deserialize(MiniJSON.Json.Serialize(sublist)), compenstationList.ptr });
                             }
 
                             Console.WriteLine("Done");
