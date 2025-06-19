@@ -454,8 +454,8 @@ namespace YgomGame.Menu
         static IntPtr extendedTextMeshComponentType;
         static IL2Method methodSetText;
 
-        delegate void Del_InitMenuButtons(IntPtr thisPtr);
-        static Hook<Del_InitMenuButtons> hookInitMenuButtons;
+        delegate void Del_OnCreatedView(IntPtr thisPtr);
+        static Hook<Del_OnCreatedView> hookOnCreatedView;
 
         delegate void Del_OnClickBlock(IntPtr thisPtr);
         static Hook<Del_OnClickBlock> hookOnClickBlock;
@@ -469,7 +469,7 @@ namespace YgomGame.Menu
             fieldPcode = classInfo.GetField("pcode");
             if (!string.IsNullOrEmpty(ClientSettings.MultiplayerToken))
             {
-                hookInitMenuButtons = new Hook<Del_InitMenuButtons>(InitMenuButtons, classInfo.GetMethod("InitMenuButtons"));
+                hookOnCreatedView = new Hook<Del_OnCreatedView>(OnCreatedView, classInfo.GetMethod("OnCreatedView"));
                 hookOnClickBlock = new Hook<Del_OnClickBlock>(OnClickBlock, classInfo.GetMethod("OnClickBlock"));
             }
 
@@ -481,9 +481,9 @@ namespace YgomGame.Menu
             methodSetText = textProperty.GetSetMethod();
         }
 
-        static void InitMenuButtons(IntPtr thisPtr)
+        static void OnCreatedView(IntPtr thisPtr)
         {
-            hookInitMenuButtons.Original(thisPtr);
+            hookOnCreatedView.Original(thisPtr);
             if (fieldIsMine.GetValue(thisPtr).GetValueRef<csbool>() == true)
             {
                 return;
