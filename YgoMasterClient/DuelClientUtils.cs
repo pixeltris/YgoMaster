@@ -351,7 +351,7 @@ namespace YgomGame.Duel
 
     unsafe static class Util
     {
-        delegate bool Del_CheckDuelMode();
+        delegate int Del_CheckDuelMode();
 
         static Hook<Del_CheckDuelMode> hookIsReplay;
         static Hook<Del_CheckDuelMode> hookIsOnlineMode;
@@ -366,33 +366,33 @@ namespace YgomGame.Duel
             hookIsAudience = new Hook<Del_CheckDuelMode>(IsAudience, classInfo.GetMethod("IsAudience"));
         }
 
-        static bool IsReplay()
+        static int IsReplay()
         {
             if (ClientSettings.ReplayControlsAlwaysEnabled && DuelHUD_PrepareToDuelProcess.IsMoveNext)
             {
-                return true;
+                return 1;
             }
             if (DuelDll.IsInsideDuelTimerPrepareToDuel && DuelDll.IsTimerEnabled)
             {
-                return false;
+                return 0;
             }
             return hookIsReplay.Original();
         }
 
-        static bool IsOnlineMode()
+        static int IsOnlineMode()
         {
             if (DuelDll.IsInsideDuelTimerPrepareToDuel && DuelDll.IsTimerEnabled)
             {
-                return true;
+                return 1;
             }
             return hookIsOnlineMode.Original();
         }
 
-        static bool IsAudience()
+        static int IsAudience()
         {
             if (DuelDll.IsInsideDuelTimerPrepareToDuel && DuelDll.IsTimerEnabled)
             {
-                return false;
+                return 0;
             }
             return hookIsAudience.Original();
         }
@@ -494,9 +494,9 @@ namespace YgomGame.Duel
 
     unsafe static class EngineApiUtil
     {
-        delegate bool Del_IsCardKnown(IntPtr thisPtr, int player, int position, int index, bool face);
+        delegate int Del_IsCardKnown(IntPtr thisPtr, int player, int position, int index, bool face);
         static Hook<Del_IsCardKnown> hookIsCardKnown;
-        delegate bool Del_IsInsight(IntPtr thisPtr, int player, int position, int index);
+        delegate int Del_IsInsight(IntPtr thisPtr, int player, int position, int index);
         static Hook<Del_IsInsight> hookIsInsight;
 
         static EngineApiUtil()
@@ -507,20 +507,20 @@ namespace YgomGame.Duel
             hookIsInsight = new Hook<Del_IsInsight>(IsInsight, classInfo.GetMethod("IsInsight"));
         }
 
-        static bool IsCardKnown(IntPtr thisPtr, int player, int position, int index, bool face)
+        static int IsCardKnown(IntPtr thisPtr, int player, int position, int index, bool face)
         {
             if (GenericCardListController.IsUpdatingCustomCardList || ClientSettings.DuelClientMillenniumEye)
             {
-                return true;
+                return 1;
             }
             return hookIsCardKnown.Original(thisPtr, player, position, index, face);
         }
 
-        static bool IsInsight(IntPtr thisPtr, int player, int position, int index)
+        static int IsInsight(IntPtr thisPtr, int player, int position, int index)
         {
             if (GenericCardListController.IsUpdatingCustomCardList || ClientSettings.DuelClientMillenniumEye)
             {
-                return true;
+                return 1;
             }
             return hookIsInsight.Original(thisPtr, player, position, index);
         }
@@ -640,7 +640,7 @@ namespace YgomGame.Duel
 
     unsafe static class CardIndividualSetting
     {
-        delegate bool Del_IsMonsterCutin(int cardID);
+        delegate int Del_IsMonsterCutin(int cardID);
         static Hook<Del_IsMonsterCutin> hookIsMonsterCutin;
 
         static HashSet<int> cardsWithCustomImages;
@@ -652,12 +652,12 @@ namespace YgomGame.Duel
             hookIsMonsterCutin = new Hook<Del_IsMonsterCutin>(IsMonsterCutin, classInfo.GetMethod("IsMonsterCutin"));
         }
 
-        static bool IsMonsterCutin(int cardID)
+        static int IsMonsterCutin(int cardID)
         {
             if (ClientSettings.DuelClientDisableCutinAnimations ||
                 (ClientSettings.DuelClientDisableCutinAnimationsForCardsWithCustomImages && IsCustomImage(cardID)))
             {
-                return false;
+                return 0;
             }
             return hookIsMonsterCutin.Original(cardID);
         }

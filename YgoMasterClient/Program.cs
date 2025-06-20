@@ -570,7 +570,7 @@ namespace YgomSystem.Utility
 
         delegate IntPtr Del_GetTextString(IntPtr textEnum, bool richTextEx, IntPtr methodInstance);
         delegate IntPtr Del_GetTextEnum(int textEnum, bool richTextEx, IntPtr methodInstance);
-        delegate bool Del_ContainsText(IntPtr textEnum, IntPtr methodInstance);
+        delegate int Del_ContainsText(IntPtr textEnum, IntPtr methodInstance);
         static Hook<Del_GetTextString> hookGetTextString;
         static Hook<Del_GetTextEnum> hookGetTextEnum;
         static Hook<Del_ContainsText> hookContainsText;
@@ -703,7 +703,7 @@ namespace YgomSystem.Utility
             return hookGetTextEnum.Original(textEnum, richTextEx, methodInstance);
         }
 
-        static bool ContainsText(IntPtr textEnum, IntPtr methodInstance)
+        static int ContainsText(IntPtr textEnum, IntPtr methodInstance)
         {
             IntPtr klass = Import.Object.il2cpp_object_get_class(textEnum);
             if (klass == IL2SystemClass.String.ptr)
@@ -711,7 +711,7 @@ namespace YgomSystem.Utility
                 string inputString = new IL2String(textEnum).ToString();
                 if (!string.IsNullOrEmpty(inputString) && (inputString.StartsWith(HackID) || CustomTextData.ContainsKey(inputString)))
                 {
-                    return true;
+                    return 1;
                 }
             }
             return hookContainsText.Original(textEnum, methodInstance);
@@ -1055,9 +1055,9 @@ namespace Steamworks
         static IL2Method methodRestartAppIfNecessary;
         static IL2Method methodRunCallbacks;
 
-        delegate bool Del_Init();
+        delegate int Del_Init();
         delegate void Del_Shutdown();
-        delegate bool Del_RestartAppIfNecessary(IntPtr unOwnAppID);
+        delegate int Del_RestartAppIfNecessary(IntPtr unOwnAppID);
         delegate void Del_RunCallbacks();
 
         static Hook<Del_Init> hookInit;
@@ -1084,18 +1084,18 @@ namespace Steamworks
             hookRunCallbacks = new Hook<Del_RunCallbacks>(RunCallbacks, methodRunCallbacks);
         }
 
-        static bool InitH()
+        static int InitH()
         {
-            return false;
+            return 0;
         }
 
         static void Shutdown()
         {
         }
 
-        static bool RestartAppIfNecessary(IntPtr unOwnAppId)
+        static int RestartAppIfNecessary(IntPtr unOwnAppId)
         {
-            return false;
+            return 0;
         }
 
         static void RunCallbacks()
@@ -1110,15 +1110,15 @@ namespace Steamworks
 
         delegate IntPtr Del_GetIPCountry();
         static Hook<Del_GetIPCountry> hookGetIPCountry;
-        delegate bool Del_IsOverlayEnabled();
+        delegate int Del_IsOverlayEnabled();
         static Hook<Del_IsOverlayEnabled> hookIsOverlayEnabled;
-        delegate bool Del_ShowGamepadTextInput(int eInputMode, int eLineInputMode, IntPtr pchDescription, uint unCharMax, IntPtr pchExistingText);
+        delegate int Del_ShowGamepadTextInput(int eInputMode, int eLineInputMode, IntPtr pchDescription, uint unCharMax, IntPtr pchExistingText);
         static Hook<Del_ShowGamepadTextInput> hookShowGamepadTextInput;
-        delegate bool Del_GetEnteredGamepadTextInput(IntPtr pchText, uint cchText);
+        delegate int Del_GetEnteredGamepadTextInput(IntPtr pchText, uint cchText);
         static Hook<Del_GetEnteredGamepadTextInput> hookGetEnteredGamepadTextInput;
-        delegate bool Del_IsSteamRunningOnSteamDeck();
+        delegate int Del_IsSteamRunningOnSteamDeck();
         static Hook<Del_IsOverlayEnabled> hookIsSteamRunningOnSteamDeck;
-        delegate bool Del_ShowFloatingGamepadTextInput(int eKeyboardMode, int nTextFieldXPosition, int nTextFieldYPosition, int nTextFieldWidth, int nTextFieldHeight);
+        delegate int Del_ShowFloatingGamepadTextInput(int eKeyboardMode, int nTextFieldXPosition, int nTextFieldYPosition, int nTextFieldWidth, int nTextFieldHeight);
         static Hook<Del_ShowFloatingGamepadTextInput> hookShowFloatingGamepadTextInput;
 
         static SteamUtils()
@@ -1144,29 +1144,29 @@ namespace Steamworks
             return IntPtr.Zero;
         }
 
-        static bool IsOverlayEnabled()
+        static int IsOverlayEnabled()
         {
-            return false;
+            return 0;
         }
 
-        static bool ShowGamepadTextInput(int eInputMode, int eLineInputMode, IntPtr pchDescription, uint unCharMax, IntPtr pchExistingText)
+        static int ShowGamepadTextInput(int eInputMode, int eLineInputMode, IntPtr pchDescription, uint unCharMax, IntPtr pchExistingText)
         {
-            return false;
+            return 0;
         }
 
-        static bool GetEnteredGamepadTextInput(IntPtr pchText, uint cchText)
+        static int GetEnteredGamepadTextInput(IntPtr pchText, uint cchText)
         {
-            return false;
+            return 0;
         }
 
-        static bool IsSteamRunningOnSteamDeck()
+        static int IsSteamRunningOnSteamDeck()
         {
-            return false;
+            return 0;
         }
 
-        static bool ShowFloatingGamepadTextInput(int eKeyboardMode, int nTextFieldXPosition, int nTextFieldYPosition, int nTextFieldWidth, int nTextFieldHeight)
+        static int ShowFloatingGamepadTextInput(int eKeyboardMode, int nTextFieldXPosition, int nTextFieldYPosition, int nTextFieldWidth, int nTextFieldHeight)
         {
-            return false;
+            return 0;
         }
     }
 }

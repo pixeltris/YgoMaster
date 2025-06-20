@@ -9,7 +9,7 @@ namespace YgomGame.Duel
 {
     static unsafe class DuelTutorialSetting
     {
-        delegate bool Del_IsTutorialChapter(IntPtr thisPtr);
+        delegate int Del_IsTutorialChapter(IntPtr thisPtr);
         static Hook<Del_IsTutorialChapter> hookIsTutorialChapter;
 
         static DuelTutorialSetting()
@@ -18,11 +18,11 @@ namespace YgomGame.Duel
             hookIsTutorialChapter = new Hook<Del_IsTutorialChapter>(IsTutorialChapter, assembly.GetClass("DuelTutorialSetting", "YgomGame.Duel").GetMethod("IsTutorialChapter"));
         }
 
-        static bool IsTutorialChapter(IntPtr thisPtr)
+        static int IsTutorialChapter(IntPtr thisPtr)
         {
             if (ClientSettings.SoloRemoveDuelTutorials)
             {
-                return false;
+                return 0;
             }
             return hookIsTutorialChapter.Original(thisPtr);
         }

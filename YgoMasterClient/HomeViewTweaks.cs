@@ -19,7 +19,7 @@ namespace YgoMasterClient
         delegate void Del_UpdateHome(IntPtr thisPtr);
         static Hook<Del_UpdateHome> hookUpdateHome;
 
-        delegate bool Del_IsDispForceNotification();
+        delegate int Del_IsDispForceNotification();
         static Hook<Del_IsDispForceNotification> hookIsDispForceNotification;
 
         static HomeViewTweaks()
@@ -41,10 +41,10 @@ namespace YgoMasterClient
             hookIsDispForceNotification = new Hook<Del_IsDispForceNotification>(IsDispForceNotification, notificationClass.GetMethod("IsDispForceNotification"));
         }
 
-        static bool IsDispForceNotification()
+        static int IsDispForceNotification()
         {
             // Hide the daily notification popup
-            return false;
+            return 0;
         }
 
         static void UpdateDispPart(IntPtr thisPtr, int part)

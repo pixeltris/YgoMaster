@@ -414,7 +414,7 @@ namespace YgomGame
         delegate void Del_SortDeckViewCards(IntPtr thisPtr);
         static Hook<Del_SortDeckViewCards> hookSortDeckViewCards;
 
-        delegate bool Del_NeedSave(IntPtr thisPtr);
+        delegate int Del_NeedSave(IntPtr thisPtr);
         static Hook<Del_NeedSave> hookNeedSave;
 
         delegate void Del_OnClickSaveButton(IntPtr thisPtr);
@@ -586,11 +586,11 @@ namespace YgomGame
             hookNotificationStackRemove.Original(thisPtr);
         }
 
-        static bool NeedSave(IntPtr thisPtr)
+        static int NeedSave(IntPtr thisPtr)
         {
             if (TradeUtils.IsTrading)
             {
-                return false;
+                return 0;
             }
             else
             {
