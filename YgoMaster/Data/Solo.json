@@ -511,6 +511,15 @@
                 "category": 1,
                 "open_date": 1743739200
               },
+              "59": {
+                "priority": 58,
+                "parent_gate": 65,
+                "unlock_id": 26,
+                "view_gate": 1,
+                "clear_chapter": 590004,
+                "category": 1,
+                "open_date": 1750392000
+              },
               "64": {
                 "priority": 49,
                 "parent_gate": 0,
@@ -602,7 +611,7 @@
                 "open_date": 1747026000
               },
               "74": {
-                "priority": 8,
+                "priority": 9,
                 "parent_gate": 66,
                 "unlock_id": 1,
                 "view_gate": 1,
@@ -5098,6 +5107,78 @@
                   "anime": 0
                 }
               },
+              "59": {
+                "590001": {
+                  "parent_chapter": 0,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1203,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00590001",
+                  "npc_id": 0,
+                  "anime": 0
+                },
+                "590002": {
+                  "parent_chapter": 590001,
+                  "difficulty": 1,
+                  "mydeck_set_id": 0,
+                  "set_id": 1203,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1187,
+                  "anime": 0
+                },
+                "590003": {
+                  "parent_chapter": 590002,
+                  "difficulty": 3,
+                  "mydeck_set_id": 1203,
+                  "set_id": 1140102,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1187,
+                  "anime": 0
+                },
+                "590004": {
+                  "parent_chapter": 590003,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1012073,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00590004",
+                  "npc_id": 0,
+                  "anime": 0
+                },
+                "590005": {
+                  "parent_chapter": 590003,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 0,
+                  "unlock_id": 11207,
+                  "begin_sn": "",
+                  "npc_id": 0,
+                  "anime": 0
+                },
+                "590006": {
+                  "parent_chapter": 590005,
+                  "difficulty": 4,
+                  "mydeck_set_id": 1071034,
+                  "set_id": 1030035,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1188,
+                  "anime": 0
+                },
+                "590007": {
+                  "parent_chapter": 590006,
+                  "difficulty": 5,
+                  "mydeck_set_id": 104,
+                  "set_id": 1111062,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1189,
+                  "anime": 0
+                }
+              },
               "67": {
                 "670500": {
                   "parent_chapter": 0,
@@ -5521,6 +5602,11 @@
                   570445
                 ]
               },
+              "27": {
+                "2": [
+                  350283
+                ]
+              },
               "10101": {
                 "3": [
                   101
@@ -5804,6 +5890,16 @@
               "11205": {
                 "3": [
                   1205
+                ]
+              },
+              "11206": {
+                "3": [
+                  1206
+                ]
+              },
+              "11207": {
+                "3": [
+                  1207
                 ]
               },
               "11301": {
@@ -6256,6 +6352,16 @@
               "1205": {
                 "1": {
                   "12": 300
+                }
+              },
+              "1206": {
+                "1": {
+                  "12": 350
+                }
+              },
+              "1207": {
+                "1": {
+                  "12": 400
                 }
               },
               "1301": {
