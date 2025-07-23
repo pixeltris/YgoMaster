@@ -688,12 +688,15 @@ namespace YgomGame.Duel
     {
         delegate IntPtr Del_Get(IntPtr thisPtr, int mrk, int player, int effectNo);
         static Hook<Del_Get> hookGet;
+        delegate IntPtr Del_Get2(IntPtr thisPtr, int mrk);
+        static Hook<Del_Get2> hookGet2;
 
         static CardRunEffectSetting()
         {
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("CardRunEffectSetting", "YgomGame.Duel");
-            hookGet = new Hook<Del_Get>(Get, classInfo.GetMethod("Get"));
+            hookGet = new Hook<Del_Get>(Get, classInfo.GetMethod("Get", x => x.GetParameters().Length == 3));
+            hookGet2 = new Hook<Del_Get2>(Get2, classInfo.GetMethod("Get", x => x.GetParameters().Length == 1));
         }
 
         static IntPtr Get(IntPtr thisPtr, int mrk, int player, int effectNo)
@@ -704,6 +707,16 @@ namespace YgomGame.Duel
                 return IntPtr.Zero;
             }
             return hookGet.Original(thisPtr, mrk, player, effectNo);
+        }
+
+        static IntPtr Get2(IntPtr thisPtr, int mrk)
+        {
+            if (ClientSettings.DuelClientDisableCutinAnimations ||
+                (ClientSettings.DuelClientDisableCutinAnimationsForCardsWithCustomImages && CardIndividualSetting.IsCustomImage(mrk)))
+            {
+                return IntPtr.Zero;
+            }
+            return hookGet2.Original(thisPtr, mrk);
         }
     }
 
