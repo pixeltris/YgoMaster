@@ -218,7 +218,14 @@ namespace IL2CPP
             {
                 sig.Append("static ");
             }
-            sig.Append(property.GetGetMethod().ReturnType.Name);
+            if (property.GetGetMethod() != null)
+            {
+                sig.Append(property.GetGetMethod().ReturnType.Name);
+            }
+            else if (property.GetSetMethod() != null)
+            {
+                sig.Append(property.GetSetMethod().GetParameters()[0].Type.Name);
+            }
             return sig.ToString();
         }
 

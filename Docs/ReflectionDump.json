@@ -364,6 +364,16 @@
     "Assembly": "Assembly-CSharp",
     "Namespace": "YgomGame.Duel",
     "Class": [
+      "CardRunEffectSetting"
+    ],
+    "Type": "Method",
+    "Name": "Get",
+    "Signature": "public YgomGame.Duel.CardRunEffectSetting.CardRunEffectInfo Get(System.Int32 mrk)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
       "DuelHUD"
     ],
     "Type": "Method",
@@ -1535,6 +1545,26 @@
     "Type": "Field",
     "Name": "pcode",
     "Signature": "pcode"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "ProfileViewController"
+    ],
+    "Type": "Method",
+    "Name": "OnCreatedView",
+    "Signature": "public System.Void OnCreatedView()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "ProfileViewController"
+    ],
+    "Type": "Method",
+    "Name": "OnClickBlock",
+    "Signature": "System.Void OnClickBlock()"
   },
   {
     "Assembly": "Unity.TextMeshPro",
@@ -3958,6 +3988,16 @@
     "Type": "Method",
     "Name": "GetCategoryFromID",
     "Signature": "public static YgomGame.Utility.ItemUtil.Category GetCategoryFromID(System.Int32 itemID)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Utility",
+    "Class": [
+      "ItemUtil"
+    ],
+    "Type": "Method",
+    "Name": "GetCategoryOffset",
+    "Signature": "public static System.Int32 GetCategoryOffset(YgomGame.Utility.ItemUtil.Category category)"
   },
   {
     "Assembly": "Assembly-CSharp",
