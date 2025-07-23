@@ -84,6 +84,10 @@ NOTE: Card ids >= 30000 seem to be used for promotions / announcements and aren'
 - In the client console run `itemid` which will create `ItemID.json` in the game folder.
 - Copy it over to `YgoMaster/Data/` and remove any invalid entries (some make the client crash / are blank).
 
+## Bgm.json
+
+- For new duel fields you'll need to obtain the duel field and then log starting a PvP duel looking for `Duel.begin` and check the BGM entries then manually modify Bgm.json to set the correct BGM for the duel field
+
 ## Enabling the client console
 
 - In `ClientSettings.json` set `ShowConsole` to `true` and run the YgoMasterClient.

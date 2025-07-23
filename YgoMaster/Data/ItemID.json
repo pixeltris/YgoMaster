@@ -80,6 +80,7 @@
     1001030,//Blaze Accelerator
     1001031,//Ryko, Lightsworn Hunter
     1001032,//King's Sarcophagus
+    1001034,//Dark Resonator
     1002001,//Soccer Ball
     1002002,//Basketball
     1002003,//Record Player
@@ -92,6 +93,7 @@
     1002010,//Inline Skates
     1002011,//Darts
     1002012,//Bicycle
+    1002014,//Beach Chair & Parasol
     1003001,//Gaia The Fierce Knight
     1003002,//Tri-Brigade Shuraig the Ominous Omen
     1003003,//Sky Striker Ace - Raye
@@ -200,6 +202,8 @@
     1010101,//P.U.N.K. JAM FEVER!
     1010102,//The Fallen & The Virtuous
     1010103,//Red Supernova Dragon
+    1010104,//Maliss in the Mirror
+    1010105,//Go! - D/D/D Divine Zero King Rage
     1010107,//Aluber the Jester of Despia
     1010108,//Blazing Cartesia, the Virtuous
     1011001,//Soccer Ball
@@ -493,6 +497,8 @@
     1020162,//WCS 2025 Qualifiers Top 1000
     1020163,//WCS 2025 Qualifiers Top 10000
     1020164,//WCS 2025 Qualifiers DLv. MAX
+    1020165,//Five Star
+    1020166,//Blue-Purple-Clad Assassin
     1021001,//Starting Out
     1021002,//Top Performer
   ],
@@ -532,6 +538,7 @@
     1030033,//Yellow & Lime Frame
     1030034,//Blue & Purple Frame
     1030035,//Rekindling
+    1030036,//Purple & Yellow Frame
     1031001,//The Path of the Blue Sky Striker
     1031002,//The Path of the Red Sky Striker
     1031003,//Magic Cylinder
@@ -546,6 +553,7 @@
     1031012,//Sky Striker Ace - Raye
     1031013,//Mirror Force
     1031014,//Detonating Kuriboh
+    1031015,//Maliss
     1032001,//Festive Ornament
     1032002,//Celebration of Spring Breeze
     1032003,//Tropical Seaside
@@ -555,6 +563,7 @@
     1032007,//Neon Sign
     1032008,//Maple Maiden
     1032009,//Rikka
+    1032010,//Swimming Ring
     1033001,//WCS 2023 Party Favor
     1033002,//WCS 2024 Party Favor
     1033003,//Overlay Unit
@@ -677,6 +686,11 @@
     1070115,//The Fallen & The Virtuous
     1070116,//Materiactor Exagard
     1070117,//Crystron Quariongandrax
+    1070118,//Arcana Force XXI - The World
+    1070119,//Gladiator Beast Gyzarus
+    1070120,//Arc Rebellion Xyz Dragon
+    1070121,//Borreload Furious Dragon
+    1070122,//Maliss in the Mirror
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -716,6 +730,7 @@
     1072003,//Sky Striker Armor - Black Flash Raiment
     1072004,//Hallo & Ween
     1072005,//Evil★Twin
+    1072007,//Maliss ＜Q＞
     1073001,//WCS 2023 Party Favor
     1073002,//WCS 2023 Celebration
     1073003,//DC 2023 OCT Celebration
@@ -813,6 +828,7 @@
     1090028,//Forest of Endless White
     1090030,//Forest of the Traptrix
     1090031,//Ruins of the Sinful Spoils
+    1090032,//Lost World
     1090033,//Evil★Twin
     1090034,//Striking Stratagem Simulation Area
     1090036,//Despia, Theater of the Branded
@@ -849,6 +865,7 @@
     1100028,//Forest of Endless White
     1100030,//Forest of the Traptrix
     1100031,//Ruins of the Sinful Spoils
+    1100032,//Lost World
     1100033,//Evil★Twin
     1100034,//Striking Stratagem Simulation Area
     1100036,//Despia, Theater of the Branded
@@ -873,9 +890,11 @@
     1101022,//Scrap Recycler & Garbage Collector
     1101023,//Back to Square One
     1101025,//Fire King Sanctuary
+    1101031,//Ragnaraika the Evil Seed
     1101032,//Centur-Ion Emeth VI
     1101034,//Kochobo's Hinamatsuri
     1101035,//Floral Crown
+    1101036,//Swimming Ring
     1102001,//Colosseum
     1102002,//WCS
   ],
@@ -909,6 +928,7 @@
     1110028,//Forest of Endless White
     1110030,//Forest of the Traptrix
     1110031,//Ruins of the Sinful Spoils
+    1110032,//Lost World
     1110033,//Evil★Twin
     1110034,//Striking Stratagem Simulation Area
     1110036,//Despia, Theater of the Branded
@@ -944,7 +964,9 @@
     1111045,//Madolche Chickolates
     1111047,//DARK
     1111048,//LIGHT
+    1111049,//EARTH
     1111050,//WATER
+    1111052,//WIND
     1111056,//Legend of the Sovereign Seas
     1111057,//Shield of the Millennium Dynasty
     1111061,//Mimighoul Room
@@ -1060,6 +1082,11 @@
     1130073,//Argostars
     1130074,//Firestorms Over Atlantis
     1130075,//The Fallen & The Virtuous
+    1130076,//Maliss in Underground
+    1130077,//Liberator Eto
+    1130078,//Sunset Beat
+    1130079,//Tenyi Spirit - Suruya
+    1130080,//Shateki
     1130081,//Aluber the Jester of Despia
     1130082,//Blazing Cartesia, the Virtuous
   ],

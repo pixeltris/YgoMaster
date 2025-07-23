@@ -28,6 +28,7 @@
 	{ "1090028": 01 },//Forest of Endless White
 	{ "1090030": 15 },//Forest of the Traptrix
 	{ "1090031": 12 },//Ruins of the Sinful Spoils
+	{ "1090032": 15 },//Lost World
 	{ "1090033": [ "BGM_DUEL_F01_ALL", "", "" ] },//Evil★Twin
 	{ "1090034": [ "BGM_DUEL_F03_PHASE_A","BGM_DUEL_F03_PHASE_B","BGM_DUEL_F03_PHASE_C" ] },//Striking Stratagem Simulation Area
 	{ "1090036": [ "BGM_DUEL_F04_PHASE_A","BGM_DUEL_F04_PHASE_B","" ] },//Despia, Theater of the Branded
