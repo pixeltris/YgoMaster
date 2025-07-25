@@ -999,6 +999,8 @@ namespace YgoMaster
                             break;
                         case "--unknown-alt-cards":// Lists unknown alt card ids (excludes everything already in AltCardsYdk.json)
                             {
+                                YdkHelper.LoadIdMap(dataDirectory);
+
                                 HashSet<int> knownAltCardIds = new HashSet<int>();
                                 string altCardIdsFile = Path.Combine("..", "Docs", "AltCardsYdk.json");
                                 if (File.Exists(altCardIdsFile))
@@ -1025,8 +1027,13 @@ namespace YgoMaster
                                 Dictionary<int, YdkHelper.GameCardInfo> cards = YdkHelper.LoadCardDataFromGame(dataDirectory);
                                 foreach (YdkHelper.GameCardInfo card in cards.Values)
                                 {
-                                    if (card.Kind == CardKind.Token)
+                                    if (card.Kind == CardKind.Token || card.Kind == CardKind.TokenTuner)
                                     {
+                                        continue;
+                                    }
+                                    if (card.Id >= 30000 && card.Id <= 30099)
+                                    {
+                                        // Promotional card ids
                                         continue;
                                     }
                                     if (!cardNameIds.ContainsKey(card.Name))
@@ -1038,38 +1045,18 @@ namespace YgoMaster
 
                                 foreach (KeyValuePair<string, List<int>> card in cardNameIds)
                                 {
-                                    if (card.Value.Count > 1)
+                                    List<int> altIds = new List<int>();
+                                    foreach (int cardId in card.Value)
                                     {
-                                        List<int> altIds = new List<int>();
-                                        foreach (int cardId in card.Value)
+                                        if (YdkHelper.GetYdkId(cardId) == 0)
                                         {
-                                            bool isAlt = true;
-                                            try
-                                            {
-                                                using (WebClient client = new WebClient())
-                                                {
-                                                    client.Proxy = null;
-                                                    string json = client.DownloadString("https://db.ygoprodeck.com/api/v7/cardinfo.php?misc=yes&konami_id=" + cardId);
-                                                    Dictionary<string, object> jsonData = MiniJSON.Json.Deserialize(json) as Dictionary<string, object>;
-                                                    if (jsonData != null && jsonData.Count == 1)
-                                                    {
-                                                        isAlt = false;
-                                                    }
-                                                }
-                                            }
-                                            catch
-                                            {
-                                            }
-                                            if (isAlt)
-                                            {
-                                                altIds.Add(cardId);
-                                            }
+                                            altIds.Add(cardId);
                                         }
-                                        List<int> unknownAltIds = altIds.Except(knownAltCardIds).ToList();
-                                        if (unknownAltIds.Count > 0)
-                                        {
-                                            Console.WriteLine(card.Key + " = " + string.Join(",", card.Value) + " (unknown:" + string.Join(",", unknownAltIds) + ")");
-                                        }
+                                    }
+                                    List<int> unknownAltIds = altIds.Except(knownAltCardIds).ToList();
+                                    if (unknownAltIds.Count > 0)
+                                    {
+                                        Console.WriteLine(card.Key + " = " + string.Join(",", card.Value) + " (unknown:" + string.Join(",", unknownAltIds) + ")");
                                     }
                                 }
                             }

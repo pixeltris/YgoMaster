@@ -283,6 +283,7 @@ namespace YgoMaster
                 List<object> dataList = null;
                 if (jsonData != null && jsonData.TryGetValue("data", out dataListObj) && (dataList = dataListObj as List<object>) != null)
                 {
+                    long konamiId = 0;
                     foreach (object dataObj in dataList)
                     {
                         Dictionary<string, object> data = dataObj as Dictionary<string, object>;
@@ -306,11 +307,20 @@ namespace YgoMaster
                                     {
                                         ydkIds.Add(betaId);
                                     }
+                                    konamiId = Utils.GetValue<long>(miscInfo, "konami_id");
                                 }
                             }
                         }
                         string ydkName = data["name"] as string;
-                        GameCardInfo cardInfo = gameCards.Values.FirstOrDefault(x => x.Id >= 4000 && x.Name.Equals(ydkName, StringComparison.InvariantCultureIgnoreCase));
+                        GameCardInfo cardInfo = null;
+                        if (konamiId != 0)
+                        {
+                            gameCards.TryGetValue((int)konamiId, out cardInfo);
+                        }
+                        if (cardInfo == null)
+                        {
+                            gameCards.Values.FirstOrDefault(x => x.Id >= 4000 && x.Name.Equals(ydkName, StringComparison.InvariantCultureIgnoreCase));
+                        }
                         if (cardInfo == null)
                         {
                             cardInfo = gameCards.Values.FirstOrDefault(x => x.Name.Equals(ydkName, StringComparison.InvariantCultureIgnoreCase));
