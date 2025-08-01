@@ -19,9 +19,6 @@ namespace YgoMasterClient
         delegate void Del_UpdateHome(IntPtr thisPtr);
         static Hook<Del_UpdateHome> hookUpdateHome;
 
-        delegate int Del_IsDispForceNotification();
-        static Hook<Del_IsDispForceNotification> hookIsDispForceNotification;
-
         static HomeViewTweaks()
         {
             if (Program.IsLive)
@@ -36,15 +33,6 @@ namespace YgoMasterClient
 
             IL2Class homeViewClass = assembly.GetClass("HomeViewController", "YgomGame.Menu");
             hookUpdateHome = new Hook<Del_UpdateHome>(UpdateHome, homeViewClass.GetMethod("UpdateHome"));
-
-            IL2Class notificationClass = assembly.GetClass("ForceNotification", "YgomGame.Menu");
-            hookIsDispForceNotification = new Hook<Del_IsDispForceNotification>(IsDispForceNotification, notificationClass.GetMethod("IsDispForceNotification"));
-        }
-
-        static int IsDispForceNotification()
-        {
-            // Hide the daily notification popup
-            return 0;
         }
 
         static void UpdateDispPart(IntPtr thisPtr, int part)
