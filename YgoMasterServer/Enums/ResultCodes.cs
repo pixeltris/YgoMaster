@@ -72,6 +72,25 @@ namespace YgoMaster
             DEEPLINK_TITLE_BACK,
         }
 
+        public enum AnnounceCode //v2.4.0
+        {
+            NONE,
+            ERROR,
+            FATAL,
+            CRITICAL,
+        }
+
+        enum CardFileCode //v2.4.0
+        {
+            NONE,
+            ERROR,
+            FATAL,
+            CRITICAL,
+            INVALID_PARAM = 5200,
+            ERR_ACCOUNT_NOT_EXIST,
+            ERR_UNDEFINED_FILE,
+        }
+
         public enum UserCode
         {
             NONE = 0,

@@ -271,7 +271,7 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomGame.Duel.ReplayControl));
                 nativeTypes.Add(typeof(YgomGame.Duel.DuelClient));
                 nativeTypes.Add(typeof(YgomGame.Duel.CameraShaker));
-                nativeTypes.Add(typeof(YgomGame.Duel.DuelHUD_PrepareToDuelProcess));
+                // nativeTypes.Add(typeof(YgomGame.Duel.DuelHUD_PrepareToDuelProcess)); // v2.4.0 removed
                 nativeTypes.Add(typeof(YgomGame.Duel.Util));
                 nativeTypes.Add(typeof(YgomGame.Duel.Engine));
                 nativeTypes.Add(typeof(YgomGame.Duel.EngineApiUtil));

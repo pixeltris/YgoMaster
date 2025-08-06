@@ -201,7 +201,10 @@ namespace YgoMaster
             WALLPAPER,
             PACK_TICKET,
             DECK_LIMIT,
-            REPLAY_LIMIT
+            REPLAY_LIMIT,
+            CARD_FILE,
+            COIN,
+            BOOKMARK_LIMIT,
         }
 
         public enum Value
