@@ -206,6 +206,8 @@
     1010105,//Go! - D/D/D Divine Zero King Rage
     1010107,//Aluber the Jester of Despia
     1010108,//Blazing Cartesia, the Virtuous
+    1010109,//A Bao A Qu, the Lightless Shadow
+    1010110,//Six Samurai
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -257,6 +259,10 @@
     1011049,//WCS 2025 Qualifiers Gold Finalist
     1011050,//WCS 2025 Qualifiers Silver Finalist
     1011051,//WCS 2025 Qualifiers Bronze Finalist
+    1011052,//Synchro Cup Gold Finalist
+    1011053,//Synchro Cup Silver Finalist
+    1011054,//Synchro Cup Bronze Finalist
+    1011055,//Synchro Cup Champion
     1012001,//X-Krawler Synaphysis
     1012002,//Mekk-Knight Spectrum Supreme
     1012003,//Knightmare Gryphon
@@ -332,6 +338,7 @@
     1013002,//Memories of Intersecting Duels
     1013003,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
     1013004,//Sky Striker Ace - Kagari
+    1013005,//Dogmatika Fleurdelis, the Knighted
   ],
   "PROFILE_TAG": [
     1020001,//Beginner Duelist
@@ -499,6 +506,14 @@
     1020164,//WCS 2025 Qualifiers DLv. MAX
     1020165,//Five Star
     1020166,//Blue-Purple-Clad Assassin
+    1020167,//Overlord of Purest Silver
+    1020168,//Synchro Cup Top 10
+    1020169,//Synchro Cup Top 100
+    1020170,//Synchro Cup Top 500
+    1020171,//Synchro Cup Top 1000
+    1020172,//Synchro Cup Top 10000
+    1020173,//Synchro Cup 2nd Stage Duelist
+    1020179,//Bushido
     1021001,//Starting Out
     1021002,//Top Performer
   ],
@@ -554,6 +569,7 @@
     1031013,//Mirror Force
     1031014,//Detonating Kuriboh
     1031015,//Maliss
+    1031016,//Overlay Unit β
     1032001,//Festive Ornament
     1032002,//Celebration of Spring Breeze
     1032003,//Tropical Seaside
@@ -567,6 +583,7 @@
     1033001,//WCS 2023 Party Favor
     1033002,//WCS 2024 Party Favor
     1033003,//Overlay Unit
+    1033004,//Synchro Ring
   ],
   "PROTECTOR": [
     1070001,//Yu-Gi-Oh! Trading Card Game
@@ -691,6 +708,8 @@
     1070120,//Arc Rebellion Xyz Dragon
     1070121,//Borreload Furious Dragon
     1070122,//Maliss in the Mirror
+    1070123,//Clear Wing Synchro Dragon
+    1070124,//Ryzeal Detonator
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -744,8 +763,11 @@
     1073011,//DC 2024 DEC Celebration
     1073012,//DC 2025 MAR Celebration
     1073013,//WCS 2025 Qualifiers Celebration
+    1073014,//Synchro Cup Celebration
+    1073015,//WCS 2025 Celebration
     1075001,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
     1075002,//THE CHRONICLES: Sky Striker Ace
+    1075006,//THE CHRONICLES: The Fallen & The Virtuous
   ],
   "DECK_CASE": [
     1080001,//Duelist Card Case Red
@@ -961,16 +983,19 @@
     1111041,//Shrine of Mist Valley
     1111042,//Depresspard
     1111043,//Tales of the White Forest
+    1111044,//R-Genex Turing
     1111045,//Madolche Chickolates
     1111047,//DARK
     1111048,//LIGHT
     1111049,//EARTH
     1111050,//WATER
+    1111051,//FIRE
     1111052,//WIND
     1111056,//Legend of the Sovereign Seas
     1111057,//Shield of the Millennium Dynasty
     1111061,//Mimighoul Room
     1111062,//Flamvell, the Scarlet Warriors
+    1111064,//Mulcharmy Pink
     1112001,//Colosseum
     1112002,//WCS
     1113001,//WCS 2023 Party Favor
@@ -1089,6 +1114,9 @@
     1130080,//Shateki
     1130081,//Aluber the Jester of Despia
     1130082,//Blazing Cartesia, the Virtuous
+    1130083,//Medallion of the Ice Barrier
+    1130084,//Black Rose Dragon
+    1130085,//A Bao A Qu, the Lightless Shadow
   ],
   "PACK_TICKET": [
     1140001,//Legacy Pack ticket
