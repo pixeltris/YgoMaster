@@ -476,6 +476,7 @@ namespace YgoMaster
         public int FieldObj;
         public int AvBase;// Can be 0 (the others should be assigned to some value)
         public int AvatarId;
+        public int Coin;
 
         public Dictionary<string, object> ToDictionary()
         {
@@ -486,6 +487,7 @@ namespace YgoMaster
             result["object"] = FieldObj;
             result["av_base"] = AvBase;
             result["avatar_id"] = AvatarId > 0 ? AvatarId : -1;
+            result["coin"] = Coin;
             return result;
         }
 
@@ -497,6 +499,7 @@ namespace YgoMaster
             FieldObj = other.FieldObj;
             AvBase = other.AvBase;
             AvatarId = other.AvatarId;
+            Coin = other.Coin;
         }
 
         public void Clear()
@@ -507,6 +510,7 @@ namespace YgoMaster
             FieldObj = 0;
             AvBase = 0;
             AvatarId = -1;
+            Coin = 0;
         }
 
         public void FromDictionary(Dictionary<string, object> dict)
@@ -521,6 +525,7 @@ namespace YgoMaster
             FieldObj = Utils.GetValue<int>(dict, "object");
             AvBase = Utils.GetValue<int>(dict, "av_base");
             AvatarId = Utils.GetValue<int>(dict, "avatar_id");
+            Coin = Utils.GetValue<int>(dict, "coin");
         }
 
 #if !YGO_MASTER_CLIENT
@@ -532,6 +537,7 @@ namespace YgoMaster
             FieldObj = Sanitize(player, ItemID.Category.FIELD_OBJ, FieldObj);
             AvBase = Sanitize(player, ItemID.Category.AVATAR_HOME, AvBase, true);
             AvatarId = Sanitize(player, ItemID.Category.AVATAR, AvatarId, true);
+            Coin = Sanitize(player, ItemID.Category.COIN, Coin);
         }
 
         int Sanitize(Player player, ItemID.Category category, int value, bool allowZeroValue = false)
@@ -564,6 +570,7 @@ namespace YgoMaster
             Sleeve = (int)ItemID.Value.DefaultProtector;
             Field = (int)ItemID.Value.DefaultField;
             FieldObj = (int)ItemID.Value.DefaultFieldObj;
+            Coin = (int)ItemID.Value.DefaultCoin;
             AvBase = 0;
             AvatarId = -1;
         }

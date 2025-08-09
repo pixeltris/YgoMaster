@@ -177,6 +177,10 @@ namespace YgoMaster
             {
                 return Category.PACK_TICKET;
             }
+            if (itemId - 1180000 < 10000)
+            {
+                return Category.COIN;
+            }
             return 0;
         }
 
@@ -223,11 +227,15 @@ namespace YgoMaster
             OrbFire = 12,
             OrbWind = 13,
 
+            DefaultIcon = 1010001,//Duelist
+            DefaultIconFrame = 1030001,//ICON_FRAME01
             DefaultDeckCase = 1080001,//Duelist Card Case Red
             DefaultProtector = 1070001,//Yu-Gi-Oh! Trading Card Game
             DefaultField = 1090001,//Forest
             DefaultFieldObj = 1100001,//Forest
             StartingStructureDeck = 1120001,//Starting Deck
+            DefaultWallpaper = 1130001,//Blue-Eyes Alternative White Dragon
+            DefaultCoin = 1180001,//Blue-Eyes Alternative White Dragon Coin
         }
     }
 }

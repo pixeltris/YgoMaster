@@ -175,6 +175,10 @@ namespace YgoMaster
                 {
                     deck.Accessory.AvatarId = value;
                 }
+                if (Utils.TryGetValue(args, "coin", out value))
+                {
+                    deck.Accessory.Coin = value;
+                }
                 deck.Accessory.Sanitize(request.Player);
                 Dictionary<string, object> pickCards = Utils.GetDictionary(args, "pick_cards");
                 if (pickCards != null)
@@ -288,6 +292,10 @@ namespace YgoMaster
                 {
                     fieldItemCategory = ItemID.Category.PROTECTOR;
                 }
+                if (Utils.TryGetValue(args, "coin", out value) && request.Player.Items.Contains(value))
+                {
+                    fieldItemCategory = ItemID.Category.COIN;
+                }
                 if (fieldItemCategory != ItemID.Category.NONE)
                 {
                     // NOTE: Deck changes should be applied to the "Ranked Duels Deck"
@@ -315,6 +323,9 @@ namespace YgoMaster
                                 break;
                             case ItemID.Category.PROTECTOR:
                                 deck.Accessory.Sleeve = value;
+                                break;
+                            case ItemID.Category.COIN:
+                                deck.Accessory.Coin = value;
                                 break;
                         }
                         SaveDeck(deck);

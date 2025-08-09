@@ -112,6 +112,7 @@ namespace YgoMaster
         public int[] mat { get; private set; }
         public int[] duel_object { get; private set; }
         public int[] wallpaper { get; private set; }
+        public int[] coin { get; private set; }
         public List<int>[] profile_tag { get; private set; }
         public int[] story_deck_id { get; private set; }
 
@@ -198,6 +199,7 @@ namespace YgoMaster
                 case ItemID.Category.FIELD_OBJ: duel_object[PlayerIndex] = value; break;
                 case ItemID.Category.AVATAR_HOME: avatar_home[PlayerIndex] = value; break;
                 case ItemID.Category.WALLPAPER: wallpaper[PlayerIndex] = value; break;
+                case ItemID.Category.COIN: coin[PlayerIndex] = value; break;
             }
         }
 
@@ -332,20 +334,23 @@ namespace YgoMaster
                 if (duel_object[i] == -2) duel_object[i] = ItemID.GetRandomId(Utils.Rand, ItemID.Category.FIELD_OBJ);
                 if (icon[i] == -2) icon[i] = ItemID.GetRandomId(Utils.Rand, ItemID.Category.ICON);
                 if (icon_frame[i] == -2) icon_frame[i] = ItemID.GetRandomId(Utils.Rand, ItemID.Category.ICON_FRAME);
+                if (coin[i] == -2) coin[i] = ItemID.GetRandomId(Utils.Rand, ItemID.Category.COIN);
 
                 if (mat[i] == -1) mat[i] = Deck[i].Accessory.Field;
                 if (sleeve[i] == -1) sleeve[i] = Deck[i].Accessory.Sleeve;
                 if (avatar_home[i] == -1) avatar_home[i] = Deck[i].Accessory.AvBase;
                 if (duel_object[i] == -1) duel_object[i] = Deck[i].Accessory.FieldObj;
                 if (avatar[i] == -1) avatar[i] = Deck[i].Accessory.AvatarId;
+                if (coin[i] == -1) coin[i] = Deck[i].Accessory.Coin;
 
                 if (avatar[i] < 0) avatar[i] = 0;//avatar[i] = 1000001;
-                if (mat[i] <= 0) mat[i] = 1090001;
-                if (sleeve[i] <= 0) sleeve[i] = 1070001;
-                if (icon[i] <= 0) icon[i] = 1010001;
-                if (icon_frame[i] <= 0) icon_frame[i] = 1030001;
+                if (mat[i] <= 0) mat[i] = (int)ItemID.Value.DefaultField;
+                if (sleeve[i] <= 0) sleeve[i] = (int)ItemID.Value.DefaultProtector;
+                if (icon[i] <= 0) icon[i] = (int)ItemID.Value.DefaultIcon;
+                if (icon_frame[i] <= 0) icon_frame[i] = (int)ItemID.Value.DefaultIconFrame;
                 if (duel_object[i] <= 0) duel_object[i] = ItemID.GetFieldObjFromField(mat[i]);//duel_object[i] = 1100001;
-                if (wallpaper[i] <= 0) wallpaper[i] = 1130001;
+                if (wallpaper[i] <= 0) wallpaper[i] = (int)ItemID.Value.DefaultWallpaper;
+                if (coin[i] <= 0) coin[i] = (int)ItemID.Value.DefaultCoin;
 
                 if (i > 0 && string.IsNullOrEmpty(name[i]))
                 {
@@ -729,6 +734,7 @@ namespace YgoMaster
                 { "mat", mat },
                 { "duel_object", duel_object },
                 { "avatar_home", avatar_home },
+                { "coin", coin },
                 { "dialog_intro", dialog_intro },
                 { "dialog_outro", dialog_outro }
             };
@@ -794,6 +800,7 @@ namespace YgoMaster
                     playerProfileData["icon"] = player.IconId;
                     playerProfileData["icon_frame"] = player.IconFrameId;
                     playerProfileData["avatar"] = player.AvatarId;
+                    playerProfileData["coin"] = Deck[i].Accessory.Coin;
                 }
                 else
                 {
@@ -825,6 +832,7 @@ namespace YgoMaster
                     playerProfileData["icon"] = icon[i];
                     playerProfileData["icon_frame"] = icon_frame[i];
                     playerProfileData["avatar"] = avatar[i];
+                    playerProfileData["coin"] = coin[i];
 #if !YGO_MASTER_CLIENT
                 }
 #endif

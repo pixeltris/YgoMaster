@@ -153,6 +153,7 @@ namespace YgoMaster
                         duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.PROTECTOR, deck.Accessory.Sleeve);
                         duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.FIELD, deck.Accessory.Field);
                         duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.FIELD_OBJ, deck.Accessory.FieldObj);
+                        duelSettings.SetP1ItemValue(duel.IsMyDeck, ItemID.Category.COIN, deck.Accessory.Coin);
                         duelSettings.story_deck_id[DuelSettings.PlayerIndex] = 0;
                         if (player.DuelBgmMode == DuelBgmMode.Myself && !duelSettings.OverrideUserBgm)
                         {
@@ -649,6 +650,7 @@ namespace YgoMaster
                                         ItemID.Category.FIELD_OBJ,
                                         ItemID.Category.AVATAR_HOME,
                                         ItemID.Category.WALLPAPER,
+                                        ItemID.Category.COIN
                                     };
                                     foreach (ItemID.Category category in categories)
                                     {

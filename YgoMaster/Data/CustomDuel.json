@@ -16,6 +16,7 @@
     "duel_object": [ -1, -1 ],// The duel field part (graveyard / banish zones)
     "icon": [ -1, 1010001 ],// The players icon
     "icon_frame": [ -1, 1030001 ],// The players icon frame
+    "coin": [ -1, -1 ],// The players coin
     "name": [ "", "CPU" ],// The players name
     "bgms": [
         "BGM_DUEL_NORMAL_03",

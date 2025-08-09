@@ -1468,6 +1468,7 @@ namespace YgoMaster
                     ItemID.Category.FIELD_OBJ,
                     ItemID.Category.AVATAR_HOME,
                     ItemID.Category.WALLPAPER,
+                    ItemID.Category.COIN
                 };
                 foreach (ItemID.Category category in categories)
                 {
@@ -2208,6 +2209,9 @@ namespace YgoMaster
                                 break;
                             case ItemID.Category.DECK_CASE:
                                 info.SubCategory = (int)ShopSubCategoryAccessory.DeckCase;
+                                break;
+                            case ItemID.Category.COIN:
+                                info.SubCategory = (int)ShopSubCategoryAccessory.Coin;
                                 break;
                             default:
                                 Utils.LogWarning("Unhandled shop accessory type " + itemCategory + " for item id " + info.Id);

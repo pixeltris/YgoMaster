@@ -599,6 +599,7 @@ namespace YgoMaster
                                                     case ItemID.Category.AVATAR_HOME:
                                                     case ItemID.Category.FIELD_OBJ:
                                                     case ItemID.Category.FIELD:
+                                                    case ItemID.Category.COIN:
                                                         request.Player.Items.Remove(itemId);
                                                         break;
                                                 }
@@ -674,6 +675,7 @@ namespace YgoMaster
                             case ItemID.Category.AVATAR_HOME:
                             case ItemID.Category.FIELD_OBJ:
                             case ItemID.Category.FIELD:
+                            case ItemID.Category.COIN:
                                 {
                                     count = 1;
                                     if (!SoloRewardsInDuelResult)

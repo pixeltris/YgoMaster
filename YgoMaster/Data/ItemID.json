@@ -1132,4 +1132,14 @@
   "REPLAY_LIMIT": [
     1160001,//Replay Slots
   ],
+  "CARD_FILE": [
+
+  ],
+  "COIN": [
+    1180001,//Blue-Eyes Alternative White Dragon
+    1180002,//Pot of Greed
+  ],
+  "BOOKMARK_LIMIT": [
+    1190001,//Bookmark Slots
+  ],
 }

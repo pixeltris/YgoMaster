@@ -840,6 +840,7 @@ namespace YgoMaster
                         playerData["avatar_home"] = deck.Accessory.AvBase;
                         playerData["duel_object"] = deck.Accessory.FieldObj;
                         playerData["deck_case"] = deck.Accessory.Box;
+                        playerData["coin"] = deck.Accessory.Coin;
                         playerData["level"] = player.Level;
                         playerData["wallpaper"] = player.Wallpaper;
                         playerData["profile_tag"] = player.TitleTags.ToArray();
@@ -865,6 +866,7 @@ namespace YgoMaster
                     duelData["avatar_home"] = new int[2] { d1.Accessory.AvBase, d2.Accessory.AvBase };
                     duelData["duel_object"] = new int[2] { d1.Accessory.FieldObj, d2.Accessory.FieldObj };
                     duelData["deck_case"] = new int[2] { d1.Accessory.Box, d2.Accessory.Box };
+                    duelData["coin"] = new int[2] { d1.Accessory.Coin, d2.Accessory.Coin };
                     duelData["os"] = new int[2] { (int)PlatformID.Steam, (int)PlatformID.Steam };
                     duelData["pcode"] = new uint[2] { p1.Code, p2.Code };
                     duelData["official"] = new int[2] { 0, 0 };
@@ -1224,6 +1226,7 @@ namespace YgoMaster
                 duelSettings.icon_frame[i] = players[i].IconFrameId;
                 duelSettings.sleeve[i] = decks[i].Accessory.Sleeve;
                 duelSettings.mat[i] = decks[i].Accessory.Field;
+                duelSettings.coin[i] = decks[i].Accessory.Coin;
                 duelSettings.duel_object[i] = decks[i].Accessory.FieldObj;
                 duelSettings.wallpaper[i] = players[i].Wallpaper;
                 duelSettings.profile_tag[i] = players[i].TitleTags.ToList();

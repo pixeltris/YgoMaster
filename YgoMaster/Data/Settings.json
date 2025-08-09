@@ -109,6 +109,7 @@
         1080001,// Duelist Card Case Red (DECK_CASE)
         1090001,// Forest (FIELD)
         1130001,// Blue-Eyes Alternative White Dragon (WALLPAPER)
+        1180001,// Blue-Eyes Alternative White Dragon (COIN)
         //1120001,// Starting Deck (STRUCTURE)
     ],
     "Craft": {

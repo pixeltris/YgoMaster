@@ -64,6 +64,8 @@
     "CustomTextDuelStarterIcon2": "Icon2",
     "CustomTextDuelStarterIconFrame1": "IconFrame1",
     "CustomTextDuelStarterIconFrame2": "IconFrame2",
+    "CustomTextDuelStarterCoin1": "Coin1",
+    "CustomTextDuelStarterCoin2": "Coin2",
     "CustomTextDuelStarterLoadSave": "Load / Save",
     "CustomTextDuelStarterLoadIncludingDecks": "Load (including decks)",
     "CustomTextDuelStarterLoad": "Load",
