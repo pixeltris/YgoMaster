@@ -47,6 +47,7 @@
     1000032,//Elemental HERO Flame Wingman
     1000033,//Blue-Eyes Chaos MAX Dragon
     1000034,//Scareclaw Light-Heart
+    1000036,//Aleister the Invoker
     1000041,//Number 41: Bagooska the Terribly Tired Tapir
     1001001,//Instant Fusion
     1001002,//Noble Arms - Caliburn
@@ -81,6 +82,7 @@
     1001031,//Ryko, Lightsworn Hunter
     1001032,//King's Sarcophagus
     1001034,//Dark Resonator
+    1001037,//Gem-Turtle
     1002001,//Soccer Ball
     1002002,//Basketball
     1002003,//Record Player
@@ -208,6 +210,11 @@
     1010108,//Blazing Cartesia, the Virtuous
     1010109,//A Bao A Qu, the Lightless Shadow
     1010110,//Six Samurai
+    1010111,//Exodia the Forbidden One (WCS2025)
+    1010113,//Aleister the Invoker
+    1010114,//Kurikurinku @Ignister
+    1010115,//Avance, Swordsman of the Nekroz
+    1010116,//Block Dragon
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -263,6 +270,13 @@
     1011053,//Synchro Cup Silver Finalist
     1011054,//Synchro Cup Bronze Finalist
     1011055,//Synchro Cup Champion
+    1011056,//WCS 2025 Champion
+    1011057,//WCS 2025 Finalist
+    1011058,//WCS 2025 Top 4
+    1011059,//WCS 2025 Top 12
+    1011060,//DC 2025 SEP Gold Finalist
+    1011061,//DC 2025 SEP Silver Finalist
+    1011062,//DC 2025 SEP Bronze Finalist
     1012001,//X-Krawler Synaphysis
     1012002,//Mekk-Knight Spectrum Supreme
     1012003,//Knightmare Gryphon
@@ -334,6 +348,8 @@
     1012071,//Rescue-ACE Impulse
     1012072,//Exosister Elis
     1012073,//Flamvell Baby
+    1012074,//Poseidra, the Atlantean Dragon
+    1012075,//Fire King High Avatar Garunix
     1013001,//PawaPuro
     1013002,//Memories of Intersecting Duels
     1013003,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
@@ -513,7 +529,17 @@
     1020171,//Synchro Cup Top 1000
     1020172,//Synchro Cup Top 10000
     1020173,//Synchro Cup 2nd Stage Duelist
+    1020174,//WCS 2025 Champion
+    1020175,//WCS 2025 Finalist
+    1020176,//WCS 2025 Top 4
+    1020177,//WCS 2025 Top 12
     1020179,//Bushido
+    1020180,//DC 2025 SEP Top 10
+    1020181,//DC 2025 SEP Top 100
+    1020182,//DC 2025 SEP Top 500
+    1020183,//DC 2025 SEP Top 1000
+    1020184,//DC 2025 SEP Top 10000
+    1020185,//DC 2025 SEP 2nd Stage Duelist
     1021001,//Starting Out
     1021002,//Top Performer
   ],
@@ -554,6 +580,8 @@
     1030034,//Blue & Purple Frame
     1030035,//Rekindling
     1030036,//Purple & Yellow Frame
+    1030037,//Yellow & Blue Frame
+    1030039,//Gem-Knight Fusion
     1031001,//The Path of the Blue Sky Striker
     1031002,//The Path of the Red Sky Striker
     1031003,//Magic Cylinder
@@ -570,6 +598,7 @@
     1031014,//Detonating Kuriboh
     1031015,//Maliss
     1031016,//Overlay Unit β
+    1031017,//A.I. Love Fusion
     1032001,//Festive Ornament
     1032002,//Celebration of Spring Breeze
     1032003,//Tropical Seaside
@@ -584,6 +613,7 @@
     1033002,//WCS 2024 Party Favor
     1033003,//Overlay Unit
     1033004,//Synchro Ring
+    1033005,//WCS 2025 Party Favor
   ],
   "PROTECTOR": [
     1070001,//Yu-Gi-Oh! Trading Card Game
@@ -710,6 +740,9 @@
     1070122,//Maliss in the Mirror
     1070123,//Clear Wing Synchro Dragon
     1070124,//Ryzeal Detonator
+    1070125,//Accesscode Talker
+    1070126,//Regenesis Lord
+    1070130,//Exodia the Forbidden One (WCS2025)
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -744,6 +777,8 @@
     1071032,//Skull Servant
     1071033,//Sky Striker Ace - Raye
     1071034,//Flamvell Uruquizas
+    1071035,//Fire King High Avatar Garunix
+    1071036,//Poseidra, the Atlantean Dragon
     1072001,//Sky Striker Conversion: Flaming Wings of Destruction
     1072002,//Chaos Xyz Evolution －Galactic Gathering of Dragons－
     1072003,//Sky Striker Armor - Black Flash Raiment
@@ -765,6 +800,8 @@
     1073013,//WCS 2025 Qualifiers Celebration
     1073014,//Synchro Cup Celebration
     1073015,//WCS 2025 Celebration
+    1073016,//WCS 2025 Party Favor
+    1073017,//DC 2025 SEP Celebration
     1075001,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
     1075002,//THE CHRONICLES: Sky Striker Ace
     1075006,//THE CHRONICLES: The Fallen & The Virtuous
@@ -798,6 +835,7 @@
     1080027,//Heroes' Union
     1080028,//Blaze of Albaz
     1080029,//Crimson Powerforce
+    1080030,//Reunion of Raiders
     1082001,//Xyz Black
     1082002,//The Millennium Puzzle
     1082003,//Duelist Card Case Blue
@@ -847,6 +885,7 @@
     1090024,//Ursarctic Big Dipper
     1090025,//Blue-Eyes Mausoleum
     1090026,//Forest of Cherry Pink
+    1090027,//Forest of Autumnal Splendor
     1090028,//Forest of Endless White
     1090030,//Forest of the Traptrix
     1090031,//Ruins of the Sinful Spoils
@@ -884,6 +923,7 @@
     1100024,//Ursarctic Big Dipper
     1100025,//Blue-Eyes Mausoleum
     1100026,//Forest of Cherry Pink
+    1100027,//Forest of Autumnal Splendor
     1100028,//Forest of Endless White
     1100030,//Forest of the Traptrix
     1100031,//Ruins of the Sinful Spoils
@@ -947,6 +987,7 @@
     1110024,//Ursarctic Big Dipper
     1110025,//Blue-Eyes Mausoleum
     1110026,//Forest of Cherry Pink
+    1110027,//Forest of Autumnal Splendor
     1110028,//Forest of Endless White
     1110030,//Forest of the Traptrix
     1110031,//Ruins of the Sinful Spoils
@@ -975,6 +1016,7 @@
     1111021,//Green Stone of Magic
     1111022,//Summer Trace of the Thunder God
     1111024,//Limiter Removal
+    1111025,//Gishki Aquamirror
     1111026,//Treasured Tree Stump
     1111032,//Xyz Monster Card
     1111038,//Rikka
@@ -993,13 +1035,16 @@
     1111052,//WIND
     1111056,//Legend of the Sovereign Seas
     1111057,//Shield of the Millennium Dynasty
+    1111058,//Divine Power of a Deserted Island
     1111061,//Mimighoul Room
     1111062,//Flamvell, the Scarlet Warriors
     1111064,//Mulcharmy Pink
+    1111066,//Magical Meltdown
     1112001,//Colosseum
     1112002,//WCS
     1113001,//WCS 2023 Party Favor
     1113002,//WCS 2024 Party Favor
+    1113003,//WCS 2025 Party Favor
   ],
   "STRUCTURE": [
     1120001,//Starting Deck
@@ -1031,6 +1076,11 @@
     1120027,//Heroes' Union
     1120028,//Blaze of Albaz
     1120029,//Crimson Powerforce
+    1120030,//Reunion of Raiders
+    1120901,//Starter Deck: Kaiba
+    1120902,//Starter Deck: Yugi
+    1120903,//Starter Deck: Pegasus
+    1120904,//Starter Deck: Joey
   ],
   "WALLPAPER": [
     1130001,//Blue-Eyes Alternative White Dragon
@@ -1117,6 +1167,11 @@
     1130083,//Medallion of the Ice Barrier
     1130084,//Black Rose Dragon
     1130085,//A Bao A Qu, the Lightless Shadow
+    1130086,//Exodia the Forbidden One (WCS2025)
+    1130088,//Invoked Magistus Omega
+    1130089,//Allied Code Talker @Ignister
+    1130090,//Lacrima the Crimson Tears
+    1132003,//That's 10!
   ],
   "PACK_TICKET": [
     1140001,//Legacy Pack ticket
@@ -1138,6 +1193,7 @@
   "COIN": [
     1180001,//Blue-Eyes Alternative White Dragon
     1180002,//Pot of Greed
+    1180004,//The Millennium Puzzle
   ],
   "BOOKMARK_LIMIT": [
     1190001,//Bookmark Slots
