@@ -478,6 +478,11 @@ namespace YgoMaster
         public int AvatarId;
         public int Coin;
 
+        public DeckAccessoryInfo()
+        {
+            Clear();
+        }
+
         public Dictionary<string, object> ToDictionary()
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
@@ -504,13 +509,7 @@ namespace YgoMaster
 
         public void Clear()
         {
-            Box = 0;
-            Sleeve = 0;
-            Field = 0;
-            FieldObj = 0;
-            AvBase = 0;
-            AvatarId = -1;
-            Coin = 0;
+            SetDefault();
         }
 
         public void FromDictionary(Dictionary<string, object> dict)
@@ -557,7 +556,7 @@ namespace YgoMaster
                     return id;
                 }
             }
-            return 0;
+            return ItemID.GetDefaultId(category);
         }
 #endif
 

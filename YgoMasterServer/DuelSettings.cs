@@ -341,7 +341,7 @@ namespace YgoMaster
                 if (avatar_home[i] == -1) avatar_home[i] = Deck[i].Accessory.AvBase;
                 if (duel_object[i] == -1) duel_object[i] = Deck[i].Accessory.FieldObj;
                 if (avatar[i] == -1) avatar[i] = Deck[i].Accessory.AvatarId;
-                if (coin[i] == -1) coin[i] = Deck[i].Accessory.Coin;
+                if (coin[i] == -1) coin[i] = Deck[i].Accessory.Coin < (int)ItemID.Value.DefaultCoin ? (int)ItemID.Value.DefaultCoin : Deck[i].Accessory.Coin;
 
                 if (avatar[i] < 0) avatar[i] = 0;//avatar[i] = 1000001;
                 if (mat[i] <= 0) mat[i] = (int)ItemID.Value.DefaultField;
@@ -800,7 +800,7 @@ namespace YgoMaster
                     playerProfileData["icon"] = player.IconId;
                     playerProfileData["icon_frame"] = player.IconFrameId;
                     playerProfileData["avatar"] = player.AvatarId;
-                    playerProfileData["coin"] = Deck[i].Accessory.Coin;
+                    playerProfileData["coin"] = Deck[i].Accessory.Coin < (int)ItemID.Value.DefaultCoin ? (int)ItemID.Value.DefaultCoin : Deck[i].Accessory.Coin;
                 }
                 else
                 {

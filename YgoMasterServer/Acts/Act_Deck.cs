@@ -328,6 +328,7 @@ namespace YgoMaster
                                 deck.Accessory.Coin = value;
                                 break;
                         }
+                        deck.Accessory.Sanitize(request.Player);
                         SaveDeck(deck);
                     }
                     else
