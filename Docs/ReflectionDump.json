@@ -173,17 +173,6 @@
     "Assembly": "Assembly-CSharp",
     "Namespace": "YgomGame.Duel",
     "Class": [
-      "DuelHUD",
-      "<PrepareToDuelProcess>d__159"
-    ],
-    "Type": "Method",
-    "Name": "MoveNext",
-    "Signature": "System.Boolean MoveNext()"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Duel",
-    "Class": [
       "Util"
     ],
     "Type": "Method",

@@ -37,7 +37,7 @@ namespace IL2CPP
             return new string((char*)ptr.ToPointer() + 10);
         }
         private bool isStatic = false;
-        private uint handleStatic = 0;
+        private IntPtr handleStatic = IntPtr.Zero;
         public bool Static
         {
             get { return isStatic; }
@@ -46,17 +46,17 @@ namespace IL2CPP
                 isStatic = value;
                 if (value)
                 {
-                    if (handleStatic == 0)
+                    if (handleStatic == IntPtr.Zero)
                     {
                         handleStatic = Import.Handler.il2cpp_gchandle_new(ptr, true);
                     }
                 }
                 else
                 {
-                    if (handleStatic != 0)
+                    if (handleStatic != IntPtr.Zero)
                     {
                         Import.Handler.il2cpp_gchandle_free(handleStatic);
-                        handleStatic = 0;
+                        handleStatic = IntPtr.Zero;
                     }
                 }
             }

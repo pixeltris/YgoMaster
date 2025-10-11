@@ -318,38 +318,6 @@ namespace YgomGame.Duel
         }
     }
 
-    // v2.4.0 removed
-    // unsafe static class DuelHUD_PrepareToDuelProcess
-    // {
-    //     delegate int Del_MoveNext(IntPtr thisPtr);
-    //     static Hook<Del_MoveNext> hookMoveNext;
-
-    //     public static bool IsMoveNext;
-
-    //     static DuelHUD_PrepareToDuelProcess()
-    //     {
-    //         IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
-    //         IL2Class duelHudClassInfo = assembly.GetClass("DuelHUD", "YgomGame.Duel");
-    //         foreach (IL2Class nestedClassInfo in duelHudClassInfo.GetNestedTypes())
-    //         {
-    //             if (nestedClassInfo.Name.Contains("PrepareToDuelProcess"))
-    //             {
-    //                 hookMoveNext = new Hook<Del_MoveNext>(MoveNext, nestedClassInfo.GetMethod("MoveNext"));
-    //                 break;
-    //             }
-    //         }
-    //     }
-
-    //     static int MoveNext(IntPtr thisPtr)
-    //     {
-    //         //Console.WriteLine("State: " + *(int*)(thisPtr + 0x10));
-    //         IsMoveNext = true;
-    //         int result = hookMoveNext.Original(thisPtr);
-    //         IsMoveNext = false;
-    //         return result;
-    //     }
-    // }
-
     unsafe static class Util
     {
         delegate int Del_CheckDuelMode();
@@ -369,7 +337,7 @@ namespace YgomGame.Duel
 
         static int IsReplay()
         {
-            if (ClientSettings.ReplayControlsAlwaysEnabled) // && DuelHUD_PrepareToDuelProcess.IsMoveNext) v2.4.0 removed, will this break anything?
+            if (ClientSettings.ReplayControlsAlwaysEnabled)
             {
                 return 1;
             }

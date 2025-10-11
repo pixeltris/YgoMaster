@@ -123,7 +123,7 @@ namespace YgoMasterClient
         static bool hasLoadedTextures;
         static bool hasCreatedUI;
         static Dictionary<string, IntPtr> loadedSprites = new Dictionary<string, IntPtr>();
-        static Dictionary<string, uint> loadedSpritesGC = new Dictionary<string, uint>();
+        static Dictionary<string, IntPtr> loadedSpritesGC = new Dictionary<string, IntPtr>();
         static Dictionary<string, AssetHelper.Vector2> spriteSizes = new Dictionary<string, AssetHelper.Vector2>();
         static Dictionary<IntPtr, CharTweenPos> tweenCharPos = new Dictionary<IntPtr, CharTweenPos>();
 
@@ -281,7 +281,6 @@ namespace YgoMasterClient
         {
             if (!done)
             {
-                ClearLoadedSprites();
                 done = true;
                 if (isOutro)
                 {
@@ -295,32 +294,43 @@ namespace YgoMasterClient
                 }
             }
         };
-
-        static Action<IntPtr> OnLoad = (IntPtr pathPtr) =>
+   
+        private class OnLoadHandler
         {
-            string path = new IL2String(pathPtr).ToString();
-            loadedSprites[path] = AssetHelper.GetAsset(path);
-            loadedSpritesGC[path] = Import.Handler.il2cpp_gchandle_new(loadedSprites[path], true);
-            loadingSprites.Remove(path);
-            if (loadSpriteQueue.Count > 0)
+            public static readonly OnLoadHandler Instance = new OnLoadHandler();
+            private OnLoadHandler() { }
+            public void OnLoad(IntPtr pathPtr)
             {
-                LoadSpriteAsync(loadSpriteQueue.Dequeue());
+                if (pathPtr == IntPtr.Zero)
+                {
+                    return;
+                }
+
+                string path = new IL2String(pathPtr).ToString();
+                loadedSprites[path] = AssetHelper.GetSpriteFromAsset(path);
+                loadedSpritesGC[path] = Import.Handler.il2cpp_gchandle_new(loadedSprites[path], true);
+                loadingSprites.Remove(path);
+                if (loadSpriteQueue.Count > 0)
+                {
+                    string nextSprite = loadSpriteQueue.Dequeue();
+                    LoadSpriteAsync(nextSprite);
+                }
+                if (loadingSprites.Count == 0 && loadSpriteQueue.Count == 0)
+                {
+                    hasLoadedTextures = true;
+                }
             }
-            if (loadingSprites.Count == 0 && loadSpriteQueue.Count == 0)
-            {
-                hasLoadedTextures = true;
-            }
-        };
+        }
 
         static void LoadSpriteAsync(string path)
         {
             if (loadingSprites.Count < 5)
             {
                 loadingSprites.Add(path);
-
                 if (onLoadCallback == IntPtr.Zero)
-                {
-                    onLoadCallback = UnityEngine.Events._UnityAction.CreateAction(OnLoad);
+                {             
+                    var onLoad = new Action<IntPtr>(OnLoadHandler.Instance.OnLoad);       
+                    onLoadCallback = UnityEngine.Events._UnityAction.CreateAction(onLoad);
                     Import.Handler.il2cpp_gchandle_new(onLoadCallback, true);
                 }
                 AssetHelper.Load(path, onLoadCallback);
@@ -333,14 +343,28 @@ namespace YgoMasterClient
 
         static void ClearLoadedSprites()
         {
-            foreach (KeyValuePair<string, uint> handle in loadedSpritesGC)
+            foreach (KeyValuePair<string, IntPtr> handle in loadedSprites)
             {
-                Import.Handler.il2cpp_gchandle_free(handle.Value);
                 AssetHelper.Unload(handle.Key);
+            }
+            foreach (KeyValuePair<string, IntPtr> gchandle in loadedSpritesGC)
+            {
+                Import.Handler.il2cpp_gchandle_free(gchandle.Value);
             }
             loadedSprites.Clear();
             loadedSpritesGC.Clear();
             spriteSizes.Clear();
+        }
+
+        static void Destroy()
+        {
+            if (containerObj != IntPtr.Zero)
+            {
+                UnityObject.Destroy(containerObj);
+                containerObj = IntPtr.Zero;
+            }
+
+            ClearLoadedSprites();
         }
 
         public static void Init()
@@ -737,6 +761,7 @@ namespace YgoMasterClient
                         if (!Tween_IsPlaying.Invoke(tween, new IntPtr[] { new IL2String("").ptr, new IntPtr(&isActive) }).GetValueRef<csbool>())
                         {
                             finishedTweens = true;
+                            Destroy();
                         }
                     }
                 }

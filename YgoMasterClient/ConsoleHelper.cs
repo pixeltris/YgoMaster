@@ -1645,7 +1645,7 @@ namespace YgoMasterClient
         static void MakeNetworkRequest(IL2Method isCompleted, Func<IntPtr> networkFunc)
         {
             IntPtr handle = IntPtr.Zero;
-            uint handleRef = 0;
+            IntPtr handleRef = IntPtr.Zero;
             Win32Hooks.Invoke(() =>
             {
                 handle = networkFunc();
