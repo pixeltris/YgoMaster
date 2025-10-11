@@ -48,6 +48,7 @@
     1000033,//Blue-Eyes Chaos MAX Dragon
     1000034,//Scareclaw Light-Heart
     1000036,//Aleister the Invoker
+    1000037,//Dingirsu, the Orcust of the Evening Star
     1000041,//Number 41: Bagooska the Terribly Tired Tapir
     1001001,//Instant Fusion
     1001002,//Noble Arms - Caliburn
@@ -100,6 +101,7 @@
     1003002,//Tri-Brigade Shuraig the Ominous Omen
     1003003,//Sky Striker Ace - Raye
     1003004,//Fiendsmith Engraver
+    1005001,//Rescue Rabbit
   ],
   "ICON": [
     1010001,//Duelist
@@ -215,6 +217,8 @@
     1010114,//Kurikurinku @Ignister
     1010115,//Avance, Swordsman of the Nekroz
     1010116,//Block Dragon
+    1010117,//Enlilgirsu, the Orcust Mekk-Knight
+    1010118,//Spore the Fairy Seed
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -355,6 +359,8 @@
     1013003,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
     1013004,//Sky Striker Ace - Kagari
     1013005,//Dogmatika Fleurdelis, the Knighted
+    1013006,//Tri-Brigade Shuraig the Ominous Omen
+    1013010,//eFootball™
   ],
   "PROFILE_TAG": [
     1020001,//Beginner Duelist
@@ -533,6 +539,7 @@
     1020175,//WCS 2025 Finalist
     1020176,//WCS 2025 Top 4
     1020177,//WCS 2025 Top 12
+    1020178,//Fantasista
     1020179,//Bushido
     1020180,//DC 2025 SEP Top 10
     1020181,//DC 2025 SEP Top 100
@@ -599,6 +606,7 @@
     1031015,//Maliss
     1031016,//Overlay Unit β
     1031017,//A.I. Love Fusion
+    1031018,//Orcust
     1032001,//Festive Ornament
     1032002,//Celebration of Spring Breeze
     1032003,//Tropical Seaside
@@ -742,6 +750,8 @@
     1070124,//Ryzeal Detonator
     1070125,//Accesscode Talker
     1070126,//Regenesis Lord
+    1070127,//Ame no Murakumo no Mitsurugi
+    1070128,//Here There Be Dragons
     1070130,//Exodia the Forbidden One (WCS2025)
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
@@ -784,6 +794,7 @@
     1072003,//Sky Striker Armor - Black Flash Raiment
     1072004,//Hallo & Ween
     1072005,//Evil★Twin
+    1072006,//The Orcust Mekk-Knight & Automaton
     1072007,//Maliss ＜Q＞
     1073001,//WCS 2023 Party Favor
     1073002,//WCS 2023 Celebration
@@ -804,7 +815,10 @@
     1073017,//DC 2025 SEP Celebration
     1075001,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
     1075002,//THE CHRONICLES: Sky Striker Ace
+    1075004,//eFootball™
+    1075005,//Neymar
     1075006,//THE CHRONICLES: The Fallen & The Virtuous
+    1075007,//THE CHRONICLES: The Fallen & The Virtuous2
   ],
   "DECK_CASE": [
     1080001,//Duelist Card Case Red
@@ -857,6 +871,7 @@
     1082019,//Sky Striker Ace - Raye
     1082020,//Sky Striker Ace - Roze
     1082021,//Abyssal Land
+    1082022,//Orcust
   ],
   "FIELD": [
     1090001,//Forest
@@ -893,6 +908,7 @@
     1090033,//Evil★Twin
     1090034,//Striking Stratagem Simulation Area
     1090036,//Despia, Theater of the Branded
+    1090040,//Football Stadium
     1092001,//Colosseum
     1092002,//WCS
   ],
@@ -931,6 +947,7 @@
     1100033,//Evil★Twin
     1100034,//Striking Stratagem Simulation Area
     1100036,//Despia, Theater of the Branded
+    1100040,//Football Stadium
     1101001,//Trap Hole
     1101002,//Magical Hats
     1101003,//Summon Limit
@@ -995,6 +1012,7 @@
     1110033,//Evil★Twin
     1110034,//Striking Stratagem Simulation Area
     1110036,//Despia, Theater of the Branded
+    1110040,//Football Stadium
     1111001,//Destiny Board
     1111002,//Bug Matrix
     1111003,//Shien's Dojo
@@ -1033,6 +1051,7 @@
     1111050,//WATER
     1111051,//FIRE
     1111052,//WIND
+    1111054,//Spell
     1111056,//Legend of the Sovereign Seas
     1111057,//Shield of the Millennium Dynasty
     1111058,//Divine Power of a Deserted Island
@@ -1045,6 +1064,7 @@
     1113001,//WCS 2023 Party Favor
     1113002,//WCS 2024 Party Favor
     1113003,//WCS 2025 Party Favor
+    1115001,//eFootball™
   ],
   "STRUCTURE": [
     1120001,//Starting Deck
@@ -1077,10 +1097,6 @@
     1120028,//Blaze of Albaz
     1120029,//Crimson Powerforce
     1120030,//Reunion of Raiders
-    1120901,//Starter Deck: Kaiba
-    1120902,//Starter Deck: Yugi
-    1120903,//Starter Deck: Pegasus
-    1120904,//Starter Deck: Joey
   ],
   "WALLPAPER": [
     1130001,//Blue-Eyes Alternative White Dragon
@@ -1171,6 +1187,9 @@
     1130088,//Invoked Magistus Omega
     1130089,//Allied Code Talker @Ignister
     1130090,//Lacrima the Crimson Tears
+    1130091,//Galatea-I, the Orcust Automaton
+    1132001,//Rescue Rabbit
+    1132002,//Neymar
     1132003,//That's 10!
   ],
   "PACK_TICKET": [
@@ -1188,11 +1207,12 @@
     1160001,//Replay Slots
   ],
   "CARD_FILE": [
-
+    1170001,//Orcust
   ],
   "COIN": [
     1180001,//Blue-Eyes Alternative White Dragon
     1180002,//Pot of Greed
+    1180003,//Orcust
     1180004,//The Millennium Puzzle
   ],
   "BOOKMARK_LIMIT": [
