@@ -105,6 +105,7 @@ namespace YgoMaster
         Equip,
         Continuous,
         QuickPlay,
-        Ritual
+        Ritual,
+        Ritual_R,
     }
 }

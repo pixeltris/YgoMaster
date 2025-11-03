@@ -271,7 +271,7 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomGame.Duel.ReplayControl));
                 nativeTypes.Add(typeof(YgomGame.Duel.DuelClient));
                 nativeTypes.Add(typeof(YgomGame.Duel.CameraShaker));
-                nativeTypes.Add(typeof(YgomGame.Duel.DuelHUD_PrepareToDuelProcess));
+                // nativeTypes.Add(typeof(YgomGame.Duel.DuelHUD_PrepareToDuelProcess)); // v2.4.0 removed
                 nativeTypes.Add(typeof(YgomGame.Duel.Util));
                 nativeTypes.Add(typeof(YgomGame.Duel.Engine));
                 nativeTypes.Add(typeof(YgomGame.Duel.EngineApiUtil));
@@ -475,29 +475,55 @@ namespace YgoMasterClient
 
 unsafe static class Win32Hooks
 {
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     delegate int Del_PeekMessageA(IntPtr lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg);
     static Hook<Del_PeekMessageA> hookPeekMessageA;
+    static Del_PeekMessageA peekMessageADelegate;
+
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    delegate int Del_PeekMessageW(IntPtr lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg);
+    static Hook<Del_PeekMessageW> hookPeekMessageW;
+    static Del_PeekMessageW peekMessageWDelegate;
 
     static List<Action> actions = new List<Action>();
 
     static Win32Hooks()
     {
-        hookPeekMessageA = new Hook<Del_PeekMessageA>(PeekMessageA, PInvoke.GetProcAddress(PInvoke.GetModuleHandle("user32.dll"), "PeekMessageA"));
+        IntPtr user32 = PInvoke.GetModuleHandle("user32.dll");
+
+        IntPtr addrA = PInvoke.GetProcAddress(user32, "PeekMessageA");
+        peekMessageADelegate = PeekMessageA;
+        hookPeekMessageA = new Hook<Del_PeekMessageA>(peekMessageADelegate, addrA);
+
+        IntPtr addrW = PInvoke.GetProcAddress(user32, "PeekMessageW");
+        peekMessageWDelegate = PeekMessageW;
+        hookPeekMessageW = new Hook<Del_PeekMessageW>(peekMessageWDelegate, addrW);   
     }
 
-    static int PeekMessageA(IntPtr lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg)
+    static void HandleActions()
     {
         lock (actions)
         {
             for (int i = actions.Count - 1; i >= 0; i--)
             {
-                if (!AssetHelper.IsQuitting)
-                {
-                    actions[i]();
+                try { if (!AssetHelper.IsQuitting) actions[i](); }
+                catch (Exception ex) { 
+                    Console.WriteLine(ex);
                 }
                 actions.RemoveAt(i);
             }
         }
+    }
+
+    static int PeekMessageW(IntPtr lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg)
+    {
+        HandleActions();
+        return hookPeekMessageW.Original(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
+    }
+
+    static int PeekMessageA(IntPtr lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg)
+    {
+        HandleActions();
         return hookPeekMessageA.Original(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax, wRemoveMsg);
     }
 

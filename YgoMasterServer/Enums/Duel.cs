@@ -250,6 +250,9 @@ namespace YgoMaster
         Access,//v1.9.0
         Shukudai,//V2.0.0
         Shiki,//v2.3.0
+        Kyuzai,//v2.4.0
+        C,//v2.4.0
+        Osara,//v2.4.0
         Max
     }
 

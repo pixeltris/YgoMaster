@@ -1472,6 +1472,8 @@ namespace YgoMaster
         private static extern void DLL_DuelChangeCardIDByUniqueID(int uniqueId, int cardId);//v2.3.0 TODO:?
         [DllImport(DllName)]
         private static extern void DLL_SetRareByUniqueID(int uniqueId, int rare);//v2.3.0 TODO:?
+        [DllImport(DllName)]
+        private static extern bool DLL_DuelGetCantActIcon(int player, int locate, int index, int flag);//v2.4.0 TODO:?
     }
 
     enum PvpOperationType
@@ -1606,6 +1608,6 @@ namespace YgoMaster
         DLL_SetEffectDelegate,
         DLL_SetPlayRecordDelegate,
         DLL_SetWorkMemory,
-        DLL_DuelGetAttachedEffectList//v2.2.1
+        DLL_DuelGetAttachedEffectList,//v2.2.1
     }
 }

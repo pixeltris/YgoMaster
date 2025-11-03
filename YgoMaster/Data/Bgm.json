@@ -25,6 +25,7 @@
 	{ "1090024": 11 },//Ursarctic Big Dipper
 	{ "1090025": 16 },//Blue-Eyes Mausoleum
 	{ "1090026": 01 },//Forest of Cherry Pink
+	{ "1090027": 01 },//Forest of Autumnal Splendor
 	{ "1090028": 01 },//Forest of Endless White
 	{ "1090030": 15 },//Forest of the Traptrix
 	{ "1090031": 12 },//Ruins of the Sinful Spoils
@@ -32,6 +33,7 @@
 	{ "1090033": [ "BGM_DUEL_F01_ALL", "", "" ] },//Evil★Twin
 	{ "1090034": [ "BGM_DUEL_F03_PHASE_A","BGM_DUEL_F03_PHASE_B","BGM_DUEL_F03_PHASE_C" ] },//Striking Stratagem Simulation Area
 	{ "1090036": [ "BGM_DUEL_F04_PHASE_A","BGM_DUEL_F04_PHASE_B","" ] },//Despia, Theater of the Branded
+	{ "1090040": [ "BGM_DUEL_F07_PHASE_A", "BGM_DUEL_F07_PHASE_B", "" ] },//Football Stadium
 	{ "1092001": [ "BGM_DUEL_EX_02_NORMAL", "BGM_DUEL_EX_02_KEYCARD", "BGM_DUEL_EX_02_CLIMAX" ] },//Colosseum
 	{ "1092002": [ "BGM_DUEL_EX_03_NORMAL", "BGM_DUEL_EX_03_KEYCARD", "BGM_DUEL_EX_03_CLIMAX" ] },//WCS
 ]

@@ -173,17 +173,6 @@
     "Assembly": "Assembly-CSharp",
     "Namespace": "YgomGame.Duel",
     "Class": [
-      "DuelHUD",
-      "<PrepareToDuelProcess>d__155"
-    ],
-    "Type": "Method",
-    "Name": "MoveNext",
-    "Signature": "System.Boolean MoveNext()"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Duel",
-    "Class": [
       "Util"
     ],
     "Type": "Method",
@@ -1545,26 +1534,6 @@
     "Type": "Field",
     "Name": "pcode",
     "Signature": "pcode"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Menu",
-    "Class": [
-      "ProfileViewController"
-    ],
-    "Type": "Method",
-    "Name": "OnCreatedView",
-    "Signature": "public System.Void OnCreatedView()"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Menu",
-    "Class": [
-      "ProfileViewController"
-    ],
-    "Type": "Method",
-    "Name": "OnClickBlock",
-    "Signature": "System.Void OnClickBlock()"
   },
   {
     "Assembly": "Unity.TextMeshPro",
@@ -3185,16 +3154,6 @@
     "Type": "Method",
     "Name": "UpdateHome",
     "Signature": "System.Void UpdateHome()"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Menu",
-    "Class": [
-      "ForceNotification"
-    ],
-    "Type": "Method",
-    "Name": "IsDispForceNotification",
-    "Signature": "public static System.Boolean IsDispForceNotification()"
   },
   {
     "Assembly": "Assembly-CSharp",

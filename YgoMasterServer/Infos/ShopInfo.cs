@@ -547,7 +547,9 @@ namespace YgoMaster
         Protector,
         Icon,
         Wallpaper,
-        DeckCase
+        DeckCase,
+        UNKNOWN, // Card File ???
+        Coin
     }
 
     /// <summary>

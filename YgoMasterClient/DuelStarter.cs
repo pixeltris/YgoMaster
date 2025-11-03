@@ -894,6 +894,7 @@ namespace YgomGame.Room
                 public IntPtr Sleeve1; public IntPtr Sleeve2; public IntPtr Field1; public IntPtr Field2; public IntPtr FieldPart1;
                 public IntPtr FieldPart2; public IntPtr Mate1; public IntPtr Mate2; public IntPtr MateBase1; public IntPtr MateBase2;
                 public IntPtr Icon1; public IntPtr Icon2; public IntPtr IconFrame1; public IntPtr IconFrame2;
+                public IntPtr Coin1; public IntPtr Coin2;
                 public IntPtr Player1; /*public IntPtr Player2; public IntPtr Player3; public IntPtr Player4;*/
                 public IntPtr BGM; public IntPtr BGM1; public IntPtr BGM2; public IntPtr BGM3;
             }
@@ -1340,6 +1341,8 @@ namespace YgomGame.Room
                 SetTeamValue(LookupItemName(ItemID.Category.ICON, GetButtonValueString(buttons.Icon2)), settings.icon, 1, 3, true);
                 SetTeamValue(LookupItemName(ItemID.Category.ICON_FRAME, GetButtonValueString(buttons.IconFrame1)), settings.icon_frame, 0, 2, true);
                 SetTeamValue(LookupItemName(ItemID.Category.ICON_FRAME, GetButtonValueString(buttons.IconFrame2)), settings.icon_frame, 1, 3, true);
+                SetTeamValue(LookupItemName(ItemID.Category.COIN, GetButtonValueString(buttons.Coin1)), settings.coin, 0, 2, true);
+                SetTeamValue(LookupItemName(ItemID.Category.COIN, GetButtonValueString(buttons.Coin2)), settings.coin, 1, 3, true);
 
                 /*TODO: Fix up DeckInfo.File loading/saving so this code can be used // Reload decks which are loaded from files
                 for (int i = 0; i < settings.Deck.Length; i++)
@@ -1403,6 +1406,8 @@ namespace YgomGame.Room
                 SetButtonIndexFromItemId(buttons.Icon2, settings.icon[1]);
                 SetButtonIndexFromItemId(buttons.IconFrame1, settings.icon_frame[0]);
                 SetButtonIndexFromItemId(buttons.IconFrame2, settings.icon_frame[1]);
+                SetButtonIndexFromItemId(buttons.Coin1, settings.coin[0]);
+                SetButtonIndexFromItemId(buttons.Coin2, settings.coin[1]);
                 foreach (KeyValuePair<IntPtr, DeckInfo> deck in buttons.Decks)
                 {
                     UpdateDeckName(deck.Key, deck.Value);
@@ -1559,6 +1564,8 @@ namespace YgomGame.Room
                 buttons.Icon2 = AddButtonString(infosList, "Icon2", ClientSettings.CustomTextDuelStarterIcon2, GetItemNames(ItemID.Category.ICON).Values.ToArray());
                 buttons.IconFrame1 = AddButtonString(infosList, "IconFrame1", ClientSettings.CustomTextDuelStarterIconFrame1, GetItemNames(ItemID.Category.ICON_FRAME).Values.ToArray());
                 buttons.IconFrame2 = AddButtonString(infosList, "IconFrame2", ClientSettings.CustomTextDuelStarterIconFrame2, GetItemNames(ItemID.Category.ICON_FRAME).Values.ToArray());
+                buttons.Coin1 = AddButtonString(infosList, "Coin1", ClientSettings.CustomTextDuelStarterCoin1, GetItemNames(ItemID.Category.COIN).Values.ToArray());
+                buttons.Coin2 = AddButtonString(infosList, "Coin2", ClientSettings.CustomTextDuelStarterCoin2, GetItemNames(ItemID.Category.COIN).Values.ToArray());
                 AddLabel(infosList, ClientSettings.CustomTextDuelStarterLoadSave);
                 buttons.LoadIncludingDecks = AddButtonString(infosList, "LoadIncludingDecks", ClientSettings.CustomTextDuelStarterLoadIncludingDecks, null);
                 buttons.Load = AddButtonString(infosList, "Load", ClientSettings.CustomTextDuelStarterLoad, null);

@@ -270,6 +270,14 @@ namespace YgoMasterClient
         /// </summary>
         public static string CustomTextDuelStarterIconFrame2;
         /// <summary>
+        /// Coin1
+        /// </summary>
+        public static string CustomTextDuelStarterCoin1;
+        /// <summary>
+        /// Coin2
+        /// </summary>
+        public static string CustomTextDuelStarterCoin2;
+        /// <summary>
         /// Load / Save
         /// </summary>
         public static string CustomTextDuelStarterLoadSave;
@@ -617,6 +625,8 @@ namespace YgoMasterClient
             CustomTextDuelStarterIcon2 = Utils.GetValue<string>(data, "CustomTextDuelStarterIcon2");
             CustomTextDuelStarterIconFrame1 = Utils.GetValue<string>(data, "CustomTextDuelStarterIconFrame1");
             CustomTextDuelStarterIconFrame2 = Utils.GetValue<string>(data, "CustomTextDuelStarterIconFrame2");
+            CustomTextDuelStarterCoin1 = Utils.GetValue<string>(data, "CustomTextDuelStarterCoin1");
+            CustomTextDuelStarterCoin2 = Utils.GetValue<string>(data, "CustomTextDuelStarterCoin2");
             CustomTextDuelStarterLoadSave = Utils.GetValue<string>(data, "CustomTextDuelStarterLoadSave");
             CustomTextDuelStarterLoadIncludingDecks = Utils.GetValue<string>(data, "CustomTextDuelStarterLoadIncludingDecks");
             CustomTextDuelStarterLoad = Utils.GetValue<string>(data, "CustomTextDuelStarterLoad");
