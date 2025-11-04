@@ -94,7 +94,7 @@ namespace YgomGame.Menu
 
         static IL2Field fieldItemIndex;
         static IL2Field fieldReplayInfos;
-        static IL2Class classProfileReplayInfo;
+        static IL2Class classReplayInfo;
         static IL2Field fieldDid;
 
         const string replayInfoKey = "ReplayInfo";
@@ -107,8 +107,8 @@ namespace YgomGame.Menu
             hookOnCreatedView = new Hook<Del_OnCreatedView>(OnCreatedView, classInfo.GetMethod("OnCreatedView"));
             fieldItemIndex = classInfo.GetField("itemIndex");
             fieldReplayInfos = classInfo.GetField("replayInfos");
-            classProfileReplayInfo = classInfo.GetNestedType("ProfileReplayInfo");
-            fieldDid = classProfileReplayInfo.GetField("did");
+            classReplayInfo = classInfo.GetNestedType("ReplayInfo");
+            fieldDid = classReplayInfo.GetField("did");
         }
 
         static long GetActiveDid()
@@ -117,7 +117,7 @@ namespace YgomGame.Menu
             {
                 return 0;
             }
-            IL2ListExplicit list = new IL2ListExplicit(fieldReplayInfos.GetValue(Instance).ptr, classProfileReplayInfo);
+            IL2ListExplicit list = new IL2ListExplicit(fieldReplayInfos.GetValue(Instance).ptr, classReplayInfo);
             int index = fieldItemIndex.GetValue(Instance).GetValueRef<int>();
             if (index >= 0 && index < list.Count)
             {
