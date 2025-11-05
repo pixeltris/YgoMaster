@@ -51,6 +51,7 @@ namespace YgoMaster
         public TradeInfo ActiveTrade;
         public DateTime LastEnterTradeRoomRequest;
         public NetClient NetClient;
+        public UserCardFiles CardFiles { get; private set; }
 
         public bool IsDuelingPVP
         {
@@ -69,7 +70,7 @@ namespace YgoMaster
             CardFavorites = new CardCollection();
             CardLock = new CardCollection();
             Decks = new Dictionary<int, DeckInfo>();
-            Cards = new PlayerCards();
+            Cards = new PlayerCards(this);
             ShopState = new PlayerShopState();
             SoloChapters = new Dictionary<int, ChapterStatus>();
             CraftPoints = new PlayerCraftPoints();
@@ -79,6 +80,7 @@ namespace YgoMaster
             DuelRoomInvitesByFriendId = new Dictionary<uint, uint>();
             ActiveDuelSettings = new DuelSettings();
             RecentlyListedReplayFilesByDid = new Dictionary<long, string>();
+            CardFiles = new UserCardFiles();
         }
 
         public Dictionary<string, object> SoloChaptersToDictionary()
@@ -157,6 +159,50 @@ namespace YgoMaster
                     return true;
                 default:
                     return Items.Add(itemId);
+            }
+        }
+
+        public void UpdateCardFileStatusForCardId(int cardId)
+        {
+            foreach (UserCardFileStatus cardFileStatus in CardFiles.Files.Values)
+            {
+                UserCardFileStatusCard cardStatus;
+                if (cardFileStatus.Cards.TryGetValue(cardId, out cardStatus))
+                {
+                    int cardCount = Cards.GetCount(cardId);
+                    if ((cardFileStatus.Cards[cardId].RealHave && cardCount == 0) || (!cardFileStatus.Cards[cardId].RealHave && cardCount > 0))
+                    {
+                        cardFileStatus.Cards[cardId].RealHave = cardCount > 0;
+                        if (cardCount == 0)
+                        {
+                            cardFileStatus.Cards[cardId].Style = CardStyleRarity.Normal;
+                        }
+                        RequiresSaving = true;
+                    }
+                    if (cardFileStatus.Cards[cardId].Have && !cardFileStatus.Cards[cardId].RealHave)
+                    {
+                        cardFileStatus.Cards[cardId].Dismantled = true;
+                        RequiresSaving = true;
+                    }
+                    if (cardFileStatus.Cards[cardId].RealHave && cardFileStatus.Cards[cardId].Dismantled)
+                    {
+                        cardFileStatus.Cards[cardId].Dismantled = false;
+                        RequiresSaving = true;
+                    }
+                    for (CardStyleRarity style = CardStyleRarity.Royal; style >= CardStyleRarity.Normal; style--)
+                    {
+                        int count = Cards.GetCount(cardId, PlayerCardKind.All, style);
+                        if (count > 0)
+                        {
+                            if (cardStatus.Style != style)
+                            {
+                                cardStatus.Style = style;
+                                RequiresSaving = true;
+                            }
+                            break;
+                        }
+                    }
+                }
             }
         }
     }
@@ -294,6 +340,13 @@ namespace YgoMaster
     {
         ConcurrentDictionary<int, State> cards = new ConcurrentDictionary<int, State>();
 
+        Player player;
+
+        public PlayerCards(Player player)
+        {
+            this.player = player;
+        }
+
         public int Count
         {
             get { return cards.Count; }
@@ -346,6 +399,7 @@ namespace YgoMaster
             {
                 cards[cardId] = state;
             }
+            player.UpdateCardFileStatusForCardId(cardId);
         }
 
         public void Subtract(int cardId, int count, PlayerCardKind kind, CardStyleRarity styleRarity)
@@ -362,6 +416,7 @@ namespace YgoMaster
                     cards[cardId] = state;
                 }
             }
+            player.UpdateCardFileStatusForCardId(cardId);
         }
 
         public void SetCount(int cardId, int count, PlayerCardKind kind, CardStyleRarity styleRarity)
@@ -377,11 +432,13 @@ namespace YgoMaster
             {
                 cards[cardId] = state;
             }
+            player.UpdateCardFileStatusForCardId(cardId);
         }
 
         public void Remove(int cardId)
         {
             cards.Remove(cardId);
+            player.UpdateCardFileStatusForCardId(cardId);
         }
 
         public void Remove(int cardId, PlayerCardKind kind, CardStyleRarity styleRarity)

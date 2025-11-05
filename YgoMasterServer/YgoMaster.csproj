@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Acts\Act_CardFile.cs" />
     <Compile Include="Acts\Act_Craft.cs" />
     <Compile Include="Acts\Act_Duel.cs" />
     <Compile Include="Acts\Act_Friend.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="GameServer.Multiplayer.cs" />
     <Compile Include="Infos\DuelRoom.cs" />
     <Compile Include="Infos\TradeInfo.cs" />
+    <Compile Include="Infos\CardFile.cs" />
     <Compile Include="Lib\LinearCongruentialGenerator.cs" />
     <Compile Include="Lib\ProcessCommandLine.cs" />
     <Compile Include="Net\Message\ConnectionRequestMessage.cs" />

@@ -1060,6 +1060,7 @@ namespace YgoMaster
                     { "skippable", true },
                 };
 
+                int cardFileItemId = 0;
                 List<object> setItems = new List<object>();
                 if (isBundle)
                 {
@@ -1081,6 +1082,20 @@ namespace YgoMaster
                                     request.Player.Cards.Add(item.ItemId, item.Num, PlayerCardKind.NoDismantle, CardStyleRarity.Normal);
                                     cardIdsToUpdate.Add(item.ItemId);
                                     added = true;
+                                }
+                                break;
+                            case ItemID.Category.CARD_FILE:
+                                {
+                                    if (!request.Player.CardFiles.Files.ContainsKey(item.ItemId))
+                                    {
+                                        UserCardFileStatus userCardFileStatus = new UserCardFileStatus(CardFiles.First().Key);
+                                        request.Player.CardFiles.Files[CardFiles.First().Key] = userCardFileStatus;
+                                        UpdateCardFileStatus(request.Player, userCardFileStatus);
+                                        WriteCardFileHave(request);
+                                        WriteItem(request, item.ItemId);
+                                        added = true;
+                                    }
+                                    cardFileItemId = item.ItemId;
                                 }
                                 break;
                             default:
@@ -1111,7 +1126,8 @@ namespace YgoMaster
                     { "showSecretFoundResult", showSecretFoundResult },
                     { "isNextFinalizedUR", isNextPackUR },
                     { "NextFinalizedURNameTextId", "IDS_CARDPACK_ID0001_NAME" },
-                    { "setItems", setItems }
+                    { "setItems", setItems },
+                    { "buyCardFile", cardFileItemId }// Shows the "To Collector's File" button at final card list page
                 };
             }
             WriteCards_have(request, cardIdsToUpdate);

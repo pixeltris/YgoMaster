@@ -28,6 +28,7 @@ namespace YgoMaster
                     { "wallpaper", request.Player.Wallpaper },
                     { "tag", request.Player.TitleTags.ToArray() },
                     { "wallpaper_home", request.Player.WallpaperHome.ToArray() },
+                    { "card_file", GetCardFileStatusForProfile(request.Player) }
                 }}
             };
         }
@@ -42,6 +43,10 @@ namespace YgoMaster
             foreach (int value in ItemID.Values[ItemID.Category.PROFILE_TAG])
             {
                 have[value.ToString()] = 1;
+            }
+            foreach (int item in player.CardFiles.Files.Keys)
+            {
+                have[item.ToString()] = 1;
             }
             have[((int)ItemID.Value.Gem).ToString()] = player.Gems;
             player.CraftPoints.ToDictionary(have);
@@ -80,7 +85,7 @@ namespace YgoMaster
                 case ItemID.Value.OrbFire: have[itemId.ToString()] = request.Player.OrbPoints.Get(OrbType.Fire); break;
                 case ItemID.Value.OrbWind: have[itemId.ToString()] = request.Player.OrbPoints.Get(OrbType.Wind); break;
                 default:
-                    have[itemId.ToString()] = request.Player.Items.Contains(itemId) ? 1 : 0;
+                    have[itemId.ToString()] = request.Player.Items.Contains(itemId) || request.Player.CardFiles.Files.ContainsKey(itemId) ? 1 : 0;
                     break;
             }
 
@@ -108,6 +113,7 @@ namespace YgoMaster
             }
             deck["deckMax"] = NumDeckSlots;// Probably a max slot limit when they introduce buying more slots? (deckMax:50 deckLimit:20)
             deck["deckLimit"] = NumDeckSlots;// The deck limit displayed on the top right of the deck selection screen
+            deck["favoriteLimit"] = BookmarkLimit;
             WriteDeck_num_empty(request);
         }
 

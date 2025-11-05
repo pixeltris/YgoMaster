@@ -49,7 +49,7 @@ namespace YgoMasterClient
             bool success = false;
             if (!File.Exists(GameLauncher.LoaderDll))
             {
-                ShowMessageBox("Couldn't find " + GameLauncher.LoaderDll);
+                ShowMessageBox("Couldn't find " + GameLauncher.LoaderDll + "\n\nCurrent directory: " + Environment.CurrentDirectory);
                 return;
             }
             if (!File.Exists(Path.Combine("..", "masterduel_Data", "Plugins", "x86_64", "duel.dll")))
@@ -135,7 +135,7 @@ namespace YgoMasterClient
             if (!success)
             {
                 ShowMessageBoxError("Failed. Make sure the YgoMaster folder is inside game folder.\n\nThis should roughly be (depending on your steam install):\n\n " +
-                    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Yu-Gi-Oh! Master Duel\\YgoMaster\\\n\nThe working directory is:\n\n" +
+                    "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Yu-Gi-Oh! Master Duel\\YgoMaster\\\n\nThe current directory is:\n\n" +
                      Environment.CurrentDirectory);
             }
         }

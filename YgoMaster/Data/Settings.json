@@ -31,6 +31,7 @@
     "DeckListByBoxThenAlphabetical": false,
     "ShowTopics": true,
     "DeckSlots": 999,
+    "BookmarkLimit": 999,
     "UnlockAllCards": false,// 3x of every card (STYLE: Normal)
     "UnlockAllCardsShine": false,// 3x of every card (STYLE: Shine)
     "UnlockAllCardsHighestRarity": false,// 3x of every card (STYLE: N/R = Shine, UR/SR = Royal)

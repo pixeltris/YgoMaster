@@ -50,6 +50,7 @@ namespace YgoMaster
         URNG.LinearCongruentialGenerator duelRoomSpectatorRoomIdRng;
 
         int NumDeckSlots;
+        int BookmarkLimit;
         bool UnlockAllCards;
         bool UnlockAllCardsHighestRarity;
         bool UnlockAllCardsShine;
@@ -70,6 +71,8 @@ namespace YgoMaster
         Dictionary<string, object> RegulationIcon;
         Dictionary<string, object> RegulationInfo;
         Dictionary<string, object> AccessorySet;
+        Dictionary<int, CardFileData> CardFiles;
+        Dictionary<string, object> RawCardFilesData;
         Dictionary<string, object> SoloData;
         Dictionary<int, DuelSettings> SoloDuels;// <chapterid, DuelSettings>
         Dictionary<int, CardCategory> CardCategories;// <categoryId, CardCategory>
@@ -398,6 +401,7 @@ namespace YgoMaster
             MultiplayerCoinFlipCounter = Utils.GetValue<int>(values, "MultiplayerCoinFlipCounter");
 
             NumDeckSlots = Utils.GetValue<int>(values, "DeckSlots", 20);
+            BookmarkLimit = Utils.GetValue<int>(values, "BookmarkLimit", 100);
             Utils.GetIntHashSet(values, "DefaultItems", DefaultItems = new HashSet<int>(), ignoreZero: true);
             DefaultGems = Utils.GetValue<int>(values, "DefaultGems");
             DefaultCraftPoints = Utils.GetDictionary(values, "DefaultCraftPoints");
@@ -557,6 +561,27 @@ namespace YgoMaster
                             item_list[objId.ToString()] = baseId;
                             item_list[avatarId.ToString()] = baseId;
                         }
+                    }
+                }
+            }
+
+            CardFiles = new Dictionary<int, CardFileData>();
+            RawCardFilesData = new Dictionary<string, object>();
+            string cardFilesDir = Path.Combine(dataDirectory, "CardFiles");
+            if (Directory.Exists(cardFilesDir))
+            {
+                foreach (string file in Directory.GetFiles(cardFilesDir, "*.json"))
+                {
+                    int id;
+                    if (int.TryParse(Path.GetFileNameWithoutExtension(file), out id))
+                    {
+                        CardFileData cardFile = new CardFileData(id, MiniJSON.Json.DeserializeStripped(File.ReadAllText(file)) as Dictionary<string, object>);
+                        CardFiles[cardFile.Id] = cardFile;
+                        RawCardFilesData[cardFile.Id.ToString()] = cardFile.RawData;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid CardFiles file name '" + file + "' (needs to be an integer value)");
                     }
                 }
             }
@@ -1322,6 +1347,7 @@ namespace YgoMaster
                 data["SoloLastPlayedChaterId"] = player.SoloLastPlayedChaterId;
                 data["SoloChapters"] = player.SoloChaptersToDictionary();
                 data["ShopState"] = player.ShopState.ToDictionary();
+                data["CardFiles"] = player.CardFiles.ToDictionary();
                 data["Cards"] = player.Cards.ToDictionary();
                 if (MultiplayerEnabled)
                 {
@@ -1424,6 +1450,7 @@ namespace YgoMaster
             }
             player.OrbPoints.FromDictionary(Utils.GetDictionary(data, "OrbPoints"));
             player.ShopState.FromDictionary(Utils.GetDictionary(data, "ShopState"));
+            player.CardFiles.FromDictionary(Utils.GetDictionary(data, "CardFiles"));
             player.CardFavorites.FromDictionary(Utils.GetDictionary(data, "CardFavorites"));
             player.CardLock.FromDictionary(Utils.GetDictionary(data, "CardLock"));
             List<object> titleTags;
@@ -1478,6 +1505,14 @@ namespace YgoMaster
                         {
                             player.RequiresSaving = true;
                         }
+                    }
+                }
+                foreach (int itemId in CardFiles.Keys)
+                {
+                    if (!player.CardFiles.Files.ContainsKey(itemId))
+                    {
+                        player.CardFiles.Files[itemId] = new UserCardFileStatus(itemId);
+                        player.RequiresSaving = true;
                     }
                 }
             }
@@ -1588,6 +1623,9 @@ namespace YgoMaster
                     }
                 }
             }
+
+            // Update CardFile (Collector's Files) status in case any cards were manually added to json
+            UpdateCardFilesStatus(player);
         }
 
         void SaveDeck(DeckInfo deck)

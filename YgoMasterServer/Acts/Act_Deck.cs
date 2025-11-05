@@ -254,87 +254,89 @@ namespace YgoMaster
             Dictionary<string, object> args = Utils.GetValue(request.ActParams, "param", default(Dictionary<string, object>));
             if (args != null)
             {
-                int value;
-                if (Utils.TryGetValue(args, "icon_id", out value) && request.Player.Items.Contains(value))
+                // NOTE: Deck changes should be applied to the "Ranked Duels Deck"
+                // NOTE: Currently the client isn't showing the copy prompt with this code, probably because the client knows there's no assigned ranked deck
+                DeckInfo deck = request.Player.Duel.GetDeck(GameMode.SoloSingle);
+                bool deckModified = false;
+                foreach (KeyValuePair<string, object> arg in args)
                 {
-                    request.Player.IconId = value;
-                }
-                if (Utils.TryGetValue(args, "icon_frame_id", out value) && request.Player.Items.Contains(value))
-                {
-                    request.Player.IconFrameId = value;
-                }
-                if (Utils.TryGetValue(args, "avatar_id", out value) && request.Player.Items.Contains(value))
-                {
-                    request.Player.AvatarId = value;
-                }
-                if (Utils.TryGetValue(args, "wallpaper", out value) && request.Player.Items.Contains(value))
-                {
-                    request.Player.Wallpaper = value;
-                }
-                ItemID.Category fieldItemCategory = ItemID.Category.NONE;
-                if (Utils.TryGetValue(args, "field_avatar_base", out value) && request.Player.Items.Contains(value))
-                {
-                    fieldItemCategory = ItemID.Category.AVATAR_HOME;
-                }
-                if (Utils.TryGetValue(args, "field_obj", out value) && request.Player.Items.Contains(value))
-                {
-                    fieldItemCategory = ItemID.Category.FIELD_OBJ;
-                }
-                if (Utils.TryGetValue(args, "field", out value) && request.Player.Items.Contains(value))
-                {
-                    fieldItemCategory = ItemID.Category.FIELD;
-                }
-                if (Utils.TryGetValue(args, "deck_case", out value) && request.Player.Items.Contains(value))
-                {
-                    fieldItemCategory = ItemID.Category.DECK_CASE;
-                }
-                if (Utils.TryGetValue(args, "protector", out value) && request.Player.Items.Contains(value))
-                {
-                    fieldItemCategory = ItemID.Category.PROTECTOR;
-                }
-                if (Utils.TryGetValue(args, "coin", out value) && request.Player.Items.Contains(value))
-                {
-                    fieldItemCategory = ItemID.Category.COIN;
-                }
-                if (fieldItemCategory != ItemID.Category.NONE)
-                {
-                    // NOTE: Deck changes should be applied to the "Ranked Duels Deck"
-                    // NOTE: Currently the client isn't showing the copy prompt with this code, probably because the client knows there's no assigned ranked deck
-                    DeckInfo deck = request.Player.Duel.GetDeck(GameMode.SoloSingle);
-                    if (deck != null)
+                    int value = (int)Convert.ChangeType(arg.Value, typeof(int));
+                    if (!request.Player.Items.Contains(value) && !request.Player.CardFiles.Files.ContainsKey(value))
                     {
-                        switch (fieldItemCategory)
-                        {
-                            case ItemID.Category.AVATAR_HOME:
+                        continue;
+                    }
+                    switch (arg.Key)
+                    {
+                        case "icon_id":
+                            request.Player.IconId = value;
+                            break;
+                        case "icon_frame_id":
+                            request.Player.IconFrameId = value;
+                            break;
+                        case "avatar_id":
+                            request.Player.AvatarId = value;
+                            break;
+                        case "wallpaper":
+                            request.Player.Wallpaper = value;
+                            break;
+                        case "card_file":
+                            request.Player.CardFiles.ActiveCardFileId = value;
+                            break;
+                        case "field_avatar_base":
+                            if (deck != null)
+                            {
                                 deck.Accessory.AvBase = value;
-                                break;
-                            case ItemID.Category.FIELD_OBJ:
+                                deckModified = true;
+                            }
+                            break;
+                        case "field_obj":
+                            if (deck != null)
+                            {
                                 deck.Accessory.FieldObj = value;
-                                break;
-                            case ItemID.Category.FIELD:
+                                deckModified = true;
+                            }
+                            break;
+                        case "field":
+                            if (deck != null)
+                            {
                                 deck.Accessory.Field = value;
-                                break;
-                            case ItemID.Category.DECK_CASE:
+                                deckModified = true;
+                            }
+                            break;
+                        case "deck_case":
+                            if (deck != null)
+                            {
                                 deck.Accessory.Box = value;
                                 if (DeckListByBoxThenAlphabetical)
                                 {
                                     SortDecks(request.Player, request);
                                 }
-                                break;
-                            case ItemID.Category.PROTECTOR:
+                                deckModified = true;
+                            }
+                            break;
+                        case "protector":
+                            if (deck != null)
+                            {
                                 deck.Accessory.Sleeve = value;
-                                break;
-                            case ItemID.Category.COIN:
+                                deckModified = true;
+                            }
+                            break;
+                        case "coin":
+                            if (deck != null)
+                            {
                                 deck.Accessory.Coin = value;
-                                break;
-                        }
-                        deck.Accessory.Sanitize(request.Player);
-                        SaveDeck(deck);
+                                deckModified = true;
+                            }
+                            break;
+                        default:
+                            Utils.LogWarning("Unhandled player profile arg '" + arg.Key + "' = " + MiniJSON.Json.Serialize(arg.Value));
+                            break;
                     }
-                    else
-                    {
-                        // TODO: Give error?
-                    }
+                }
+                if (deckModified)
+                {
+                    deck.Accessory.Sanitize(request.Player);
+                    SaveDeck(deck);
                 }
                 SavePlayer(request.Player);
                 WriteUser(request);

@@ -469,6 +469,15 @@ namespace YgoMaster
                                     case "PvP.replay_duel":
                                         Act_ReplayDuel(gameServerWebRequest);
                                         break;
+                                    case "CardFile.get_list":// v2.4.0
+                                        Act_CardFileGetList(gameServerWebRequest);
+                                        break;
+                                    case "CardFile.detail":// v2.4.0
+                                        Act_CardFileDetail(gameServerWebRequest);
+                                        break;
+                                    case "CardFile.update_card_order":// v2.4.0
+                                        Act_CardFileUpdateCardOrder(gameServerWebRequest);
+                                        break;
                                     default:
                                         Utils.LogInfo("Unhandled act " + actsHeader);
                                         Debug.WriteLine("Unhandled act " + actsHeader + " " + MiniJSON.Json.Serialize(vals));

@@ -152,7 +152,7 @@ namespace YgoMaster
                 foreach (object item in items)
                 {
                     int intVal = (int)Convert.ChangeType(item, typeof(int));
-                    if (intVal != 0)
+                    if (!ignoreZero || intVal != 0)
                     {
                         result.Add(intVal);
                     }
@@ -160,14 +160,14 @@ namespace YgoMaster
             }
         }
 
-        public static List<T> GetValueTypeList<T>(Dictionary<string, object> values, string key, bool ignoreZero = false)
+        public static List<T> GetValueTypeList<T>(Dictionary<string, object> values, string key)
         {
             List<T> result = new List<T>();
-            GetValueTypeList(values, key, result, ignoreZero);
+            GetValueTypeList(values, key, result);
             return result;
         }
 
-        public static void GetValueTypeList<T>(Dictionary<string, object> values, string key, List<T> result, bool ignoreZero = false)
+        public static void GetValueTypeList<T>(Dictionary<string, object> values, string key, List<T> result)
         {
             List<object> items;
             if (TryGetValue(values, key, out items))
@@ -194,7 +194,7 @@ namespace YgoMaster
                 foreach (object item in items)
                 {
                     int intVal = (int)Convert.ChangeType(item, typeof(int));
-                    if (intVal != 0)
+                    if (!ignoreZero || intVal != 0)
                     {
                         result.Add(intVal);
                     }
