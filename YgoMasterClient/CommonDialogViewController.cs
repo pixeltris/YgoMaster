@@ -56,13 +56,14 @@ namespace YgomGame.Menu
             Dictionary<string, object> args = null,
             bool allowCancel = true,
             CommonDialogTitleWidget.IconType iconType = CommonDialogTitleWidget.IconType.None,
-            CommonDialogButtonGroupWidget.ButtonType buttonType = CommonDialogButtonGroupWidget.ButtonType.Positive)
+            CommonDialogButtonGroupWidget.ButtonType buttonType = CommonDialogButtonGroupWidget.ButtonType.Positive,
+            bool isSwap = false)
         {
             methodOpenConfirmationDialog.Invoke(new IntPtr[]
             {
                 new IL2String(title).ptr, new IL2String(message).ptr, new IL2String(buttonLabel).ptr,
                 UnityEngine.Events._UnityAction.CreateAction(action), GetArgsPtr(args), new IntPtr(&allowCancel),
-                new IntPtr(&iconType), new IntPtr(&buttonType)
+                new IntPtr(&iconType), new IntPtr(&buttonType), new IntPtr(&isSwap)
             });
         }
 
@@ -133,12 +134,13 @@ namespace YgomGame.Menu
             string buttonLabel = null,
             Dictionary<string, object> args = null,
             bool allowCancel = true,
-            CommonDialogButtonGroupWidget.ButtonType buttonType = CommonDialogButtonGroupWidget.ButtonType.Positive)
+            CommonDialogButtonGroupWidget.ButtonType buttonType = CommonDialogButtonGroupWidget.ButtonType.Positive,
+            bool isSwap = false)
         {
             methodOpenAlertDialog.Invoke(new IntPtr[]
             {
                 new IL2String(title).ptr, new IL2String(message).ptr, UnityEngine.Events._UnityAction.CreateAction(action),
-                new IL2String(buttonLabel).ptr, GetArgsPtr(args), new IntPtr(&allowCancel), new IntPtr(&buttonType)
+                new IL2String(buttonLabel).ptr, GetArgsPtr(args), new IntPtr(&allowCancel), new IntPtr(&buttonType), new IntPtr(&isSwap)
             });
         }
 

@@ -429,7 +429,7 @@ namespace YgomGame
         delegate IntPtr Del_RemoveFromDeck2(IntPtr thisPtr, IntPtr card, csbool isDrag, IntPtr pos, csbool isFlick);
         static Hook<Del_RemoveFromDeck2> hookRemoveFromDeck2;
 
-        delegate IntPtr Del_AsyncFilterAndSort(IntPtr thisPtr, IntPtr onFinish, csbool setAll, IntPtr targetSorter, csbool filter);
+        delegate IntPtr Del_AsyncFilterAndSort(IntPtr thisPtr, IntPtr onFinish, csbool setAll, IntPtr targetSorter, csbool filter, IntPtr targetArea);
         static Hook<Del_AsyncFilterAndSort> hookAsyncFilterAndSort;
 
         delegate IntPtr Del_getRelatedCardList(IntPtr thisPtr, int cardID, csbool fullStyle);
@@ -840,14 +840,14 @@ namespace YgomGame
             Deck.CardCollectionView.UpdateView(collectionView, updateDataCount, select);
         }
 
-        static IntPtr AsyncFilterAndSort(IntPtr thisPtr, IntPtr onFinish, csbool setAll, IntPtr targetSorter, csbool filter)
+        static IntPtr AsyncFilterAndSort(IntPtr thisPtr, IntPtr onFinish, csbool setAll, IntPtr targetSorter, csbool filter, IntPtr targetArea)
         {
             if (skipNextAsyncFilterAndSort)
             {
                 skipNextAsyncFilterAndSort = false;
                 return IntPtr.Zero;
             }
-            return hookAsyncFilterAndSort.Original(thisPtr, onFinish, setAll, targetSorter, filter);
+            return hookAsyncFilterAndSort.Original(thisPtr, onFinish, setAll, targetSorter, filter, targetArea);
         }
 
         public static void ReapplyFilter()

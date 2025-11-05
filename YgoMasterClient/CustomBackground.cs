@@ -25,7 +25,7 @@ namespace YgoMasterClient
         const string customBg1Name = "CustomBg1";
 
         static IL2Class bgManagerClassInfo;
-        static IL2Field bgManagerBackRoot;
+        static IL2Field bgManagerRoot;
 
         static IntPtr spriteRendererType;
         static IL2Method spriteRendererSetSprite;
@@ -52,7 +52,7 @@ namespace YgoMasterClient
             spriteRendererSetSprite = spriteRendererClass.GetProperty("sprite").GetSetMethod();
             spriteRendererType = spriteRendererClass.IL2Typeof();
 
-            bgManagerBackRoot = bgManagerClassInfo.GetField("m_BackRoot");
+            bgManagerRoot = bgManagerClassInfo.GetField("m_Root");
         }
 
         static void Initialize(IntPtr thisPtr)
@@ -263,7 +263,8 @@ namespace YgoMasterClient
         static List<IntPtr> GetBgObjs()
         {
             IL2Object instance = bgManagerClassInfo.GetField("instance").GetValue();
-            return instance != null ? GameObject.GetChildren(bgManagerBackRoot.GetValue(instance.ptr).ptr) : new List<IntPtr>();
+            IntPtr rootBack = GameObject.FindGameObjectByName(bgManagerRoot.GetValue(instance.ptr).ptr, "RootBack");
+            return instance != null ? GameObject.GetChildren(rootBack) : new List<IntPtr>();
         }
 
         struct Color
