@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Yu-Gi-Oh! Card Database to YDK(e)
 // @namespace    https://github.com/pixeltris/YgoMaster
-// @version      1.1
+// @version      1.2
 // @description  Adds YDK / YDKe buttons to the official "Yu-Gi-Oh! Card Database" website
 // @author       pixeltris
 // @match        *://*.db.yugioh-card.com/yugiohdb/member_deck.action*
