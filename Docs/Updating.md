@@ -10,12 +10,13 @@ Certain logs will be dumped as json into `%USERPROFILE%/Documents/Fiddler2/Captu
 
 *Obtain all logs from the Steam version of the game. Not YgoMaster.*
 
-## Card list / card craft list / ban list
+## Card list / card craft list / ban list / collector's files
 
 - Open the game using Steam (reopen it if it's already open)
 - Enter the game and log `/ayk/api/System.info` / `/ayk/api/User.entry` / `/ayk/api/User.home`
 - Copy the following files from `YgoMasterUpdate/` to `YgoMaster/Data/`
 - `CardCraftableList.json`, `CardList.json`, `Regulation.json`, `RegulationIcon.json`, `RegulationInfo.json`, `StructureDecks.json`, `TitleLoop.json`
+- Copy all files in `YgoMasterUpdate/CardFiles/` to `YgoMaster/Data/CardFiles/`
 
 ## Structure decks
 

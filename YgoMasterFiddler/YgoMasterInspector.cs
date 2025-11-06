@@ -485,6 +485,22 @@ namespace YgoMaster
                                                 File.WriteAllText(Path.Combine(updateDir, "Solo.json"), FormatJson(MiniJSON.Json.Serialize(dictTemp)));
                                             }
                                         }
+                                        if (masterData.ContainsKey("CardFile") && masterData["CardFile"] as Dictionary<string, object> != null)
+                                        {
+                                            string cardFilesDir = Path.Combine(updateDir, "CardFiles");
+                                            try
+                                            {
+                                                Directory.CreateDirectory(cardFilesDir);
+                                            }
+                                            catch
+                                            {
+                                            }
+                                            Dictionary<string, object> cardFileData = masterData["CardFile"] as Dictionary<string, object>;
+                                            foreach (KeyValuePair<string, object> cardFileEntry in cardFileData)
+                                            {
+                                                File.WriteAllText(Path.Combine(cardFilesDir, cardFileEntry.Key + ".json"), FormatJson(MiniJSON.Json.Serialize(cardFileEntry.Value)));
+                                            }
+                                        }
                                     }
                                     if (data.ContainsKey("Duel") && data["Duel"] as Dictionary<string, object> != null)
                                     {
