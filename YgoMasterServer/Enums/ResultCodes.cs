@@ -285,7 +285,8 @@ namespace YgoMaster
             TEAM_MATCHING_CANCELED,//v1.3.1
             VS_TEAM_WAITING,//v1.3.1
             ERR_REPLAY_LOCK_MAX = 2150,//v2.1.0
-            ERR_REPLAY_LOCK,////v2.1.0
+            ERR_REPLAY_LOCK,//v2.1.0
+            ERR_CROSS_PLAY_WATCH,//v2.5.0
         }
 
         public enum StructureCode
@@ -345,15 +346,17 @@ namespace YgoMaster
 
         public enum ShopCode
         {
-            NONE = 0,
-            ERROR = 1,
-            FATAL = 2,
-            CRITICAL = 3,
+            NONE,
+            ERROR,
+            FATAL,
+            CRITICAL,
             INVALID_PARAM = 2700,
-            OUT_OF_TERM = 2701,
-            ITEMS_SHORTAGE = 2702,
-            LIMIT_MAX = 2703,
-            PROCESSING_FAILED = 2704,
+            OUT_OF_TERM,
+            ITEMS_SHORTAGE,
+            LIMIT_MAX,
+            PROCESSING_FAILED,
+            EXPIRED_COST_ITEM,
+            UPDATE_PRODUCTS,//v2.5.0
         }
 
         public enum ChallengeCode

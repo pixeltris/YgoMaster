@@ -1,4 +1,4 @@
-// Client version 2.4.1
+// Client version 2.5.0
 // This file is generated using the 'updatediff' command in YgoMasterClient. This information is used to determine changes between client versions which impact YgoMaster.
 // Run the command, diff against the old file, and use the changes to update code.
 
@@ -646,7 +646,7 @@ enum DuelCounterType
     Shiki,
     Kyuzai,
     C,
-    Osara,
+    Dish,
     Max,
 }
 /// <summary>
@@ -933,6 +933,7 @@ enum DuelListType
     SelAllGunkan,
     SelAllNormal,
     SelAllNormal2,
+    SelAllArtmage,
 }
 /// <summary>
 /// YgomGame.Duel.Engine.MenuActType
@@ -1113,6 +1114,7 @@ enum DuelSpSummonType
     Xyz,
     Pendulum,
     Link,
+    Maximum,
 }
 /// <summary>
 /// YgomGame.Duel.Engine.StepType
@@ -1630,6 +1632,16 @@ enum LoginBonusCode
     ERR_ALREADY_COMPLETED,
     ERROR_IN_SHOP_MAINTE,
 }
+enum LotteryCode
+{
+    NONE,
+    ERROR,
+    FATAL,
+    CRITICAL,
+    INVALID_PARAM = 5400,
+    ERR_OUT_OF_TERM,
+    ERR_OUT_OF_TERM_CARD_SELECT,
+}
 enum MissionCode
 {
     NONE,
@@ -1709,6 +1721,7 @@ enum PvPCode
     VS_TEAM_WAITING,
     ERR_REPLAY_LOCK_MAX = 2150,
     ERR_REPLAY_LOCK,
+    ERR_CROSS_PLAY_WATCH,
 }
 enum RankEventCode
 {
@@ -1736,9 +1749,9 @@ enum RdcCode
     ERROR,
     FATAL,
     CRITICAL,
-    INVALID_PARAM = 3700,
+    INVALID_PARAM = 5000,
     ERR_OUT_OF_TERM,
-    ERR_INVALID_MISSION_POOL = 3703,
+    ERR_INVALID_MISSION_POOL = 5003,
 }
 enum RoomCode
 {
@@ -1807,6 +1820,7 @@ enum ShopCode
     LIMIT_MAX,
     PROCESSING_FAILED,
     EXPIRED_COST_ITEM,
+    UPDATE_PRODUCTS,
 }
 enum SoloCode
 {
@@ -1995,6 +2009,7 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Account_unlock(System.String _pass_)
 //public static YgomSystem.Network.Handle Account_set_official_settings()
 //public static YgomSystem.Network.Handle Account_set_app_settings(System.Collections.Generic.Dictionary<System.String,System.Object> _app_settings_)
+//public static YgomSystem.Network.Handle Account_set_game_settings(System.Collections.Generic.Dictionary<System.String,System.Object> _settings_)
 //public static YgomSystem.Network.Handle Account_Steam_get_user_id(System.String _session_ticket_)
 //public static YgomSystem.Network.Handle Account_Steam_re_auth(System.String _session_ticket_)
 //public static YgomSystem.Network.Handle Account_PS_get_user_id(System.String _auth_session_)
@@ -2321,7 +2336,13 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Dicerally_update_board(System.Int32 _dicerally_id_, System.Int32 _dice_roll_num_)
 //public static YgomSystem.Network.Handle Dicerally_get_card_list(System.Int32 _dicerally_id_, System.Int32 _target_gacha_id_)
 //public static YgomSystem.Network.Handle CardFile_get_list(System.Int64 _pcode_)
-//public static YgomSystem.Network.Handle CardFile_detail(System.Int64 _pcode_, System.Int32 _item_id_)
+//public static YgomSystem.Network.Handle CardFile_detail(System.Int64 _pcode_, System.Int32 _item_id_, System.Boolean _is_open_profile_)
+//public static YgomSystem.Network.Handle CardFile_update_card_order(System.Int32 _item_id_, System.Int32 _sort_type_, System.Collections.Generic.Dictionary<System.String,System.Object> _card_list_)
+//public static YgomSystem.Network.Handle Lottery_portal(System.Int32 _lottery_id_)
+//public static YgomSystem.Network.Handle Lottery_get_card_pool(System.Int32 _lottery_id_)
+//public static YgomSystem.Network.Handle Lottery_check_set_round(System.Int32 _lottery_id_, System.Int32 _set_, System.Int32 _round_)
+//public static YgomSystem.Network.Handle Lottery_get_result(System.Int32 _lottery_id_, System.Int32 _set_)
+//public static YgomSystem.Network.Handle Lottery_set_cards(System.Int32 _lottery_id_, System.Int32 _set_, System.Int32 _round_, System.Int32[] _cards_)
 //public System.Void .ctor()
 //==================================
 // duel.dll functions (Engine)
@@ -2406,6 +2427,7 @@ enum WcsCode
 //static System.Boolean DLL_DuelIsThisEffectiveMonster(System.Int32 player, System.Int32 index)
 //static System.Int32 DLL_DuelIsThisEquipCard(System.Int32 player, System.Int32 locate)
 //static System.Boolean DLL_DuelIsThisMagic(System.Int32 player, System.Int32 locate)
+//static System.Boolean DLL_DuelIsThisMaximumMode(System.Int32 player, System.Int32 locate)
 //static System.Int32 DLL_DuelIsThisNormalMonster(System.Int32 player, System.Int32 locate)
 //static System.Boolean DLL_DuelIsThisNormalMonsterInGrave(System.Int32 player, System.Int32 index)
 //static System.Boolean DLL_DuelIsThisNormalMonsterInHand(System.Int32 wCardID)
@@ -2490,6 +2512,7 @@ enum WcsCode
 //static System.Int32 DLL_CardGetStar(System.Int32 cardId)
 //static System.Int32 DLL_CardGetType(System.Int32 cardId)
 //static System.Int32 DLL_CardIsThisCardGenre(System.Int32 cardId, System.Int32 genreId)
+//static System.Int32 DLL_CardIsThisMaxMonster(System.Int32 cardId)
 //static System.Int32 DLL_CardIsThisSameCard(System.Int32 cardA, System.Int32 cardB)
 //static System.Int32 DLL_CardIsThisTunerMonster(System.Int32 cardId)
 //static System.Void DLL_SetCardGenre(System.Byte[] data)

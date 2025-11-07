@@ -252,7 +252,7 @@ namespace YgoMaster
         Shiki,//v2.3.0
         Kyuzai,//v2.4.0
         C,//v2.4.0
-        Osara,//v2.4.0
+        Dish,//v2.4.0 (changed from Osara -> Dish in v2.5.0)
         Max
     }
 
@@ -553,7 +553,8 @@ namespace YgoMaster
         SelAllIndeck,
         SelAllGunkan,//v1.7.1
         SelAllNormal,//v2.2.1
-        SelAllNormal2//v2.2.1
+        SelAllNormal2,//v2.2.1
+        SelAllArtmage,//v2.5.0
     }
 
     /// <summary>
@@ -743,7 +744,8 @@ namespace YgoMaster
         Ritual,
         Xyz,
         Pendulum,
-        Link
+        Link,
+        Maximum//v2.5.0
     }
 
     /// <summary>
