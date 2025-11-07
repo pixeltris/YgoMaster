@@ -527,7 +527,7 @@ namespace YgoMaster
                     deckFileName = "Deck";
                 }
                 File.WriteAllText(Path.Combine(ouputDir, deckFileName),
-                    MiniJSON.Json.Serialize(deckInfo.ToDictionaryEx()) + (string.IsNullOrEmpty(sourceUrl) ? "" : (Environment.NewLine + "//" + sourceUrl)));
+                    MiniJSON.Json.Serialize(deckInfo.ToDictionaryEx()) + (string.IsNullOrEmpty(sourceUrl) ? "" : ("\n//" + sourceUrl)));
                 return true;
             }
             return false;

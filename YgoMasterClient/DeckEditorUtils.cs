@@ -1179,8 +1179,8 @@ namespace YgomGame.SubMenu
                         {
                             string fullErrorMsg = ClientSettings.CustomTextDeckEditTextParseFailed;
                             fullErrorMsg = fullErrorMsg.Replace("{numFailed}", numFailed.ToString());
-                            fullErrorMsg = fullErrorMsg.Replace("{failedSb}", failedSb.ToString());
-                            Clipboard.SetText(failedSb.ToString());
+                            fullErrorMsg = fullErrorMsg.Replace("{failedSb}", failedSb.ToStringLF());
+                            Clipboard.SetText(failedSb.ToStringLF());
                             YgomGame.Menu.CommonDialogViewController.OpenConfirmationDialogScroll(ClientSettings.CustomTextInfo,
                                 fullErrorMsg, ClientSettings.CustomTextOK, null, null, true, 500);
                         }
@@ -1235,8 +1235,8 @@ namespace YgomGame.SubMenu
                         {
                             string fullErrorMsg = ClientSettings.CustomTextDeckEditTextParseFailed;
                             fullErrorMsg = fullErrorMsg.Replace("{numFailed}", numFailed.ToString());
-                            fullErrorMsg = fullErrorMsg.Replace("{failedSb}", failedSb.ToString());
-                            Clipboard.SetText(failedSb.ToString());
+                            fullErrorMsg = fullErrorMsg.Replace("{failedSb}", failedSb.ToStringLF());
+                            Clipboard.SetText(failedSb.ToStringLF());
                             YgomGame.Menu.CommonDialogViewController.OpenConfirmationDialogScroll(ClientSettings.CustomTextInfo,
                                 fullErrorMsg, ClientSettings.CustomTextOK, null, null, true, 500);
                         }

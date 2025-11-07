@@ -198,7 +198,7 @@ namespace IL2CPP
                             else
                             {
                                 Log("Signature of method '" + signature.Name + "' in type '" + string.Join(".", signature.Class) + "' / assembly '" + signature.Assembly + "'" +
-                                    " does not match. Expected: '" + signature.Signature + "' Found: " + string.Join(Environment.NewLine, methods.Select(x => x.GetSignature())));
+                                    " does not match. Expected: '" + signature.Signature + "' Found: " + string.Join("\n", methods.Select(x => x.GetSignature())));
                             }
                         }
                         break;
@@ -283,7 +283,7 @@ namespace IL2CPP
 
         static void Log(string str)
         {
-            File.AppendAllText(GetLogPath(), str + Environment.NewLine);
+            File.AppendAllText(GetLogPath(), str + "\n");
             Console.WriteLine(str);
         }
 

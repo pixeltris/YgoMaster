@@ -739,3 +739,11 @@ namespace YgoMaster
         }
     }
 }
+
+static class StringBuilderExtensions
+{
+    public static string ToStringLF(this StringBuilder sb)
+    {
+        return sb.ToString().Replace("\r", "");
+    }
+}

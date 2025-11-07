@@ -84,9 +84,9 @@ namespace MiniJSON {
             var result =
                 from ch in json
                 let quotes = ch == '"' ? quoteCount++ : quoteCount
-                let lineBreak = ch == ',' && quotes % 2 == 0 ? ch + Environment.NewLine + String.Concat(Enumerable.Repeat(INDENT_STRING, indentation)) : null
-                let openChar = ch == '{' || ch == '[' ? ch + Environment.NewLine + String.Concat(Enumerable.Repeat(INDENT_STRING, ++indentation)) : ch.ToString()
-                let closeChar = ch == '}' || ch == ']' ? Environment.NewLine + String.Concat(Enumerable.Repeat(INDENT_STRING, --indentation)) + ch : ch.ToString()
+                let lineBreak = ch == ',' && quotes % 2 == 0 ? ch + "\n" + String.Concat(Enumerable.Repeat(INDENT_STRING, indentation)) : null
+                let openChar = ch == '{' || ch == '[' ? ch + "\n" + String.Concat(Enumerable.Repeat(INDENT_STRING, ++indentation)) : ch.ToString()
+                let closeChar = ch == '}' || ch == ']' ? "\n" + String.Concat(Enumerable.Repeat(INDENT_STRING, --indentation)) + ch : ch.ToString()
                 select lineBreak == null ? openChar.Length > 1 ? openChar : closeChar : lineBreak;
             return String.Concat(result);
         }
@@ -177,7 +177,7 @@ namespace MiniJSON {
                     }
                 }
             }
-            json = string.Join(Environment.NewLine, splitted);
+            json = string.Join("\n", splitted);
             return Deserialize(json);
         }
         /// <summary>

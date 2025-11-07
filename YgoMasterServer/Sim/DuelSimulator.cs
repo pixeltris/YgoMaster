@@ -132,7 +132,7 @@ namespace YgoMaster
                 try
                 {
                     File.AppendAllText("tempfile.txt", "finish: " + (DuelFinishType)DLL_DuelGetDuelFinish() + " turn: " + DLL_DuelGetTurnNum() + 
-                        " deck1: '" + deck1.Name + "' deck2: '" + deck2.Name + "' duration:" + sw.Elapsed + Environment.NewLine);
+                        " deck1: '" + deck1.Name + "' deck2: '" + deck2.Name + "' duration:" + sw.Elapsed + "\n");
                     break;
                 }
                 catch

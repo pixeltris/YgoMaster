@@ -3473,7 +3473,7 @@ namespace YgoMaster
                 }
             }
             File.WriteAllText(Path.Combine(dataDirectory, "Solo.json"), MiniJSON.Json.Serialize(data));
-            File.WriteAllText(Path.Combine(dataDirectory, "IDS_SOLO.txt"), soloStrings.ToString());
+            File.WriteAllText(Path.Combine(dataDirectory, "IDS_SOLO.txt"), soloStrings.ToStringLF());
         }
 
         void ExtractStructureDecks()

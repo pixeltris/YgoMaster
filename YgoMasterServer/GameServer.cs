@@ -26,7 +26,7 @@ namespace YgoMaster
             }
             catch (Exception e)
             {
-                Console.WriteLine("[ERROR] Loading data threw an exception" + Environment.NewLine + e.ToString());
+                Console.WriteLine("[ERROR] Loading data threw an exception\n" + e.ToString());
                 return;
             }
 
@@ -575,8 +575,8 @@ namespace YgoMaster
                 {
                     requestString = "(null)";
                 }
-                string errorMsg = "Exception when processing message. Exception: " + e + Environment.NewLine +
-                    " Token: " + requestToken + Environment.NewLine + "Request: " + requestString;
+                string errorMsg = "Exception when processing message. Exception: " + e +
+                    "\n Token: " + requestToken + "\nRequest: " + requestString;
                 Utils.LogWarning(errorMsg);
                 Debug.WriteLine(errorMsg);
             }

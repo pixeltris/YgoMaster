@@ -154,7 +154,7 @@ namespace YgoMaster
                     sb.AppendLine(ydkCardId.ToString());
                 }
             }
-            File.WriteAllText(deck.File, sb.ToString());
+            File.WriteAllText(deck.File, sb.ToStringLF());
         }
 
         public static void LoadIdMap(string dataDir)
@@ -385,6 +385,7 @@ namespace YgoMaster
 
             using (TextWriter writer = File.CreateText(Path.Combine(dataDir, idMapFileName)))
             {
+                writer.NewLine = "\n";
                 foreach (KeyValuePair<long, long> cardId in ydkIdToOfficialId)
                 {
                     writer.WriteLine(cardId.Key + " " + cardId.Value);

@@ -189,7 +189,7 @@ namespace YgoMasterClient
                 try
                 {
                     string fileName = Path.Combine(Program.ClientDataDir, "DuelLog.txt");
-                    string fullLog = "[" + DateTime.Now.TimeOfDay + "] " + str + (append ? Environment.NewLine : string.Empty);
+                    string fullLog = "[" + DateTime.Now.TimeOfDay + "] " + str + (append ? "\n" : string.Empty);
                     if (append)
                     {
                         File.AppendAllText(fileName, fullLog);

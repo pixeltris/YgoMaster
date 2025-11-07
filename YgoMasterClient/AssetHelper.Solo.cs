@@ -214,7 +214,7 @@ namespace YgoMasterClient
                         catch { }
                         try
                         {
-                            File.WriteAllText(dumpPath, dataDump.ToString());
+                            File.WriteAllText(dumpPath, dataDump.ToStringLF());
                         }
                         catch { }
                     }

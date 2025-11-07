@@ -95,7 +95,7 @@ namespace YgoMasterClient
                             res.AppendLine("  ],");
                         }
                         res.AppendLine("}");
-                        File.WriteAllText("ItemID.json", res.ToString());
+                        File.WriteAllText("ItemID.json", res.ToStringLF());
                         Console.WriteLine("Done");
                     }
                     break;
@@ -144,7 +144,7 @@ namespace YgoMasterClient
                             res.AppendLine("  ],");
                         }
                         res.AppendLine("}");
-                        File.WriteAllText("ItemID.json", res.ToString());
+                        File.WriteAllText("ItemID.json", res.ToStringLF());
                         Console.WriteLine("Done");
                     }
                     break;
@@ -178,7 +178,7 @@ namespace YgoMasterClient
                             res.AppendLine(string.Join(Environment.NewLine, cat.Value));
                             res.AppendLine("}");
                         }
-                        File.WriteAllText("dump-itemid-enum.txt", res.ToString());
+                        File.WriteAllText("dump-itemid-enum.txt", res.ToStringLF());
                         Console.WriteLine("Done");
                     }
                     break;
@@ -205,7 +205,7 @@ namespace YgoMasterClient
                                 sb.AppendLine("ID" + idVal.Key.ToString().PadLeft(4, '0') + "_NAME" + " " + idVal.Value);
                             }
                         }
-                        File.WriteAllText("dump-packnames.txt", sb.ToString());
+                        File.WriteAllText("dump-packnames.txt", sb.ToStringLF());
                         Console.WriteLine("Done");
                     }
                     break;
@@ -228,7 +228,7 @@ namespace YgoMasterClient
                             }
                         }
                         sb.Append("]");
-                        File.WriteAllText("dump-packimages.txt", sb.ToString());
+                        File.WriteAllText("dump-packimages.txt", sb.ToStringLF());
                         Console.WriteLine("Done");
                     }
                     break;
@@ -364,7 +364,7 @@ namespace YgoMasterClient
                                     {
                                         text = text.Substring(0, text.Length - Environment.NewLine.Length);
                                     }
-                                    File.WriteAllText(targetPath, text);
+                                    File.WriteAllText(targetPath, text.Replace("\r", ""));
                                 }
                             }
                         }
@@ -404,7 +404,7 @@ namespace YgoMasterClient
                                 sb.AppendLine();
                             }
                         }
-                        File.WriteAllText("dump-resultcodes.txt", sb.ToString());
+                        File.WriteAllText("dump-resultcodes.txt", sb.ToStringLF());
                         Console.WriteLine("Done");
                     }
                     break;
@@ -581,6 +581,7 @@ namespace YgoMasterClient
 
                         using (TextWriter tw = File.CreateText("updatediff.cs"))
                         {
+                            tw.NewLine = "\n";
                             tw.WriteLine("// Client version " + assembly.GetClass("Version", "YgomSystem.Utility").GetProperty("AppVersion").GetGetMethod().Invoke().GetValueObj<string>());
                             tw.WriteLine("// This file is generated using the 'updatediff' command in YgoMasterClient. This information is used to determine changes between client versions which impact YgoMaster.");
                             tw.WriteLine("// Run the command, diff against the old file, and use the changes to update code.");
@@ -797,6 +798,7 @@ namespace YgoMasterClient
                     {
                         using (TextWriter tw = File.CreateText(Path.Combine(Program.CurrentDir, "PvpOps.txt")))
                         {
+                            tw.NewLine = "\n";
                             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
                             IL2Class engineClass = assembly.GetClass("Engine", "YgomGame.Duel");
                             foreach (IL2Method method in engineClass.GetMethods().OrderBy(x => x.Name))
@@ -1835,7 +1837,7 @@ namespace YgoMasterClient
 
         public override void WriteLine(string value)
         {
-            value = value + Environment.NewLine;
+            value = value + "\n";
             uint written;
             if (!WriteConsoleW(new IntPtr(7), value, (uint)value.Length, out written, IntPtr.Zero) || written < value.Length)
             {
