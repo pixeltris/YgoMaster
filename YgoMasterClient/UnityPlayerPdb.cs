@@ -16,8 +16,14 @@ namespace YgoMasterClient
 {
     static class UnityPlayerPdb
     {
-        // Lastest UnityPlayer.dll build for Master Duel (as of 2024-05-07):
-        // https://symbolserver.unity3d.com/UnityPlayer_Win64_player_il2cpp_x64.pdb/D7818DF19E8C487798AAA1D28C0B17A61/
+        // Lastest UnityPlayer.dll build for Master Duel (v2.4.0) (Unity version: 6000.0.50f1)
+        // https://symbolserver.unity3d.com/UnityPlayer_Win64_player_il2cpp_x64.pdb/58AF8FD77EC14831BA247C36D01A38AF1/UnityPlayer_Win64_player_il2cpp_x64.pdb
+        // NOTE: Sometimes the pdb file path ends in ".pd_". If you can't find the url then you can do the following:
+        // - In your Master Duel folder right click "UnityPlayer.dll", click "Properties", click the "Details" tab, make note of the "Product version"
+        // - Search the "Product version" on google (e.g. 6000.0.50f1)
+        // - You should end up on a page like this https://unity.com/releases/editor/whats-new/6000.0.50f1
+        // - Under "Component installers" download "Windows Build Support (IL2CPP)" which contains the pdb files (you'll need Unity installed to install this)
+        // - The pdb path will look like this: /Unity 6000.0.50f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/Variations/win64_player_nondevelopment_il2cpp/UnityPlayer_Win64_player_il2cpp_x64.pdb
 
         // Ways to get the PDB GUID:
         // - Check the symbol info in Visual Studio (attach to process, view modules window and get symbol info from UnityPlayer.dll)
@@ -27,11 +33,11 @@ namespace YgoMasterClient
         // You can look up mangled functions with the x64dbg modules view (the mangled names are partial function names in many cases)
         static Dictionary<string, SymbolInfo> targetFunctions = new Dictionary<string, SymbolInfo>()
         {
-            { "?AudioClip_CUSTOM_Construct_Internal@@YAPEAVScriptingBackendNativeObjectPtrOpaque@@XZ", new SymbolInfo("UnityPlayerRVA_AudioClip_CUSTOM_Construct_Internal") },
-            { "?AudioClip_CUSTOM_CreateUserSound@@YAXPEAVScriptingBackendNativeObjectPtrOpaque@@PEAVScriptingBackendNativeStringPtrOpaque@@HHHE@Z", new SymbolInfo("UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound") },
-            { "?AudioClip_CUSTOM_SetData@@YAEPEAVScriptingBackendNativeObjectPtrOpaque@@PEAVScriptingBackendNativeArrayPtrOpaque@@HH@Z", new SymbolInfo("UnityPlayerRVA_AudioClip_CUSTOM_SetData") },
-            { "?DownloadHandlerTexture_CUSTOM_Create@@YAPEAXPEAVScriptingBackendNativeObjectPtrOpaque@@E@Z", new SymbolInfo("UnityPlayerRVA_DownloadHandlerTexture_CUSTOM_Create") },
-            { "?DownloadHandlerTexture_CUSTOM_InternalGetTextureNative@@YAPEAVScriptingBackendNativeObjectPtrOpaque@@PEAV1@@Z", new SymbolInfo("UnityPlayerRVA_DownloadHandlerTexture_CUSTOM_InternalGetTextureNative") },
+            { "?AudioClip_CUSTOM_Construct_Internal@@YA_KXZ", new SymbolInfo("UnityPlayerRVA_AudioClip_CUSTOM_Construct_Internal") },
+            { "?AudioClip_CUSTOM_CreateUserSound@@YAXPEAXPEAUBindingsManagedSpan@@HHHE@Z", new SymbolInfo("UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound") },
+            { "?AudioClip_CUSTOM_SetData@@YAEPEAXPEAUBindingsManagedSpan@@H@Z", new SymbolInfo("UnityPlayerRVA_AudioClip_CUSTOM_SetData") },
+            { "?DownloadHandlerTexture_CUSTOM_Create@@YAPEAXPEAVScriptingBackendNativeObjectPtrOpaque@@AEBUDownloadedTextureParams@@@Z", new SymbolInfo("UnityPlayerRVA_DownloadHandlerTexture_CUSTOM_Create") },
+            { "?DownloadHandlerTexture_CUSTOM_InternalGetTextureNative@@YA_KPEAX@Z", new SymbolInfo("UnityPlayerRVA_DownloadHandlerTexture_CUSTOM_InternalGetTextureNative") },
         };
         class SymbolInfo
         {
@@ -72,7 +78,7 @@ namespace YgoMasterClient
                 sb.AppendLine("    \"" + symbol.SettingName + "\": " + symbol.RVA + ",");
             }
             string filename = "UnityPlayerRVA.json";
-            File.WriteAllText(filename, sb.ToString());
+            File.WriteAllText(filename, sb.ToStringLF());
             Console.WriteLine("Generated '" + filename + "'");
         }
 
