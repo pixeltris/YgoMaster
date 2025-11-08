@@ -1088,8 +1088,8 @@ namespace YgoMaster
                                 {
                                     if (!request.Player.CardFiles.Files.ContainsKey(item.ItemId))
                                     {
-                                        UserCardFileStatus userCardFileStatus = new UserCardFileStatus(CardFiles.First().Key);
-                                        request.Player.CardFiles.Files[CardFiles.First().Key] = userCardFileStatus;
+                                        UserCardFileStatus userCardFileStatus = new UserCardFileStatus(item.ItemId);
+                                        request.Player.CardFiles.Files[item.ItemId] = userCardFileStatus;
                                         UpdateCardFileStatus(request.Player, userCardFileStatus);
                                         WriteCardFileHave(request);
                                         WriteItem(request, item.ItemId);
