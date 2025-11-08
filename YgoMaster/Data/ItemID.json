@@ -219,6 +219,8 @@
     1010116,//Block Dragon
     1010117,//Enlilgirsu, the Orcust Mekk-Knight
     1010118,//Spore the Fairy Seed
+    1010119,//Morgana the Witch of Eyes
+    1010128,//Gagagaga Girl
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -360,6 +362,8 @@
     1013004,//Sky Striker Ace - Kagari
     1013005,//Dogmatika Fleurdelis, the Knighted
     1013006,//Tri-Brigade Shuraig the Ominous Omen
+    1013008,//Duelist Black & Blue
+    1013009,//Duelist White & Blue
     1013010,//eFootball™
   ],
   "PROFILE_TAG": [
@@ -547,6 +551,10 @@
     1020183,//DC 2025 SEP Top 1000
     1020184,//DC 2025 SEP Top 10000
     1020185,//DC 2025 SEP 2nd Stage Duelist
+    1020186,//Violet Warrior of Fusing
+    1020187,//Obsidian Warrior of Stacking
+    1020188,//Azure Warrior of Linking
+    1020197,//Jack of All Trades
     1021001,//Starting Out
     1021002,//Top Performer
   ],
@@ -752,7 +760,14 @@
     1070126,//Regenesis Lord
     1070127,//Ame no Murakumo no Mitsurugi
     1070128,//Here There Be Dragons
+    1070129,//Chef's Special Recipe
     1070130,//Exodia the Forbidden One (WCS2025)
+    1070131,//House Dragonmaid
+    1070138,//Sky Striker Ace = Zero
+    1070140,//Number F0: Utopic Future Zexal
+    1070143,//Lunalight Liger Dancer
+    1070147,//Infinite Impermanence
+    1070149,//Gradius
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -815,6 +830,7 @@
     1073017,//DC 2025 SEP Celebration
     1075001,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
     1075002,//THE CHRONICLES: Sky Striker Ace
+    1075003,//White & Blue
     1075004,//eFootball™
     1075005,//Neymar
     1075006,//THE CHRONICLES: The Fallen & The Virtuous
@@ -872,6 +888,7 @@
     1082020,//Sky Striker Ace - Roze
     1082021,//Abyssal Land
     1082022,//Orcust
+    1083001,//White & Blue
   ],
   "FIELD": [
     1090001,//Forest
@@ -907,6 +924,7 @@
     1090032,//Lost World
     1090033,//Evil★Twin
     1090034,//Striking Stratagem Simulation Area
+    1090035,//Graveyard of Myriad Souls
     1090036,//Despia, Theater of the Branded
     1090040,//Football Stadium
     1092001,//Colosseum
@@ -946,6 +964,7 @@
     1100032,//Lost World
     1100033,//Evil★Twin
     1100034,//Striking Stratagem Simulation Area
+    1100035,//Graveyard of Myriad Souls
     1100036,//Despia, Theater of the Branded
     1100040,//Football Stadium
     1101001,//Trap Hole
@@ -974,6 +993,7 @@
     1101034,//Kochobo's Hinamatsuri
     1101035,//Floral Crown
     1101036,//Swimming Ring
+    1101040,//Halloween Ghost
     1102001,//Colosseum
     1102002,//WCS
   ],
@@ -1011,6 +1031,7 @@
     1110032,//Lost World
     1110033,//Evil★Twin
     1110034,//Striking Stratagem Simulation Area
+    1110035,//Graveyard of Myriad Souls
     1110036,//Despia, Theater of the Branded
     1110040,//Football Stadium
     1111001,//Destiny Board
@@ -1160,6 +1181,7 @@
     1130059,//Varudras, the Final Bringer of the End Times
     1130060,//The Unstoppable Exodia Incarnate
     1130061,//Sky Striker Ace - Raye
+    1130062,//Reinforcement of the Army 
     1130063,//Dogmatika Encounter
     1130064,//Majesty of the White Dragons
     1130065,//Varar, Vaalmonican Concord
@@ -1188,6 +1210,8 @@
     1130089,//Allied Code Talker @Ignister
     1130090,//Lacrima the Crimson Tears
     1130091,//Galatea-I, the Orcust Automaton
+    1130092,//Dragonmaid Hospitality
+    1130104,//First of the Dragonlords 
     1132001,//Rescue Rabbit
     1132002,//Neymar
     1132003,//That's 10!
@@ -1208,12 +1232,17 @@
   ],
   "CARD_FILE": [
     1170001,//Orcust
+    1170002,//Dragonmaid
+    1170008,//Sky Striker Ace
   ],
   "COIN": [
     1180001,//Blue-Eyes Alternative White Dragon
     1180002,//Pot of Greed
     1180003,//Orcust
     1180004,//The Millennium Puzzle
+    1180005,//Dragonmaid
+    1180012,//Sky Striker Ace
+    1180014,//Winged Kuriboh
   ],
   "BOOKMARK_LIMIT": [
     1190001,//Bookmark Slots

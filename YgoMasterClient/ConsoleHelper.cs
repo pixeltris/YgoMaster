@@ -1204,6 +1204,8 @@ namespace YgoMasterClient
                                 return;
                             }
 
+                            int limit = 60;
+                            int num = 0;
                             foreach (KeyValuePair<string, object> entry in cardsHave)
                             {
                                 int cardId;
@@ -1216,7 +1218,7 @@ namespace YgoMasterClient
                                         int n = Utils.GetValue<int>(cardData, "n");
                                         int p1n = Utils.GetValue<int>(cardData, "p1n");
                                         int p2n = Utils.GetValue<int>(cardData, "p2n");
-                                        int total = n + p1n + p2n;
+                                        int total = Math.Min(limit - num, n + p1n + p2n);
                                         if (total == 0)
                                         {
                                             continue;
@@ -1230,6 +1232,11 @@ namespace YgoMasterClient
                                         int grandTotal;
                                         raritiesNum.TryGetValue(rarity, out grandTotal);
                                         raritiesNum[rarity] = grandTotal + total;
+                                        num += total;
+                                        if (num >= limit)
+                                        {
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -1243,6 +1250,11 @@ namespace YgoMasterClient
                                 foreach (KeyValuePair<CardRarity, int> rarity in raritiesNum)
                                 {
                                     Console.WriteLine("Dismantle " + rarity.Value + " " + rarity.Key);
+                                }
+                                if (num >= limit)
+                                {
+                                    // NOTE: I don't think this limit is helping. Sometimes dismantle fails. We are maybe dismantling cards we shouldn't?
+                                    Console.WriteLine("Dismantle count is at the limit (" + limit + "). You'll likely want to do the command again.");
                                 }
                                 Dictionary<string, object> sublist = new Dictionary<string, object>();
                                 for (int i = 0; i < cardList.Count && i < 60; i++)

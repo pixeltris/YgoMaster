@@ -434,7 +434,7 @@ namespace YgoMasterClient
                 }
                 sb.AppendLine(e.ToString());
 
-                ShowMessageBox(sb.ToString());
+                ShowMessageBox(sb.ToStringLF());
                 Environment.Exit(0);
                 return 1;
             }

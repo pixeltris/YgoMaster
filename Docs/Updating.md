@@ -43,7 +43,7 @@ For updating `Shop.json`...
 - Complete the tutorial
 - Go to the SOLO screen and enter `solo_clear` into the client console - this will take some time to complete and will complete all solo content
 - Keep buying Master Pack bundles / packs until you have no gems
-- Go to the deck editor and enter `dismantle_all_cards SuperRare UltraRare` into the client console - this will dismantle every SR/UR you own (you will need to use this command multiple times as it doesn't seem to dismantle all as it should)
+- Go to the deck editor and enter `dismantle_all_cards SuperRare UltraRare` into the client console - this will dismantle every SR/UR you own (you will need to use this command multiple times as it doesn't seem to dismantle all as it should, if it fails then manually dismantle all SR/UR)
 - Go to the shop and enter `craft_secrets` into the client console - this will craft every missing secret pack
 - In the shop enter `auto_free_pull` into the client console - this will open every free pull secret pack (you will need to re-enter the shop and do the command multiple times until no more packs open)
 - Re-enter the shop to log `/ayk/api/Shop.get_list`
@@ -80,6 +80,10 @@ NOTE: Card ids >= 30000 seem to be used for promotions / announcements and aren'
 
 - To update PvP card data you must follow the above YdkIds.txt instructions. If you don't do this any newly added cards wont function correctly in PvP as the duel engine requires `YgoMaster/Data/CardData/` being up to date.
 
+## PvP Settings.json MultiplayerPvpClientDoCommandUserOffset / MultiplayerPvpClientRunDialogUserOffset
+
+These values need to be updated on client updates if you use PvP. See [UpdatingPvPOffsets.md](UpdatingPvPOffsets.md)
+
 ## ItemID.json
 
 - In the client console run `itemid` which will create `ItemID.json` in the game folder.
@@ -105,7 +109,7 @@ Client updates typically occur every few months (see https://steamdb.info/depot/
 
 ## Unity Engine updates
 
-The following needs to be updated in ClientSettings.json if using custom content (sound images). See `UnityPlayerPdb.cs`
+When UnityPlayer.dll updates (inside Master Duel folder) the following needs to be updated in ClientSettings.json if using YgoMaster's custom content feature (sound / images). See `UnityPlayerPdb.cs`
 
 - UnityPlayerRVA_AudioClip_CUSTOM_Construct_Internal
 - UnityPlayerRVA_AudioClip_CUSTOM_CreateUserSound

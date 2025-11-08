@@ -34,7 +34,10 @@
   "75286622":3431,//Invoked Mechaba
   "74063035":3432,//Invocation
   "82044280":3873,//Clear Wing Synchro Dragon
-  "71413901":22081,//Breaker the Magical Warrior (NOTE: Not alt art)
   "84206436":19736,//Medallion of the Ice Barrier
-  "86066372":21226,//Accesscode Talker (Alt art has the same ID?)
+  "86066373":21226,//Accesscode Talker
+  "41232648":3435,//House Dragonmaid
+  "78231356":3436,//Dragonmaid Hospitality
+  "71413902":22081,//Breaker the Magical Warrior (NOTE: DuelingNexus doesn't have this. Regular ID is 71413901 so we'll assume ID is +1 similar to other alt arts)
+  "85138717":21965,//Rescue Rabbit
 }

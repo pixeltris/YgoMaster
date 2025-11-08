@@ -2920,7 +2920,7 @@ namespace YgoMaster
                 }
                 sb.AppendLine("    },");
             }
-            File.WriteAllText(outputFile, sb.ToString());
+            File.WriteAllText(outputFile, sb.ToStringLF());
         }
 
         // TODO: Remove. This is no longer being used (though fetching official sets is still useful)

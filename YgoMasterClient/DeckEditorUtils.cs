@@ -1326,7 +1326,7 @@ namespace YgomGame.SubMenu
                 {
                     sb.Append(Convert.ToBase64String(buffer) + "!");
                 }
-                Clipboard.SetText(sb.ToString());
+                Clipboard.SetText(sb.ToStringLF());
             }
         };
 
@@ -1574,7 +1574,7 @@ namespace YgomGame.SubMenu
             sb.AppendLine();
             sb.AppendLine(ClientSettings.CustomTextCardStatsIndex);
             YgomGame.Menu.CommonDialogViewController.OpenConfirmationDialogScroll(ClientSettings.CustomTextCardStatsTitle,
-                sb.ToString(), ClientSettings.CustomTextOK, null, null, true, 720);
+                sb.ToStringLF(), ClientSettings.CustomTextOK, null, null, true, 720);
         };
 
         static void PopViewController()
