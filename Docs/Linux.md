@@ -57,3 +57,22 @@ The files inside `mono` were copied from the latest mono stable release https://
 ## Bugs
 
 - `ClientSettings.json` setting `ShowConsole` does not work
+
+# Alternative guide - Running YgoMaster through Proton as a Non-Steam game
+
+Guide by [@Joomsy](https://github.com/Joomsy) (https://github.com/pixeltris/YgoMaster/issues/583)
+
+I'm not a big fan of using WINE for games since it's not really tailored toward them, and this is a much simpler way to go about this than using a launcher like Lutris. For example, this makes it considerably easier to use your existing Master Duel Proton prefix, rather than manually configuring a launcher to look for it.
+
+- [Go through the usual steps to install YgoMaster on Linux.](https://github.com/pixeltris/YgoMaster/blob/master/Docs/Linux.md)
+- Open up Steam, and add MonoRun.exe as a game.
+- Once added, right-click its entry in your library list, and open its properties.
+- In the Launch Options field, enter `%command% YgoMasterClient.exe` (you might also want to give it a proper name while here).
+- Once finished there, swap over to the compatibility preferences, and force the use of a specific Proton version (I use GE 10-7, but any version you typically use to play MD should work).
+- Optionally, things like gamemode and gamescope will also work with this. For example, I use the ScopeBuddy wrapper for gamescope, as well as gamemode, and my launch options look like this:
+```
+gamemoderun scb -- %command% YgoMasterClient.exe
+```
+
+As an added bonus, you can get Steam artwork for it from here.
+https://www.steamgriddb.com/game/5316261
