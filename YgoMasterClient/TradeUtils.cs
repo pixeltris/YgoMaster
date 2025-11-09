@@ -191,6 +191,7 @@ namespace YgoMasterClient
                 };
 
                 YgomSystem.Utility.ClientWork.UpdateJson(MiniJSON.Json.Serialize(fakeDeckData));
+                YgomGame.Menu.ProfileViewController.HideLoading();
                 IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
                 YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "DeckEdit/DeckEdit",
                     new Dictionary<string, object>()
@@ -454,6 +455,10 @@ namespace YgomGame.Menu
         static IntPtr extendedTextMeshComponentType;
         static IL2Method methodSetText;
 
+        static IL2Property SystemProgress_Instance;
+        static IL2Method SystemProgress_DispProgress;
+        static IL2Method SystemProgress_HideProgress;
+
         delegate void Del_OnCreatedView(IntPtr thisPtr);
         static Hook<Del_OnCreatedView> hookOnCreatedView;
 
@@ -479,6 +484,11 @@ namespace YgomGame.Menu
             IL2Class tmTextClassInfo = textMeshAssembly.GetClass("TMP_Text", "TMPro");
             IL2Property textProperty = tmTextClassInfo.GetProperty("text");
             methodSetText = textProperty.GetSetMethod();
+
+            IL2Class SystemProgress_Class = assembly.GetClass("SystemProgress", "YgomGame.Menu");
+            SystemProgress_Instance = SystemProgress_Class.GetProperty("Instance");
+            SystemProgress_DispProgress = SystemProgress_Class.GetMethod("DispProgress");
+            SystemProgress_HideProgress = SystemProgress_Class.GetMethod("HideProgress");
         }
 
         static void OnCreatedView(IntPtr thisPtr)
@@ -491,6 +501,9 @@ namespace YgomGame.Menu
 
             IntPtr rootMenuGameObject = fieldRootMenu.GetValue(thisPtr).ptr;
             IntPtr lastButtonObj = UnityEngine.GameObject.FindGameObjectByName(rootMenuGameObject, "ButtonTemplate(Clone)", true);
+            
+            // Need 2nd to last button as last button is Collector's File
+            lastButtonObj = UnityEngine.Component.GetGameObject(UnityEngine.Transform.GetChild(UnityEngine.Transform.GetParent(UnityEngine.GameObject.GetTransform(lastButtonObj)), UnityEngine.Transform.GetSiblingIndex(UnityEngine.GameObject.GetTransform(lastButtonObj)) - 1));
 
             IntPtr lastButtonTextObj = UnityEngine.GameObject.FindGameObjectByName(lastButtonObj, "TextTMP");
             IntPtr lastButtonTextComponent = UnityEngine.GameObject.GetComponent(lastButtonTextObj, extendedTextMeshComponentType);
@@ -499,11 +512,50 @@ namespace YgomGame.Menu
 
         static void OnClickBlock(IntPtr thisPtr)
         {
+            ShowLoading();
             long pcode = fieldPcode.GetValue(thisPtr).GetValueRef<long>();
             Program.NetClient.Send(new TradeEnterRoomMessage()
             {
                 PlayerCode = (uint)pcode
             });
+        }
+
+        public static void HideLoading()
+        {
+            IntPtr systemProgress = SystemProgress_Instance.GetGetMethod().Invoke().ptr;
+            SystemProgress_HideProgress.Invoke(systemProgress);
+        }
+
+        public static void ShowLoading()
+        {
+            IntPtr systemProgress = SystemProgress_Instance.GetGetMethod().Invoke().ptr;
+            int progressType = 1;
+            Color color = new Color(0, 0, 0, 0);
+            float delay = 0;
+            bool immediate = false;
+            int unloadCheckLevel = 2;
+            SystemProgress_DispProgress.Invoke(systemProgress, new IntPtr[] { new IntPtr(&progressType), new IntPtr(&color), new IntPtr(&delay), new IntPtr(&immediate), new IntPtr(&unloadCheckLevel) });
+        }
+
+        struct Color
+        {
+            public float r;
+            public float g;
+            public float b;
+            public float a;
+
+            public Color(float r, float g, float b, float a)
+            {
+                this.r = r;
+                this.g = g;
+                this.b = b;
+                this.a = a;
+            }
+
+            public override string ToString()
+            {
+                return "{" + r + "," + g + "," + b + "," + a + "}";
+            }
         }
     }
 }

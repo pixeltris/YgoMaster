@@ -197,7 +197,11 @@ namespace YgoMasterClient
                     ReflectionValidator.ValidateDump();
                 }
 
-                if (!IsLive)
+                if (IsLive)
+                {
+                    ClientSettings.MultiplayerToken = null;
+                }
+                else
                 {
                     SimpleProxy.Run();
                 }

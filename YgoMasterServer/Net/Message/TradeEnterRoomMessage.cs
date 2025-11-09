@@ -34,12 +34,12 @@ namespace YgoMaster.Net.Message
             Name = reader.ReadString();
 
             OwnsMainDeck = reader.ReadBoolean();
-            DeckJson = reader.ReadString();
+            DeckJson = ReadCompressedString(reader);
 
-            MyEntireCollectionJson = reader.ReadString();
-            MyTradableCollectionJson = reader.ReadString();
-            TheirEntireCollectionJson = reader.ReadString();
-            TheirTradableCollectionJson = reader.ReadString();
+            MyEntireCollectionJson = ReadCompressedString(reader);
+            MyTradableCollectionJson = ReadCompressedString(reader);
+            TheirEntireCollectionJson = ReadCompressedString(reader);
+            TheirTradableCollectionJson = ReadCompressedString(reader);
         }
 
         public override void Write(BinaryWriter writer)
@@ -50,12 +50,12 @@ namespace YgoMaster.Net.Message
             writer.Write(Name != null ? Name : string.Empty);
 
             writer.Write(OwnsMainDeck);
-            writer.Write(DeckJson != null ? DeckJson : string.Empty);
+            WriteCompressedString(writer, DeckJson != null ? DeckJson : string.Empty);
 
-            writer.Write(MyEntireCollectionJson != null ? MyEntireCollectionJson: string.Empty);
-            writer.Write(MyTradableCollectionJson != null ? MyTradableCollectionJson : string.Empty);
-            writer.Write(TheirEntireCollectionJson != null ? TheirEntireCollectionJson : string.Empty);
-            writer.Write(TheirTradableCollectionJson != null ? TheirTradableCollectionJson : string.Empty);
+            WriteCompressedString(writer, MyEntireCollectionJson != null ? MyEntireCollectionJson: string.Empty);
+            WriteCompressedString(writer, MyTradableCollectionJson != null ? MyTradableCollectionJson : string.Empty);
+            WriteCompressedString(writer, TheirEntireCollectionJson != null ? TheirEntireCollectionJson : string.Empty);
+            WriteCompressedString(writer, TheirTradableCollectionJson != null ? TheirTradableCollectionJson : string.Empty);
         }
     }
 }

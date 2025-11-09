@@ -77,7 +77,7 @@ namespace YgoMaster.Net
             }
         }
 
-        private const int defaultBufferSize = 1024;
+        private const int defaultBufferSize = 1024 * 1024;
         private byte[] tempBuffer;
         private NetPacketBuffer buffer;
 
