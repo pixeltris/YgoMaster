@@ -196,11 +196,9 @@ namespace YgoMaster
             request.Response["EXHDeck"] = new object[0];// Exhibition deck list?
             request.Response["EXHDeckList"] = null;// Exhibition deck list?
 
-            string NotificationPath = Path.Combine(dataDirectory, "Notifications");
-
             if (ShowTopics)
             {
-                request.Response["Topics"] = ProcessJsonNotificationsFiles(NotificationPath);
+                request.Response["Topics"] = LoadTopics();
             }
             else
             {
@@ -248,18 +246,23 @@ namespace YgoMaster
                 "ReplayInfo");
         }
 
-        static List<object> ProcessJsonNotificationsFiles(string directoryPath)
+        List<object> LoadTopics()
         {
+            string topicsPath = Path.Combine(dataDirectory, "Topics");
             var responseTopics = new List<object>();
-            if (Directory.Exists(directoryPath))
+            if (Directory.Exists(topicsPath))
             {
-                foreach (string file in Directory.GetFiles(directoryPath, "*.json"))
+                foreach (string file in Directory.GetFiles(topicsPath, "*.json"))
                 {
                     try
                     {
                         Dictionary<string, object> data = MiniJSON.Json.Deserialize(File.ReadAllText(file)) as Dictionary<string, object>;
                         if (data != null)
                         {
+                            if (data.ContainsKey("body") && data["body"] as string == null)
+                            {
+                                data["body"] = MiniJSON.Json.Serialize(data["body"]);
+                            }
                             responseTopics.Add(data);
                         }
                     }
