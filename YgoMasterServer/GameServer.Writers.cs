@@ -216,10 +216,19 @@ namespace YgoMaster
         {
             DeckInfo deck = request.Player.Duel.GetDeck(GameMode.SoloSingle);
             Dictionary<string, object> solo = request.GetOrCreateDictionary("Solo");
+            int regulationId = DeckInfo.DefaultRegulationId;
+            if (SoloRegulationId != 0)
+            {
+                regulationId = SoloRegulationId;
+            }
+            if (request.Player.SoloRegulationIdOverride != 0)
+            {
+                regulationId = request.Player.SoloRegulationIdOverride;
+            }
             solo["deck_info"] = new Dictionary<string, object>()
             {
                 { "deck_id", deck != null ? deck.Id : 0 },
-                { "valid", deck != null ? DisableDeckValidation || deck.IsValid(request.Player, DeckInfo.DefaultRegulationId, Regulation) : false },
+                { "valid", deck != null ? DisableDeckValidation || deck.IsValid(request.Player, regulationId, Regulation) : false },
                 { "possession", true }//request.Player.Duel.IsMyDeck }
             };
         }

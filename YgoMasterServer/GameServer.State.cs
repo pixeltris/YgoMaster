@@ -104,6 +104,10 @@ namespace YgoMaster
         /// </summary>
         bool SoloRewardsInDuelResultAreRare;
         /// <summary>
+        /// A regulation ID that overrides the default solo regulation ID (which is normally IDS_CARDMENU_REGULATION_NORMAL)
+        /// </summary>
+        int SoloRegulationId;
+        /// <summary>
         /// Show information about YgoMaster in the topics panel on the home screen
         /// </summary>
         bool ShowTopics;
@@ -606,6 +610,20 @@ namespace YgoMaster
                     {
                         DeckInfo.RegulationIdsByName.Add(regulation.Value as string, int.Parse(regulation.Key));
                         DeckInfo.RegulationNamesById.Add(int.Parse(regulation.Key), regulation.Value as string);
+                    }
+
+                    string soloRegulationName = Utils.GetValue<string>(values, "SoloRegulationName");
+                    if (!string.IsNullOrEmpty(soloRegulationName))
+                    {
+                        string soloRegulationIdStr = Utils.GetDictionary(RegulationInfo, "rule_list").FirstOrDefault(x => (string)x.Value == soloRegulationName).Key;
+                        if (string.IsNullOrEmpty(soloRegulationIdStr))
+                        {
+                            Utils.LogWarning("Invalid SoloRegulationName value '" + soloRegulationName + "'");
+                        }
+                        else
+                        {
+                            SoloRegulationId = int.Parse(soloRegulationIdStr);
+                        }
                     }
                 }
             }

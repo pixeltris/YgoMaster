@@ -349,6 +349,9 @@ namespace YgoMaster
                                     case "Solo.info":
                                         Act_SoloInfo(gameServerWebRequest);
                                         break;
+                                    case "Solo.gate_entry":
+                                        Act_GateEntry(gameServerWebRequest);
+                                        break;
                                     case "Solo.detail":
                                         Act_SoloDetail(gameServerWebRequest);
                                         break;

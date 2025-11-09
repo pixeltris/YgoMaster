@@ -52,6 +52,8 @@ namespace YgoMaster
         public DateTime LastEnterTradeRoomRequest;
         public NetClient NetClient;
         public UserCardFiles CardFiles { get; private set; }
+        public int SoloRegulationIdOverride;
+        public int SoloGateId;
 
         public bool IsDuelingPVP
         {
