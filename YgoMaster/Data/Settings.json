@@ -41,6 +41,7 @@
     "SoloShowGateClearForAllSecretPacks": false,
     "SoloRewardsInDuelResult": false,
     "SoloRewardsInDuelResultAreRare": false,
+    "SoloRegulationName": null,// e.g. "IDS_REGULATION_FUSION" (null = default / "IDS_CARDMENU_REGULATION_NORMAL")
     "CardCraftableAll": false,
     "DisableNoDismantle": false,
     "DisableBanList": false,
