@@ -9,7 +9,7 @@ Open `Data/ClientData/ClientSettings.json` and set `HomeDisableUnusedTopics` to 
 
 The `Data/Topics` folder holds all of the topics and they are all sent to the client when you visit the home screen. The topics will appear in game in the order in which they are read from the folder.
 
-See the following for an example topic [/YgoMaster/Data/Topics/YgoMaster.json](YgoMaster/Data/Topics/YgoMaster.json)
+See the following for an example topic [/YgoMaster/Data/Topics/YgoMaster.json](/YgoMaster/Data/Topics/YgoMaster.json)
 
 ### Keys
 - `Title` - The main text that will be displayed on the widget. You can also use color tags (*<color=#00eeeff>text will be colored goes here</ color>)*
