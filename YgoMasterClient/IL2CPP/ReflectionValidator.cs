@@ -96,7 +96,7 @@ namespace IL2CPP
             catch
             {
             }
-            File.WriteAllText(GetDumpPath(), MiniJSON.Json.Serialize(json));
+            File.WriteAllText(GetDumpPath(), MiniJSON.Json.Serialize(json) + "\n");
             Console.WriteLine("Dumped to '" + GetDumpPath() + "'");
         }
 

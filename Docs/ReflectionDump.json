@@ -35,9 +35,59 @@
     "Class": [
       "ReplayControl"
     ],
+    "Type": "Field",
+    "Name": "ffIconOff",
+    "Signature": "ffIconOff"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
+      "ReplayControl"
+    ],
     "Type": "Method",
     "Name": "OnTapFast",
     "Signature": "public System.Void OnTapFast()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
+      "ReplayControl"
+    ],
+    "Type": "Method",
+    "Name": "OnTapPause",
+    "Signature": "public System.Void OnTapPause()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
+      "ReplayControl"
+    ],
+    "Type": "Method",
+    "Name": "OnTapPlay",
+    "Signature": "public System.Void OnTapPlay()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
+      "DuelClient"
+    ],
+    "Type": "Method",
+    "Name": "SetPauseReplay",
+    "Signature": "public static System.Void SetPauseReplay(System.Boolean pause)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Duel",
+    "Class": [
+      "Engine"
+    ],
+    "Type": "Method",
+    "Name": "IsReplayMode",
+    "Signature": "public static System.Boolean IsReplayMode()"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1312,7 +1362,7 @@
     ],
     "Type": "Method",
     "Name": "AsyncFilterAndSort",
-    "Signature": "System.Threading.Tasks.Task AsyncFilterAndSort(System.Action onFinish, System.Boolean setAll, System.Nullable<YgomGame.Menu.SortComparer.Sorter> targetSorter, System.Boolean filter)"
+    "Signature": "System.Threading.Tasks.Task AsyncFilterAndSort(System.Action onFinish, System.Boolean setAll, System.Nullable<YgomGame.Menu.SortComparer.Sorter> targetSorter, System.Boolean filter, System.Nullable<YgomGame.Deck.CardCollectionView.Area> targetArea)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1499,7 +1549,7 @@
     "Namespace": "YgomGame.Menu",
     "Class": [
       "ProfileReplayViewController",
-      "ProfileReplayInfo"
+      "ReplayInfo"
     ],
     "Type": "Field",
     "Name": "did",
@@ -1536,6 +1586,26 @@
     "Signature": "pcode"
   },
   {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "ProfileViewController"
+    ],
+    "Type": "Method",
+    "Name": "OnCreatedView",
+    "Signature": "public System.Void OnCreatedView()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "ProfileViewController"
+    ],
+    "Type": "Method",
+    "Name": "OnClickBlock",
+    "Signature": "System.Void OnClickBlock()"
+  },
+  {
     "Assembly": "Unity.TextMeshPro",
     "Namespace": "TMPro",
     "Class": [
@@ -1544,6 +1614,36 @@
     "Type": "Property",
     "Name": "text",
     "Signature": "public System.String"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "SystemProgress"
+    ],
+    "Type": "Property",
+    "Name": "Instance",
+    "Signature": "public static YgomGame.Menu.SystemProgress"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "SystemProgress"
+    ],
+    "Type": "Method",
+    "Name": "DispProgress",
+    "Signature": "public System.Void DispProgress(YgomGame.Menu.SystemProgress.ProgressType type, UnityEngine.Color fadeColor, System.Single delay, System.Boolean immediate, YgomSystem.ResourceManager.UnloadCheckLevel unloadCheckLevel)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomGame.Menu",
+    "Class": [
+      "SystemProgress"
+    ],
+    "Type": "Method",
+    "Name": "HideProgress",
+    "Signature": "public System.Void HideProgress()"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1933,7 +2033,7 @@
     ],
     "Type": "Method",
     "Name": "OpenConfirmationDialog",
-    "Signature": "public static System.Void OpenConfirmationDialog(System.String title, System.String message, System.String buttonLabel, System.Action action, System.Collections.Generic.Dictionary<System.String,System.Object> args, System.Boolean allowCancel, YgomGame.Dialog.CommonDialog.CommonDialogTitleWidget.IconType iconType, YgomGame.Dialog.CommonDialog.CommonDialogButtonGroupWidget.ButtonType buttonType)"
+    "Signature": "public static System.Void OpenConfirmationDialog(System.String title, System.String message, System.String buttonLabel, System.Action action, System.Collections.Generic.Dictionary<System.String,System.Object> args, System.Boolean allowCancel, YgomGame.Dialog.CommonDialog.CommonDialogTitleWidget.IconType iconType, YgomGame.Dialog.CommonDialog.CommonDialogButtonGroupWidget.ButtonType buttonType, System.Boolean isSwap)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1973,7 +2073,7 @@
     ],
     "Type": "Method",
     "Name": "OpenAlertDialog",
-    "Signature": "public static System.Void OpenAlertDialog(System.String title, System.String message, System.Action action, System.String buttonLabel, System.Collections.Generic.Dictionary<System.String,System.Object> args, System.Boolean allowCancel, YgomGame.Dialog.CommonDialog.CommonDialogButtonGroupWidget.ButtonType buttonType)"
+    "Signature": "public static System.Void OpenAlertDialog(System.String title, System.String message, System.Action action, System.String buttonLabel, System.Collections.Generic.Dictionary<System.String,System.Object> args, System.Boolean allowCancel, YgomGame.Dialog.CommonDialog.CommonDialogButtonGroupWidget.ButtonType buttonType, System.Boolean isSwap)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3132,8 +3232,8 @@
       "OutGameBGManager"
     ],
     "Type": "Field",
-    "Name": "m_BackRoot",
-    "Signature": "m_BackRoot"
+    "Name": "m_Root",
+    "Signature": "m_Root"
   },
   {
     "Assembly": "Assembly-CSharp",
