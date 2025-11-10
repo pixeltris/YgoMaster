@@ -445,6 +445,7 @@ namespace YgomSystem.Network
                                 }
                                 else
                                 {
+                                    YgomGame.Menu.ProfileViewController.HideLoading();// Hide loading wheel / unblock input
                                     YgomSystem.UI.ViewControllerManager.PushChildViewController(manager, "Solo/SoloStartProduction");
                                 }
                             }
@@ -755,6 +756,9 @@ namespace YgomGame.Room
         {
             if (IsHacked)
             {
+                // Need to show loading wheel to block input / prevent multiple Solo.start (if this fails it'll double stack a Solo/SoloStartProduction and get softlocked after the duel)
+                YgomGame.Menu.ProfileViewController.ShowLoading();
+
                 // Update the duel settings
                 duelSettingsManager.SettingsClone = null;
                 duelSettingsManager.DuelSettingsFromUI();
