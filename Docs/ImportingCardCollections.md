@@ -4,16 +4,16 @@
 
 ## args
 
-- `--set` Sets the card count to the given value rather than adding to the existing card count. e.g. if you have already have 6x of a card and you `--set --count 3` you'll end up with 3x of that card instead of 9x
-- `--set-clear` When using `--set` this will also clear all existing entries for the given card id before doing the set (all rarities are set to 0 before setting the card count)
-- `--unique` Every card id is to only be counted once. e.g. `--unique --count 5` will add 5 of a given card id regardless of how many times the card id appears in the import data, without the `--unique` it'll add 5x every time it sees the given card id in the import data
-- `--count [number]` The number of cards to add for each card id. e.g. `--count 5`
-- `--rarity [string]` Forces the given rarity for all cards added. Values: `Normal`, `Shine`, `Royal` e.g. `--rarity Shine`
-- `--default-rarity [string]` The rarity to use if there's no rarity defined in the imported data. Values: `Normal`, `Shine`, `Royal` e.g. `--default-rarity Royal`
-- `--player [number]` Targets a specific player ID to update. e.g. `--player 209541230` (the player needs to exist under /Data/Players/)
-- `--all-network-players` Applies the import to all networked players (all players in the "Players" folder other than "Local")
-- `--clear` Completely clears the existing players card collection before doing any importing. You can use this to clear your card collection without importing anything by not specifying any import file
-- `--recursive` When the import path is a folder this will recursively look inside the target folder
+- _**`--set`**_ Sets the card count to the given value rather than adding to the existing card count. e.g. if you have already have 6x of a card and you `--set --count 3` you'll end up with 3x of that card instead of 9x
+- _**`--set-clear`**_ When using `--set` this will also clear all existing entries for the given card id before doing the set (all rarities are set to 0 before setting the card count)
+- _**`--unique`**_ Every card id is to only be counted once. e.g. `--unique --count 5` will add 5 of a given card id regardless of how many times the card id appears in the import data, without the `--unique` it'll add 5x every time it sees the given card id in the import data
+- _**`--count [number]`**_ The number of cards to add for each card id. e.g. `--count 5`
+- _**`--rarity [string]`**_ Forces the given rarity for all cards added. Values: `Normal`, `Shine`, `Royal`
+- _**`--default-rarity [string]`**_ The rarity to use if there's no rarity defined in the imported data. Values: `Normal`, `Shine`, `Royal`
+- _**`--player [number]`**_ Targets a specific player ID to update. e.g. `--player 209541230` (the player needs to exist under /Data/Players/)
+- _**`--all-network-players`**_ Applies the import to all networked players (all players in the "Players" folder other than "Local")
+- _**`--clear`**_ Completely clears the existing players card collection before doing any importing. You can use this to clear your card collection without importing anything by not specifying any import file
+- _**`--recursive`**_ When the import path is a folder this will recursively look inside the target folder
 
 ## path
 
