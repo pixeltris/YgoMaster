@@ -17,7 +17,7 @@
 
 ## path
 
-Either a full file path (json, ydk, lflist.conf) or a full folder path which contains many json/ydk/lflist.conf files. The path must be put after all args.
+Either a full file path (json, ydk, lflist.conf) or a full folder path which contains many json/ydk/lflist.conf files. The path must be put after all args. The json files only support YgoMaster deck file formats. You currently can't import one player's collection into another player's collection.
 
 ## Note
 
