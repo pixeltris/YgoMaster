@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
 using System.Diagnostics;
-using System.Threading;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Text;
 
 namespace YgoMaster
 {
@@ -657,7 +656,9 @@ namespace YgoMaster
             DuelRoomRewards = new DuelRewardInfos();
             DuelRoomRewards.FromDictionary(Utils.GetDictionary(values, "DuelRoomRewards"));
 
-            if (MultiplayerEnabled)
+            string[] args = Environment.GetCommandLineArgs();
+
+            if (MultiplayerEnabled && (args.Length < 2 || !args[1].StartsWith("--")))
             {
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
@@ -698,10 +699,9 @@ namespace YgoMaster
             InitDecksWatcher();
 
             // TODO: Move elsewhere (these are helpers to generate files)
-            string[] args = Environment.GetCommandLineArgs();
             if (args.Length > 0)
             {
-                bool ranCommand = false;
+                bool ranCommand = args.Length > 1 && args[1].StartsWith("--");
                 for (int i = 1; i < args.Length; i++)
                 {
                     bool log = true;
@@ -1104,13 +1104,313 @@ namespace YgoMaster
                                 }
                             }
                             break;
+                        case "--import_card_collection":
+                            {
+                                CardStyleRarity defaultRarity = CardStyleRarity.Normal;
+                                CardStyleRarity forcedRarity = CardStyleRarity.None;
+                                int cardCount = 1;
+                                bool append = true;
+                                bool setClear = false;
+                                bool recursive = false;
+                                bool unique = false;
+                                string path = null;
+                                bool allNetworkedPlayers = false;
+                                bool clearExistingCardCollection = false;
+                                string targetPlayerPath = Path.Combine(GetLocalPlayerSaveDataDir(), "Player.json");
+                                MultiplayerEnabled = false;
+                                // Need to set all "UnlockAll" to false to avoid writing over things we dont want
+                                UnlockAllCards = false;
+                                UnlockAllItems = false;
+                                UnlockAllCardsHighestRarity = false;
+                                UnlockAllSoloChapters = false;
+                                UnlockAllCardsShine = false;
+                                List<Player> players = new List<Player>();
+                                for (int j = 2; j < args.Length; j++)
+                                {
+                                    if (!args[j].StartsWith("--"))
+                                    {
+                                        path = string.Join(" ", args, j, args.Length - j);
+                                        break;
+                                    }
+                                    switch (args[j].ToLowerInvariant())
+                                    {
+                                        case "--set":// Sets the card count to the given value rather than adding to the existing card count e.g. if you have already have 6x of a card and you `--set --count 3` you'll end up with 3x of that card instead of 9x
+                                            append = false;
+                                            break;
+                                        case "--set-clear":// When using `--set` this will also clear all existing entries for the given card id before doing the set (all rarities are set to 0 before setting the card count)
+                                            setClear = true;
+                                            break;
+                                        case "--unique":// Every card id is to only be counted once (i.e. `--unique --count 5` will add 5 of a given card id regardless of how many times the card id appears in the import data, without the `--unique` it'll add 5x every time it sees the given card id in the import data)
+                                            unique = true;
+                                            break;
+                                        case "--count":// The number of cards to add for each card id found
+                                            if (j < args.Length - 1)
+                                            {
+                                                j++;
+                                                int.TryParse(args[j], out cardCount);
+                                                if (cardCount <= 1)
+                                                {
+                                                    cardCount = 1;
+                                                }
+                                            }
+                                            break;
+                                        case "--rarity":// Forces the given rarity for all cards added
+                                            if (j < args.Length - 1)
+                                            {
+                                                j++;
+                                                Enum.TryParse(args[j], out forcedRarity);
+                                            }
+                                            break;
+                                        case "--default-rarity":// The rarity to use if there's no rarity defined in the imported data
+                                            if (j < args.Length - 1)
+                                            {
+                                                j++;
+                                                Enum.TryParse(args[j], out defaultRarity);
+                                                if (defaultRarity == CardStyleRarity.None || Array.IndexOf(Enum.GetValues(typeof(CardStyleRarity)), defaultRarity) == -1)
+                                                {
+                                                    defaultRarity = CardStyleRarity.Normal;
+                                                }
+                                            }
+                                            break;
+                                        case "--player":// Targets a specific player ID to update
+                                            if (j < args.Length - 1)
+                                            {
+                                                j++;
+                                                uint pcode = uint.Parse(args[j]);// Will crash if not a number
+                                                targetPlayerPath = Path.Combine(playersDirectory, pcode.ToString(), "Player.json");
+                                                MultiplayerEnabled = true;
+                                            }
+                                            break;
+                                        case "--all-network-players":// Updates all players
+                                            allNetworkedPlayers = true;
+                                            MultiplayerEnabled = true;
+                                            break;
+                                        case "--clear":// Clears the existing card collection
+                                            clearExistingCardCollection = true;
+                                            break;
+                                        case "--recursive":
+                                            recursive = true;
+                                            break;
+                                    }
+                                }
+                                if (allNetworkedPlayers)
+                                {
+                                    try
+                                    {
+                                        HashSet<string> playerPaths = new HashSet<string>();
+                                        foreach (string dir in Directory.GetFiles(playersDirectory))
+                                        {
+                                            uint pcode;
+                                            if (uint.TryParse(new DirectoryInfo(dir).Name, out pcode))
+                                            {
+                                                string file = Path.Combine(dir, "Player.json");
+                                                if (File.Exists(file) && playerPaths.Add(file))
+                                                {
+                                                    Player player = new Player(pcode);
+                                                    LoadPlayer(player);
+                                                    players.Add(player);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Console.WriteLine(e);
+                                    }
+                                    if (players.Count == 0)
+                                    {
+                                        Console.WriteLine("Couldn't find any Player.json files");
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    if (!File.Exists(targetPlayerPath))
+                                    {
+                                        Console.WriteLine("Couldn't find target player json '" + targetPlayerPath + "'");
+                                        break;
+                                    }
+                                    Player player = new Player(1111111111);
+                                    uint pcode;
+                                    if (uint.TryParse(new FileInfo(targetPlayerPath).Directory.Name, out pcode))
+                                    {
+                                        player.Code = pcode;
+                                    }
+                                    LoadPlayer(player);
+                                    players.Add(player);
+                                }
+                                HashSet<int> allRemovedCids = new HashSet<int>();
+                                if (clearExistingCardCollection)
+                                {
+                                    foreach (Player player in players)
+                                    {
+                                        foreach (int cid in player.Cards.GetIDs())
+                                        {
+                                            allRemovedCids.Add(cid);
+                                        }
+                                        player.Cards.Clear();
+                                    }
+                                }
+                                long totalNumCardsAdded = 0;
+                                HashSet<int> allAddedCids = new HashSet<int>();
+                                HashSet<int> allNewCids = new HashSet<int>();
+                                Action<string> processFile = (string filePath) =>
+                                {
+                                    List<Tuple<int, CardStyleRarity>> cards = new List<Tuple<int, CardStyleRarity>>();
+                                    switch (Path.GetExtension(filePath).ToLowerInvariant())
+                                    {
+                                        case ".json":
+                                        case ".ydk":
+                                            {
+                                                DeckInfo deck = new DeckInfo();
+                                                deck.File = filePath;
+                                                try
+                                                {
+                                                    deck.Load();
+                                                }
+                                                catch
+                                                {
+                                                    break;
+                                                }
+                                                CardCollection[] cardCollections = { deck.MainDeckCards, deck.ExtraDeckCards, deck.SideDeckCards, deck.TrayCards };
+                                                foreach (CardCollection cardCollection in cardCollections)
+                                                {
+                                                    foreach (KeyValuePair<int, CardStyleRarity> card in cardCollection.GetCollection())
+                                                    {
+                                                        if (!unique || !cards.Any(x => x.Item1 == card.Key))
+                                                        {
+                                                            cards.Add(new Tuple<int, CardStyleRarity>(card.Key, card.Value));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                    }
+                                    if (filePath.ToLowerInvariant().EndsWith(".lflist.conf"))
+                                    {
+                                        // Banlist / whitelist file e.g. https://github.com/ProjectIgnis/LFLists/blob/master/GOAT.lflist.conf
+                                        try
+                                        {
+                                            foreach (string line in File.ReadAllLines(filePath))
+                                            {
+                                                string trimmedLine = line.Trim();
+                                                if (trimmedLine.Length > 0 && char.IsNumber(trimmedLine[0]))
+                                                {
+                                                    int lastNumberIndex = 0;
+                                                    for (int j = 0; j < trimmedLine.Length; j++)
+                                                    {
+                                                        lastNumberIndex = j;
+                                                        if (!char.IsNumber(trimmedLine[j]))
+                                                        {
+                                                            break;
+                                                        }
+                                                    }
+                                                    string ydkIdStr = trimmedLine.Substring(0, lastNumberIndex);
+                                                    long ydkId;
+                                                    if (long.TryParse(ydkIdStr, out ydkId))
+                                                    {
+                                                        long cid = YdkHelper.GetOfficialId(ydkId);
+                                                        if (cid > 0 && (!unique || !cards.Any(x => x.Item1 == cid)))
+                                                        {
+                                                            cards.Add(new Tuple<int, CardStyleRarity>((int)cid, CardStyleRarity.None));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        catch
+                                        {
+                                        }
+                                    }
+                                    totalNumCardsAdded += cards.Count * cardCount;
+                                    foreach (Player player in players)
+                                    {
+                                        foreach (Tuple<int, CardStyleRarity> card in cards)
+                                        {
+                                            CardStyleRarity rarity = card.Item2;
+                                            if (forcedRarity != CardStyleRarity.None)
+                                            {
+                                                rarity = forcedRarity;
+                                            }
+                                            if (rarity == CardStyleRarity.None)
+                                            {
+                                                rarity = defaultRarity;
+                                            }
+                                            allAddedCids.Add(card.Item1);
+                                            if (player.Cards.GetCount(card.Item1) == 0)
+                                            {
+                                                allNewCids.Add(card.Item1);
+                                            }
+                                            if (append)
+                                            {
+                                                player.Cards.Add(card.Item1, cardCount, PlayerCardKind.Dismantle, rarity);
+                                            }
+                                            else
+                                            {
+                                                if (setClear)
+                                                {
+                                                    player.Cards.Remove(card.Item1);
+                                                }
+                                                player.Cards.SetCount(card.Item1, cardCount, PlayerCardKind.Dismantle, rarity);
+                                            }
+                                        }
+                                    }
+                                };
+                                if (!string.IsNullOrEmpty(path))
+                                {
+                                    bool foundPath = false;
+                                    try
+                                    {
+                                        if (Directory.Exists(path))
+                                        {
+                                            foundPath = true;
+                                            foreach (string file in Directory.GetFiles(path, "*.*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
+                                            {
+                                                processFile(file);
+                                            }
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Console.WriteLine(e);
+                                    }
+                                    try
+                                    {
+                                        if (File.Exists(path))
+                                        {
+                                            foundPath = true;
+                                            processFile(path);
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Console.WriteLine(e);
+                                    }
+                                    if (!foundPath)
+                                    {
+                                        Console.WriteLine("Couldn't find '" + path + "'");
+                                    }
+                                }
+                                if (allAddedCids.Count > 0 || allNewCids.Count > 0 || allRemovedCids.Count > 0 || totalNumCardsAdded > 0)
+                                {
+                                    foreach (Player player in players)
+                                    {
+                                        SavePlayerNow(player);
+                                    }
+                                    Console.WriteLine("Saved cards (addedCids:" + allAddedCids.Count + ", newCids:" + allNewCids.Count + ", removedCids:" + allRemovedCids.Count + ", totalAdded:" + totalNumCardsAdded + ")");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Didn't modify any cards");
+                                }
+                            }
+                            break;
                         default:
                             log = false;
                             break;
                     }
                     if (log)
                     {
-                        ranCommand = true;
                         Console.WriteLine("Done (" + arg + ")");
                     }
                 }
