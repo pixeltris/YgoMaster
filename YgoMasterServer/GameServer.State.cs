@@ -1549,16 +1549,14 @@ namespace YgoMaster
                     {
                         TryGetCardRarity(card.Key, CardRare, out rarity);
                     }
-                    if (rarity == CardRarity.None)
+                    if (rarity != CardRarity.None)
                     {
-                        continue;
+                        packCardRare[card.Key] = (int)rarity;
                     }
-                    packCardRare[card.Key] = (int)rarity;
                 }
                 return packCardRare;
             }
-            if ((!ProgressiveCardList && !ProgressiveCardRarities) ||
-                player.ShopState.GetAvailability(Shop, Shop.StandardPack) == PlayerShopItemAvailability.Available)
+            if (!ProgressiveCardList && !ProgressiveCardRarities)
             {
                 return CardRare;
             }
@@ -1568,6 +1566,11 @@ namespace YgoMaster
             {
                 if (ProgressiveCardList && player.ShopState.GetAvailability(Shop, shopItem) == PlayerShopItemAvailability.Hidden)
                 {
+                    continue;
+                }
+                if (ProgressiveCardList && shopItem == Shop.StandardPack && Shop.StandardPack?.SecretType == ShopItemSecretType.Other)
+                {
+                    // Avoid the Master Pack contributing towards the lowest rarity (any missing cards are appended at the end of this function)
                     continue;
                 }
                 foreach (KeyValuePair<int, CardRarity> card in shopItem.Cards)
@@ -1596,7 +1599,7 @@ namespace YgoMaster
                 foreach (KeyValuePair<int, int> card in new Dictionary<int, int>(result))
                 {
                     CardRarity rarity;
-                    if (TryGetCardRarity(card.Key, lowestPackRarities, out rarity) && rarity > (CardRarity)card.Value)
+                    if (TryGetCardRarity(card.Key, lowestPackRarities, out rarity) && rarity < (CardRarity)card.Value)
                     {
                         result[card.Key] = (int)rarity;
                     }
@@ -1609,6 +1612,17 @@ namespace YgoMaster
                 if (!result.ContainsKey(cardId) && TryGetCardRarity(cardId, CardRare, out rarity))
                 {
                     result[cardId] = (int)rarity;
+                }
+            }
+            if (ProgressiveCardList && player.ShopState.GetAvailability(Shop, Shop.StandardPack) == PlayerShopItemAvailability.Available && Shop.StandardPack?.SecretType == ShopItemSecretType.Other)
+            {
+                // When the Master Pack finally unlocks (which should be the last pack to unlock) we'll want to make all cards visible, even if they aren't featured in any packs
+                foreach (KeyValuePair<int, int> card in CardRare)
+                {
+                    if (!result.ContainsKey(card.Key))
+                    {
+                        result[card.Key] = card.Value;
+                    }
                 }
             }
             return result;
