@@ -1568,7 +1568,7 @@ namespace YgoMaster
                 {
                     continue;
                 }
-                if (ProgressiveCardList && shopItem == Shop.StandardPack && Shop.StandardPack?.SecretType == ShopItemSecretType.Other)
+                if (ProgressiveCardList && shopItem == Shop.StandardPack && Shop.StandardPack != null && Shop.StandardPack.SecretType == ShopItemSecretType.Other)
                 {
                     // Avoid the Master Pack contributing towards the lowest rarity (any missing cards are appended at the end of this function)
                     continue;
@@ -1614,7 +1614,7 @@ namespace YgoMaster
                     result[cardId] = (int)rarity;
                 }
             }
-            if (ProgressiveCardList && player.ShopState.GetAvailability(Shop, Shop.StandardPack) == PlayerShopItemAvailability.Available && Shop.StandardPack?.SecretType == ShopItemSecretType.Other)
+            if (ProgressiveCardList && player.ShopState.GetAvailability(Shop, Shop.StandardPack) == PlayerShopItemAvailability.Available && Shop.StandardPack != null && Shop.StandardPack.SecretType == ShopItemSecretType.Other)
             {
                 // When the Master Pack finally unlocks (which should be the last pack to unlock) we'll want to make all cards visible, even if they aren't featured in any packs
                 foreach (KeyValuePair<int, int> card in CardRare)
