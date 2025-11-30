@@ -62,6 +62,11 @@ namespace YgoMasterClient
 
         static WallpaperCycle()
         {
+            if (Program.IsLive)
+            {
+                // Disabled for now on live as ClientWorkUtil.GetUserWallpaper returning 0 when the wallpaper was already active causes infinite loading when going to home
+                return;
+            }
             stopwatch.Start();
 
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");

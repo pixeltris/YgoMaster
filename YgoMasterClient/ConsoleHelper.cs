@@ -1204,7 +1204,29 @@ namespace YgoMasterClient
                                 return;
                             }
 
-                            int limit = 60;
+                            // TODO: Handle properly handle compenstationList. Any card which has compensation must be included in this list to tell the server that the client knows it wants wants the extra compensation
+                            // If the client doesn't send this list the server will reject the dismantle and just send the full compensation list
+                            //
+                            // The following code requests dismantle using this:
+                            //{"acts":[{"act":"Craft.exchange_multi","id":2298,"params":{"card_list":{"13823":{"num":1,"p1_num":0,"p2_num":0},"10302":{"num":1,"p1_num":0,"p2_num":0},"17160":{"num":1,"p1_num":0,"p2_num":0},"14631":{"num":0,"p1_num":1,"p2_num":0},"14857":{"num":0,"p1_num":1,"p2_num":0},"13503":{"num":1,"p1_num":0,"p2_num":0},"13619":{"num":1,"p1_num":0,"p2_num":0},"11646":{"num":1,"p1_num":0,"p2_num":0},"20199":{"num":1,"p1_num":0,"p2_num":0},"8703":{"num":1,"p1_num":0,"p2_num":0},"13998":{"num":1,"p1_num":0,"p2_num":0},"21070":{"num":1,"p1_num":0,"p2_num":0},"12638":{"num":1,"p1_num":0,"p2_num":0},"14437":{"num":1,"p1_num":0,"p2_num":0},"4041":{"num":1,"p1_num":0,"p2_num":0},"14947":{"num":1,"p1_num":0,"p2_num":0},"21431":{"num":1,"p1_num":0,"p2_num":0},"17162":{"num":0,"p1_num":0,"p2_num":1},"21451":{"num":1,"p1_num":0,"p2_num":0},"20547":{"num":1,"p1_num":0,"p2_num":0},"21481":{"num":1,"p1_num":0,"p2_num":0},"15827":{"num":1,"p1_num":0,"p2_num":0},"14301":{"num":1,"p1_num":0,"p2_num":0},"18498":{"num":1,"p1_num":0,"p2_num":0},"4766":{"num":1,"p1_num":0,"p2_num":0},"20533":{"num":1,"p1_num":0,"p2_num":0},"4740":{"num":0,"p1_num":1,"p2_num":0},"15519":{"num":1,"p1_num":0,"p2_num":0},"14381":{"num":1,"p1_num":0,"p2_num":0}},"compensation_list":[]}}],"v":"2.5.0","ua":"Windows.Steam/10.0.19044/M4A88TD-M (ASUS)","h":558161692}
+                            // Sever responds with this because of card 13619:
+                            //{"code":0,"res":[[2298,{"Master":{"CraftCompensation":{"3802":{"compensation_id":3802,"card_id":3411,"point":20,"max_num":3,"open_date":"11 6 2025\u00a020:30:00","end_date":"12 4 2025\u00a019:59:59","start_time":"1762489799","end_time":"1764907199","enable_exclude":true},"3805":{"compensation_id":3805,"card_id":5008,"point":20,"max_num":1,"open_date":"11 6 2025\u00a020:30:00","end_date":"12 4 2025\u00a019:59:59","start_time":"1762489799","end_time":"1764907199","enable_exclude":true},"3810":{"compensation_id":3810,"card_id":9279,"point":20,"max_num":1,"open_date":"11 6 2025\u00a020:30:00","end_date":"12 4 2025\u00a019:59:59","start_time":"1762489799","end_time":"1764907199","enable_exclude":true},"3803":{"compensation_id":3803,"card_id":10007,"point":20,"max_num":3,"open_date":"11 6 2025\u00a020:30:00","end_date":"12 4 2025\u00a019:59:59","start_time":"1762489799","end_time":"1764907199","enable_exclude":true},"3804":{"compensation_id":3804,"card_id":13398,"point":20,"max_num":3,"open_date":"11 6 2025\u00a020:30:00","end_date":"12 4 2025\u00a019:59:59","start_time":"1762489799","end_time":"1764907199","enable_exclude":true},"3809":{"compensation_id":3809,"card_id":13619,"point":20,"max_num":1,"open_date":"11 6 2025\u00a020:30:00","end_date":"12 4 2025\u00a019:59:59","start_time":"1762489799","end_time":"1764907199","enable_exclude":true},"3801":{"compensation_id":3801,"card_id":14496,"point":20,"max_num":3,"open_date":"11 6 2025\u00a020:30:00","end_date":"12 4 2025\u00a019:59:59","start_time":"1762489799","end_time":"1764907199","enable_exclude":true},"3806":{"compensation_id":3806,"card_id":20572,"point":20,"max_num":2,"open_date":"11 6 2025\u00a020:30:00","end_date":"12 4 2025\u00a019:59:59","start_time":"1762489799","end_time":"1764907199","enable_exclude":true},"3807":{"compensation_id":3807,"card_id":20575,"point":20,"max_num":1,"open_date":"11 6 2025\u00a020:30:00","end_date":"12 4 2025\u00a019:59:59","start_time":"1762489799","end_time":"1764907199","enable_exclude":true},"3808":{"compensation_id":3808,"card_id":20583,"point":20,"max_num":2,"open_date":"11 6 2025\u00a020:30:00","end_date":"12 4 2025\u00a019:59:59","start_time":"1762489799","end_time":"1764907199","enable_exclude":true},"3902":{"compensation_id":3902,"card_id":8283,"point":20,"max_num":3,"open_date":"12 4 2025\u00a020:30:00","end_date":"1 7 2026\u00a019:59:59","start_time":"1764908999","end_time":"1767844799","enable_exclude":true},"3901":{"compensation_id":3901,"card_id":20585,"point":20,"max_num":3,"open_date":"12 4 2025\u00a020:30:00","end_date":"1 7 2026\u00a019:59:59","start_time":"1764908999","end_time":"1767844799","enable_exclude":true}}}},1803,0]],"remove":["Master.CraftCompensation"]}*/
+                            //
+                            // Real request would be like this (where 13619 is inside of "compensation_list"):
+                            //{"acts":[{"act":"Craft.exchange_multi","id":2299,"params":{"card_list":{"4041":{"num":1,"p1_num":0,"p2_num":0},"4088":{"num":1,"p1_num":0,"p2_num":0},"19857":{"num":1,"p1_num":0,"p2_num":0},"20199":{"num":1,"p1_num":0,"p2_num":0},"10440":{"num":1,"p1_num":0,"p2_num":0},"10619":{"num":0,"p1_num":1,"p2_num":0},"10813":{"num":1,"p1_num":0,"p2_num":0},"11057":{"num":1,"p1_num":0,"p2_num":0},"11646":{"num":1,"p1_num":0,"p2_num":0},"12483":{"num":1,"p1_num":0,"p2_num":0},"12952":{"num":1,"p1_num":0,"p2_num":0},"13184":{"num":1,"p1_num":0,"p2_num":0},"14107":{"num":1,"p1_num":0,"p2_num":0},"14264":{"num":1,"p1_num":0,"p2_num":0},"4766":{"num":1,"p1_num":0,"p2_num":0},"18807":{"num":1,"p1_num":0,"p2_num":0},"8132":{"num":1,"p1_num":0,"p2_num":0},"10471":{"num":1,"p1_num":0,"p2_num":0},"6932":{"num":1,"p1_num":0,"p2_num":0},"9177":{"num":1,"p1_num":0,"p2_num":0},"12946":{"num":0,"p1_num":1,"p2_num":0},"16077":{"num":1,"p1_num":0,"p2_num":0},"15182":{"num":1,"p1_num":0,"p2_num":0},"7557":{"num":1,"p1_num":0,"p2_num":0},"16503":{"num":1,"p1_num":0,"p2_num":0},"21431":{"num":1,"p1_num":0,"p2_num":0},"12723":{"num":0,"p1_num":1,"p2_num":0},"9553":{"num":1,"p1_num":0,"p2_num":0},"17766":{"num":1,"p1_num":0,"p2_num":0},"17396":{"num":1,"p1_num":0,"p2_num":0},"17793":{"num":1,"p1_num":0,"p2_num":0},"13746":{"num":1,"p1_num":0,"p2_num":0},"20211":{"num":1,"p1_num":0,"p2_num":0},"19876":{"num":1,"p1_num":0,"p2_num":0},"12631":{"num":1,"p1_num":0,"p2_num":0},"18498":{"num":1,"p1_num":0,"p2_num":0},"16943":{"num":1,"p1_num":0,"p2_num":0},"12638":{"num":1,"p1_num":0,"p2_num":0},"12233":{"num":1,"p1_num":0,"p2_num":0},"20220":{"num":1,"p1_num":0,"p2_num":0},"21451":{"num":1,"p1_num":0,"p2_num":0},"17150":{"num":1,"p1_num":0,"p2_num":0},"20518":{"num":1,"p1_num":0,"p2_num":0},"12026":{"num":1,"p1_num":0,"p2_num":0},"12260":{"num":1,"p1_num":0,"p2_num":0},"13597":{"num":1,"p1_num":0,"p2_num":0},"17162":{"num":0,"p1_num":0,"p2_num":1},"17803":{"num":1,"p1_num":0,"p2_num":0},"17160":{"num":1,"p1_num":0,"p2_num":0},"14301":{"num":1,"p1_num":0,"p2_num":0},"17825":{"num":1,"p1_num":0,"p2_num":0},"19892":{"num":1,"p1_num":0,"p2_num":0},"20790":{"num":1,"p1_num":0,"p2_num":0},"13619":{"num":1,"p1_num":0,"p2_num":0},"17816":{"num":1,"p1_num":0,"p2_num":0},"20533":{"num":1,"p1_num":0,"p2_num":0},"17036":{"num":1,"p1_num":0,"p2_num":0},"19049":{"num":1,"p1_num":0,"p2_num":0},"12023":{"num":1,"p1_num":0,"p2_num":0},"12187":{"num":1,"p1_num":0,"p2_num":0}},"compensation_list":{"3809":1}}}],"v":"2.5.0","ua":"Windows.Steam/10.0.19044/M4A88TD-M (ASUS)","h":558161692}
+
+                            Dictionary<string, object> craftCompensation = MiniJSON.Json.Deserialize(YgomSystem.Utility.ClientWork.SerializePath("$.Master.CraftCompensation")) as Dictionary<string, object>;
+                            Dictionary<int, int> cardIdsWithCraftCompensation = new Dictionary<int, int>();
+                            foreach (KeyValuePair<string, object> compensation in craftCompensation)
+                            {
+                                Dictionary<string, object> compensationData = compensation.Value as Dictionary<string, object>;
+                                if (compensationData != null)
+                                {
+                                    cardIdsWithCraftCompensation[Utils.GetValue<int>(compensationData, "card_id")] = Utils.GetValue<int>(compensationData, "compensation_id");
+                                }
+                            }
+
+                            int limit = 999999;//60;
                             int num = 0;
                             foreach (KeyValuePair<string, object> entry in cardsHave)
                             {
@@ -1212,6 +1234,11 @@ namespace YgoMasterClient
                                 Dictionary<string, object> cardData = entry.Value as Dictionary<string, object>;
                                 if (int.TryParse(entry.Key, out cardId) && cardData != null)
                                 {
+                                    if (cardIdsWithCraftCompensation.ContainsKey(cardId))
+                                    {
+                                        Console.WriteLine("Skipping " + cardId + " (you'll need to manually dismantle it)");
+                                        continue;
+                                    }
                                     CardRarity rarity = Utils.GetValue<CardRarity>(cardRare, entry.Key);
                                     if (rarities.Contains(rarity))
                                     {
@@ -1263,7 +1290,7 @@ namespace YgoMasterClient
                                     sublist[el.Key] = el.Value;
                                     cardList.Remove(el.Key);
                                 }
-                                IL2Array<int> compenstationList = new IL2Array<int>(0);
+                                IL2Array<int> compenstationList = new IL2Array<int>(0);// should be Dictionary<string, object>
                                 Craft_exchange_multi.Invoke(new IntPtr[] { YgomMiniJSON.Json.Deserialize(MiniJSON.Json.Serialize(sublist)), compenstationList.ptr });
                             }
 
