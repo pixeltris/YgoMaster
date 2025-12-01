@@ -1,10 +1,10 @@
-﻿using System;
+﻿using IL2CPP;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using IL2CPP;
-using System.Runtime.InteropServices;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using YgoMaster;
 
@@ -201,21 +201,20 @@ namespace YgoMasterClient
         // mscorlib
         static IL2Method methodReadAllBytes;// File
 
+        // https://github.com/Unity-Technologies/UnityCsReference/blob/master/Runtime/Scripting/Marshalling/ManagedSpanWrapper.cs
+        unsafe struct BindingsManagedSpan
+        {
+            public IntPtr data;
+            public long length;
+        }
+
         // UnityEngine.AudioClip
         delegate IntPtr Del_AudioClip_CUSTOM_Construct_Internal();
         static Del_AudioClip_CUSTOM_Construct_Internal AudioClip_CUSTOM_Construct_Internal;
-        delegate void Del_AudioClip_CUSTOM_CreateUserSound(IntPtr thisPtr, IntPtr name, int lengthSamples, int channels, int frequency, csbool stream);
+        delegate void Del_AudioClip_CUSTOM_CreateUserSound(IntPtr thisPtr, ref BindingsManagedSpan name, int lengthSamples, int channels, int frequency, csbool stream);
         static Del_AudioClip_CUSTOM_CreateUserSound AudioClip_CUSTOM_CreateUserSound;
-        delegate int Del_AudioClip_CUSTOM_SetData(IntPtr clip, IntPtr data, int numsamples, int samplesOffset);
+        delegate int Del_AudioClip_CUSTOM_SetData(IntPtr clip, ref BindingsManagedSpan data, int samplesOffset);
         static Del_AudioClip_CUSTOM_SetData AudioClip_CUSTOM_SetData;
-        //class ScriptingBackendNativeObjectPtrOpaque * __cdecl AudioClip_CUSTOM_Construct_Internal(void)
-        //void __cdecl AudioClip_CUSTOM_CreateUserSound(class ScriptingBackendNativeObjectPtrOpaque *,class ScriptingBackendNativeStringPtrOpaque *,int,int,int,unsigned char)
-        //unsigned char __cdecl AudioClip_CUSTOM_SetData(class ScriptingBackendNativeObjectPtrOpaque *,class ScriptingBackendNativeArrayPtrOpaque *,int,int)
-        //unsigned char __cdecl AudioClip_CUSTOM_GetData(class ScriptingBackendNativeObjectPtrOpaque *,class ScriptingBackendNativeArrayPtrOpaque *,int,int)
-        //unsigned char __cdecl AudioClip_CUSTOM_LoadAudioData(class ScriptingBackendNativeObjectPtrOpaque *)
-        //unsigned char __cdecl AudioClip_CUSTOM_UnloadAudioData(class ScriptingBackendNativeObjectPtrOpaque *)
-        //class ScriptingBackendNativeStringPtrOpaque * __cdecl AudioClip_CUSTOM_GetName(class ScriptingBackendNativeObjectPtrOpaque *)
-        //void * __cdecl DownloadHandlerAudioClip_CUSTOM_Create(class ScriptingBackendNativeObjectPtrOpaque *,class ScriptingBackendNativeStringPtrOpaque *,enum FMOD_SOUND_TYPE)
 
         // UnityEngine.Networking.DownloadHandlerTexture
         delegate IntPtr Del_DownloadHandlerTexture_CUSTOM_Create(IntPtr obj, ref DownloadedTextureParams parameters);
@@ -906,6 +905,7 @@ namespace YgoMasterClient
 
                 IntPtr audioClip = IntPtr.Zero;
                 IntPtr audioClipGcHandle = IntPtr.Zero;
+                IntPtr nativeAudioClip = IntPtr.Zero;
                 //IL2Array<float> data = null;
                 //uint dataGcHandle = 0;
                 invoke(() =>
@@ -922,7 +922,21 @@ namespace YgoMasterClient
                         Import.Handler.il2cpp_gchandle_new(audioBufferIL2CPP, true);
                     }
                     audioClip = AudioClip_CUSTOM_Construct_Internal();
-                    AudioClip_CUSTOM_CreateUserSound(audioClip, new IL2String(name).ptr, info.LengthSamples / info.Channels, info.Channels, info.SampleRate, false);
+                    // The following was determined by looking at the result of AudioClip_CUSTOM_Construct_Internal / the call to BaseObjectInternal::NewObject<AudioClip>()
+                    // (look for the native AudioClip address (RAX register after NewObject<AudioClip>()) in the memory of the result of the function call (AudioClip_CUSTOM_Construct_Internal))
+                    // The ScriptingBackendNativeObjectPtrOpaque is inside of the return value (which is different to 2.3.0)
+                    audioClip = *(IntPtr*)audioClip;
+                    nativeAudioClip = *(IntPtr*)(audioClip + 16);// ScriptingBackendNativeObjectPtrOpaque -> AudioClip
+                    byte[] nameBuffer = Encoding.Unicode.GetBytes(name);
+                    fixed (byte* nameBufferPtr = nameBuffer)
+                    {
+                        BindingsManagedSpan nameSpan = new BindingsManagedSpan()
+                        {
+                            data = (IntPtr)nameBufferPtr,
+                            length = nameBuffer.Length
+                        };
+                        AudioClip_CUSTOM_CreateUserSound(nativeAudioClip, ref nameSpan, info.LengthSamples / info.Channels, info.Channels, info.SampleRate, false);
+                    }
                     audioClipGcHandle = Import.Handler.il2cpp_gchandle_new(audioClip, true);
                     //data = new IL2Array<float>(buffer.Length, IL2SystemClass.Float);
                     //dataGcHandle = Import.Handler.il2cpp_gchandle_new(data.ptr, true);
@@ -964,8 +978,17 @@ namespace YgoMasterClient
                         //Marshal.Copy(buffer, 0, (IntPtr)((long*)data.ptr + 4), dataLen);
                         //AudioClip_CUSTOM_SetData(audioClip, data.ptr, dataLen / info.Channels, index / info.Channels);
 
+                        //Marshal.Copy(buffer, 0, (IntPtr)((long*)audioBufferIL2CPP + 4), dataLen);
+                        //AudioClip_CUSTOM_SetData(audioClip, audioBufferIL2CPP, index / info.Channels);
+
+                        // NOTE: Since switching to BindingsManagedSpan the audioBufferIL2CPP doesn't really need to be an IL2Array anymore. TODO: Make it just a C# Marshal.AllocHGlobal for simplicity
                         Marshal.Copy(buffer, 0, (IntPtr)((long*)audioBufferIL2CPP + 4), dataLen);
-                        AudioClip_CUSTOM_SetData(audioClip, audioBufferIL2CPP, dataLen / info.Channels, index / info.Channels);
+                        BindingsManagedSpan audioData = new BindingsManagedSpan()
+                        {
+                            data = (IntPtr)((long*)audioBufferIL2CPP + 4),
+                            length = dataLen
+                        };
+                        AudioClip_CUSTOM_SetData(nativeAudioClip, ref audioData, index / info.Channels);
 
                         waitForMainThread.Set();
                     });
@@ -1151,21 +1174,16 @@ namespace YgoMasterClient
             }
             downloadHandlerCtor.Invoke(request.DownloadHandler);
 
-            if (request.DownloadHandler != IntPtr.Zero) {
-                var p = new DownloadedTextureParams
-                {
-                    flags = DownloadedTextureFlags.MipmapChain,
-                    mipmapCount = -1
-                };
+            var p = new DownloadedTextureParams
+            {
+                flags = DownloadedTextureFlags.MipmapChain,
+                mipmapCount = -1
+            };
+            IntPtr ptr = DownloadHandlerTexture_CUSTOM_Create(request.DownloadHandler, ref p);
 
-                IntPtr ptr = DownloadHandlerTexture_CUSTOM_Create(request.DownloadHandler, ref p);
-
-                // +16 is accessed in DownloadHandlerTexture_CUSTOM_InternalGetTextureNative.
-                // This offset is highly version-dependent and might change.
-                *(IntPtr*)(request.DownloadHandler + 16) = ptr;
-            } else {
-                return;
-            }
+            // +16 is accessed in DownloadHandlerTexture_CUSTOM_InternalGetTextureNative.
+            // This offset is highly version-dependent and might change.
+            *(IntPtr*)(request.DownloadHandler + 16) = ptr;
 
             request.WebRequest = Import.Object.il2cpp_object_new(webRequestClass.ptr);
             if (request.WebRequest == IntPtr.Zero)
@@ -1217,7 +1235,7 @@ namespace YgoMasterClient
                 if (result != 0 || request.RequestTime < DateTime.UtcNow - TimeSpan.FromMinutes(1))
                 {
                     IntPtr nativeDownloadHandlerTexturePtr = *(IntPtr*)(request.DownloadHandler + 16);
-                    IntPtr texture = result != 1 ? IntPtr.Zero : GCHandle.ToIntPtr(*(GCHandle*)DownloadHandlerTexture_CUSTOM_InternalGetTextureNative(nativeDownloadHandlerTexturePtr));
+                    IntPtr texture = result != 1 ? IntPtr.Zero : *(IntPtr*)DownloadHandlerTexture_CUSTOM_InternalGetTextureNative(nativeDownloadHandlerTexturePtr);
                     request.Callback(texture);
                     webRequestDispose.Invoke(request.WebRequest);
                     asyncLoadTextureRequests.RemoveAt(i);
