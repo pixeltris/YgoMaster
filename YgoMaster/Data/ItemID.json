@@ -85,6 +85,7 @@
     1001032,//King's Sarcophagus
     1001034,//Dark Resonator
     1001037,//Gem-Turtle
+    1001038,//Fabled Lurrie
     1002001,//Soccer Ball
     1002002,//Basketball
     1002003,//Record Player
@@ -223,7 +224,12 @@
     1010119,//Morgana the Witch of Eyes
     1010121,//Diabellstar the Black Witch
     1010122,//Valiant Knight
+    1010125,//Medius the Pure
+    1010126,//Dracotail Faimena
+    1010127,//The Man with the Mark
     1010128,//Gagagaga Girl
+    1010129,//Santa Claws
+    1010131,//Gagaga Academy Emergency Network
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -286,6 +292,9 @@
     1011060,//DC 2025 SEP Gold Finalist
     1011061,//DC 2025 SEP Silver Finalist
     1011062,//DC 2025 SEP Bronze Finalist
+    1011063,//DC 2025 DEC Gold Finalist
+    1011064,//DC 2025 DEC Silver Finalist
+    1011065,//DC 2025 DEC Bronze Finalist
     1012001,//X-Krawler Synaphysis
     1012002,//Mekk-Knight Spectrum Supreme
     1012003,//Knightmare Gryphon
@@ -368,6 +377,7 @@
     1013008,//Duelist Black & Blue
     1013009,//Duelist White & Blue
     1013010,//eFootball™
+    1013011,//Selene, Queen of the Master Magicians
   ],
   "PROFILE_TAG": [
     1020001,//Beginner Duelist
@@ -557,6 +567,12 @@
     1020186,//Violet Warrior of Fusing
     1020187,//Obsidian Warrior of Stacking
     1020188,//Azure Warrior of Linking
+    1020189,//DC 2025 DEC Top 10
+    1020190,//DC 2025 DEC Top 100
+    1020191,//DC 2025 DEC Top 500
+    1020192,//DC 2025 DEC Top 1000
+    1020193,//DC 2025 DEC Top 10000
+    1020194,//DC 2025 DEC 2nd Stage Duelist
     1020197,//Jack of All Trades
     1021001,//Starting Out
     1021002,//Top Performer
@@ -601,6 +617,7 @@
     1030037,//Yellow & Blue Frame
     1030038,//Diabellstar the Black Witch
     1030039,//Gem-Knight Fusion
+    1030040,//Blue & White Frame
     1031001,//The Path of the Blue Sky Striker
     1031002,//The Path of the Red Sky Striker
     1031003,//Magic Cylinder
@@ -772,7 +789,9 @@
     1070134,//Lady Labrynth of the Silver Castle
     1070135,//Pot of Extravagance
     1070138,//Sky Striker Ace = Zero
+    1070139,//Dracotail Arthalion
     1070140,//Number F0: Utopic Future Zexal
+    1070141,//Anubis the Last Judge
     1070142,//Eldlixir of the Glorious Golden Land
     1070143,//Lunalight Liger Dancer
     1070147,//Infinite Impermanence
@@ -837,6 +856,7 @@
     1073015,//WCS 2025 Celebration
     1073016,//WCS 2025 Party Favor
     1073017,//DC 2025 SEP Celebration
+    1073018,//DC 2025 DEC Celebration
     1075001,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
     1075002,//THE CHRONICLES: Sky Striker Ace
     1075003,//White & Blue
@@ -1007,6 +1027,7 @@
     1101035,//Floral Crown
     1101036,//Swimming Ring
     1101040,//Halloween Ghost
+    1101041,//Wreath
     1102001,//Colosseum
     1102002,//WCS
   ],
@@ -1094,6 +1115,7 @@
     1111062,//Flamvell, the Scarlet Warriors
     1111064,//Mulcharmy Pink
     1111066,//Magical Meltdown
+    1111071,//Dracotail
     1112001,//Colosseum
     1112002,//WCS
     1113001,//WCS 2023 Party Favor
@@ -1229,10 +1251,13 @@
     1130096,//Lady Labrynth of the Silver Castle
     1130097,//Archfiend's Ghastly Glitch
     1130098,//Eldlich the Golden Lord
+    1130103,//Ketu Dracotail
     1130104,//First of the Dragonlords 
+    1130105,//Diabellze the Original Sinkeeper
     1132001,//Rescue Rabbit
     1132002,//Neymar
     1132003,//That's 10!
+    1132004,//Endymion, the Mighty Master of Magic
   ],
   "PACK_TICKET": [
     1140001,//Legacy Pack ticket
@@ -1263,6 +1288,7 @@
     1180007,//Labrynth
     1180008,//Eldlich the Golden Lord
     1180012,//Sky Striker Ace
+    1180013,//Ketu Dracotail
     1180014,//Winged Kuriboh
   ],
   "BOOKMARK_LIMIT": [
