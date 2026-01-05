@@ -49,7 +49,7 @@ namespace IL2CPP
         ///     IS UNMANAGED
         /// </summary>
         /// <returns></returns>
-        unsafe public T1[] UnboxArraу<T1>() where T1 : struct// where T1 : unmanaged
+        unsafe public T1[] UnboxArray2<T1>() where T1 : struct// where T1 : unmanaged
         {
             int size = Marshal.SizeOf(typeof(T1));
             T1[] result;

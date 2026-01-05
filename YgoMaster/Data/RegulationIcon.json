@@ -426,6 +426,20 @@
     "icon": "RegulationLogoEvent",
     "enable_room": "0"
   },
+  "165": {
+    "id": "165",
+    "regulation_id": 165,
+    "name": "IDS_DUELTRIAL_REG_043",
+    "icon": "RegulationLogoEvent",
+    "enable_room": "0"
+  },
+  "166": {
+    "id": "166",
+    "regulation_id": 166,
+    "name": "IDS_EXHIBITION_REG_035",
+    "icon": "RegulationLogoEvent",
+    "enable_room": "1"
+  },
   "1002": {
     "id": "1002",
     "regulation_id": 1046,

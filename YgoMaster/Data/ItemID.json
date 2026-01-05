@@ -224,6 +224,7 @@
     1010119,//Morgana the Witch of Eyes
     1010121,//Diabellstar the Black Witch
     1010122,//Valiant Knight
+    1010124,//Ohime the Manifested Mikanko
     1010125,//Medius the Pure
     1010126,//Dracotail Faimena
     1010127,//The Man with the Mark
@@ -368,6 +369,7 @@
     1012073,//Flamvell Baby
     1012074,//Poseidra, the Atlantean Dragon
     1012075,//Fire King High Avatar Garunix
+    1012076,//Good Goblin Housekeeping
     1013001,//PawaPuro
     1013002,//Memories of Intersecting Duels
     1013003,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
@@ -636,6 +638,7 @@
     1031016,//Overlay Unit β
     1031017,//A.I. Love Fusion
     1031018,//Orcust
+    1031020,//P.U.N.K. JAM FEVER!
     1032001,//Festive Ornament
     1032002,//Celebration of Spring Breeze
     1032003,//Tropical Seaside
@@ -788,12 +791,14 @@
     1070133,//Lady Labrynth of the Silver Castle
     1070134,//Lady Labrynth of the Silver Castle
     1070135,//Pot of Extravagance
+    1070137,//Hu-Li the Jewel Mikanko
     1070138,//Sky Striker Ace = Zero
     1070139,//Dracotail Arthalion
     1070140,//Number F0: Utopic Future Zexal
     1070141,//Anubis the Last Judge
     1070142,//Eldlixir of the Glorious Golden Land
     1070143,//Lunalight Liger Dancer
+    1070144,//Otoshidamashi
     1070147,//Infinite Impermanence
     1070149,//Gradius
     1071001,//Crusadia Maximus
@@ -832,6 +837,7 @@
     1071034,//Flamvell Uruquizas
     1071035,//Fire King High Avatar Garunix
     1071036,//Poseidra, the Atlantean Dragon
+    1071037,//That Grass Looks Greener
     1072001,//Sky Striker Conversion: Flaming Wings of Destruction
     1072002,//Chaos Xyz Evolution －Galactic Gathering of Dragons－
     1072003,//Sky Striker Armor - Black Flash Raiment
@@ -1016,11 +1022,13 @@
     1101014,//Soul-Absorbing Bone Tower
     1101016,//Magical Thorn
     1101017,//Time Machine
+    1101018,//Eater of Millions
     1101019,//Dragon Capture Jar
     1101020,//Opening of the Spirit Gates
     1101022,//Scrap Recycler & Garbage Collector
     1101023,//Back to Square One
     1101025,//Fire King Sanctuary
+    1101030,//Emergency Provisions
     1101031,//Ragnaraika the Evil Seed
     1101032,//Centur-Ion Emeth VI
     1101034,//Kochobo's Hinamatsuri
@@ -1251,6 +1259,8 @@
     1130096,//Lady Labrynth of the Silver Castle
     1130097,//Archfiend's Ghastly Glitch
     1130098,//Eldlich the Golden Lord
+    1130100,//Ohime the Manifested Mikanko
+    1130101,//Mikanko Shinbu - Noble Twins
     1130103,//Ketu Dracotail
     1130104,//First of the Dragonlords 
     1130105,//Diabellze the Original Sinkeeper
@@ -1277,6 +1287,7 @@
     1170001,//Orcust
     1170002,//Dragonmaid
     1170004,//Labrynth
+    1170006,//Mikanko
     1170008,//Sky Striker Ace
   ],
   "COIN": [
@@ -1287,6 +1298,7 @@
     1180005,//Dragonmaid
     1180007,//Labrynth
     1180008,//Eldlich the Golden Lord
+    1180010,//Mikanko
     1180012,//Sky Striker Ace
     1180013,//Ketu Dracotail
     1180014,//Winged Kuriboh
