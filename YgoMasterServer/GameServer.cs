@@ -688,7 +688,7 @@ namespace YgoMaster
                 {
                     return 0;
                 }
-                token = token.Substring(0, MultiplayerTokenPrefixSecret.Length);
+                token = token.Substring(MultiplayerTokenPrefixSecret.Length); // Take the token after the MultiplayerTokenPrefixSecret
                 if (string.IsNullOrEmpty(token))
                 {
                     return 0;
