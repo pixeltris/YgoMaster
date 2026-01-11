@@ -1,0 +1,85 @@
+{
+  "card_list": {
+    "21365": {
+      "card_id": 21365,
+      "page": 1,
+      "card_pos": 0,
+      "assign_premium_type": 0
+    },
+    "21366": {
+      "card_id": 21366,
+      "page": 1,
+      "card_pos": 1,
+      "assign_premium_type": 0
+    },
+    "21367": {
+      "card_id": 21367,
+      "page": 1,
+      "card_pos": 2,
+      "assign_premium_type": 0
+    },
+    "21368": {
+      "card_id": 21368,
+      "page": 1,
+      "card_pos": 4,
+      "assign_premium_type": 0
+    },
+    "21369": {
+      "card_id": 21369,
+      "page": 1,
+      "card_pos": 5,
+      "assign_premium_type": 0
+    },
+    "21370": {
+      "card_id": 21370,
+      "page": 1,
+      "card_pos": 6,
+      "assign_premium_type": 0
+    },
+    "21371": {
+      "card_id": 21371,
+      "page": 1,
+      "card_pos": 7,
+      "assign_premium_type": 0
+    },
+    "21372": {
+      "card_id": 21372,
+      "page": 1,
+      "card_pos": 8,
+      "assign_premium_type": 0
+    },
+    "21373": {
+      "card_id": 21373,
+      "page": 2,
+      "card_pos": 0,
+      "assign_premium_type": 0
+    },
+    "21374": {
+      "card_id": 21374,
+      "page": 2,
+      "card_pos": 2,
+      "assign_premium_type": 0
+    },
+    "21375": {
+      "card_id": 21375,
+      "page": 2,
+      "card_pos": 3,
+      "assign_premium_type": 0
+    },
+    "21790": {
+      "card_id": 21790,
+      "page": 1,
+      "card_pos": 3,
+      "assign_premium_type": 0
+    },
+    "21833": {
+      "card_id": 21833,
+      "page": 2,
+      "card_pos": 1,
+      "assign_premium_type": 0
+    }
+  },
+  "total_page": 2,
+  "total_card": 13,
+  "sort": 495
+}
