@@ -48,6 +48,9 @@ namespace YgoMasterClient
         static IntPtr HorizontalOrVerticalLayoutGroup_Type;
         static IL2Property HorizontalOrVerticalLayoutGroup_spacing;
 
+        static IntPtr LayoutGroup_Type;
+        static IL2Property LayoutGroup_childAlignment;
+
         static IntPtr SelectionButton_Type;
         static IL2Field SelectionButton_onClick;
         static IL2Field SelectionButton__soundLabelClick;
@@ -55,6 +58,10 @@ namespace YgoMasterClient
         static IntPtr Selector_Type;
         static IL2Method Selector_AddItem;
         static IL2Field SelectionItem__selector;
+        static IL2Field SelectionItem_downItem;
+        static IL2Field SelectionItem_upItem;
+        static IL2Field SelectionItem_downMode;
+        static IL2Field SelectionItem_upMode;
 
         static IL2Property Screen_width;
         static IL2Property Screen_height;
@@ -184,6 +191,10 @@ namespace YgoMasterClient
             HorizontalOrVerticalLayoutGroup_Type = uiAssembly.GetClass("HorizontalOrVerticalLayoutGroup", "UnityEngine.UI").IL2Typeof();
             HorizontalOrVerticalLayoutGroup_spacing = uiAssembly.GetClass("HorizontalOrVerticalLayoutGroup").GetProperty("spacing");
 
+            IL2Class LayoutGroup_Class = uiAssembly.GetClass("LayoutGroup", "UnityEngine.UI");
+            LayoutGroup_Type = LayoutGroup_Class.IL2Typeof();
+            LayoutGroup_childAlignment = LayoutGroup_Class.GetProperty("childAlignment");
+
             IL2Class Image_Class = uiAssembly.GetClass("Image", "UnityEngine.UI");
             Image_type = Image_Class.GetProperty("type");
             Image_preserveAspect = Image_Class.GetProperty("preserveAspect");
@@ -227,6 +238,11 @@ namespace YgoMasterClient
             Selector_Type = Selector_Class.IL2Typeof();
             Selector_AddItem = Selector_Class.GetMethod("AddItem");
             SelectionItem__selector = assembly.GetClass("SelectionItem", "YgomSystem.UI").GetField("_selector");
+            IL2Class SelectionItem_Class = assembly.GetClass("SelectionItem", "YgomSystem.UI");
+            SelectionItem_downItem = SelectionItem_Class.GetField("downItem");
+            SelectionItem_upItem = SelectionItem_Class.GetField("upItem");
+            SelectionItem_downMode = SelectionItem_Class.GetField("downMode");
+            SelectionItem_upMode = SelectionItem_Class.GetField("upMode");
 
             Screen_width = coreModuleAssembly.GetClass("Screen", "UnityEngine").GetProperty("width");
             Screen_height = coreModuleAssembly.GetClass("Screen", "UnityEngine").GetProperty("height");
@@ -1586,26 +1602,41 @@ namespace YgoMasterClient
         {
             IntPtr prefab = AssetHelper.LoadImmediateAsset("Scenarios/Player/Viewer/Prefabs/ScenarioUI");
             IntPtr clone = UnityObject.Instantiate(prefab);
-            IntPtr obj = GameObject.FindGameObjectByPath(clone, "RootUI.SafeArea.MenuButtonAcordion.Root");
-            IntPtr layoutGroupComp = GameObject.GetComponent(GameObject.FindGameObjectByPath(obj, "ChildButtonGroup"), HorizontalOrVerticalLayoutGroup_Type);
-            float btnVerticalSpacing = 8;
+            IntPtr menuAccordionObj = GameObject.FindGameObjectByPath(clone, "RootUI.SafeArea.MenuArea.MenuAccordion.ChildGroup");
+            IntPtr layoutGroupComp = GameObject.GetComponent(menuAccordionObj, HorizontalOrVerticalLayoutGroup_Type);
+            float btnVerticalSpacing = Utils.GetValue<float>(uiSettings, "ButtonsSpacing", 8);
             HorizontalOrVerticalLayoutGroup_spacing.GetSetMethod().Invoke(layoutGroupComp, new IntPtr[] { new IntPtr(&btnVerticalSpacing) });
-            Transform.SetParent(GameObject.GetTransform(obj), parentTransform);
+            Transform.SetParent(GameObject.GetTransform(menuAccordionObj), parentTransform);
 
-            AddButton(obj, selector, "ChildButtonGroup.ChildButtonSlot1.AutoButton", ClientSettings.CustomTextVisualNovelNext, NextOnClick, ClientSettings.DisableSoloVisualNovelNextButtonSound);
-            AddButton(obj, selector, "ChildButtonGroup.ChildButtonSlot2.LogButton", ClientSettings.CustomTextVisualNovelSkip, SkipOnClick);
+            List<IntPtr> children = GameObject.GetChildren(menuAccordionObj);
+            for (int i = 0; i < children.Count; i++)
+            {
+                if (GameObject.IsActive(children[i]))
+                {
+                    if (UnityObject.GetName(children[i]) == "ChildSlotTemplate_Default")
+                    {
+                        IntPtr nextBtnComp, skipBtnComp;
+                        int manualMode = 1;
+                        AddButton(menuAccordionObj, selector, 0, UnityObject.Instantiate(children[i]), ClientSettings.CustomTextVisualNovelNext, NextOnClick, ClientSettings.DisableSoloVisualNovelNextButtonSound, out nextBtnComp);
+                        AddButton(menuAccordionObj, selector, 1, UnityObject.Instantiate(children[i]), ClientSettings.CustomTextVisualNovelSkip, SkipOnClick, false, out skipBtnComp);
+                        SelectionItem_downItem.SetValue(nextBtnComp, skipBtnComp);
+                        SelectionItem_downMode.SetValue(nextBtnComp, new IntPtr(&manualMode));
+                        SelectionItem_upItem.SetValue(skipBtnComp, nextBtnComp);
+                        SelectionItem_upMode.SetValue(skipBtnComp, new IntPtr(&manualMode));
+                    }
+                    GameObject.SetActive(children[i], false);
+                }
+            }
 
-            UnityObject.Destroy(GameObject.FindGameObjectByPath(obj, "ChildButtonGroup.ChildButtonSlot0"));
-            UnityObject.Destroy(GameObject.FindGameObjectByPath(obj, "ChildButtonGroup.ChildButtonSlot3"));
-            UnityObject.Destroy(GameObject.FindGameObjectByPath(obj, "ChildButtonGroup.RootButton"));
             AssetHelper.Unload("Scenarios/Player/Viewer/Prefabs/ScenarioUI");
-            SetSize(GameObject.GetTransform(obj), "ButtonsTransform");
+            SetSize(GameObject.GetTransform(menuAccordionObj), "ButtonsTransform");
         }
 
-        static void AddButton(IntPtr buttonsObj, IntPtr selector, string buttonPath, string text, Delegate clickCallback, bool disableClickSound = false)
+        static void AddButton(IntPtr buttonsObj, IntPtr selector, int siblingIndex, IntPtr buttonObj, string text, Delegate clickCallback, bool disableClickSound, out IntPtr selectionButton)
         {
-            IntPtr buttonObj = GameObject.FindGameObjectByPath(buttonsObj, buttonPath);
-            IntPtr selectionButtonComp = GameObject.GetComponent(buttonObj, SelectionButton_Type);
+            Transform.SetParent(GameObject.GetTransform(buttonObj), GameObject.GetTransform(buttonsObj));
+            IntPtr selectionButtonComp = GameObject.GetComponent(GameObject.FindGameObjectByPath(buttonObj, "Button"), SelectionButton_Type);
+            selectionButton = selectionButtonComp;
             Selector_AddItem.Invoke(selector, new IntPtr[] { selectionButtonComp });
             SelectionItem__selector.SetValue(selectionButtonComp, selector);
             if (disableClickSound)
@@ -1613,8 +1644,16 @@ namespace YgoMasterClient
                 // NOTE: An alternative might be to set "SE_MENU_OVERLAP_02" (or another SE_MENU with a slightly softer sound)
                 SelectionButton__soundLabelClick.SetValue(selectionButtonComp, new IL2String("").ptr);
             }
-            IntPtr textComp = GameObject.GetComponent(GameObject.FindGameObjectByPath(buttonObj, "TextTMP"), ExtendedTextMeshProUGUI_Type);
+            IntPtr textComp = GameObject.GetComponent(GameObject.FindGameObjectByPath(buttonObj, "Button.IconArea.TextTMP"), ExtendedTextMeshProUGUI_Type);
             TMPro.TMP_Text.SetText(textComp, text);
+
+            GameObject.SetActive(GameObject.FindGameObjectByPath(buttonObj, "Button.IconArea.ImageIcon"), false);
+
+            IntPtr layoutGroupComp = GameObject.GetComponent(GameObject.FindGameObjectByPath(buttonObj, "Button.IconArea"), LayoutGroup_Type);
+            int middleCenter = 4;//UnityEngine.TextAnchor.MiddleCenter
+            LayoutGroup_childAlignment.GetSetMethod().Invoke(layoutGroupComp, new IntPtr[] { new IntPtr(&middleCenter) });
+
+            Transform.SetSiblingIndex(GameObject.GetTransform(buttonObj), siblingIndex);
 
             IntPtr onClick = SelectionButton_onClick.GetValue(selectionButtonComp).ptr;
             IntPtr callback = UnityEngine.Events._UnityAction.CreateUnityAction(clickCallback);// NOTE: Leaks memory

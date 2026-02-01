@@ -19,6 +19,7 @@ namespace YgoMasterClient
         // UnityPlayer.dll history:
         // 2.3.0 - 2023.3.15f1 - https://symbolserver.unity3d.com/UnityPlayer_Win64_player_il2cpp_x64.pdb/D7818DF19E8C487798AAA1D28C0B17A61/UnityPlayer_Win64_player_il2cpp_x64.pdb
         // 2.4.0 - 6000.0.50f1 - https://symbolserver.unity3d.com/UnityPlayer_Win64_player_il2cpp_x64.pdb/58AF8FD77EC14831BA247C36D01A38AF1/UnityPlayer_Win64_player_il2cpp_x64.pdb
+        // 2.6.0 - 6000.0.61f1 - https://symbolserver.unity3d.com/UnityPlayer_Win64_player_il2cpp_x64.pdb/6DE73E6710654802B056326AE805D48A1/UnityPlayer_Win64_player_il2cpp_x64.pdb
 
         // NOTE: Sometimes the pdb file path ends in ".pd_". If you can't find the url then you can do the following:
         // - In your Master Duel folder right click "UnityPlayer.dll", click "Properties", click the "Details" tab, make note of the "Product version"

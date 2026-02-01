@@ -330,6 +330,21 @@ namespace YgoMaster
                             }
                         }
                     }
+                    string unityPlayerFile = Path.Combine("..", "UnityPlayer.dll");
+                    string expectedUnityPlayerVersion = Utils.GetValue<string>(clientValues, "UnityPlayerVersion");
+                    if (!string.IsNullOrEmpty(expectedUnityPlayerVersion) && File.Exists(unityPlayerFile))
+                    {
+                        string unityPlayerVersion = FileVersionInfo.GetVersionInfo(unityPlayerFile).ProductVersion;
+                        if (!string.IsNullOrEmpty(unityPlayerVersion))
+                        {
+                            unityPlayerVersion = unityPlayerVersion.Split()[0];
+                            if (expectedUnityPlayerVersion != unityPlayerVersion)
+                            {
+                                Utils.LogWarning("UnityPlayer.dll version mismatch. Expected:" + expectedUnityPlayerVersion + ", found:" + unityPlayerVersion);
+                                Utils.LogWarning("If the mod is using custom images the client will crash!");
+                            }
+                        }
+                    }
                 }
             }
             DuelSettings.LoadBgmInfo(Path.Combine(dataDirectory, "Bgm.json"));
