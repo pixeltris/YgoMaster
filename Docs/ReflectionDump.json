@@ -17,7 +17,7 @@
     ],
     "Type": "Field",
     "Name": "mhandle",
-    "Signature": "public mhandle"
+    "Signature": "public RuntimeMethodInfo"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -27,7 +27,7 @@
     ],
     "Type": "Field",
     "Name": "ffIconOn",
-    "Signature": "ffIconOn"
+    "Signature": "ReplayControl"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -37,7 +37,7 @@
     ],
     "Type": "Field",
     "Name": "ffIconOff",
-    "Signature": "ffIconOff"
+    "Signature": "ReplayControl"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -107,7 +107,7 @@
     ],
     "Type": "Field",
     "Name": "instance",
-    "Signature": "static instance"
+    "Signature": "static DuelClient"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -117,7 +117,7 @@
     ],
     "Type": "Field",
     "Name": "m_Step",
-    "Signature": "m_Step"
+    "Signature": "DuelClient"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -127,7 +127,7 @@
     ],
     "Type": "Field",
     "Name": "replayRealtime",
-    "Signature": "replayRealtime"
+    "Signature": "DuelClient"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -137,7 +137,7 @@
     ],
     "Type": "Field",
     "Name": "dicResult",
-    "Signature": "dicResult"
+    "Signature": "DuelClient"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -327,7 +327,7 @@
     ],
     "Type": "Field",
     "Name": "m_Type",
-    "Signature": "m_Type"
+    "Signature": "GenericCardListController"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -447,7 +447,7 @@
     ],
     "Type": "Field",
     "Name": "m_RemainInDuel",
-    "Signature": "m_RemainInDuel"
+    "Signature": "DuelTimer3D"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -457,7 +457,7 @@
     ],
     "Type": "Field",
     "Name": "m_RemainInTurn",
-    "Signature": "m_RemainInTurn"
+    "Signature": "DuelTimer3D"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -657,7 +657,7 @@
     ],
     "Type": "Field",
     "Name": "infos",
-    "Signature": "infos"
+    "Signature": "RoomCreateViewController"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -667,7 +667,7 @@
     ],
     "Type": "Field",
     "Name": "isv",
-    "Signature": "isv"
+    "Signature": "RoomCreateViewController"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -689,7 +689,7 @@
     ],
     "Type": "Field",
     "Name": "title",
-    "Signature": "public title"
+    "Signature": "public ButtonInfoBase"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -786,7 +786,7 @@
     ],
     "Type": "Field",
     "Name": "onCompleteSelectDeckCallback",
-    "Signature": "public onCompleteSelectDeckCallback"
+    "Signature": "public DeckBrowserViewController"
   },
   {
     "Assembly": "mscorlib",
@@ -837,7 +837,7 @@
     ],
     "Type": "Field",
     "Name": "id",
-    "Signature": "public id"
+    "Signature": "public Chapter"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -879,7 +879,7 @@
     ],
     "Type": "Field",
     "Name": "step",
-    "Signature": "step"
+    "Signature": "SoloStartProductionViewController"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -890,7 +890,7 @@
     ],
     "Type": "Field",
     "Name": "Final",
-    "Signature": "public static Final"
+    "Signature": "public static Step"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1002,7 +1002,7 @@
     ],
     "Type": "Field",
     "Name": "code",
-    "Signature": "public code"
+    "Signature": "public RequestStructure"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1022,7 +1022,7 @@
     ],
     "Type": "Field",
     "Name": "m_Request",
-    "Signature": "m_Request"
+    "Signature": "Handle"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1142,7 +1142,7 @@
     ],
     "Type": "Field",
     "Name": "mainDeckCards",
-    "Signature": "mainDeckCards"
+    "Signature": "DeckView"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1152,7 +1152,7 @@
     ],
     "Type": "Field",
     "Name": "mainCardDataList",
-    "Signature": "public mainCardDataList"
+    "Signature": "public DeckView"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1162,7 +1162,7 @@
     ],
     "Type": "Field",
     "Name": "extraDeckCards",
-    "Signature": "extraDeckCards"
+    "Signature": "DeckView"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1172,7 +1172,7 @@
     ],
     "Type": "Field",
     "Name": "extraCardDataList",
-    "Signature": "public extraCardDataList"
+    "Signature": "public DeckView"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1212,7 +1212,7 @@
     ],
     "Type": "Field",
     "Name": "m_DeckView",
-    "Signature": "public m_DeckView"
+    "Signature": "public DeckEditViewController2"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1222,7 +1222,7 @@
     ],
     "Type": "Field",
     "Name": "m_CollectionView",
-    "Signature": "public m_CollectionView"
+    "Signature": "public DeckEditViewController2"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1232,7 +1232,7 @@
     ],
     "Type": "Field",
     "Name": "m_SaveButton",
-    "Signature": "public m_SaveButton"
+    "Signature": "public DeckEditViewController2"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1422,7 +1422,7 @@
     ],
     "Type": "Field",
     "Name": "s_instance",
-    "Signature": "static s_instance"
+    "Signature": "static Content"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1482,7 +1482,7 @@
     ],
     "Type": "Field",
     "Name": "s_instance",
-    "Signature": "static s_instance"
+    "Signature": "static Sound"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1522,7 +1522,7 @@
     ],
     "Type": "Field",
     "Name": "itemIndex",
-    "Signature": "itemIndex"
+    "Signature": "ProfileReplayViewController"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1532,7 +1532,7 @@
     ],
     "Type": "Field",
     "Name": "replayInfos",
-    "Signature": "replayInfos"
+    "Signature": "ProfileReplayViewController"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1543,7 +1543,7 @@
     ],
     "Type": "Field",
     "Name": "did",
-    "Signature": "public did"
+    "Signature": "public ReplayInfo"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1553,7 +1553,7 @@
     ],
     "Type": "Field",
     "Name": "rootMenu",
-    "Signature": "rootMenu"
+    "Signature": "ProfileViewController"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1563,7 +1563,7 @@
     ],
     "Type": "Field",
     "Name": "isMine",
-    "Signature": "isMine"
+    "Signature": "ProfileViewController"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1573,7 +1573,7 @@
     ],
     "Type": "Field",
     "Name": "pcode",
-    "Signature": "pcode"
+    "Signature": "ProfileViewController"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1643,7 +1643,7 @@
     ],
     "Type": "Field",
     "Name": "m_LifeSecond",
-    "Signature": "m_LifeSecond"
+    "Signature": "ToastMessageInform"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1703,7 +1703,7 @@
     ],
     "Type": "Field",
     "Name": "s_instance",
-    "Signature": "static s_instance"
+    "Signature": "static Engine"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1713,7 +1713,7 @@
     ],
     "Type": "Field",
     "Name": "replayStream",
-    "Signature": "replayStream"
+    "Signature": "Engine"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1723,7 +1723,7 @@
     ],
     "Type": "Field",
     "Name": "gameMode",
-    "Signature": "gameMode"
+    "Signature": "Engine"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1773,7 +1773,7 @@
     ],
     "Type": "Field",
     "Name": "instance",
-    "Signature": "static instance"
+    "Signature": "static DuelClient"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1833,7 +1833,7 @@
     ],
     "Type": "Field",
     "Name": "triggerSettings",
-    "Signature": "triggerSettings"
+    "Signature": "BgEffectManagerInner"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1843,7 +1843,7 @@
     ],
     "Type": "Field",
     "Name": "animationLabel",
-    "Signature": "public animationLabel"
+    "Signature": "public BgEffectSettingInner"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1853,7 +1853,7 @@
     ],
     "Type": "Field",
     "Name": "manager",
-    "Signature": "public manager"
+    "Signature": "public BgEffectSettingInner"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1873,7 +1873,7 @@
     ],
     "Type": "Field",
     "Name": "activeCharacter",
-    "Signature": "activeCharacter"
+    "Signature": "BgUnit"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1883,7 +1883,7 @@
     ],
     "Type": "Field",
     "Name": "effectManager",
-    "Signature": "effectManager"
+    "Signature": "BgUnit"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1923,7 +1923,7 @@
     ],
     "Type": "Field",
     "Name": "m_FreeInstanceQueue",
-    "Signature": "m_FreeInstanceQueue"
+    "Signature": "PopUpTextManager"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1993,7 +1993,7 @@
     ],
     "Type": "Field",
     "Name": "m_Showing",
-    "Signature": "m_Showing"
+    "Signature": "PopUpText"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2223,7 +2223,7 @@
     ],
     "Type": "Field",
     "Name": "resourceDictionary",
-    "Signature": "resourceDictionary"
+    "Signature": "ResourceManager"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2233,7 +2233,7 @@
     ],
     "Type": "Field",
     "Name": "s_instance",
-    "Signature": "static s_instance"
+    "Signature": "static ResourceManager"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2444,7 +2444,7 @@
     ],
     "Type": "Field",
     "Name": "s_instance",
-    "Signature": "static s_instance"
+    "Signature": "static Content"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2794,7 +2794,7 @@
     ],
     "Type": "Field",
     "Name": "label",
-    "Signature": "public label"
+    "Signature": "public Tween"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2804,7 +2804,7 @@
     ],
     "Type": "Field",
     "Name": "from",
-    "Signature": "public from"
+    "Signature": "public TweenAlpha"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2814,7 +2814,7 @@
     ],
     "Type": "Field",
     "Name": "to",
-    "Signature": "public to"
+    "Signature": "public TweenAlpha"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2824,7 +2824,7 @@
     ],
     "Type": "Field",
     "Name": "isRecusive",
-    "Signature": "public isRecusive"
+    "Signature": "public TweenAlpha"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2834,7 +2834,7 @@
     ],
     "Type": "Field",
     "Name": "from",
-    "Signature": "public from"
+    "Signature": "public TweenPosition"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2844,7 +2844,7 @@
     ],
     "Type": "Field",
     "Name": "to",
-    "Signature": "public to"
+    "Signature": "public TweenPosition"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2854,7 +2854,7 @@
     ],
     "Type": "Field",
     "Name": "from",
-    "Signature": "public from"
+    "Signature": "public TweenRotation"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2864,7 +2864,7 @@
     ],
     "Type": "Field",
     "Name": "to",
-    "Signature": "public to"
+    "Signature": "public TweenRotation"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2874,7 +2874,7 @@
     ],
     "Type": "Field",
     "Name": "quaternionLerp",
-    "Signature": "public quaternionLerp"
+    "Signature": "public TweenRotation"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2884,7 +2884,7 @@
     ],
     "Type": "Field",
     "Name": "from",
-    "Signature": "public from"
+    "Signature": "public TweenScale"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2894,7 +2894,7 @@
     ],
     "Type": "Field",
     "Name": "to",
-    "Signature": "public to"
+    "Signature": "public TweenScale"
   },
   {
     "Assembly": "mscorlib",
@@ -2984,7 +2984,7 @@
     ],
     "Type": "Field",
     "Name": "m_GateMap",
-    "Signature": "m_GateMap"
+    "Signature": "SoloCardThumbSettings"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2994,7 +2994,7 @@
     ],
     "Type": "Field",
     "Name": "m_ChapterMap",
-    "Signature": "m_ChapterMap"
+    "Signature": "SoloCardThumbSettings"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3005,7 +3005,7 @@
     ],
     "Type": "Field",
     "Name": "m_Settings",
-    "Signature": "m_Settings"
+    "Signature": "SettingMap"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3016,7 +3016,7 @@
     ],
     "Type": "Field",
     "Name": "m_SettingsMap",
-    "Signature": "m_SettingsMap"
+    "Signature": "SettingMap"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3038,7 +3038,7 @@
     ],
     "Type": "Field",
     "Name": "id",
-    "Signature": "public id"
+    "Signature": "public ThumbSetting"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3049,7 +3049,7 @@
     ],
     "Type": "Field",
     "Name": "mrk",
-    "Signature": "public mrk"
+    "Signature": "public ThumbSetting"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3060,7 +3060,7 @@
     ],
     "Type": "Field",
     "Name": "uvRectPos",
-    "Signature": "public uvRectPos"
+    "Signature": "public ThumbSetting"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3071,7 +3071,7 @@
     ],
     "Type": "Field",
     "Name": "uvRectSize",
-    "Signature": "public uvRectSize"
+    "Signature": "public ThumbSetting"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3082,7 +3082,7 @@
     ],
     "Type": "Field",
     "Name": "uvRectPosOther",
-    "Signature": "public uvRectPosOther"
+    "Signature": "public ThumbSetting"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3093,7 +3093,7 @@
     ],
     "Type": "Field",
     "Name": "uvRectSizeOther",
-    "Signature": "public uvRectSizeOther"
+    "Signature": "public ThumbSetting"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3143,7 +3143,7 @@
     ],
     "Type": "Field",
     "Name": "currentWallpaperGo",
-    "Signature": "currentWallpaperGo"
+    "Signature": "HomeViewController"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3223,7 +3223,7 @@
     ],
     "Type": "Field",
     "Name": "m_Root",
-    "Signature": "m_Root"
+    "Signature": "OutGameBGManager"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3513,7 +3513,7 @@
     ],
     "Type": "Field",
     "Name": "onClick",
-    "Signature": "public onClick"
+    "Signature": "public SelectionButton"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3523,7 +3523,7 @@
     ],
     "Type": "Field",
     "Name": "_soundLabelClick",
-    "Signature": "_soundLabelClick"
+    "Signature": "SelectionButton"
   },
   {
     "Assembly": "UnityEngine.CoreModule",
@@ -3553,7 +3553,7 @@
     ],
     "Type": "Field",
     "Name": "_selector",
-    "Signature": "_selector"
+    "Signature": "SelectionItem"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3563,7 +3563,7 @@
     ],
     "Type": "Field",
     "Name": "downItem",
-    "Signature": "public downItem"
+    "Signature": "public SelectionItem"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3573,7 +3573,7 @@
     ],
     "Type": "Field",
     "Name": "upItem",
-    "Signature": "public upItem"
+    "Signature": "public SelectionItem"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3583,7 +3583,7 @@
     ],
     "Type": "Field",
     "Name": "downMode",
-    "Signature": "public downMode"
+    "Signature": "public SelectionItem"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3593,7 +3593,7 @@
     ],
     "Type": "Field",
     "Name": "upMode",
-    "Signature": "public upMode"
+    "Signature": "public SelectionItem"
   },
   {
     "Assembly": "UnityEngine.CoreModule",
@@ -3623,7 +3623,7 @@
     ],
     "Type": "Field",
     "Name": "label",
-    "Signature": "public label"
+    "Signature": "public Tween"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3633,7 +3633,7 @@
     ],
     "Type": "Field",
     "Name": "duration",
-    "Signature": "public duration"
+    "Signature": "public Tween"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3643,7 +3643,7 @@
     ],
     "Type": "Field",
     "Name": "easing",
-    "Signature": "public easing"
+    "Signature": "public Tween"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3703,7 +3703,7 @@
     ],
     "Type": "Field",
     "Name": "from",
-    "Signature": "public from"
+    "Signature": "public TweenAlpha"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3713,7 +3713,7 @@
     ],
     "Type": "Field",
     "Name": "to",
-    "Signature": "public to"
+    "Signature": "public TweenAlpha"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3723,7 +3723,7 @@
     ],
     "Type": "Field",
     "Name": "from",
-    "Signature": "public from"
+    "Signature": "public TweenPosition"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3733,7 +3733,7 @@
     ],
     "Type": "Field",
     "Name": "to",
-    "Signature": "public to"
+    "Signature": "public TweenPosition"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3743,7 +3743,7 @@
     ],
     "Type": "Field",
     "Name": "rtrans",
-    "Signature": "rtrans"
+    "Signature": "TweenPosition"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3763,7 +3763,7 @@
     ],
     "Type": "Field",
     "Name": "from",
-    "Signature": "public from"
+    "Signature": "public TweenScale"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3773,7 +3773,7 @@
     ],
     "Type": "Field",
     "Name": "to",
-    "Signature": "public to"
+    "Signature": "public TweenScale"
   },
   {
     "Assembly": "UnityEngine.UI",
@@ -3903,7 +3903,7 @@
     ],
     "Type": "Field",
     "Name": "chapterMap",
-    "Signature": "chapterMap"
+    "Signature": "SoloSelectChapterViewController"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3914,7 +3914,7 @@
     ],
     "Type": "Field",
     "Name": "chapterDataDic",
-    "Signature": "public chapterDataDic"
+    "Signature": "public ChapterMap"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3925,7 +3925,7 @@
     ],
     "Type": "Field",
     "Name": "gateID",
-    "Signature": "public gateID"
+    "Signature": "public ChapterMap"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3936,7 +3936,7 @@
     ],
     "Type": "Field",
     "Name": "go",
-    "Signature": "public go"
+    "Signature": "public Chapter"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3966,7 +3966,7 @@
     ],
     "Type": "Field",
     "Name": "_labelCtrl",
-    "Signature": "_labelCtrl"
+    "Signature": "CardFlyingViewController"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3996,7 +3996,7 @@
     ],
     "Type": "Field",
     "Name": "m_DuelEndTransTimeline",
-    "Signature": "m_DuelEndTransTimeline"
+    "Signature": "DuelClient"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -4006,7 +4006,7 @@
     ],
     "Type": "Field",
     "Name": "m_PlayLabel",
-    "Signature": "m_PlayLabel"
+    "Signature": "LabeledPlayableController"
   },
   {
     "Assembly": "Assembly-CSharp",

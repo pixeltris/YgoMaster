@@ -240,7 +240,7 @@ namespace IL2CPP
             {
                 sig.Append("static ");
             }
-            sig.Append(field.Name);
+            sig.Append(field.ReflectedType.Name);
             return sig.ToString();
         }
 
