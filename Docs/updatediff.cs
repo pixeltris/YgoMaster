@@ -1,4 +1,4 @@
-// Client version 2.5.0
+// Client version 2.6.0
 // This file is generated using the 'updatediff' command in YgoMasterClient. This information is used to determine changes between client versions which impact YgoMaster.
 // Run the command, diff against the old file, and use the changes to update code.
 
@@ -646,7 +646,10 @@ enum DuelCounterType
     Shiki,
     Kyuzai,
     C,
-    Dish,
+    Osara,
+    T,
+    AAA,
+    BBB,
     Max,
 }
 /// <summary>
@@ -1289,7 +1292,9 @@ enum AccountCode
     KID_INHERIT_PF_RELATION_FAILED_XBOX,
     KID_INHERIT_PF_RELATION_FAILED_STEAM,
     KID_INHERIT_FAILED_BY_COUNTRY,
-    INHERIT_COUNT_LIMIT = 1169,
+    GC_APPROVAL_CANCEL = 1167,
+    NEED_STATE,
+    INHERIT_COUNT_LIMIT,
     PLATFORM_ERROR,
     PLATFORM_REAUTH,
     PLATFORM_REBOOT,
@@ -1302,6 +1307,10 @@ enum AccountCode
     PASSWD_LOCK_INCORRECT,
     PASSWD_LOCK_EXPIRED,
     DEEPLINK_TITLE_BACK,
+    GC_BAD_REQUEST = 1196,
+    GC_NEED_AGE_GATE,
+    GC_INVALID_TOKEN,
+    GC_SEND_MAIL_FAILED,
 }
 enum AnnounceCode
 {
@@ -1337,6 +1346,7 @@ enum BillingCode
     PURCHASE_PENDING,
     VOIDED_PURCHASE,
     ADMIN_FINISH_TRANSACTION,
+    RESERVATION_LOCK,
     STEAM_OVER_LAY_OFF = 2930,
     NX_BAASERROR_SERVICE_MAINTENANCE = 2950,
     NX_SUGARERROR_SERVICE_MAINTENANCE,
@@ -1548,6 +1558,19 @@ enum EventNotifyCode
     FATAL,
     CRITICAL,
 }
+enum ExchangeCode
+{
+    NONE,
+    ERROR,
+    FATAL,
+    CRITICAL,
+    INVALID_PARAM = 5500,
+    OUT_OF_TERM,
+    ITEMS_SHORTAGE,
+    LIMIT_MAX,
+    PROCESSING_FAILED,
+    EXPIRED_COST_ITEM,
+}
 enum ExhibitionCode
 {
     NONE,
@@ -1593,6 +1616,15 @@ enum GachaCode
     ERR_INVALID_DRAW_NUM,
     ERR_OUT_OF_TERM,
     ERR_MISSING_REQUIRED_ITEMS,
+}
+enum GeneralPoolCode
+{
+    NONE,
+    ERROR,
+    FATAL,
+    CRITICAL,
+    INVALID_PARAM = 5600,
+    ERROR_INVALID_TERM,
 }
 enum InvitationCode
 {
@@ -1641,6 +1673,16 @@ enum LotteryCode
     INVALID_PARAM = 5400,
     ERR_OUT_OF_TERM,
     ERR_OUT_OF_TERM_CARD_SELECT,
+}
+enum MarketCode
+{
+    NONE,
+    ERROR,
+    FATAL,
+    CRITICAL,
+    INVALID_PARAM = 5700,
+    ERR_OUT_OF_TERM,
+    ERR_PROCESSING_FAILED,
 }
 enum MissionCode
 {
@@ -2010,6 +2052,17 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Account_set_official_settings()
 //public static YgomSystem.Network.Handle Account_set_app_settings(System.Collections.Generic.Dictionary<System.String,System.Object> _app_settings_)
 //public static YgomSystem.Network.Handle Account_set_game_settings(System.Collections.Generic.Dictionary<System.String,System.Object> _settings_)
+//public static YgomSystem.Network.Handle Account_GC_get_requirements()
+//public static YgomSystem.Network.Handle Account_GC_check(System.String _birth_)
+//public static YgomSystem.Network.Handle Account_GC_check(System.Int32 _age_)
+//public static YgomSystem.Network.Handle Account_GC_send_mail(System.String _email_)
+//public static YgomSystem.Network.Handle Account_GC_generate_otp()
+//public static YgomSystem.Network.Handle Account_GC_get_status()
+//public static YgomSystem.Network.Handle Account_GC_upgrade()
+//public static YgomSystem.Network.Handle Account_GC_get_session()
+//public static YgomSystem.Network.Handle Account_GC_auth_send_mail(System.String _email_)
+//public static YgomSystem.Network.Handle Account_GC_auth_generate_otp()
+//public static YgomSystem.Network.Handle Account_GC_auth_get_status()
 //public static YgomSystem.Network.Handle Account_Steam_get_user_id(System.String _session_ticket_)
 //public static YgomSystem.Network.Handle Account_Steam_re_auth(System.String _session_ticket_)
 //public static YgomSystem.Network.Handle Account_PS_get_user_id(System.String _auth_session_)
@@ -2110,6 +2163,7 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Shop_get_list(System.Int32 _category_, System.Boolean _no_display_, System.Int32[] _recovery_report_)
 //public static YgomSystem.Network.Handle Shop_purchase(System.Int32 _shop_id_, System.Int32 _price_id_, System.Int32 _count_, System.Collections.Generic.Dictionary<System.String,System.Object> _args_)
 //public static YgomSystem.Network.Handle Shop_visit(System.Int32[] _shop_ids_)
+//public static YgomSystem.Network.Handle Shop_market_slot_open(System.Int32 _shopId_, System.Int32 _marketId_, System.Int32 _slot_)
 //public static YgomSystem.Network.Handle Challenge_detail(System.Int32 _mode_, System.Int32 _season_id_)
 //public static YgomSystem.Network.Handle Challenge_ranking(System.Int32 _mode_, System.Int32 _season_id_)
 //public static YgomSystem.Network.Handle Challenge_set_deck(System.Int32 _mode_, System.Int32 _deck_id_)
@@ -2343,6 +2397,12 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Lottery_check_set_round(System.Int32 _lottery_id_, System.Int32 _set_, System.Int32 _round_)
 //public static YgomSystem.Network.Handle Lottery_get_result(System.Int32 _lottery_id_, System.Int32 _set_)
 //public static YgomSystem.Network.Handle Lottery_set_cards(System.Int32 _lottery_id_, System.Int32 _set_, System.Int32 _round_, System.Int32[] _cards_)
+//public static YgomSystem.Network.Handle Exchange_card_exchange_limited(System.Int32 _exchange_id_, System.Int32 _num_, System.Int32 _mrk_, System.Int32 _premium_)
+//public static YgomSystem.Network.Handle Exchange_item_exchange_limited(System.Int32 _exchange_id_, System.Int32 _num_)
+//public static YgomSystem.Network.Handle Exchange_submenu_exchange(System.Int32 _exchange_submenu_id_)
+//public static YgomSystem.Network.Handle GeneralPool_get_card_list(System.Int32[] _card_pool_)
+//public static YgomSystem.Network.Handle Market_get_data(System.Int32 _marketId_)
+//public static YgomSystem.Network.Handle Market_edit_agree(System.Boolean _agree_, System.Boolean _formShop_)
 //public System.Void .ctor()
 //==================================
 // duel.dll functions (Engine)

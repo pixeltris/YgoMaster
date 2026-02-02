@@ -346,18 +346,8 @@
       "GenericCardListController"
     ],
     "Type": "Method",
-    "Name": "Close",
-    "Signature": "public System.Boolean Close()"
-  },
-  {
-    "Assembly": "Assembly-CSharp",
-    "Namespace": "YgomGame.Duel",
-    "Class": [
-      "GenericCardListController"
-    ],
-    "Type": "Method",
     "Name": "UpdateList",
-    "Signature": "public System.Void UpdateList(System.Int32 team, System.Int32 position)"
+    "Signature": "public System.Void UpdateList(System.Int32 team, System.Int32 position, System.Boolean onCursor)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -1663,7 +1653,7 @@
     ],
     "Type": "Method",
     "Name": "Open",
-    "Signature": "public static System.Void Open(System.String message, System.Action callback)"
+    "Signature": "public static System.Void Open(System.String message, System.Action callback, System.Collections.Generic.Dictionary<System.String,System.Object> args)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -2133,7 +2123,7 @@
     ],
     "Type": "Method",
     "Name": "OpenCheckBoxDialog",
-    "Signature": "public static System.Void OpenCheckBoxDialog(System.String title, System.String message, System.Collections.Generic.List<YgomGame.Dialog.CommonDialog.EntryCheckBoxListData.EntryCheckBoxData> checkBoxList, System.Boolean isEnableMulti, System.Action<System.Collections.Generic.List<System.Boolean>> action, System.Action noAction, System.String buttonLabel, System.String noButtonLabel, System.Boolean interactable, System.Collections.Generic.Dictionary<System.String,System.Object> args)"
+    "Signature": "public static System.Void OpenCheckBoxDialog(System.String title, System.String message, System.Collections.Generic.List<YgomGame.Dialog.CommonDialog.EntryCheckBoxListData.EntryCheckBoxData> checkBoxList, System.Boolean isEnableMulti, System.Action<System.Collections.Generic.List<System.Boolean>> action, System.Action noAction, System.String buttonLabel, System.String noButtonLabel, System.Boolean interactable, YgomGame.Dialog.CommonDialog.CommonDialogTitleWidget.IconType iconType, System.Collections.Generic.Dictionary<System.String,System.Object> args)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -3349,6 +3339,16 @@
     "Assembly": "UnityEngine.UI",
     "Namespace": "UnityEngine.UI",
     "Class": [
+      "LayoutGroup"
+    ],
+    "Type": "Property",
+    "Name": "childAlignment",
+    "Signature": "public UnityEngine.TextAnchor"
+  },
+  {
+    "Assembly": "UnityEngine.UI",
+    "Namespace": "UnityEngine.UI",
+    "Class": [
       "Image"
     ],
     "Type": "Property",
@@ -3554,6 +3554,46 @@
     "Type": "Field",
     "Name": "_selector",
     "Signature": "_selector"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "SelectionItem"
+    ],
+    "Type": "Field",
+    "Name": "downItem",
+    "Signature": "public downItem"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "SelectionItem"
+    ],
+    "Type": "Field",
+    "Name": "upItem",
+    "Signature": "public upItem"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "SelectionItem"
+    ],
+    "Type": "Field",
+    "Name": "downMode",
+    "Signature": "public downMode"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.UI",
+    "Class": [
+      "SelectionItem"
+    ],
+    "Type": "Field",
+    "Name": "upMode",
+    "Signature": "public upMode"
   },
   {
     "Assembly": "UnityEngine.CoreModule",

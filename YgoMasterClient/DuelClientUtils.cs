@@ -544,9 +544,8 @@ namespace YgomGame.Duel
 
         static IL2Field fieldType;
         static IL2Method methodGetCurrentDataList;
-        static IL2Method methodClose;
 
-        delegate void Del_UpdateList(IntPtr thisPtr, int team, int position);
+        delegate void Del_UpdateList(IntPtr thisPtr, int team, int position, csbool onCursor);
         static Hook<Del_UpdateList> hookUpdateList;
         delegate void Del_UpdateDataList(IntPtr thisPtr);
         static Hook<Del_UpdateDataList> hookUpdateDataList;
@@ -559,13 +558,12 @@ namespace YgomGame.Duel
             IL2Class classInfo = assembly.GetClass("GenericCardListController", "YgomGame.Duel");
             fieldType = classInfo.GetField("m_Type");
             methodGetCurrentDataList = classInfo.GetProperty("m_CurrentDataList").GetGetMethod();
-            methodClose = classInfo.GetMethod("Close");
             hookUpdateList = new Hook<Del_UpdateList>(UpdateList, classInfo.GetMethod("UpdateList"));
             hookUpdateDataList = new Hook<Del_UpdateDataList>(UpdateDataList, classInfo.GetMethod("UpdateDataList"));
             hookSetUidCard = new Hook<Del_SetUidCard>(SetUidCard, classInfo.GetMethod("SetUidCard"));
         }
 
-        static void UpdateList(IntPtr thisPtr, int team, int position)
+        static void UpdateList(IntPtr thisPtr, int team, int position, csbool onCursor)
         {
             if (ClientSettings.DuelClientShowRemainingCardsInDeck)
             {
@@ -584,7 +582,7 @@ namespace YgomGame.Duel
                 {
                     isCustomCardList = true;
                     position = positionBanish;
-                    hookUpdateList.Original(thisPtr, team, position);
+                    hookUpdateList.Original(thisPtr, team, position, onCursor);
                     UpdateDataList(thisPtr);
                     return;
                 }
@@ -594,7 +592,7 @@ namespace YgomGame.Duel
                     isCustomCardList = false;
                 }
             }
-            hookUpdateList.Original(thisPtr, team, position);
+            hookUpdateList.Original(thisPtr, team, position, onCursor);
         }
 
         static void UpdateDataList(IntPtr thisPtr)

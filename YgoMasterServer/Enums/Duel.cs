@@ -252,7 +252,10 @@ namespace YgoMaster
         Shiki,//v2.3.0
         Kyuzai,//v2.4.0
         C,//v2.4.0
-        Dish,//v2.4.0 (changed from Osara -> Dish in v2.5.0)
+        Osara,//v2.4.0 (changed from Osara -> Dish in v2.5.0) (changed from Dish -> Orsa in v2.6.0)
+        T,//v2.6.0
+        AAA,//v2.6.0
+        BBB,//v2.6.0
         Max
     }
 

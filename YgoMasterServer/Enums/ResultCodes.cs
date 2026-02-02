@@ -57,7 +57,9 @@ namespace YgoMaster
             KID_INHERIT_PF_RELATION_FAILED_XBOX,
             KID_INHERIT_PF_RELATION_FAILED_STEAM,
             KID_INHERIT_FAILED_BY_COUNTRY,
-            INHERIT_COUNT_LIMIT = 1169,//v2.3.0
+            GC_APPROVAL_CANCEL = 1167,
+            NEED_STATE,
+            INHERIT_COUNT_LIMIT,
             PLATFORM_ERROR,
             PLATFORM_REAUTH,
             PLATFORM_REBOOT,
@@ -70,6 +72,10 @@ namespace YgoMaster
             PASSWD_LOCK_INCORRECT,
             PASSWD_LOCK_EXPIRED,
             DEEPLINK_TITLE_BACK,
+            GC_BAD_REQUEST = 1196,
+            GC_NEED_AGE_GATE,
+            GC_INVALID_TOKEN,
+            GC_SEND_MAIL_FAILED,
         }
 
         public enum AnnounceCode //v2.4.0

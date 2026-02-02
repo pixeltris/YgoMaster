@@ -252,6 +252,7 @@ namespace YgomGame.Menu
             string buttonLabel,
             string noButtonLabel,
             bool interactable = false,
+            CommonDialogTitleWidget.IconType iconType = CommonDialogTitleWidget.IconType.None,
             Dictionary<string, object> args)
         {
             methodOpenCheckBoxDialog.Invoke(new IntPtr[]

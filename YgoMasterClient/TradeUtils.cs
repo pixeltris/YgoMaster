@@ -583,8 +583,8 @@ namespace YgomGame.Menu
             IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
             IL2Class classInfo = assembly.GetClass("ToastMessageInform", "YgomGame.Menu");
             fieldLifeSecond = classInfo.GetField("m_LifeSecond");
-            methodOpen = classInfo.GetMethod("Open", x => x.GetParameters()[1].Name == "callback");
-            methodOpenEx = classInfo.GetMethod("Open", x => x.GetParameters().Length == 3);
+            methodOpen = classInfo.GetMethod("Open", x => x.GetParameters()[1].Name == "callback");//System.Void Open(System.String message, System.Action callback, System.Collections.Generic.Dictionary<System.String,System.Object> args)
+            methodOpenEx = classInfo.GetMethod("Open", x => x.GetParameters()[1].Name == "yPos");//System.Void Open(System.String message, System.Single yPos, YgomGame.Menu.ToastMessageInform.IconType iconType)
             methodOpenWithBlock = classInfo.GetMethod("OpenWithBlock");
             hookStart = new Hook<Del_Start>(Start, classInfo.GetMethod("Start"));
         }
@@ -603,7 +603,7 @@ namespace YgomGame.Menu
         public static void Open(string message)
         {
             isNextMessageCustom = true;
-            methodOpen.Invoke(new IntPtr[] { new IL2String(message).ptr, IntPtr.Zero });
+            methodOpen.Invoke(new IntPtr[] { new IL2String(message).ptr, IntPtr.Zero, IntPtr.Zero });
         }
 
         public static void Open(string message, float yPos, IconType iconType)

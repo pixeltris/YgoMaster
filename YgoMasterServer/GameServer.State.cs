@@ -275,6 +275,10 @@ namespace YgoMaster
         /// </summary>
         public int MultiplayerPvpClientRunDialogUserOffset;
         /// <summary>
+        /// Size of the duel.dll which the duel offsets depend on (used to notify user of errors if outdated)
+        /// </summary>
+        public int MultiplayerPvpClientDuelDllSize;
+        /// <summary>
         /// Doesn't update the deck edit time when the deck is edited (this will preserve the deck order of the deck list)
         /// </summary>
         public bool DontUpdateDeckEditTime;
@@ -450,6 +454,16 @@ namespace YgoMaster
             MultiplayerPvpClientSysActCallsPerSleep = Utils.GetValue<int>(values, "MultiplayerPvpClientSysActCallsPerSleep");
             MultiplayerPvpClientDoCommandUserOffset = Utils.GetValue<int>(values, "MultiplayerPvpClientDoCommandUserOffset");
             MultiplayerPvpClientRunDialogUserOffset = Utils.GetValue<int>(values, "MultiplayerPvpClientRunDialogUserOffset");
+            MultiplayerPvpClientDuelDllSize = Utils.GetValue<int>(values, "MultiplayerPvpClientDuelDllSize");
+            if (MultiplayerPvpClientDuelDllSize != 0 && MultiplayerEnabled)
+            {
+                FileInfo duelDllFile = new FileInfo(Path.Combine("..", "masterduel_Data", "Plugins", "x86_64", "duel.dll"));
+                if (duelDllFile.Exists && duelDllFile.Length != MultiplayerPvpClientDuelDllSize)
+                {
+                    Utils.LogWarning("duel.dll size mismatch. Expected:" + MultiplayerPvpClientDuelDllSize + ", found:" + duelDllFile.Length);
+                    Utils.LogWarning("If you use PvP and you can control your opponents cards update the following Settings.json values from github: MultiplayerPvpClientDoCommandUserOffset, MultiplayerPvpClientRunDialogUserOffset, MultiplayerPvpClientDuelDllSize");
+                }
+            }
 
             FriendSearchLimit = Utils.GetValue<int>(values, "FriendSearchLimit", 100);
             FriendOfflineInSeconds = Utils.GetValue<int>(values, "FriendOfflineInSeconds", 300);
