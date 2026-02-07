@@ -1,45 +1,45 @@
 [
-	{ "1090001": 01 },//Forest
-	{ "1090002": 02 },//Spellbook Star Hall
-	{ "1090003": 03 },//Ritual Cage
-	{ "1090004": 02 },//Geartown
-	{ "1090005": 04 },//Volcano
-	{ "1090006": 04 },//World Legacy Ruins
-	{ "1090007": 05 },//Foreign Capital
-	{ "1090008": 01 },//Realm of Danger!
-	{ "1090009": 07 },//Night Skyscrapers
-	{ "1090010": 15 },//Glacial World
-	{ "1090011": 03 },//The Desolate Temple
-	{ "1090012": 13 },//Mount Swordsoul
-	{ "1090013": 06 },//Vivid Abyssal Waters
-	{ "1090014": 09 },//Madolche Chateau
-	{ "1090015": 09 },//Ghostrick Mansion
-	{ "1090016": 12 },//Myutant Evolution Lab
-	{ "1090017": 12 },//Cyber Universe
-	{ "1090018": 16 },//Memories of an Ancient Duel
-	{ "1090019": 02 },//Dogmatika Cathedral
-	{ "1090020": 14 },//Archfiend Palabyrinth
-	{ "1090021": 16 },//The Revived Sky Temple
-	{ "1090022": 06 },//Pyroxene Cave
-	{ "1090023": 12 },//Pressured Planet Wraitsoth
-	{ "1090024": 11 },//Ursarctic Big Dipper
-	{ "1090025": 16 },//Blue-Eyes Mausoleum
-	{ "1090026": 01 },//Forest of Cherry Pink
-	{ "1090027": 01 },//Forest of Autumnal Splendor
-	{ "1090028": 01 },//Forest of Endless White
-	{ "1090030": 15 },//Forest of the Traptrix
-	{ "1090031": 12 },//Ruins of the Sinful Spoils
-	{ "1090032": 15 },//Lost World
-	{ "1090033": [ "BGM_DUEL_F01_ALL", "", "" ] },//Evil★Twin
-	{ "1090034": [ "BGM_DUEL_F03_PHASE_A","BGM_DUEL_F03_PHASE_B","BGM_DUEL_F03_PHASE_C" ] },//Striking Stratagem Simulation Area
-	{ "1090035": [ "BGM_DUEL_F05_PHASE_A", "BGM_DUEL_F05_PHASE_B", "" ] },//Graveyard of Myriad Souls
-	{ "1090036": [ "BGM_DUEL_F04_PHASE_A","BGM_DUEL_F04_PHASE_B","" ] },//Despia, Theater of the Branded
-	{ "1090037": [ "BGM_DUEL_F08_PHASE_A","BGM_DUEL_F08_PHASE_B","" ] },//Labrynth Labyrinth
-	{ "1090039": [ "BGM_DUEL_F09_PHASE_A","BGM_DUEL_F09_PHASE_B","" ] },//"A Case for K9"
-	{ "1090040": [ "BGM_DUEL_F07_PHASE_A", "BGM_DUEL_F07_PHASE_B", "" ] },//Football Stadium
-	{ "1090041": [ "BGM_DUEL_F10_PHASE_A","BGM_DUEL_F10_PHASE_B","BGM_DUEL_F10_PHASE_C" ] },//Neon-Lit Cyber City
-	{ "1092001": [ "BGM_DUEL_EX_02_NORMAL", "BGM_DUEL_EX_02_KEYCARD", "BGM_DUEL_EX_02_CLIMAX" ] },//Colosseum
-	{ "1092002": [ "BGM_DUEL_EX_03_NORMAL", "BGM_DUEL_EX_03_KEYCARD", "BGM_DUEL_EX_03_CLIMAX" ] },//WCS
+  { "1090001": 01 },//Forest
+  { "1090002": 02 },//Spellbook Star Hall
+  { "1090003": 03 },//Ritual Cage
+  { "1090004": 02 },//Geartown
+  { "1090005": 04 },//Volcano
+  { "1090006": 04 },//World Legacy Ruins
+  { "1090007": 05 },//Foreign Capital
+  { "1090008": 01 },//Realm of Danger!
+  { "1090009": 07 },//Night Skyscrapers
+  { "1090010": 15 },//Glacial World
+  { "1090011": 03 },//The Desolate Temple
+  { "1090012": 13 },//Mount Swordsoul
+  { "1090013": 06 },//Vivid Abyssal Waters
+  { "1090014": 09 },//Madolche Chateau
+  { "1090015": 09 },//Ghostrick Mansion
+  { "1090016": 12 },//Myutant Evolution Lab
+  { "1090017": 12 },//Cyber Universe
+  { "1090018": 16 },//Memories of an Ancient Duel
+  { "1090019": 02 },//Dogmatika Cathedral
+  { "1090020": 14 },//Archfiend Palabyrinth
+  { "1090021": 16 },//The Revived Sky Temple
+  { "1090022": 06 },//Pyroxene Cave
+  { "1090023": 12 },//Pressured Planet Wraitsoth
+  { "1090024": 11 },//Ursarctic Big Dipper
+  { "1090025": 16 },//Blue-Eyes Mausoleum
+  { "1090026": 01 },//Forest of Cherry Pink
+  { "1090027": 01 },//Forest of Autumnal Splendor
+  { "1090028": 01 },//Forest of Endless White
+  { "1090030": 15 },//Forest of the Traptrix
+  { "1090031": 12 },//Ruins of the Sinful Spoils
+  { "1090032": 15 },//Lost World
+  { "1090033": [ "BGM_DUEL_F01_ALL", "", "" ] },//Evil★Twin
+  { "1090034": [ "BGM_DUEL_F03_PHASE_A","BGM_DUEL_F03_PHASE_B","BGM_DUEL_F03_PHASE_C" ] },//Striking Stratagem Simulation Area
+  { "1090035": [ "BGM_DUEL_F05_PHASE_A", "BGM_DUEL_F05_PHASE_B", "" ] },//Graveyard of Myriad Souls
+  { "1090036": [ "BGM_DUEL_F04_PHASE_A","BGM_DUEL_F04_PHASE_B","" ] },//Despia, Theater of the Branded
+  { "1090037": [ "BGM_DUEL_F08_PHASE_A","BGM_DUEL_F08_PHASE_B","" ] },//Labrynth Labyrinth
+  { "1090039": [ "BGM_DUEL_F09_PHASE_A","BGM_DUEL_F09_PHASE_B","" ] },//"A Case for K9"
+  { "1090040": [ "BGM_DUEL_F07_PHASE_A", "BGM_DUEL_F07_PHASE_B", "" ] },//Football Stadium
+  { "1090041": [ "BGM_DUEL_F10_PHASE_A","BGM_DUEL_F10_PHASE_B","BGM_DUEL_F10_PHASE_C" ] },//Neon-Lit Cyber City
+  { "1092001": [ "BGM_DUEL_EX_02_NORMAL", "BGM_DUEL_EX_02_KEYCARD", "BGM_DUEL_EX_02_CLIMAX" ] },//Colosseum
+  { "1092002": [ "BGM_DUEL_EX_03_NORMAL", "BGM_DUEL_EX_03_KEYCARD", "BGM_DUEL_EX_03_CLIMAX" ] },//WCS
 ]
 //Audio file list: https://code.moenext.com/sherry_chaos/MDPro3/-/tree/master/Assets/Addressables/Sound/BGM
 //BGM_DUEL_NORMAL_01 BGM_DUEL_KEYCARD_01 BGM_DUEL_CLIMAX_01

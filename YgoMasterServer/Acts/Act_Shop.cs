@@ -265,6 +265,10 @@ namespace YgoMaster
                 data["list_button_price"] = 0;
                 data["confirm_text_id"] = new string[0];// Custom text for the "Purchase Confirmation" popup (entries are line breaked)
                 data["isNew"] = isNew;
+                if (!string.IsNullOrWhiteSpace(shopItem.DetailPath))
+                {
+                    data["detailPath"] = shopItem.DetailPath;
+                }
 
                 Dictionary<string, object> prices = new Dictionary<string,object>();
                 foreach (ShopItemPrice price in shopItem.Prices)

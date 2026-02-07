@@ -134,6 +134,7 @@ namespace YgoMaster
         public string IconData;
         public string Preview;
         public string Decoration;
+        public string DetailPath;
         public HashSet<int> SearchCategory { get; private set; }
         public List<ShopItemPrice> Prices { get; private set; }
 

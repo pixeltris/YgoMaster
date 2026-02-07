@@ -2440,6 +2440,7 @@ namespace YgoMaster
                 info.SubCategory = Utils.GetValue<int>(data, "subCategory", 1);
                 info.TargetCategory = Utils.GetValue<int>(data, "targetCategory");
                 info.ProductType = Utils.GetValue<int>(data, "productType");
+                info.DetailPath = Utils.GetValue<string>(data, "detailPath");
                 object previewObj = Utils.GetValue<object>(data, "preview");
                 if (previewObj is string)
                 {
@@ -2657,21 +2658,15 @@ namespace YgoMaster
                                     info.SetItems.Add(item);
                                 }
                             }
-                            // NOTE: For this to work SpecialShop should always be loaded after other packs
-                            if (Utils.GetValue<int>(data, "pickupCardListId") != 0 && !string.IsNullOrEmpty(info.IconData))
+                            info.BundlePickupCardListId = Utils.GetValue<int>(data, "pickupCardListId");
+                            info.BundleNormalCardListId = Utils.GetValue<int>(data, "normalCardListId");
+                            if (info.BundleNormalCardListId == 0)
                             {
-                                int mrk;
-                                string packImageInfo = info.IconData.Split(new char[] { '&' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.StartsWith("pack=") && x.Contains("_"));
-                                if (!string.IsNullOrEmpty(packImageInfo) && int.TryParse(packImageInfo.Split('_')[1], out mrk))
+                                ShopItemInfo standardPack = Shop.PackShop.Values.FirstOrDefault(x => x.PackType == ShopPackType.Standard);
+                                if (standardPack != null)
                                 {
-                                    ShopItemInfo packShop = Shop.PackShop.Values.FirstOrDefault(x => x.IconMrk == mrk);
-                                    info.BundlePickupCardListId = packShop.ShopId;
+                                    info.BundleNormalCardListId = standardPack.ShopId;
                                 }
-                            }
-                            ShopItemInfo standardPack = Shop.PackShop.Values.FirstOrDefault(x => x.PackType == ShopPackType.Standard);
-                            if (standardPack != null)
-                            {
-                                info.BundleNormalCardListId = standardPack.ShopId;
                             }
                         }
                         else
@@ -3041,6 +3036,8 @@ namespace YgoMaster
             Dictionary<int, Dictionary<string, object>> accessoryShop = new Dictionary<int, Dictionary<string, object>>();
             Dictionary<int, Dictionary<string, object>> specialShop = new Dictionary<int, Dictionary<string, object>>();
             Dictionary<int, List<int>> extraCardLists = new Dictionary<int, List<int>>();
+            Dictionary<int, int> cardListIdToCardPackId = new Dictionary<int, int>();
+            int standardCardListId = 0;
             foreach (string file in Directory.GetFiles(dir).OrderBy(x => new FileInfo(x).LastWriteTime))
             {
                 Dictionary<string, object> data = MiniJSON.Json.DeserializeStripped(File.ReadAllText(file)) as Dictionary<string, object>;
@@ -3138,14 +3135,26 @@ namespace YgoMaster
                                             {
                                                 int normalCardListId = Utils.GetValue<int>(itemData, "normalCardListId");
                                                 int pickupCardListId = Utils.GetValue<int>(itemData, "pickupCardListId");
+                                                if (shop == packShop && shopId == 10000001)
+                                                {
+                                                    standardCardListId = normalCardListId;
+                                                }
                                                 object cardIdsObj = null;
                                                 if (pickupCardListId != 0)
                                                 {
                                                     Utils.TryGetValue(cardListData, pickupCardListId.ToString(), out cardIdsObj);
+                                                    if (shop == packShop && !cardListIdToCardPackId.ContainsKey(pickupCardListId))
+                                                    {
+                                                        cardListIdToCardPackId[pickupCardListId] = shopId;
+                                                    }
                                                 }
                                                 else if (normalCardListId != 0)
                                                 {
                                                     Utils.TryGetValue(cardListData, normalCardListId.ToString(), out cardIdsObj);
+                                                    if (shop == packShop && normalCardListId != standardCardListId && !cardListIdToCardPackId.ContainsKey(normalCardListId))
+                                                    {
+                                                        cardListIdToCardPackId[normalCardListId] = shopId;
+                                                    }
                                                 }
                                                 if (cardIdsObj != null)
                                                 {
@@ -3243,6 +3252,38 @@ namespace YgoMaster
                 {
                     Utils.LogWarning("No card list for shop " + packShopItem.Key);
                     packShop.Remove(packShopItem.Key);
+                }
+            }
+            foreach (KeyValuePair<int, Dictionary<string, object>> packShopItem in new Dictionary<int, Dictionary<string, object>>(specialShop))
+            {
+                int normalCardListId = Utils.GetValue<int>(packShopItem.Value, "normalCardListId");
+                int pickupCardListId = Utils.GetValue<int>(packShopItem.Value, "pickupCardListId");
+                int normalCardPackId, pickupCardPackId;
+                if (normalCardListId != 0)
+                {
+                    if (normalCardListId == standardCardListId)
+                    {
+                        packShopItem.Value["normalCardListId"] = 10000001;
+                    }
+                    else if (cardListIdToCardPackId.TryGetValue(normalCardListId, out normalCardPackId))
+                    {
+                        packShopItem.Value["normalCardListId"] = normalCardPackId;
+                    }
+                    else
+                    {
+                        Utils.LogWarning("Couldn't find normal pack id from card list " + normalCardListId);
+                    }
+                }
+                if (pickupCardListId != 0)
+                {
+                    if (cardListIdToCardPackId.TryGetValue(pickupCardListId, out pickupCardPackId))
+                    {
+                        packShopItem.Value["pickupCardListId"] = pickupCardPackId;
+                    }
+                    else
+                    {
+                        Utils.LogWarning("Couldn't find pickup pack id from card list " + pickupCardPackId);
+                    }
                 }
             }
             MergeShops(Path.Combine(dataDirectory, "AllShopsMerged.json"), packShop, structureShop, accessoryShop, specialShop);
