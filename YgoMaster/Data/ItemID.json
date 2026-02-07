@@ -50,6 +50,8 @@
     1000035,//Diabellstar the Black Witch
     1000036,//Aleister the Invoker
     1000037,//Dingirsu, the Orcust of the Evening Star
+    1000038,//I:P Masquerena
+    1000039,//S:P Little Knight
     1000041,//Number 41: Bagooska the Terribly Tired Tapir
     1000042,//Yummy★Snatchy
     1001001,//Instant Fusion
@@ -85,6 +87,7 @@
     1001031,//Ryko, Lightsworn Hunter
     1001032,//King's Sarcophagus
     1001034,//Dark Resonator
+    1001036,//Ghost Belle & Haunted Mansion
     1001037,//Gem-Turtle
     1001038,//Fabled Lurrie
     1002001,//Soccer Ball
@@ -104,6 +107,7 @@
     1003002,//Tri-Brigade Shuraig the Ominous Omen
     1003003,//Sky Striker Ace - Raye
     1003004,//Fiendsmith Engraver
+    1003005,//I:P Masquerena & S-Force Rappa Chiyomaru
     1005001,//Rescue Rabbit
   ],
   "ICON": [
@@ -226,6 +230,7 @@
     1010120,//Cupsy☆Yummy
     1010121,//Diabellstar the Black Witch
     1010122,//Valiant Knight
+    1010123,//K9-17 Izuna
     1010124,//Ohime the Manifested Mikanko
     1010125,//Medius the Pure
     1010126,//Dracotail Faimena
@@ -234,6 +239,7 @@
     1010129,//Santa Claws
     1010130,//Miracle Raven
     1010131,//Gagaga Academy Emergency Network
+    1010138,//Dark Magician
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -373,6 +379,10 @@
     1012074,//Poseidra, the Atlantean Dragon
     1012075,//Fire King High Avatar Garunix
     1012076,//Good Goblin Housekeeping
+    1012077,//I:P Masquerena
+    1012078,//S-Force Rappa Chiyomaru
+    1012079,//Spright Starter
+    1012080,//EM:P Meowmine
     1013001,//PawaPuro
     1013002,//Memories of Intersecting Duels
     1013003,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
@@ -582,6 +592,8 @@
     1020195,//Psychic Duelist
     1020196,//CEO
     1020197,//Jack of All Trades
+    1020198,//Spright Starter
+    1020199,//Forge Ahead
     1021001,//Starting Out
     1021002,//Top Performer
   ],
@@ -644,6 +656,7 @@
     1031016,//Overlay Unit β
     1031017,//A.I. Love Fusion
     1031018,//Orcust
+    1031019,//K9-17 Izuna
     1031020,//P.U.N.K. JAM FEVER!
     1032001,//Festive Ornament
     1032002,//Celebration of Spring Breeze
@@ -810,6 +823,13 @@
     1070147,//Infinite Impermanence
     1070148,//Psychic End Punisher
     1070149,//Gradius
+    1070150,//W:P Fancy Ball
+    1070151,//K9-ØØ Lupis
+    1070152,//Secrets of Dark Magic
+    1070153,//Spright Elf
+    1070157,//Live☆Twin Lil-la Sweet
+    1070158,//Junk Warrior Extreme
+    1070159,//Emperor Tanuki's Critter Count
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -847,6 +867,7 @@
     1071035,//Fire King High Avatar Garunix
     1071036,//Poseidra, the Atlantean Dragon
     1071037,//That Grass Looks Greener
+    1071038,//I:P Masquerena
     1072001,//Sky Striker Conversion: Flaming Wings of Destruction
     1072002,//Chaos Xyz Evolution －Galactic Gathering of Dragons－
     1072003,//Sky Striker Armor - Black Flash Raiment
@@ -912,6 +933,8 @@
     1080028,//Blaze of Albaz
     1080029,//Crimson Powerforce
     1080030,//Reunion of Raiders
+    1080031,//Dark Magical Blast
+    1080032,//Gigantic Sparkle
     1082001,//Xyz Black
     1082002,//The Millennium Puzzle
     1082003,//Duelist Card Case Blue
@@ -937,6 +960,7 @@
     1082023,//Yum☆Yum☆Yummys
     1082024,//Diabellstar the Black Witch
     1082025,//Labrynth
+    1082026,//"A Case for K9"
     1083001,//White & Blue
   ],
   "FIELD": [
@@ -976,9 +1000,12 @@
     1090035,//Graveyard of Myriad Souls
     1090036,//Despia, Theater of the Branded
     1090037,//Labrynth Labyrinth
+    1090039,//"A Case for K9"
     1090040,//Football Stadium
+    1090041,//Neon-Lit Cyber City
     1092001,//Colosseum
     1092002,//WCS
+    1092004,//Japan High School Championship
   ],
   "FIELD_OBJ": [
     1100001,//Forest
@@ -1017,7 +1044,9 @@
     1100035,//Graveyard of Myriad Souls
     1100036,//Despia, Theater of the Branded
     1100037,//Labrynth Labyrinth
+    1100039,//"A Case for K9"
     1100040,//Football Stadium
+    1100041,//Neon-Lit Cyber City
     1101001,//Trap Hole
     1101002,//Magical Hats
     1101003,//Summon Limit
@@ -1051,6 +1080,7 @@
     1101041,//Wreath
     1102001,//Colosseum
     1102002,//WCS
+    1102004,//Japan High School Championship
   ],
   "AVATAR_HOME": [
     1110001,//Forest
@@ -1089,7 +1119,9 @@
     1110035,//Graveyard of Myriad Souls
     1110036,//Despia, Theater of the Branded
     1110037,//Labrynth Labyrinth
+    1110039,//"A Case for K9"
     1110040,//Football Stadium
+    1110041,//Neon-Lit Cyber City
     1111001,//Destiny Board
     1111002,//Bug Matrix
     1111003,//Shien's Dojo
@@ -1138,8 +1170,11 @@
     1111066,//Magical Meltdown
     1111068,//Yummy
     1111071,//Dracotail
+    1111072,//Live☆Twin Lil-la Sweet
+    1111080,//Borrel
     1112001,//Colosseum
     1112002,//WCS
+    1112004,//Japan High School Championship
     1113001,//WCS 2023 Party Favor
     1113002,//WCS 2024 Party Favor
     1113003,//WCS 2025 Party Favor
@@ -1176,6 +1211,8 @@
     1120028,//Blaze of Albaz
     1120029,//Crimson Powerforce
     1120030,//Reunion of Raiders
+    1120031,//Dark Magical Blast
+    1120032,//Gigantic Sparkle
   ],
   "WALLPAPER": [
     1130001,//Blue-Eyes Alternative White Dragon
@@ -1274,6 +1311,7 @@
     1130096,//Lady Labrynth of the Silver Castle
     1130097,//Archfiend's Ghastly Glitch
     1130098,//Eldlich the Golden Lord
+    1130099,//K9-X "Werewolf"
     1130100,//Ohime the Manifested Mikanko
     1130101,//Mikanko Shinbu - Noble Twins
     1130103,//Ketu Dracotail
@@ -1281,6 +1319,13 @@
     1130105,//Diabellze the Original Sinkeeper
     1130106,//Megalith Anastasis
     1130107,//Solfachord Symphony
+    1130108,//W:P Fancy Ball
+    1130109,//I:P Masquerena
+    1130110,//S:P Little Knight
+    1130111,//I:P Masquerena
+    1130112,//S:P Little Knight
+    1130113,//Spright Gamma Burst
+    1130124,//I:P Masquerena & S:P Little Knight
     1132001,//Rescue Rabbit
     1132002,//Neymar
     1132003,//That's 10!
@@ -1305,8 +1350,10 @@
     1170002,//Dragonmaid
     1170003,//Yummy
     1170004,//Labrynth
+    1170005,//K9
     1170006,//Mikanko
     1170008,//Sky Striker Ace
+    1170009,//Dark Magician
   ],
   "COIN": [
     1180001,//Blue-Eyes Alternative White Dragon
@@ -1321,6 +1368,9 @@
     1180012,//Sky Striker Ace
     1180013,//Ketu Dracotail
     1180014,//Winged Kuriboh
+    1180015,//K9
+    1180016,//EM:P Meowmine
+    1180017,//Dark Magician
   ],
   "BOOKMARK_LIMIT": [
     1190001,//Bookmark Slots

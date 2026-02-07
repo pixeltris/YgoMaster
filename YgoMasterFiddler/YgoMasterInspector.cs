@@ -526,21 +526,36 @@ namespace YgoMaster
                                             {
                                                 Dictionary<string, object> chapterData;
                                                 int chapterId;
-                                                if (int.TryParse(chapter.Key, out chapterId) && chapterId > 0 && (chapterData = chapter.Value as Dictionary<string, object>) != null &&
-                                                    chapterData.ContainsKey("npc_deck_id"))
+                                                if (int.TryParse(chapter.Key, out chapterId) && chapterId > 0 && (chapterData = chapter.Value as Dictionary<string, object>) != null)
                                                 {
-                                                    int npcDeckId = (int)Convert.ChangeType(chapterData["npc_deck_id"], typeof(int));
-                                                    if (npcDeckId > 0)
+                                                    if (chapterData.ContainsKey("npc_deck_id"))
                                                     {
-                                                        string soloDeckIdsDir = Path.Combine(updateDir, "SoloNpcDeckIds");
+                                                        int npcDeckId = (int)Convert.ChangeType(chapterData["npc_deck_id"], typeof(int));
+                                                        if (npcDeckId > 0)
+                                                        {
+                                                            string soloDeckIdsDir = Path.Combine(updateDir, "SoloNpcDeckIds");
+                                                            try
+                                                            {
+                                                                Directory.CreateDirectory(soloDeckIdsDir);
+                                                            }
+                                                            catch
+                                                            {
+                                                            }
+                                                            File.WriteAllText(Path.Combine(soloDeckIdsDir, chapterId + ".txt"), npcDeckId.ToString());
+                                                        }
+                                                    }
+                                                    if (chapterData.ContainsKey("movie"))
+                                                    {
+                                                        string soloMoviesDir = Path.Combine(updateDir, "SoloMovies");
                                                         try
                                                         {
-                                                            Directory.CreateDirectory(soloDeckIdsDir);
+                                                            Directory.CreateDirectory(soloMoviesDir);
                                                         }
                                                         catch
                                                         {
                                                         }
-                                                        File.WriteAllText(Path.Combine(soloDeckIdsDir, chapterId + ".txt"), npcDeckId.ToString());
+                                                        (chapterData["movie"] as Dictionary<string, object>)["url"] = "http://localhost/" + chapterId + ".mp4";
+                                                        File.WriteAllText(Path.Combine(soloMoviesDir, chapterId + ".json"), "{\"movie\":" + MiniJSON.Json.Serialize(chapterData["movie"]) + "}");
                                                     }
                                                 }
                                             }
