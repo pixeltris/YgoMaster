@@ -1207,8 +1207,7 @@ namespace YgoMaster
                 if (odds != null)
                 {
                     Dictionary<CardRarity, int> cardRarityCount = new Dictionary<CardRarity, int>();
-                    Dictionary<int, int> packCardRare = GetCardRarities(request.Player, item);
-                    foreach (KeyValuePair<int, int> card in packCardRare)
+                    foreach (KeyValuePair<int, int> card in GetCardRarities(request.Player, item))
                     {
                         if (!cardRarityCount.ContainsKey((CardRarity)card.Value))
                         {
@@ -1219,60 +1218,185 @@ namespace YgoMaster
                             cardRarityCount[(CardRarity)card.Value]++;
                         }
                     }
-                    List<object> cardRateList = new List<object>();
-                    List<object> premiereRateList = new List<object>();
-                    foreach (ShopOddsRarity cardRate in odds.CardRateList)
+
+                    Dictionary<CardRarity, int> cardRarityCountStandardPack = new Dictionary<CardRarity, int>();
+                    foreach (KeyValuePair<int, int> card in GetCardRarities(request.Player, Shop.StandardPack))
                     {
-                        Dictionary<string, object> rateDict = new Dictionary<string, object>();
+                        if (!cardRarityCountStandardPack.ContainsKey((CardRarity)card.Value))
+                        {
+                            cardRarityCountStandardPack[(CardRarity)card.Value] = 1;
+                        }
+                        else
+                        {
+                            cardRarityCountStandardPack[(CardRarity)card.Value]++;
+                        }
+                    }
+
+                    List<object> rateData = new List<object>();
+
+                    Action<int, string, List<object>, string> createHeader = (int indent, string textId, List<object> args, string subTextId) =>
+                    {
+                        Dictionary<string, object> header = new Dictionary<string, object>();
+                        header["tp"] = "header";
+                        header["indent"] = indent;
+                        List<object> datas = new List<object>();
+                        if (textId != null)
+                        {
+                            Dictionary<string, object> mainText = new Dictionary<string, object>();
+                            mainText["textId"] = textId;
+                            if (args != null)
+                            {
+                                mainText["args"] = args;
+                            }
+                            datas.Add(mainText);
+                        }
+                        if (subTextId != null)
+                        {
+                            datas.Add(new Dictionary<string, object>()
+                            {
+                                { "textId", subTextId }
+                            });
+                        }
+                        header["datas"] = datas;
+                        rateData.Add(header);
+                    };
+
+                    Action<int, string> createText = (int indent, string textId) =>
+                    {
+                        Dictionary<string, object> text = new Dictionary<string, object>();
+                        text["tp"] = "text";
+                        text["indent"] = indent;
+                        text["datas"] = new List<object>
+                        {
+                            new Dictionary<string, object>()
+                            {
+                                { "textId", textId }
+                            }
+                        };
+                        rateData.Add(text);
+                    };
+
+                    Action<int, ShopOddsStyleRarity> createPremiereTable = (int indent, ShopOddsStyleRarity premiereRate) =>
+                    {
+                        Dictionary<string, object> premiereTable = new Dictionary<string, object>();
+                        premiereTable["tp"] = "premiereTable";
+                        premiereTable["indent"] = indent;
+                        List<object> datas = new List<object>();
+                        foreach (KeyValuePair<CardStyleRarity, double> rate in premiereRate.Rate)
+                        {
+                            datas.Add(new Dictionary<string, object>()
+                            {
+                                { "premire", (int)rate.Key },
+                                { "rate", string.Format("{0:0.00}", rate.Value)}
+                            });
+                        }
+                        premiereTable["datas"] = datas;
+                        rateData.Add(premiereTable);
+                    };
+
+                    Action<int, ShopOddsRarity> createRarityTable = (int indent, ShopOddsRarity cardRate) =>
+                    {
+                        Dictionary<string, object> rarityTable = new Dictionary<string, object>();
+                        rarityTable["tp"] = "rarityTable";
+                        rarityTable["indent"] = indent;
+                        List<object> datas = new List<object>();
                         foreach (KeyValuePair<CardRarity, double> rate in cardRate.Rate)
                         {
                             int num;
-                            cardRarityCount.TryGetValue(rate.Key, out num);
-                            rateDict[((int)rate.Key).ToString()] = new Dictionary<string, object>()
+                            if (cardRate.Standard)
                             {
+                                cardRarityCountStandardPack.TryGetValue(rate.Key, out num);
+                            }
+                            else
+                            {
+                                cardRarityCount.TryGetValue(rate.Key, out num);
+                            }
+                            datas.Add(new Dictionary<string, object>()
+                            {
+                                { "rare", (int)rate.Key },
+                                { "rate", string.Format("{0:0.00}", rate.Value) },
                                 { "num", num },
-                                { "rate", string.Format("{0:0.00}", rate.Value) }
-                            };
+                                { "perpiece", (rate.Value / num).ToString("F4") },
+                            });
                         }
-                        Dictionary<string, object> info = new Dictionary<string, object>()
+                        rarityTable["datas"] = datas;
+                        rateData.Add(rarityTable);
+                    };
+
+                    foreach (ShopOddsRarity cardRate in odds.CardRateList)
+                    {
+                        if (cardRate.GuaranteeRareMin != CardRarity.None)
                         {
-                            { "start_num", cardRate.StartNum },
-                            { "end_num", cardRate.EndNum },
-                            { "standard", cardRate.Standard },
-                            { "rate", rateDict }
-                        };
-                        if (cardRate.GuaranteeRareMin != CardRarity.None || cardRate.GuaranteeRareMax != CardRarity.None)
-                        {
-                            info["settle_rare_min"] = (int)cardRate.GuaranteeRareMin;
-                            info["settle_rare_max"] = (int)cardRate.GuaranteeRareMax;
+                            if (cardRate.StartNum != cardRate.EndNum)
+                            {
+                                Utils.LogWarning("TODO: Support card odds where StartNum != EndNum when cardRate.GuaranteeRareMin != None");
+                            }
+                            createHeader(
+                                0,
+                                "IDS_MARKUPSHOP_TEIKYOU_CARD_LABEL_UNIT",
+                                new List<object> {
+                                    cardRate.StartNum,
+                                    new Dictionary<string, object>()
+                                    {
+                                        { "textId", cardRate.GuaranteeRareMin == cardRate.GuaranteeRareMax ? "IDS_MARKUPSHOP_TEIKYOU_CARD_LABELCOMMENT_SETTELERARE" : "IDS_MARKUPSHOP_TEIKYOU_CARD_LABELCOMMENT_SETTELEUPPERRARE" },
+                                        { "args", new List<object>() {
+                                            "<rarity id='" + (int)cardRate.GuaranteeRareMin + "' />"
+                                        }}
+                                    }
+                                },
+                                cardRate.Standard ? "IDS_MARKUPSHOP_TEIKYOU_CARD_LABELCOMMENT_STANDARD" : null);
                         }
-                        cardRateList.Add(info);
+                        else
+                        {
+                            createHeader(
+                                0,
+                                "IDS_MARKUPSHOP_TEIKYOU_CARD_LABEL_RANGE",
+                                new List<object> {
+                                    cardRate.StartNum,
+                                    cardRate.EndNum,
+                                    ""
+                                },
+                                cardRate.Standard ? "IDS_MARKUPSHOP_TEIKYOU_CARD_LABELCOMMENT_STANDARD" : null);
+                        }
+
+                        createRarityTable(0, cardRate);
                     }
+                    string packDetailTextId = null;
+                    switch (item.PackType)
+                    {
+                        case ShopPackType.Standard:
+                            packDetailTextId = "IDS_MARKUPSHOP_TEIKYOU_CARD_DETAIL_STANDARD";
+                            break;
+                        case ShopPackType.Secret:
+                            packDetailTextId = "IDS_MARKUPSHOP_TEIKYOU_CARD_DETAIL_SECRET";
+                            break;
+                        case ShopPackType.Selection:
+                            packDetailTextId = "IDS_MARKUPSHOP_TEIKYOU_CARD_DETAIL_PICKUP";
+                            break;
+                    }
+                    if (packDetailTextId != null)
+                    {
+                        createText(1, packDetailTextId);
+                    }
+
                     foreach (ShopOddsStyleRarity premiereRate in odds.CardStyleRarityRateList)
                     {
-                        List<object> rareList = new List<object>();
-                        Dictionary<string, object> rateDict = new Dictionary<string,object>();
-                        foreach (CardRarity rarity in premiereRate.Rarities)
-                        {
-                            rareList.Add((int)rarity);
-                        }
-                        foreach (KeyValuePair<CardStyleRarity, double> rate in premiereRate.Rate)
-                        {
-                            rateDict[((int)rate.Key).ToString()] = string.Format("{0:0.00}", rate.Value);
-                        }
-                        premiereRateList.Add(new Dictionary<string, object>()
-                            {
-                                { "rare", rareList },
-                                { "rate", rateDict }
-                            });
+                        createHeader(0, "IDS_MARKUPSHOP_TEIKYOU_PREMIRE_LABEL", null, null);
+
+                        createHeader(
+                            2,
+                            "IDS_MARKUPSHOP_TEIKYOU_PREMIRE_RARE" + Math.Min(premiereRate.Rarities.Count, 4) + "_LABEL",
+                            premiereRate.Rarities.Select(x => (object)("<rarity id='" + (int)x + "' />")).ToList(),
+                            null);
+
+                        createPremiereTable(0, premiereRate);
                     }
+
+                    createText(1, "IDS_MARKUPSHOP_TEIKYOU_PREMIRE_DETAIL");
+
                     request.Response["Gacha"] = new Dictionary<string, object>()
                     {
-                        { "rateData", new Dictionary<string, object>() {
-                            { "gachaType", (int)item.PackType },
-                            { "cardRateList", cardRateList },
-                            { "premiereRateList", premiereRateList },
-                        }}
+                        { "rateData", rateData }
                     };
                 }
             }
