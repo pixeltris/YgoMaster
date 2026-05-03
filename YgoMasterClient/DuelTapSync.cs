@@ -26,7 +26,7 @@ namespace YgoMasterClient
         static IL2Method methodGetBgUnit;
         static IntPtr nearBgUnit;
         static IntPtr farBgUnit;
-        delegate void Del_PlayEntryAnimation(IntPtr thisPtr);
+        delegate void Del_PlayEntryAnimation(IntPtr thisPtr, csbool callPreview);
         static Hook<Del_PlayEntryAnimation> hookPlayEntryAnimation;
 
         // BgUnit
@@ -97,11 +97,11 @@ namespace YgoMasterClient
             });
         }
 
-        static void PlayEntryAnimation(IntPtr thisPtr)
+        static void PlayEntryAnimation(IntPtr thisPtr, csbool callPreview)
         {
             // NOTE: We hook here to init state because doing so earlier than this point results in
             // clicked characters getting stuck (can't click them normally and can't sync them)
-            hookPlayEntryAnimation.Original(thisPtr);
+            hookPlayEntryAnimation.Original(thisPtr, callPreview);
             InitState();
         }
 

@@ -475,6 +475,27 @@
     "icon": "RegulationLogoEvent",
     "enable_room": "0"
   },
+  "170": {
+    "id": "170",
+    "regulation_id": 170,
+    "name": "IDS_REGULATION_NAME_VERSUS_006_1",
+    "icon": "RegulationLogoEvent",
+    "enable_room": "1"
+  },
+  "171": {
+    "id": "171",
+    "regulation_id": 171,
+    "name": "IDS_REGULATION_NAME_VERSUS_006_2",
+    "icon": "RegulationLogoEvent",
+    "enable_room": "1"
+  },
+  "172": {
+    "id": "172",
+    "regulation_id": 172,
+    "name": "IDS_REGULATION_NAME_VERSUS_006_3",
+    "icon": "RegulationLogoEvent",
+    "enable_room": "1"
+  },
   "1002": {
     "id": "1002",
     "regulation_id": 1053,

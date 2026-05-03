@@ -244,6 +244,7 @@
     1010132,//Artmage Graflare
     1010133,//Radiant Typhoon Meghala
     1010134,//Destiny HERO - Plasma
+    1010135,//Kewl Tune Reco
     1010136,//Cow
     1010137,//Red Blossoms from Underroot
     1010138,//Dark Magician
@@ -405,6 +406,7 @@
     1013009,//Duelist White & Blue
     1013010,//eFootball™
     1013011,//Selene, Queen of the Master Magicians
+    1013013,//Aleister the Invoker
   ],
   "PROFILE_TAG": [
     1020001,//Beginner Duelist
@@ -605,12 +607,17 @@
     1020197,//Jack of All Trades
     1020198,//Spright Starter
     1020199,//Forge Ahead
+    1020200,//F Vortex
+    1020201,//S Overdrive
+    1020202,//L Code Nexus
+    1020203,//Tri-Edge
     1020204,//DC 2026 MAR Top 10
     1020205,//DC 2026 MAR Top 100
     1020206,//DC 2026 MAR Top 500
     1020207,//DC 2026 MAR Top 1000
     1020208,//DC 2026 MAR Top 10000
     1020209,//DC 2026 MAR 2nd Stage Duelist
+    1020216,//Lightning Storm
     1021001,//Starting Out
     1021002,//Top Performer
     1022001,//High School Tournament 2026 Champion
@@ -681,6 +688,7 @@
     1031020,//P.U.N.K. JAM FEVER!
     1031021,//Mystical Space Typhoon
     1031022,//Mask Change II
+    1031023,//Black Rose Garden
     1032001,//Festive Ornament
     1032002,//Celebration of Spring Breeze
     1032003,//Tropical Seaside
@@ -852,11 +860,16 @@
     1070153,//Spright Elf
     1070154,//Mystical Space Typhoon
     1070155,//Fusion Destiny
+    1070156,// Kewl Tune RS
     1070157,//Live☆Twin Lil-la Sweet
     1070158,//Junk Warrior Extreme
     1070159,//Emperor Tanuki's Critter Count
     1070160,//Assault Mode Activate
     1070161,//Masked HERO Atomic
+    1070162,//Master Peace, the True Dracoverlord
+    1070163,//R.B. The Brute Blues
+    1070164,//Ultimate Slayer
+    1070178,//Mokomoko
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -930,6 +943,7 @@
     1075006,//THE CHRONICLES: The Fallen & The Virtuous
     1075007,//THE CHRONICLES: The Fallen & The Virtuous2
     1075008,//THE CHRONICLES: Spirit Charmers
+    1075009,//THE CHRONICLES: Magistus
   ],
   "DECK_CASE": [
     1080001,//Duelist Card Case Red
@@ -990,6 +1004,7 @@
     1082025,//Labrynth
     1082026,//"A Case for K9"
     1082027,//Clock Tower Prison
+    1082028,//Kewl Tune
     1083001,//White & Blue
   ],
   "FIELD": [
@@ -1200,6 +1215,7 @@
     1111068,//Yummy
     1111071,//Dracotail
     1111072,//Live☆Twin Lil-la Sweet
+    1111074,//Bramble Rose Dragon
     1111077,//Dominus Spiral
     1111080,//Borrel
     1112001,//Colosseum
@@ -1358,9 +1374,11 @@
     1130114,//Nightwinged Cleric
     1130115,//Radiant Typhoon Fonix, the Great Flame
     1130116,//Destiny HERO - Destroyer Phoenix Enforcer
+    1130117,//Kewl Tune B2B
     1130118,//Jupiter the Power Patron of Destruction
     1130119,//Dominus Spiral
     1130120,//Masked HERO Dark Law
+    1130122,//True King of All Calamities
     1130124,//I:P Masquerena & S:P Little Knight
     1132001,//Rescue Rabbit
     1132002,//Neymar
@@ -1388,9 +1406,11 @@
     1170004,//Labrynth
     1170005,//K9
     1170006,//Mikanko
+    1170007,//(英)1170007
     1170008,//Sky Striker Ace
     1170009,//Dark Magician
     1170010,//Destiny HERO
+    1170011,//Kewl Tune
   ],
   "COIN": [
     1180001,//Blue-Eyes Alternative White Dragon
@@ -1409,6 +1429,7 @@
     1180016,//EM:P Meowmine
     1180017,//Dark Magician
     1180018,//Destiny HERO
+    1180019,//Kewl Tune
   ],
   "BOOKMARK_LIMIT": [
     1190001,//Bookmark Slots

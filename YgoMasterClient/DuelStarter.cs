@@ -899,6 +899,7 @@ namespace YgomGame.Room
                 public IntPtr FieldPart2; public IntPtr Mate1; public IntPtr Mate2; public IntPtr MateBase1; public IntPtr MateBase2;
                 public IntPtr Icon1; public IntPtr Icon2; public IntPtr IconFrame1; public IntPtr IconFrame2;
                 public IntPtr Coin1; public IntPtr Coin2;
+                public IntPtr ExSleeve1; public IntPtr ExSleeve2;
                 public IntPtr Player1; /*public IntPtr Player2; public IntPtr Player3; public IntPtr Player4;*/
                 public IntPtr BGM; public IntPtr BGM1; public IntPtr BGM2; public IntPtr BGM3;
             }
@@ -1333,6 +1334,8 @@ namespace YgomGame.Room
                 SetTeamValue(GetButtonValueI32(buttons.Hand2), settings.hnum, 1, 3, false);
                 SetTeamValue(LookupItemName(ItemID.Category.PROTECTOR, GetButtonValueString(buttons.Sleeve1)), settings.sleeve, 0, 2, true);
                 SetTeamValue(LookupItemName(ItemID.Category.PROTECTOR, GetButtonValueString(buttons.Sleeve2)), settings.sleeve, 1, 3, true);
+                SetTeamValue(LookupItemName(ItemID.Category.PROTECTOR, GetButtonValueString(buttons.ExSleeve1)), settings.ex_sleeve, 0, 2, true);
+                SetTeamValue(LookupItemName(ItemID.Category.PROTECTOR, GetButtonValueString(buttons.ExSleeve2)), settings.ex_sleeve, 1, 3, true);
                 SetTeamValue(LookupItemName(ItemID.Category.FIELD, GetButtonValueString(buttons.Field1)), settings.mat, 0, 2, true);
                 SetTeamValue(LookupItemName(ItemID.Category.FIELD, GetButtonValueString(buttons.Field2)), settings.mat, 1, 3, true);
                 SetTeamValue(LookupItemName(ItemID.Category.FIELD_OBJ, GetButtonValueString(buttons.FieldPart1)), settings.duel_object, 0, 2, true);
@@ -1398,6 +1401,8 @@ namespace YgomGame.Room
                 SetButtonIndexFromI32(buttons.Hand2, settings.AreAllEqual(settings.hnum) ? -1 : settings.hnum[1]);
                 SetButtonIndexFromItemId(buttons.Sleeve1, settings.AreAllEqual(settings.sleeve) ? -1 : settings.sleeve[0]);
                 SetButtonIndexFromItemId(buttons.Sleeve2, settings.AreAllEqual(settings.sleeve) ? -1 : settings.sleeve[1]);
+                SetButtonIndexFromItemId(buttons.ExSleeve1, settings.AreAllEqual(settings.ex_sleeve) ? -1 : settings.ex_sleeve[0]);
+                SetButtonIndexFromItemId(buttons.ExSleeve2, settings.AreAllEqual(settings.ex_sleeve) ? -1 : settings.ex_sleeve[1]);
                 SetButtonIndexFromItemId(buttons.Field1, settings.AreAllEqual(settings.mat) ? -1 : settings.mat[0]);
                 SetButtonIndexFromItemId(buttons.Field2, settings.AreAllEqual(settings.mat) ? -1 : settings.mat[1]);
                 SetButtonIndexFromItemId(buttons.FieldPart1, settings.duel_object[0]);
@@ -1556,6 +1561,8 @@ namespace YgomGame.Room
                 buttons.Hand2 = AddButtonString(infosList, "Hand2", ClientSettings.CustomTextDuelStarterHand2, handStrings);
                 buttons.Sleeve1 = AddButtonString(infosList, "Sleeve1", ClientSettings.CustomTextDuelStarterSleeve1, GetItemNames(ItemID.Category.PROTECTOR).Values.ToArray());
                 buttons.Sleeve2 = AddButtonString(infosList, "Sleeve2", ClientSettings.CustomTextDuelStarterSleeve2, GetItemNames(ItemID.Category.PROTECTOR).Values.ToArray());
+                buttons.ExSleeve1 = AddButtonString(infosList, "ExSleeve1", ClientSettings.CustomTextDuelStarterExSleeve1, GetItemNames(ItemID.Category.PROTECTOR).Values.ToArray());
+                buttons.ExSleeve2 = AddButtonString(infosList, "ExSleeve2", ClientSettings.CustomTextDuelStarterExSleeve2, GetItemNames(ItemID.Category.PROTECTOR).Values.ToArray());
                 buttons.Field1 = AddButtonString(infosList, "Field1", ClientSettings.CustomTextDuelStarterField1, GetItemNames(ItemID.Category.FIELD).Values.ToArray());
                 buttons.Field2 = AddButtonString(infosList, "Field2", ClientSettings.CustomTextDuelStarterField2, GetItemNames(ItemID.Category.FIELD).Values.ToArray());
                 buttons.FieldPart1 = AddButtonString(infosList, "FieldPart1", ClientSettings.CustomTextDuelStarterFieldPart1, GetItemNames(ItemID.Category.FIELD_OBJ).Values.ToArray());

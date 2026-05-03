@@ -52,6 +52,8 @@
     "CustomTextDuelStarterHand2": "Hand2",
     "CustomTextDuelStarterSleeve1": "Sleeve1",
     "CustomTextDuelStarterSleeve2": "Sleeve2",
+    "CustomTextDuelStarterExSleeve1": "Sleeve1 (EX)",
+    "CustomTextDuelStarterExSleeve2": "Sleeve2 (EX)",
     "CustomTextDuelStarterField1": "Field1",
     "CustomTextDuelStarterField2": "Field2",
     "CustomTextDuelStarterFieldPart1": "FieldPart1",

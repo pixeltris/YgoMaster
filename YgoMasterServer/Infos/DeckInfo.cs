@@ -477,6 +477,7 @@ namespace YgoMaster
         public int AvBase;// Can be 0 (the others should be assigned to some value)
         public int AvatarId;
         public int Coin;
+        public int ExSleeve;
 
         public DeckAccessoryInfo()
         {
@@ -493,6 +494,7 @@ namespace YgoMaster
             result["av_base"] = AvBase;
             result["avatar_id"] = AvatarId > 0 ? AvatarId : -1;
             result["coin"] = Coin;
+            result["ex_sleeve"] = ExSleeve;
             return result;
         }
 
@@ -505,6 +507,7 @@ namespace YgoMaster
             AvBase = other.AvBase;
             AvatarId = other.AvatarId;
             Coin = other.Coin;
+            ExSleeve = other.ExSleeve;
         }
 
         public void Clear()
@@ -525,6 +528,7 @@ namespace YgoMaster
             AvBase = Utils.GetValue<int>(dict, "av_base");
             AvatarId = Utils.GetValue<int>(dict, "avatar_id");
             Coin = Utils.GetValue<int>(dict, "coin");
+            ExSleeve = Utils.GetValue<int>(dict, "ex_sleeve");
         }
 
 #if !YGO_MASTER_CLIENT
@@ -537,6 +541,7 @@ namespace YgoMaster
             AvBase = Sanitize(player, ItemID.Category.AVATAR_HOME, AvBase, true);
             AvatarId = Sanitize(player, ItemID.Category.AVATAR, AvatarId, true);
             Coin = Sanitize(player, ItemID.Category.COIN, Coin);
+            ExSleeve = Sanitize(player, ItemID.Category.PROTECTOR, ExSleeve, true);
         }
 
         int Sanitize(Player player, ItemID.Category category, int value, bool allowZeroValue = false)
@@ -572,6 +577,7 @@ namespace YgoMaster
             Coin = (int)ItemID.Value.DefaultCoin;
             AvBase = 0;
             AvatarId = -1;
+            ExSleeve = 0;
         }
     }
 }

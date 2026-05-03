@@ -1,4 +1,4 @@
-// Client version 2.6.2
+// Client version 2.7.0
 // This file is generated using the 'updatediff' command in YgoMasterClient. This information is used to determine changes between client versions which impact YgoMaster.
 // Run the command, diff against the old file, and use the changes to update code.
 
@@ -225,6 +225,7 @@ enum GameMode
     RDC,
     Dicerally,
     Null,
+    DEBUG = 99,
 }
 /// <summary>
 /// YgomGame.Duel.Util.PlatformID
@@ -648,8 +649,8 @@ enum DuelCounterType
     C,
     Osara,
     T,
-    AAA,
-    BBB,
+    VIP,
+    Gachirin,
     Max,
 }
 /// <summary>
@@ -1292,7 +1293,8 @@ enum AccountCode
     KID_INHERIT_PF_RELATION_FAILED_XBOX,
     KID_INHERIT_PF_RELATION_FAILED_STEAM,
     KID_INHERIT_FAILED_BY_COUNTRY,
-    GC_APPROVAL_CANCEL = 1167,
+    GC_AGE_VERIFICATION_LIMIT = 1166,
+    GC_APPROVAL_CANCEL,
     NEED_STATE,
     INHERIT_COUNT_LIMIT,
     PLATFORM_ERROR,
@@ -1350,6 +1352,26 @@ enum BillingCode
     STEAM_OVER_LAY_OFF = 2930,
     NX_BAASERROR_SERVICE_MAINTENANCE = 2950,
     NX_SUGARERROR_SERVICE_MAINTENANCE,
+}
+enum CampaignBannerCode
+{
+    NONE,
+    ERROR,
+    FATAL,
+    CRITICAL,
+    INVALID_PARAM = 5900,
+    ERR_OUT_OF_TERM,
+    ERR_UNDEFINED_EVENT,
+}
+enum CardDecoderCode
+{
+    NONE,
+    ERROR,
+    FATAL,
+    CRITICAL,
+    INVALID_PARAM = 5800,
+    ERR_OUT_OF_TERM,
+    ERR_OUT_OF_ENTRY_TERM,
 }
 enum CardFileCode
 {
@@ -2063,6 +2085,8 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Account_GC_auth_send_mail(System.String _email_)
 //public static YgomSystem.Network.Handle Account_GC_auth_generate_otp()
 //public static YgomSystem.Network.Handle Account_GC_auth_get_status()
+//public static YgomSystem.Network.Handle Account_GC_age_verification()
+//public static YgomSystem.Network.Handle Account_GC_get_age_verification_status(System.String _age_verification_id_)
 //public static YgomSystem.Network.Handle Account_Steam_get_user_id(System.String _session_ticket_)
 //public static YgomSystem.Network.Handle Account_Steam_re_auth(System.String _session_ticket_)
 //public static YgomSystem.Network.Handle Account_PS_get_user_id(System.String _auth_session_)
@@ -2400,9 +2424,16 @@ enum WcsCode
 //public static YgomSystem.Network.Handle Exchange_card_exchange_limited(System.Int32 _exchange_id_, System.Int32 _num_, System.Int32 _mrk_, System.Int32 _premium_)
 //public static YgomSystem.Network.Handle Exchange_item_exchange_limited(System.Int32 _exchange_id_, System.Int32 _num_)
 //public static YgomSystem.Network.Handle Exchange_submenu_exchange(System.Int32 _exchange_submenu_id_)
+//public static YgomSystem.Network.Handle Exchange_card_exchange(System.Int32 _exchange_id_, System.Int32 _num_, System.Int32 _mrk_, System.Int32 _premium_)
+//public static YgomSystem.Network.Handle Exchange_get_list()
+//public static YgomSystem.Network.Handle Exchange_item_exchange(System.Int32 _exchange_id_, System.Int32 _target_id_, System.Int32 _num_)
 //public static YgomSystem.Network.Handle GeneralPool_get_card_list(System.Int32[] _card_pool_)
 //public static YgomSystem.Network.Handle Market_get_data(System.Int32 _marketId_)
 //public static YgomSystem.Network.Handle Market_edit_agree(System.Boolean _agree_, System.Boolean _formShop_)
+//public static YgomSystem.Network.Handle CardDecoder_detail(System.Int32 _card_decoder_id_)
+//public static YgomSystem.Network.Handle CardDecoder_answer(System.Int32 _card_decoder_id_, System.Int32 _specific_card_id_)
+//public static YgomSystem.Network.Handle CardDecoder_hint(System.Int32 _card_decoder_id_)
+//public static YgomSystem.Network.Handle CardDecoder_get_history(System.Int32 _card_decoder_id_)
 //public System.Void .ctor()
 //==================================
 // duel.dll functions (Engine)

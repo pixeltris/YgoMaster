@@ -222,6 +222,14 @@ namespace YgoMasterClient
         /// </summary>
         public static string CustomTextDuelStarterSleeve2;
         /// <summary>
+        /// Sleeve1 (EX)
+        /// </summary>
+        public static string CustomTextDuelStarterExSleeve1;
+        /// <summary>
+        /// Sleeve2 (EX)
+        /// </summary>
+        public static string CustomTextDuelStarterExSleeve2;
+        /// <summary>
         /// Field1
         /// </summary>
         public static string CustomTextDuelStarterField1;
@@ -613,6 +621,8 @@ namespace YgoMasterClient
             CustomTextDuelStarterHand2 = Utils.GetValue<string>(data, "CustomTextDuelStarterHand2");
             CustomTextDuelStarterSleeve1 = Utils.GetValue<string>(data, "CustomTextDuelStarterSleeve1");
             CustomTextDuelStarterSleeve2 = Utils.GetValue<string>(data, "CustomTextDuelStarterSleeve2");
+            CustomTextDuelStarterExSleeve1 = Utils.GetValue<string>(data, "CustomTextDuelStarterExSleeve1");
+            CustomTextDuelStarterExSleeve2 = Utils.GetValue<string>(data, "CustomTextDuelStarterExSleeve2");
             CustomTextDuelStarterField1 = Utils.GetValue<string>(data, "CustomTextDuelStarterField1");
             CustomTextDuelStarterField2 = Utils.GetValue<string>(data, "CustomTextDuelStarterField2");
             CustomTextDuelStarterFieldPart1 = Utils.GetValue<string>(data, "CustomTextDuelStarterFieldPart1");

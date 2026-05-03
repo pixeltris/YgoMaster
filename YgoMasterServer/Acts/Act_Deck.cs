@@ -179,6 +179,10 @@ namespace YgoMaster
                 {
                     deck.Accessory.Coin = value;
                 }
+                if (Utils.TryGetValue(args, "ex_protector", out value))
+                {
+                    deck.Accessory.ExSleeve = value;
+                }
                 deck.Accessory.Sanitize(request.Player);
                 Dictionary<string, object> pickCards = Utils.GetDictionary(args, "pick_cards");
                 if (pickCards != null)
@@ -325,6 +329,13 @@ namespace YgoMaster
                             if (deck != null)
                             {
                                 deck.Accessory.Coin = value;
+                                deckModified = true;
+                            }
+                            break;
+                        case "ex_protector":
+                            if (deck != null)
+                            {
+                                deck.Accessory.ExSleeve = value;
                                 deckModified = true;
                             }
                             break;

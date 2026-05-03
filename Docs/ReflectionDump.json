@@ -1823,7 +1823,7 @@
     ],
     "Type": "Method",
     "Name": "PlayEntryAnimation",
-    "Signature": "public System.Void PlayEntryAnimation()"
+    "Signature": "public System.Void PlayEntryAnimation(System.Boolean callPreview)"
   },
   {
     "Assembly": "Assembly-CSharp",

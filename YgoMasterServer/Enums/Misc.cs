@@ -80,6 +80,7 @@ namespace YgoMaster
         VERSUS,
         WCS_FINAL,
         DICERALLY,//v2.3.0
+        DEBUG = 99,//v2.7.0
     }
 
     /// <summary>

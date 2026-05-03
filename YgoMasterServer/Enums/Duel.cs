@@ -254,8 +254,8 @@ namespace YgoMaster
         C,//v2.4.0
         Osara,//v2.4.0 (changed from Osara -> Dish in v2.5.0) (changed from Dish -> Orsa in v2.6.0)
         T,//v2.6.0
-        AAA,//v2.6.0
-        BBB,//v2.6.0
+        VIP,//v2.6.0 (changed from AAA -> VIP in v2.7.0)
+        Gachirin,//v2.6.0 (changed from BBB -> Gachirin in v2.7.0)
         Max
     }
 
