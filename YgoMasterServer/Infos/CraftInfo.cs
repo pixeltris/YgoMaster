@@ -134,6 +134,10 @@ namespace YgoMaster
         public Dictionary<string, object> ToDictionary()
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
+            // TODO: Avoid hard coding these values
+            result["card_max"] = 9999;
+            result["cost_cp_max"] = 999999;
+            result["possession_limit"] = 999999;
             result["generate_rate_list"] = RatesToDictionary(CraftRates);
             result["exchange_rate_list"] = RatesToDictionary(DismantleRates);
             return result;
