@@ -1,0 +1,109 @@
+{
+  "card_list": {
+    "16736": {
+      "card_id": 16736,
+      "page": 1,
+      "card_pos": 0,
+      "assign_premium_type": 0
+    },
+    "16737": {
+      "card_id": 16737,
+      "page": 1,
+      "card_pos": 1,
+      "assign_premium_type": 0
+    },
+    "16738": {
+      "card_id": 16738,
+      "page": 1,
+      "card_pos": 2,
+      "assign_premium_type": 0
+    },
+    "16739": {
+      "card_id": 16739,
+      "page": 1,
+      "card_pos": 3,
+      "assign_premium_type": 0
+    },
+    "16740": {
+      "card_id": 16740,
+      "page": 1,
+      "card_pos": 5,
+      "assign_premium_type": 0
+    },
+    "16741": {
+      "card_id": 16741,
+      "page": 1,
+      "card_pos": 6,
+      "assign_premium_type": 0
+    },
+    "16742": {
+      "card_id": 16742,
+      "page": 1,
+      "card_pos": 7,
+      "assign_premium_type": 0
+    },
+    "16743": {
+      "card_id": 16743,
+      "page": 1,
+      "card_pos": 8,
+      "assign_premium_type": 0
+    },
+    "16744": {
+      "card_id": 16744,
+      "page": 2,
+      "card_pos": 4,
+      "assign_premium_type": 0
+    },
+    "16745": {
+      "card_id": 16745,
+      "page": 2,
+      "card_pos": 5,
+      "assign_premium_type": 0
+    },
+    "16746": {
+      "card_id": 16746,
+      "page": 2,
+      "card_pos": 2,
+      "assign_premium_type": 0
+    },
+    "16747": {
+      "card_id": 16747,
+      "page": 2,
+      "card_pos": 6,
+      "assign_premium_type": 0
+    },
+    "17157": {
+      "card_id": 17157,
+      "page": 2,
+      "card_pos": 1,
+      "assign_premium_type": 0
+    },
+    "17427": {
+      "card_id": 17427,
+      "page": 1,
+      "card_pos": 4,
+      "assign_premium_type": 0
+    },
+    "17478": {
+      "card_id": 17478,
+      "page": 2,
+      "card_pos": 7,
+      "assign_premium_type": 0
+    },
+    "22147": {
+      "card_id": 22147,
+      "page": 2,
+      "card_pos": 0,
+      "assign_premium_type": 0
+    },
+    "22168": {
+      "card_id": 22168,
+      "page": 2,
+      "card_pos": 3,
+      "assign_premium_type": 0
+    }
+  },
+  "total_page": 2,
+  "total_card": 17,
+  "sort": 490
+}

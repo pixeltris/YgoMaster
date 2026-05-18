@@ -1,5 +1,5 @@
 {
-    "SupportedGameVersion": "2.6.2",
+    "SupportedGameVersion": "2.7.0",
     "BaseIP": "localhost",
     "BasePort": 4989,
     "SessionServerPort": 4988,

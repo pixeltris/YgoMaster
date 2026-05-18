@@ -91,7 +91,9 @@
     1001036,//Ghost Belle & Haunted Mansion
     1001037,//Gem-Turtle
     1001038,//Fabled Lurrie
+    1001039,//Ally of Justice Catastor
     1001040,//Gimmick Puppet Egg Head
+    1001041,//Book of Taiyou
     1002001,//Soccer Ball
     1002002,//Basketball
     1002003,//Record Player
@@ -249,6 +251,10 @@
     1010137,//Red Blossoms from Underroot
     1010138,//Dark Magician
     1010139,//Sangan
+    1010140,//Elfnote Lucina
+    1010141,//Dragunity Quirinus
+    1010142,//Exosister Mikailis
+    1010145,//Artmage Non-Finito
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -618,6 +624,7 @@
     1020208,//DC 2026 MAR Top 10000
     1020209,//DC 2026 MAR 2nd Stage Duelist
     1020216,//Lightning Storm
+    1020217,//Luck of the Roll
     1021001,//Starting Out
     1021002,//Top Performer
     1022001,//High School Tournament 2026 Champion
@@ -666,6 +673,7 @@
     1030039,//Gem-Knight Fusion
     1030040,//Blue & White Frame
     1030041,//Red & White Frame
+    1030043,//Yellow & Black Frame
     1031001,//The Path of the Blue Sky Striker
     1031002,//The Path of the Red Sky Striker
     1031003,//Magic Cylinder
@@ -689,6 +697,7 @@
     1031021,//Mystical Space Typhoon
     1031022,//Mask Change II
     1031023,//Black Rose Garden
+    1031024,//Elfnote
     1032001,//Festive Ornament
     1032002,//Celebration of Spring Breeze
     1032003,//Tropical Seaside
@@ -869,6 +878,10 @@
     1070162,//Master Peace, the True Dracoverlord
     1070163,//R.B. The Brute Blues
     1070164,//Ultimate Slayer
+    1070165,//Elfnote Regina
+    1070166,//Dragunity Knight - Areus
+    1070167,//Exosister Karmael
+    1070171,//Hecahands Jauzah
     1070178,//Mokomoko
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
@@ -1005,6 +1018,9 @@
     1082026,//"A Case for K9"
     1082027,//Clock Tower Prison
     1082028,//Kewl Tune
+    1082029,//Elfnote
+    1082030,//Dragon Ravine
+    1082032,//Exosister
     1083001,//White & Blue
   ],
   "FIELD": [
@@ -1047,6 +1063,7 @@
     1090039,//"A Case for K9"
     1090040,//Football Stadium
     1090041,//Neon-Lit Cyber City
+    1090042,//Fairy Realm - Oratorio Garden
     1092001,//Colosseum
     1092002,//WCS
     1092004,//Japan High School Championship
@@ -1091,6 +1108,7 @@
     1100039,//"A Case for K9"
     1100040,//Football Stadium
     1100041,//Neon-Lit Cyber City
+    1100042,//Fairy Realm - Oratorio Garden
     1101001,//Trap Hole
     1101002,//Magical Hats
     1101003,//Summon Limit
@@ -1166,6 +1184,7 @@
     1110039,//"A Case for K9"
     1110040,//Football Stadium
     1110041,//Neon-Lit Cyber City
+    1110042,//Fairy Realm - Oratorio Garden
     1111001,//Destiny Board
     1111002,//Bug Matrix
     1111003,//Shien's Dojo
@@ -1190,6 +1209,7 @@
     1111025,//Gishki Aquamirror
     1111026,//Treasured Tree Stump
     1111032,//Xyz Monster Card
+    1111037,//Effect Monster Card
     1111038,//Rikka
     1111039,//Barrier of the Voiceless Voice
     1111040,//Gunkan Sushipyard Seaside Supper Spot
@@ -1380,6 +1400,10 @@
     1130120,//Masked HERO Dark Law
     1130122,//True King of All Calamities
     1130124,//I:P Masquerena & S:P Little Knight
+    1130125,//Elfnotes: Aristeia of Trust
+    1130126,//Elfnotes: Welcome Home
+    1130129,//Hecahands Bait
+    1130135,//Gorgon of Zilofthonia
     1132001,//Rescue Rabbit
     1132002,//Neymar
     1132003,//That's 10!
@@ -1411,6 +1435,8 @@
     1170009,//Dark Magician
     1170010,//Destiny HERO
     1170011,//Kewl Tune
+    1170012,//Exosister
+    1170013,//Dragunity
   ],
   "COIN": [
     1180001,//Blue-Eyes Alternative White Dragon
@@ -1430,6 +1456,9 @@
     1180017,//Dark Magician
     1180018,//Destiny HERO
     1180019,//Kewl Tune
+    1180020,//Elfnote
+    1180021,//Dragunity
+    1180022,//Exosister
   ],
   "BOOKMARK_LIMIT": [
     1190001,//Bookmark Slots

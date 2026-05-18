@@ -38,6 +38,7 @@
   { "1090039": [ "BGM_DUEL_F09_PHASE_A","BGM_DUEL_F09_PHASE_B","" ] },//"A Case for K9"
   { "1090040": [ "BGM_DUEL_F07_PHASE_A", "BGM_DUEL_F07_PHASE_B", "" ] },//Football Stadium
   { "1090041": [ "BGM_DUEL_F10_PHASE_A","BGM_DUEL_F10_PHASE_B","BGM_DUEL_F10_PHASE_C" ] },//Neon-Lit Cyber City
+  { "1090042": [ "BGM_DUEL_F11_PHASE_A","BGM_DUEL_F11_PHASE_B","" ] },//Fairy Realm - Oratorio Garden
   { "1092001": [ "BGM_DUEL_EX_02_NORMAL", "BGM_DUEL_EX_02_KEYCARD", "BGM_DUEL_EX_02_CLIMAX" ] },//Colosseum
   { "1092002": [ "BGM_DUEL_EX_03_NORMAL", "BGM_DUEL_EX_03_KEYCARD", "BGM_DUEL_EX_03_CLIMAX" ] },//WCS
 ]

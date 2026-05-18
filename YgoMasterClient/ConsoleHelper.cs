@@ -451,6 +451,15 @@ namespace YgoMasterClient
                         }
                     }
                     break;
+                case "carddata_path":
+                    {
+                        IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+                        IL2Class contentClassInfo = assembly.GetClass("Content", "YgomGame.Card");
+                        IntPtr instance = contentClassInfo.GetField("s_instance").GetValue().ptr;
+                        string intIdPath = contentClassInfo.GetField("IntIdPath").GetValue(instance).GetValueObj<string>();
+                        Console.WriteLine(intIdPath);
+                    }
+                    break;
                 case "carddata":// dumps card data
                     {
                         IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
