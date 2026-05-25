@@ -33,6 +33,19 @@ namespace YgoMasterClient
 
     class GameLauncher
     {
+	// InstantDuel: We're going to wait for the 
+	// Client's Exit Code to report the result back
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern UInt32 WaitForSingleObject(IntPtr hHandle, UInt32 dwMilliseconds);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool GetExitCodeProcess(IntPtr hProcess, out uint lpExitCode);
+
+        // Constants
+        const UInt32 INFINITE = 0xFFFFFFFF;
+        const UInt32 WAIT_FAILED = 0xFFFFFFFF;
+
         public const string TargetProcessName = "masterduel.exe";
         public const string LoaderDll = "YgoMasterLoader.dll";
 
@@ -145,6 +158,22 @@ namespace YgoMasterClient
                 {
                     System.Windows.Forms.MessageBox.Show("DetourCreateProcessWithDll failed " + Marshal.GetLastWin32Error());
                     return false;
+                }
+                if (ClientSettings.InstantDuel) { 
+                    // Wait for the Client to Exit
+                    UInt32 result = WaitForSingleObject(pi.hProcess, INFINITE);
+                    if (result != WAIT_FAILED)
+                    {
+                        uint exitCode = 0;
+                        // The Client communicates the Duel Result via its Exit Code
+                        if (GetExitCodeProcess(pi.hProcess, out exitCode))
+                        {
+                            // Write the result to standard output for inter-process communication
+                            Console.WriteLine("YGO_MASTER_CLIENT_EXIT_CODE:" + exitCode);
+                        }
+                    }
+                    CloseHandle(pi.hProcess);
+                    CloseHandle(pi.hThread);
                 }
                 return true;
             }
