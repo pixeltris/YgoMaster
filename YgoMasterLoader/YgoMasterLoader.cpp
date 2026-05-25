@@ -166,7 +166,7 @@ HRESULT LoadDotNetImpl()
     {
         return 0x1333337;
     }
-    result = runtimeHost->ExecuteInDefaultAppDomain(binaryPath, L"YgoMasterClient.Program", L"DllMain", runningLive ? L"live" : NULL, NULL);
+    result = runtimeHost->ExecuteInDefaultAppDomain(binaryPath, L"YgoMasterClient.Program", L"DllMain", runningLive ? L"live" : GetCommandLineW(), NULL);
     return result;
 }
 
