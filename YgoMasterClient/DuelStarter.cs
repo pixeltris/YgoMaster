@@ -806,10 +806,6 @@ namespace YgomGame.Room
 
         public static void InstantDuel()
         {
-            // This is required because Act_UserHome sets up some data like card rarities
-            Dictionary<string, object> data_entry = new Dictionary<string, object>();
-            YgomSystem.Network.Request.Entry("User.home", MiniJSON.Json.Serialize(data_entry));
-
             duelSettingsManager.InitDuelSettings();
             // Force SettingsClone to refresh
             duelSettingsManager.SettingsClone = null;
@@ -846,6 +842,9 @@ namespace YgomGame.Room
             settings.SharedField = Utils.GetValue<int>(ClientSettings.InstantDuelConfig, "field", 1090001);
             // call this again so the field is properly set
             settings.SetRequiredDefaults();
+
+            // randomize BGM
+            settings.SetRandomBgm();
 
             Dictionary<string, object> data = new Dictionary<string, object>()
             {
@@ -2052,13 +2051,17 @@ namespace YgomSystem.UI
             {
                 string prefabpath = new IL2String(prefabpathPtr).ToString();
                 //Console.WriteLine("Load vc: " + prefabpath);
-                if (prefabpath == "Title/Title" && ClientSettings.InstantDuel && !YgomGame.Room.RoomCreateViewController.HasInstantDuelStarted)
+                if (prefabpath == "Title/Title" && ClientSettings.InstantDuel)
+                {  
+                    // First we skip the Title Screen
+                    prefabpathPtr = new IL2String("GameEntry/V1/GameEntryV1").ptr;
+                }else if (prefabpath == "Home/Home" && ClientSettings.InstantDuel && !YgomGame.Room.RoomCreateViewController.HasInstantDuelStarted)
                 {
-                    // Without this asset a Fusion Summon freezes the duel
-                    AssetHelper.Load("Duel/ScriptableObject/FusionEffectSetting", IntPtr.Zero);
-                    // Start the Instant Duel straight from the Title Screen
+                    // Start the Instant Duel once the Home Screen is about to load
+                    // Any earlier would cause issues like BGM not playing, Effects missing
                     YgomGame.Room.RoomCreateViewController.HasInstantDuelStarted = true;
                     YgomGame.Room.RoomCreateViewController.InstantDuel();
+                    prefabpathPtr = new IL2String("Solo/SoloStartProduction").ptr;
                 }
 
             }
