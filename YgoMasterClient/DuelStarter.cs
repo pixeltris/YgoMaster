@@ -839,8 +839,10 @@ namespace YgomGame.Room
                 settings.life[1] = life[1];
             }
 
+            settings.duel_object[0] = 0;
+            settings.duel_object[1] = 0;
             settings.SharedField = Utils.GetValue<int>(ClientSettings.InstantDuelConfig, "field", 1090001);
-            // call this again so the field is properly set
+            // call this again so the field and field objects are set according to SharedField
             settings.SetRequiredDefaults();
 
             // randomize BGM
