@@ -846,6 +846,10 @@ namespace YgomGame.Room
             // randomize BGM
             settings.SetRandomBgm();
 
+            // set AI icon & name
+            settings.icon[1] = 1010039; // Another Duelist
+            settings.name[1] = Utils.GetValue<string>(ClientSettings.InstantDuelConfig, "name_opponent", "CPU");
+
             Dictionary<string, object> data = new Dictionary<string, object>()
             {
                 { "chapter", ClientSettings.DuelStarterLiveChapterId }
