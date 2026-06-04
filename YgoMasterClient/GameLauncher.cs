@@ -33,8 +33,8 @@ namespace YgoMasterClient
 
     class GameLauncher
     {
-	// InstantDuel: We're going to wait for the 
-	// Client's Exit Code to report the result back
+        // InstantDuel: We're going to wait for the 
+        // Client's Exit Code to report the result back
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern UInt32 WaitForSingleObject(IntPtr hHandle, UInt32 dwMilliseconds);
 

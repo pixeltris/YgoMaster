@@ -188,10 +188,11 @@ namespace YgoMasterClient
                 }
 
                 ClientSettings.InstantDuel = false;
-                if (arg != null)
+                string arg_cl = Environment.CommandLine;
+                if (arg_cl != null)
                 {
                     // parse command line arguments
-                    var matches = Regex.Matches(arg, @"[\""].+?[\""]|[^ ]+");
+                    var matches = Regex.Matches(arg_cl, @"[\""].+?[\""]|[^ ]+");
                     string[] args = new string[matches.Count];
 
                     for (int i = 0; i < matches.Count; i++)

@@ -95,8 +95,8 @@ namespace YgoMasterClient
         public static bool DisableSoloVisualNovel;
         public static bool DisableSoloVisualNovelNextButtonSound;
         public static bool SoloRemoveDuelTutorials;
-	public static bool InstantDuel;
-	public static Dictionary<string, object> InstantDuelConfig;
+        public static bool InstantDuel;
+        public static Dictionary<string, object> InstantDuelConfig;
 
         public static string FilePath
         {
