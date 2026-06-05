@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.IO;
 using System.Threading;
 using System.Reflection;
@@ -40,6 +41,13 @@ namespace YgoMasterClient
                 if (!string.IsNullOrEmpty(ClientSettings.MultiplayerToken))
                 {
                     isMultiplayerClient = true;
+                }
+                // We need to check for this option now
+                // If present, we make the GameLauncher wait for the Client to Exit
+                // and write the result to standard output for inter-process communication
+                if ((args.Length > 0 && args[0].ToLower() == "instantduel"))
+                {
+                    ClientSettings.InstantDuel = true;
                 }
             }
             catch
@@ -130,7 +138,7 @@ namespace YgoMasterClient
                         ClientSettings.LaunchMode = GameLauncherMode.Detours;
                         break;
                 }
-                success = GameLauncher.Launch(ClientSettings.LaunchMode);
+                success = GameLauncher.Launch(ClientSettings.LaunchMode, args);
             }
             if (!success)
             {
@@ -177,6 +185,26 @@ namespace YgoMasterClient
                 if (ClientSettings.ShowConsole)
                 {
                     ConsoleHelper.ShowConsole();
+                }
+
+                ClientSettings.InstantDuel = false;
+                string arg_cl = Environment.CommandLine;
+                if (arg_cl != null)
+                {
+                    // parse command line arguments
+                    var matches = Regex.Matches(arg_cl, @"[\""].+?[\""]|[^ ]+");
+                    string[] args = new string[matches.Count];
+
+                    for (int i = 0; i < matches.Count; i++)
+                    {
+                        args[i] = matches[i].Value.Trim('"');
+                    }
+
+                    if (args.Length>=2 && args[0].ToLower() == "instantduel")
+                    {
+                        ClientSettings.InstantDuel = true;
+                        ClientSettings.InstantDuelConfig = MiniJSON.Json.DeserializeStripped(args[1]) as Dictionary<string, object>;
+                    }
                 }
 
                 string pluginsDir = Path.Combine(CurrentDir, "Plugins");

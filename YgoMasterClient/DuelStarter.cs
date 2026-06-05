@@ -132,7 +132,7 @@ namespace YgomGame.Solo
 
         static void SelectTurn(IntPtr thisPtr)
         {
-            if (YgomGame.Room.RoomCreateViewController.IsHacked)
+            if (YgomGame.Room.RoomCreateViewController.IsHacked || YgomGame.Room.RoomCreateViewController.HasInstantDuelStarted)
             {
                 DuelSettings settings = YgomGame.Room.RoomCreateViewController.Settings;
                 if (settings != null)
@@ -208,7 +208,7 @@ namespace YgomSystem.Network
 
         static IntPtr Duel_begin(IntPtr rulePtr)
         {
-            if (YgomGame.Room.RoomCreateViewController.IsHacked)
+            if (YgomGame.Room.RoomCreateViewController.IsHacked || YgomGame.Room.RoomCreateViewController.HasInstantDuelStarted)
             {
                 Dictionary<string, object> rule = MiniJSON.Json.Deserialize(YgomMiniJSON.Json.Serialize(rulePtr)) as Dictionary<string, object>;
                 if (rule == null)
@@ -264,6 +264,30 @@ namespace YgomSystem.Network
             {
                 param["turn"] = DuelDll.DLL_DuelGetTurnNum() + 1;
                 param["replayData"] = GetReplayDataString(param);
+            }
+            if (ClientSettings.InstantDuel)
+            {
+                // Use Exit Code to pass Duel Result to the Loader
+                if (Convert.ToInt32(param["res"]) == (int)DuelResultType.Win)
+                {
+                    Environment.Exit(2);
+                }
+                else if (Convert.ToInt32(param["res"]) == (int)DuelResultType.Draw)
+                {
+                    Environment.Exit(4);
+                }
+                else if (Convert.ToInt32(param["res"]) == (int)DuelResultType.Lose)
+                {
+                    Environment.Exit(3);
+                }
+                else if (Convert.ToInt32(param["res"]) == (int)DuelResultType.Time)
+                {
+                    Environment.Exit(5);
+                }
+                else
+                {
+                    Environment.Exit(6);
+                }
             }
             paramPtr = YgomMiniJSON.Json.Deserialize(MiniJSON.Json.Serialize(param));
             return hookDuel_end.Original(paramPtr);
@@ -394,7 +418,7 @@ namespace YgomSystem.Network
 
                 YgomGame.Menu.ProfileReplayViewController.OnNetworkComplete(thisPtr, cmd);
 
-                if (YgomGame.Room.RoomCreateViewController.IsHacked)
+                if (YgomGame.Room.RoomCreateViewController.IsHacked || YgomGame.Room.RoomCreateViewController.HasInstantDuelStarted)
                 {
                     switch (cmd)
                     {
@@ -503,7 +527,7 @@ namespace YgomGame.Duel
 
         static int get_rivalType(IntPtr thisPtr)
         {
-            if (YgomGame.Room.RoomCreateViewController.IsHacked)
+            if (YgomGame.Room.RoomCreateViewController.IsHacked || YgomGame.Room.RoomCreateViewController.HasInstantDuelStarted)
             {
                 if (YgomGame.Room.RoomCreateViewController.Settings.OpponentType == 1)
                 {
@@ -657,6 +681,7 @@ namespace YgomGame.Room
         static Dictionary<IntPtr, string[]> buttonsActionSheets = new Dictionary<IntPtr, string[]>();
 
         public static bool IsNextInstanceHacked = false;
+        public static bool HasInstantDuelStarted = false;
         public static bool IsHacked
         {
             get
@@ -777,6 +802,66 @@ namespace YgomGame.Room
             {
                 hookCallAPIRoomCreate.Original(thisPtr);
             }
+        }
+
+        public static void InstantDuel()
+        {
+            duelSettingsManager.InitDuelSettings();
+            // Force SettingsClone to refresh
+            duelSettingsManager.SettingsClone = null;
+            DuelSettings settings = duelSettingsManager.SettingsClone;
+
+            settings.Deck[0].Clear();
+            settings.Deck[0].File = Utils.GetValue<string>(ClientSettings.InstantDuelConfig, "deck_player");
+            settings.Deck[0].Load();
+            settings.Deck[1].Clear();
+            settings.Deck[1].File = Utils.GetValue<string>(ClientSettings.InstantDuelConfig, "deck_opponent");
+            settings.Deck[1].Load();
+
+            // default cpu settings Konami uses for their Solo Mode
+            settings.cpu = 100;
+            settings.cpuflag = "Light";
+            
+            // the AI plays too passive on the first turn, so we make the player go first
+            settings.FirstPlayer = 0;
+
+            List<int> hnum = Utils.GetIntList(ClientSettings.InstantDuelConfig, "hnum");
+            if (hnum.Count == 2)
+            {
+                settings.hnum[0] = hnum[0];
+                settings.hnum[1] = hnum[1];
+            }
+
+            List<int> life = Utils.GetIntList(ClientSettings.InstantDuelConfig, "life");
+            if (life.Count == 2)
+            {
+                settings.life[0] = life[0];
+                settings.life[1] = life[1];
+            }
+
+            settings.duel_object[0] = 0;
+            settings.duel_object[1] = 0;
+            settings.SharedField = Utils.GetValue<int>(ClientSettings.InstantDuelConfig, "field", 1090001);
+            // call this again so the field and field objects are set according to SharedField
+            settings.SetRequiredDefaults();
+
+            // randomize BGM
+            settings.SetRandomBgm();
+
+            // set AI icon & name
+            settings.icon[1] = 1010039; // Another Duelist
+            settings.name[1] = Utils.GetValue<string>(ClientSettings.InstantDuelConfig, "name_opponent", "CPU");
+
+            Dictionary<string, object> data = new Dictionary<string, object>()
+            {
+                { "chapter", ClientSettings.DuelStarterLiveChapterId }
+            };
+            if (!Program.IsLive)
+            {
+                data["customduel"] = true;
+            }
+            
+            YgomSystem.Network.Request.Entry("Solo.start", MiniJSON.Json.Serialize(data));
         }
 
         static IntPtr AddLabel(IL2ListExplicit infosList, string label)
@@ -932,6 +1017,14 @@ namespace YgomGame.Room
                 set
                 {
                     settingsClone = value;
+                }
+            }
+
+            public void InitDuelSettings()
+            {
+                if (settings == null)
+                {
+                    settings = new DuelSettings();
                 }
             }
 
@@ -1960,11 +2053,24 @@ namespace YgomSystem.UI
 
         public static IntPtr LoadViewControllerPrefab(IntPtr thisPtr, IntPtr prefabpathPtr)
         {
-            /*if (prefabpathPtr != IntPtr.Zero)
+            if (prefabpathPtr != IntPtr.Zero)
             {
                 string prefabpath = new IL2String(prefabpathPtr).ToString();
-                Console.WriteLine("vc: " + prefabpath);
-            }*/
+                //Console.WriteLine("Load vc: " + prefabpath);
+                if (prefabpath == "Title/Title" && ClientSettings.InstantDuel)
+                {  
+                    // First we skip the Title Screen
+                    prefabpathPtr = new IL2String("GameEntry/V1/GameEntryV1").ptr;
+                }else if (prefabpath == "Home/Home" && ClientSettings.InstantDuel && !YgomGame.Room.RoomCreateViewController.HasInstantDuelStarted)
+                {
+                    // Start the Instant Duel once the Home Screen is about to load
+                    // Any earlier would cause issues like BGM not playing, Effects missing
+                    YgomGame.Room.RoomCreateViewController.HasInstantDuelStarted = true;
+                    YgomGame.Room.RoomCreateViewController.InstantDuel();
+                    prefabpathPtr = new IL2String("Solo/SoloStartProduction").ptr;
+                }
+
+            }
             return hookLoadViewControllerPrefab.Original.Invoke(thisPtr, prefabpathPtr);
         }
 
