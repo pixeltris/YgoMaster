@@ -511,6 +511,15 @@
                 "category": 1,
                 "open_date": 1743739200
               },
+              "58": {
+                "priority": 65,
+                "parent_gate": 65,
+                "unlock_id": 28,
+                "view_gate": 1,
+                "clear_chapter": 580008,
+                "category": 1,
+                "open_date": 1779854400
+              },
               "59": {
                 "priority": 58,
                 "parent_gate": 65,
@@ -5590,6 +5599,85 @@
                   "anime": 0
                 }
               },
+              "58": {
+                "580001": {
+                  "parent_chapter": 0,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1140102,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00580001",
+                  "npc_id": 0,
+                  "vas_string_id": 0,
+                  "anime": 0
+                },
+                "580003": {
+                  "parent_chapter": 580001,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1012035,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00580003",
+                  "npc_id": 0,
+                  "vas_string_id": 0,
+                  "anime": 0
+                },
+                "580004": {
+                  "parent_chapter": 580003,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1012060,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00580004",
+                  "npc_id": 0,
+                  "vas_string_id": 0,
+                  "anime": 0
+                },
+                "580005": {
+                  "parent_chapter": 580004,
+                  "difficulty": 5,
+                  "mydeck_set_id": 1012059,
+                  "set_id": 1071039,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1203,
+                  "vas_string_id": 0,
+                  "anime": 0
+                },
+                "580006": {
+                  "parent_chapter": 580005,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 1140102,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00580006",
+                  "npc_id": 0,
+                  "vas_string_id": 0,
+                  "anime": 0
+                },
+                "580007": {
+                  "parent_chapter": 580006,
+                  "difficulty": 5,
+                  "mydeck_set_id": 1140102,
+                  "set_id": 1071040,
+                  "unlock_id": 0,
+                  "begin_sn": "",
+                  "npc_id": 1204,
+                  "vas_string_id": 0,
+                  "anime": 0
+                },
+                "580008": {
+                  "parent_chapter": 580007,
+                  "difficulty": 0,
+                  "mydeck_set_id": 0,
+                  "set_id": 104,
+                  "unlock_id": 0,
+                  "begin_sn": "Sr00580008",
+                  "npc_id": 0,
+                  "vas_string_id": 0,
+                  "anime": 0
+                }
+              },
               "59": {
                 "590001": {
                   "parent_chapter": 0,
@@ -9063,6 +9151,31 @@
               "1012060": {
                 "4": {
                   "1012060": 1
+                }
+              },
+              "1012081": {
+                "4": {
+                  "1012081": 1
+                }
+              },
+              "1012082": {
+                "4": {
+                  "1012082": 1
+                }
+              },
+              "1012083": {
+                "4": {
+                  "1012083": 1
+                }
+              },
+              "1012084": {
+                "4": {
+                  "1012084": 1
+                }
+              },
+              "1012085": {
+                "4": {
+                  "1012085": 1
                 }
               },
               "1020012": {
