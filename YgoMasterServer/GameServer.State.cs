@@ -2975,7 +2975,15 @@ namespace YgoMaster
                 Dictionary<string, object> duelData;
                 if (!Utils.TryGetValue(data, "Duel", out duelData))
                 {
-                    continue;
+                    Utils.LogWarning(file + " isn't valid duel file format");
+                    if (data.ContainsKey("chapter"))
+                    {
+                        duelData = data;
+                    }
+                    else
+                    {
+                        continue;
+                    }
                 }
                 int chapterId;
                 if (!Utils.TryGetValue(duelData, "chapter", out chapterId))
