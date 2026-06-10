@@ -9,6 +9,12 @@ namespace YgoMaster
     {
         const int shopExtraGuaranteePackCount = 10;
 
+        int RemapCardId(int cardId, out CardStyleRarity cardStyleRarity)
+        {
+            cardStyleRarity = (CardStyleRarity)(cardId / 100000) + 1;
+            return cardId % 100000;
+        }
+
         // TODO: Put this somewhere else (called by Act_ShopPurchase / SoloUpdateChapterStatus / GiveDuelReward)
         bool GiveStructureDeck(GameServerWebRequest request, int structureDeckId)
         {
@@ -26,8 +32,10 @@ namespace YgoMaster
             HashSet<int> uniqueCardIds = new HashSet<int>();
             foreach (int cardId in cards)
             {
-                uniqueCardIds.Add(cardId);
-                request.Player.Cards.Add(cardId, 1, DisableNoDismantle ? PlayerCardKind.Dismantle : PlayerCardKind.NoDismantle, CardStyleRarity.Normal);
+                CardStyleRarity cardStyle;
+                int cid = RemapCardId(cardId, out cardStyle);
+                uniqueCardIds.Add(cid);
+                request.Player.Cards.Add(cid, 1, DisableNoDismantle ? PlayerCardKind.Dismantle : PlayerCardKind.NoDismantle, cardStyle);
             }
             Dictionary<string, object> itemsData = request.GetOrCreateDictionary("Item");
             Dictionary<string, object> itemsHave = Utils.GetOrCreateDictionary(itemsData, "have");
@@ -1083,8 +1091,10 @@ namespace YgoMaster
                                 break;
                             case ItemID.Category.CARD:
                                 {
-                                    request.Player.Cards.Add(item.ItemId, item.Num, PlayerCardKind.NoDismantle, CardStyleRarity.Normal);
-                                    cardIdsToUpdate.Add(item.ItemId);
+                                    CardStyleRarity cardStyle;
+                                    int cid = RemapCardId(item.ItemId, out cardStyle);
+                                    request.Player.Cards.Add(cid, item.Num, PlayerCardKind.NoDismantle, cardStyle);
+                                    cardIdsToUpdate.Add(cid);
                                     added = true;
                                 }
                                 break;
