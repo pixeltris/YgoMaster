@@ -576,15 +576,14 @@ namespace YgoMaster
                                                         }
                                                         break;
                                                     case ItemID.Category.CARD:
-                                                        int cardCountRemaining = count;
-                                                        for (CardStyleRarity i = CardStyleRarity.Normal; i <= CardStyleRarity.Shine; i++)
                                                         {
-                                                            int currentCardCount = request.Player.Cards.GetCount(itemId, PlayerCardKind.Dismantle, i);
+                                                            CardStyleRarity cardStyle;
+                                                            int cid = RemapCardId(itemId, out cardStyle);
+                                                            int currentCardCount = request.Player.Cards.GetCount(cid, PlayerCardKind.Dismantle, cardStyle);
                                                             if (currentCardCount > 0)
                                                             {
-                                                                int numCardsToTake = Math.Min(cardCountRemaining, currentCardCount);
-                                                                request.Player.Cards.Subtract(itemId, numCardsToTake, PlayerCardKind.Dismantle, i);
-                                                                cardCountRemaining -= numCardsToTake;
+                                                                int numCardsToTake = Math.Min(count, currentCardCount);
+                                                                request.Player.Cards.Subtract(cid, numCardsToTake, PlayerCardKind.Dismantle, cardStyle);
                                                             }
                                                         }
                                                         break;
@@ -654,7 +653,9 @@ namespace YgoMaster
                                 {
                                     if (!SoloRewardsInDuelResult)
                                     {
-                                        request.Player.Cards.Add(itemId, count, DisableNoDismantle ? PlayerCardKind.Dismantle : PlayerCardKind.NoDismantle, CardStyleRarity.Normal);
+                                        CardStyleRarity cardStyle;
+                                        int cid = RemapCardId(itemId, out cardStyle);
+                                        request.Player.Cards.Add(cid, count, DisableNoDismantle ? PlayerCardKind.Dismantle : PlayerCardKind.NoDismantle, cardStyle);
                                     }
                                 }
                                 break;
