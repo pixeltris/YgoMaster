@@ -655,6 +655,45 @@ namespace YgoMaster
                     }
                 }
             }
+            string regulationDir = Path.Combine(dataDirectory, "Regulation.d");
+            if (Directory.Exists(regulationDir))
+            {
+                var ruleList = Utils.GetDictionary(RegulationInfo, "rule_list");
+                foreach (string file in Directory.GetFiles(regulationDir))
+                {
+                    Dictionary<string, object> reg = MiniJSON.Json.DeserializeStripped(File.ReadAllText(file)) as Dictionary<string, object>;
+                    var id = Utils.GetValue<int>(reg, "regulation_id", -1);
+                    var name = Utils.GetValue<string>(reg, "name", "");
+                    Console.WriteLine("Add regulation:" + id + ": " + name);
+
+                    ruleList.Add(id.ToString(), name);
+                    var icon = Utils.GetDictionary(reg, "regulation_icon");
+                    icon.Add("regulation_id", id);
+                    icon.Add("id", id);
+                    RegulationIcon.Add(id.ToString(), icon);
+
+                    if (reg.ContainsKey("banlist")) {
+                        var available = new Dictionary<string, object>();
+                        var banlist = Utils.GetDictionary(reg, "banlist");
+                        var bannedCards = new HashSet<int>(CardRare.Keys.Cast<int>());
+                        for (int i = 1; i <= 3; i++) {
+                            var tmp = Utils.GetValueTypeList<int>(banlist, "a" + i);
+                            available.Add("a"+ i, tmp);
+                            foreach (int c in tmp) {
+                                bannedCards.Remove(c);
+                            }
+                        }
+                        available.Add("a0", bannedCards.ToList());
+                        reg.Add("available", available);
+                    } 
+
+                    Regulation.Add(id.ToString(), reg);
+                    DeckInfo.RegulationIdsByName.Add(name, id);
+                    DeckInfo.RegulationNamesById.Add(id, name);
+                }
+            }
+
+
             if (Utils.GetValue<bool>(values, "DisableBanList") && Regulation != null)
             {
                 Dictionary<string, object> defaultRegulation = Utils.GetDictionary(Regulation, DeckInfo.DefaultRegulationId.ToString());
