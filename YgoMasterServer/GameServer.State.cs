@@ -171,7 +171,7 @@ namespace YgoMaster
         /// </summary>
         int DuelReplaySaveFileLimit;
         /// <summary>
-        /// Should should replays be flagged as public by default
+        /// Should replays be flagged as public by default
         /// </summary>
         bool DuelReplayMakePublicByDefault;
         /// <summary>
@@ -179,7 +179,7 @@ namespace YgoMaster
         /// </summary>
         DuelReplayCardVisibility DuelReplayCardVisibility;
         /// <summary>
-        /// Allows mulitple connections
+        /// Allows multiple connections
         /// </summary>
         bool MultiplayerEnabled;
         /// <summary>
@@ -1202,7 +1202,7 @@ namespace YgoMaster
                                     }
                                     switch (args[j].ToLowerInvariant())
                                     {
-                                        case "--set":// Sets the card count to the given value rather than adding to the existing card count e.g. if you have already have 6x of a card and you `--set --count 3` you'll end up with 3x of that card instead of 9x
+                                        case "--set":// Sets the card count to the given value rather than adding to the existing card count e.g. if you already have 6x of a card and you `--set --count 3` you'll end up with 3x of that card instead of 9x
                                             append = false;
                                             break;
                                         case "--set-clear":// When using `--set` this will also clear all existing entries for the given card id before doing the set (all rarities are set to 0 before setting the card count)
@@ -2731,7 +2731,7 @@ namespace YgoMaster
                         info.Flexibility = Utils.GetValue<int>(data, "flexibility");
                         info.Difficulty = Utils.GetValue<int>(data, "difficulty");
                         info.OddsName = Utils.GetValue<string>(data, "oddsName");// custom
-                        //info.IsSpecialTime = Utils.GetValue<bool>(data, "isSpecialTime");// This will be annoying to maintain. Get it from a seperate list.
+                        //info.IsSpecialTime = Utils.GetValue<bool>(data, "isSpecialTime");// This will be annoying to maintain. Get it from a separate list.
                         break;
                 }
                 foreach (Dictionary<string, object> priceData in Utils.GetDictionaryCollection(data, "prices"))
@@ -3067,7 +3067,7 @@ namespace YgoMaster
         }
 
         /// <summary>
-        /// Helper to merge packet logs of visting the shop to extract out desired information (card packs)
+        /// Helper to merge packet logs of visiting the shop to extract out desired information (card packs)
         /// </summary>
         void MergeShopDumps()
         {
@@ -3160,7 +3160,7 @@ namespace YgoMaster
                                                 }
                                                 else
                                                 {
-                                                    // Special case. We aren't merging pack shops anymore due to old assets not being downlaoded.
+                                                    // Special case. We aren't merging pack shops anymore due to old assets not being downloaded.
                                                     if (!foundPackShop)
                                                     {
                                                         foundPackShop = true;
@@ -3271,8 +3271,8 @@ namespace YgoMaster
             }
             // NOTE:
             // We reassign the card list ids to their shop ids.
-            // On the real server each card list has its own id which is seperate from the shop id.
-            // It makes sense for card lists to be seperate in cases like bonus packs where each bonus pack
+            // On the real server each card list has its own id which is separate from the shop id.
+            // It makes sense for card lists to be separate in cases like bonus packs where each bonus pack
             // is the same. Though the legacy pack is essentially the "main" / "master" bonus pack
             foreach (KeyValuePair<int, Dictionary<string, object>> packShopItem in new Dictionary<int, Dictionary<string, object>>(packShop))
             {
@@ -3506,7 +3506,7 @@ namespace YgoMaster
                             deck.DisplayCards.Add(focusCards[i]);
                         }
                     }
-                    // NOTE: Focus cards are required outwise it'll bug out the shop
+                    // NOTE: Focus cards are required otherwise it'll bug out the shop
                     while (deck.DisplayCards.Count < 3)
                     {
                         deck.DisplayCards.Add(6018);// Mokey mokey
