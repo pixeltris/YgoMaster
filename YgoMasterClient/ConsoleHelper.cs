@@ -827,6 +827,25 @@ namespace YgoMasterClient
                 case "bgreload":
                     CustomBackground.ReloadBg();
                     break;
+                case "gacha_get_probability":
+                    {
+                        IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+                        IL2Class handleClass = assembly.GetClass("Handle", "YgomSystem.Network");
+                        IL2Method isCompleted = handleClass.GetMethod("IsCompleted");
+                        IL2Class apiClass = assembly.GetClass("API", "YgomSystem.Network");
+                        IL2Method Gacha_get_probability = apiClass.GetMethod("Gacha_get_probability");
+                        new Thread(delegate ()
+                        {
+                            MakeNetworkRequest(isCompleted, () =>
+                            {
+                                int gachaId = int.Parse(splitted[1]);
+                                int shopId = int.Parse(splitted[2]);
+                                Console.WriteLine(gachaId + " " + shopId);
+                                return Gacha_get_probability.Invoke(new IntPtr[] { new IntPtr(&gachaId), new IntPtr(&shopId) }).ptr;
+                            });
+                        }).Start();
+                    }
+                    break;
                 case "solo_clear":// Clears all of solo content (used for updating secret packs using new accounts)
                     {
                         Dictionary<string, object> solo = YgomSystem.Utility.ClientWork.GetDict("$.Master.Solo");
@@ -1698,6 +1717,11 @@ namespace YgoMasterClient
                         {
                             Console.WriteLine(field.Name + "=" + (field.Token - baseOffset));
                         }
+                    }
+                    break;
+                case "pop":
+                    {
+                        YgomSystem.UI.ViewControllerManager.PopChildViewController(YgomGame.Menu.ContentViewControllerManager.GetManager());
                     }
                     break;
             }

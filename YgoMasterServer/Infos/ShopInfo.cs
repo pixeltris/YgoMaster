@@ -9,6 +9,7 @@ namespace YgoMaster
     {
         public Dictionary<string, ShopOddsInfo> PackOddsByName { get; private set; }
         public Dictionary<ShopPackType, ShopOddsInfo> PackOddsByPackType { get; private set; }
+        public Dictionary<int, ShopOddsInfo> PackOddsByShopId { get; private set; }
         public ShopOddsVisualsSettings PackOddsVisuals { get; private set; }
         public Dictionary<int, string> PackShopImagesByCardId { get; private set; }
         public Dictionary<int, ShopItemInfo> PackShop { get; private set; }
@@ -85,6 +86,7 @@ namespace YgoMaster
         {
             PackOddsByName = new Dictionary<string, ShopOddsInfo>();
             PackOddsByPackType = new Dictionary<ShopPackType, ShopOddsInfo>();
+            PackOddsByShopId = new Dictionary<int, ShopOddsInfo>();
             PackOddsVisuals = new ShopOddsVisualsSettings();
             PackShopImagesByCardId = new Dictionary<int,string>();
             PackShop = new Dictionary<int, ShopItemInfo>();
@@ -227,14 +229,15 @@ namespace YgoMaster
         public ShopOddsInfo GetOdds(ShopInfo shop)
         {
             ShopOddsInfo odds = null;
-            if (!string.IsNullOrEmpty(OddsName))
+            if (shop.PackOddsByShopId.TryGetValue(ShopId, out odds))
             {
-                shop.PackOddsByName.TryGetValue(OddsName, out odds);
+                return odds;
             }
-            if (odds == null)
+            if (!string.IsNullOrEmpty(OddsName) && shop.PackOddsByName.TryGetValue(OddsName, out odds))
             {
-                shop.PackOddsByPackType.TryGetValue(PackType, out odds);
+                return odds;
             }
+            shop.PackOddsByPackType.TryGetValue(PackType, out odds);
             return odds;
         }
 
@@ -458,6 +461,7 @@ namespace YgoMaster
     {
         public string Name;
         public HashSet<ShopPackType> PackTypes { get; private set; }
+        public HashSet<int> PackShopIds { get; private set; }
         public List<ShopOddsRarity> CardRateList { get; private set; }
         /// <summary>
         /// premiereRateList
@@ -467,6 +471,7 @@ namespace YgoMaster
         public ShopOddsInfo()
         {
             PackTypes = new HashSet<ShopPackType>();
+            PackShopIds = new HashSet<int>();
             CardRateList = new List<ShopOddsRarity>();
             CardStyleRarityRateList = new List<ShopOddsStyleRarity>();
         }

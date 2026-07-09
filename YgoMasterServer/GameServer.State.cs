@@ -2840,6 +2840,14 @@ namespace YgoMaster
                         shopOdds.PackTypes.Add((ShopPackType)(int)Convert.ChangeType(packType, typeof(int)));
                     }
                 }
+                List<int> packShopIds = Utils.GetIntList(data, "packShopIds");
+                if (packShopIds != null)
+                {
+                    foreach (int shopId in packShopIds)
+                    {
+                        shopOdds.PackShopIds.Add(shopId);
+                    }
+                }
                 List<object> cardRateList = Utils.GetValue(data, "cardRateList", default(List<object>));
                 if (cardRateList != null)
                 {
@@ -2905,6 +2913,17 @@ namespace YgoMaster
                     else
                     {
                         Shop.PackOddsByPackType[packType] = shopOdds;
+                    }
+                }
+                foreach (int shopId in shopOdds.PackShopIds)
+                {
+                    if (Shop.PackOddsByShopId.ContainsKey(shopId))
+                    {
+                        Utils.LogWarning("Duplicate shop odds for pack shop id " + shopId);
+                    }
+                    else
+                    {
+                        Shop.PackOddsByShopId[shopId] = shopOdds;
                     }
                 }
                 if (!string.IsNullOrEmpty(shopOdds.Name))
