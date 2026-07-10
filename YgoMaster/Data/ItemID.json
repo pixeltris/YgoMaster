@@ -52,6 +52,7 @@
     1000037,//Dingirsu, the Orcust of the Evening Star
     1000038,//I:P Masquerena
     1000039,//S:P Little Knight
+    1000040,//Ryzeal Detonator
     1000041,//Number 41: Bagooska the Terribly Tired Tapir
     1000042,//Yummy★Snatchy
     1000043,//Dinowrestler Pankratops
@@ -255,6 +256,7 @@
     1010140,//Elfnote Lucina
     1010141,//Dragunity Quirinus
     1010142,//Exosister Mikailis
+    1010143,//Fairy Tail - Snow
     1010145,//Artmage Non-Finito
     1010146,//Number C101: Silent Honor DARK
     1010147,//Fallen of the White Dragon
@@ -423,6 +425,7 @@
     1013011,//Selene, Queen of the Master Magicians
     1013012,//Rescue Hedgehog
     1013013,//Aleister the Invoker
+    1013014,//Shadow Duelist Zester
     1013015,//Wumpus
   ],
   "PROFILE_TAG": [
@@ -642,6 +645,8 @@
     1020215,//WCS 2026 Qualifiers DLv. MAX
     1020216,//Lightning Storm
     1020217,//Luck of the Roll
+    1020218,//Dreadnought
+    1020219,//Enforcers of Justice
     1021001,//Starting Out
     1021002,//Top Performer
     1022001,//High School Tournament 2026 Champion
@@ -717,6 +722,7 @@
     1031023,//Black Rose Garden
     1031024,//Elfnote
     1031025,//Albion the Shrouded Dragon
+    1031026,//Palm Ryzeal
     1032001,//Festive Ornament
     1032002,//Celebration of Spring Breeze
     1032003,//Tropical Seaside
@@ -901,9 +907,14 @@
     1070165,//Elfnote Regina
     1070166,//Dragunity Knight - Areus
     1070167,//Exosister Karmael
+    1070168,//Teller of Fairy Tails
+    1070170,//Ryzeal Plugin
     1070171,//Hecahands Jauzah
     1070172,//Archfiend Emperor
     1070173,//Archfiend Matriarch
+    1070174,//Starving Venom Wing Dragon
+    1070176,//Stellarnova Alpha
+    1070177,//Superdreadnought Rail Cannon Juggernaut Liebe
     1070178,//Mokomoko
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
@@ -1248,6 +1259,7 @@
     1111043,//Tales of the White Forest
     1111044,//R-Genex Turing
     1111045,//Madolche Chickolates
+    1111046,//Tenchi Kaimei
     1111047,//DARK
     1111048,//LIGHT
     1111049,//EARTH
@@ -1411,6 +1423,7 @@
     1130099,//K9-X "Werewolf"
     1130100,//Ohime the Manifested Mikanko
     1130101,//Mikanko Shinbu - Noble Twins
+    1130102,//Combined Maneuver - Engage Zero!
     1130103,//Ketu Dracotail
     1130104,//First of the Dragonlords 
     1130105,//Diabellze the Original Sinkeeper
@@ -1434,11 +1447,14 @@
     1130125,//Elfnotes: Aristeia of Trust
     1130126,//Elfnotes: Welcome Home
     1130127,//The Virtuous Vestals
+    1130128,//Ryzeal Mass Driver
     1130129,//Hecahands Bait
     1130130,//Junora the Power Patron of Tuning
     1130131,//Triple Tactics Thrust
     1130132,//Fusion Deployment
+    1130133,//Weaver of Fairy Tails
     1130135,//Gorgon of Zilofthonia
+    1130136,//Fydraulis Harmonia
     1132001,//Rescue Rabbit
     1132002,//Neymar
     1132003,//That's 10!
@@ -1474,6 +1490,7 @@
     1170012,//Exosister
     1170013,//Dragunity
     1170014,//The Fallen & The Virtuous
+    1170015,//Fairy Tail
   ],
   "COIN": [
     1180001,//Blue-Eyes Alternative White Dragon
@@ -1497,6 +1514,7 @@
     1180021,//Dragunity
     1180022,//Exosister
     1180023,//Fallen of Albaz
+    1180024,//Fairy Tail
   ],
   "BOOKMARK_LIMIT": [
     1190001,//Bookmark Slots

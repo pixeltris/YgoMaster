@@ -664,7 +664,7 @@ namespace YgoMaster
                     Dictionary<string, object> reg = MiniJSON.Json.DeserializeStripped(File.ReadAllText(file)) as Dictionary<string, object>;
                     var id = Utils.GetValue<int>(reg, "regulation_id", -1);
                     var name = Utils.GetValue<string>(reg, "name", "");
-                    Console.WriteLine("Add regulation:" + id + ": " + name);
+                    //Console.WriteLine("Add regulation:" + id + ": " + name);
 
                     ruleList.Add(id.ToString(), name);
                     var icon = Utils.GetDictionary(reg, "regulation_icon");
@@ -1112,6 +1112,9 @@ namespace YgoMaster
                             {
                                 YdkHelper.LoadIdMap(dataDirectory);
 
+                                bool showPromo1 = args.Contains("--show-promo1");
+                                bool showPromo2 = args.Contains("--show-promo2");
+
                                 HashSet<int> knownAltCardIds = new HashSet<int>();
                                 string altCardIdsFile = Path.Combine("..", "Docs", "AltCardsYdk.json");
                                 if (File.Exists(altCardIdsFile))
@@ -1142,9 +1145,14 @@ namespace YgoMaster
                                     {
                                         continue;
                                     }
-                                    if (card.Id >= 30000 && card.Id <= 30099)
+                                    if ((card.Id >= 30000 && card.Id <= 30099) && !showPromo1)
                                     {
                                         // Promotional card ids
+                                        continue;
+                                    }
+                                    if ((card.Id >= 3100 && card.Id <= 3199) && !showPromo2)
+                                    {
+                                        // More promotional card ids?
                                         continue;
                                     }
                                     if (!cardNameIds.ContainsKey(card.Name))
