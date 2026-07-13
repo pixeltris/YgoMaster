@@ -767,8 +767,8 @@ namespace YgoMaster
                                         List<int> cardIds = new List<int>();
                                         foreach (KeyValuePair<int, int> card in cardRare)
                                         {
-                                            if (card.Value == (int)cardRarity && (reward.CardOwnedLimit == 0 ||
-                                                reward.CardOwnedLimit > request.Player.Cards.GetCount(card.Key)))
+                                            if (card.Value == (int)cardRarity && (reward.CardPool == null || reward.CardPool.Count == 0 || reward.CardPool.Contains(card.Key)) &&
+                                                (reward.CardOwnedLimit == 0 || reward.CardOwnedLimit > request.Player.Cards.GetCount(card.Key)))
                                             {
                                                 cardIds.Add(card.Key);
                                             }

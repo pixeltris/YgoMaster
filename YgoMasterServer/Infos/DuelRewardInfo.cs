@@ -192,6 +192,7 @@ namespace YgoMaster
                                         reward.Ids.Add((int)Convert.ChangeType(idObj, typeof(int)));
                                     }
                                 }
+                                reward.CardPool = Utils.GetIntList(data, "cardPool");
                                 if (reward.Ids.Count > 0 && reward.Rate == 0)
                                 {
                                     continue;
@@ -249,6 +250,10 @@ namespace YgoMaster
         /// Or specific item ids (in the case of Item)
         /// </summary>
         public List<int> Ids;
+        /// <summary>
+        /// Optionally used along with CardRate to limit the card pool to a specific set of cards while preserving the set chance of pulling N/R/SR/UR (which Ids doesn't do)
+        /// </summary>
+        public List<int> CardPool;
     }
 
     enum DuelCustomRewardType
