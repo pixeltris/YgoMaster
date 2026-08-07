@@ -1693,7 +1693,15 @@ namespace YgoMaster
                         if (!TryGetCardRarity(card.Key, result, out rarity) &&
                             TryGetCardRarity(card.Key, CardRare, out rarity))
                         {
-                            result[card.Key] = (int)rarity;
+                            if (ProgressiveCardRarities)
+                            {
+                                // Temporary value to avoid breaking ProgressiveCardRarities
+                                result[card.Key] = int.MaxValue;
+                            }
+                            else
+                            {
+                                result[card.Key] = (int)rarity;
+                            }
                         }
                     }
                 }
@@ -1705,6 +1713,13 @@ namespace YgoMaster
                     CardRarity rarity;
                     if (TryGetCardRarity(card.Key, lowestPackRarities, out rarity) && rarity < (CardRarity)card.Value)
                     {
+                        result[card.Key] = (int)rarity;
+                    }
+
+                    // Fix up rarities based on the default CardRare data
+                    if (result[card.Key] == int.MaxValue)
+                    {
+                        TryGetCardRarity(card.Key, CardRare, out rarity);
                         result[card.Key] = (int)rarity;
                     }
                 }
