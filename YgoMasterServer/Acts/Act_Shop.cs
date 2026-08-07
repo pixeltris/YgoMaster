@@ -452,6 +452,10 @@ namespace YgoMaster
                     SavePlayer(request.Player);
                 }
             }
+            if (Shop.PerPackRarities)
+            {
+                request.Remove("Gacha.cardList");
+            }
         }
 
         void Act_ShopPurchase(GameServerWebRequest request)
