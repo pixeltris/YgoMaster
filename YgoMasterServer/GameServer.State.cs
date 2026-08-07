@@ -354,6 +354,34 @@ namespace YgoMaster
             DuelSettings.LoadBgmInfo(Path.Combine(dataDirectory, "Bgm.json"));
 
             ItemID.Load(dataDirectory);
+
+            // Add missing duel fields from Bgm.json (duel fields without names - event duel fields)
+            foreach (int fieldId in DuelSettings.MatIdToBgmId.Keys)
+            {
+                if (!ItemID.Values[ItemID.Category.FIELD].Contains(fieldId))
+                {
+                    List<int> fields = ItemID.Values[ItemID.Category.FIELD].ToList();
+                    fields.Add(fieldId);
+                    ItemID.Values[ItemID.Category.FIELD] = fields.ToArray();
+
+                    int avatarHome = ItemID.GetFieldAvatarBaseFromField(fieldId);
+                    if (!ItemID.Values[ItemID.Category.AVATAR_HOME].Contains(avatarHome))
+                    {
+                        List<int> avatarHomes = ItemID.Values[ItemID.Category.AVATAR_HOME].ToList();
+                        avatarHomes.Add(avatarHome);
+                        ItemID.Values[ItemID.Category.AVATAR_HOME] = avatarHomes.ToArray();
+                    }
+
+                    int fieldObj = ItemID.GetFieldObjFromField(fieldId);
+                    if (!ItemID.Values[ItemID.Category.FIELD_OBJ].Contains(fieldObj))
+                    {
+                        List<int> fieldObjs = ItemID.Values[ItemID.Category.FIELD_OBJ].ToList();
+                        fieldObjs.Add(fieldObj);
+                        ItemID.Values[ItemID.Category.FIELD_OBJ] = fieldObjs.ToArray();
+                    }
+                }
+            }
+
             YdkHelper.LoadIdMap(dataDirectory);
 
             //DuelSimulator sim = new DuelSimulator(dataDirectory);

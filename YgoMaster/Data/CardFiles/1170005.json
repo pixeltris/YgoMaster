@@ -45,25 +45,25 @@
     "21383": {
       "card_id": 21383,
       "page": 2,
-      "card_pos": 1,
+      "card_pos": 2,
       "assign_premium_type": 0
     },
     "21384": {
       "card_id": 21384,
       "page": 2,
-      "card_pos": 2,
+      "card_pos": 3,
       "assign_premium_type": 0
     },
     "21385": {
       "card_id": 21385,
       "page": 2,
-      "card_pos": 0,
+      "card_pos": 1,
       "assign_premium_type": 0
     },
     "21386": {
       "card_id": 21386,
       "page": 2,
-      "card_pos": 3,
+      "card_pos": 4,
       "assign_premium_type": 0
     },
     "21791": {
@@ -77,9 +77,15 @@
       "page": 1,
       "card_pos": 7,
       "assign_premium_type": 0
+    },
+    "22146": {
+      "card_id": 22146,
+      "page": 2,
+      "card_pos": 0,
+      "assign_premium_type": 0
     }
   },
   "total_page": 2,
-  "total_card": 13,
+  "total_card": 14,
   "sort": 494
 }

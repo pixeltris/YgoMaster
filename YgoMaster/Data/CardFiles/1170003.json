@@ -77,9 +77,15 @@
       "page": 2,
       "card_pos": 1,
       "assign_premium_type": 0
+    },
+    "22178": {
+      "card_id": 22178,
+      "page": 2,
+      "card_pos": 4,
+      "assign_premium_type": 0
     }
   },
   "total_page": 2,
-  "total_card": 13,
+  "total_card": 14,
   "sort": 495
 }

@@ -56,6 +56,8 @@
     1000041,//Number 41: Bagooska the Terribly Tired Tapir
     1000042,//Yummy★Snatchy
     1000043,//Dinowrestler Pankratops
+    1000046,//Beat, Bladesman Fur Hire
+    1000047,//Penguin Soldier
     1001001,//Instant Fusion
     1001002,//Noble Arms - Caliburn
     1001003,//Book of Moon
@@ -114,6 +116,7 @@
     1003004,//Fiendsmith Engraver
     1003005,//I:P Masquerena & S-Force Rappa Chiyomaru
     1003006,//Fallen of Albaz
+    1003007,//Elemental HERO Neos
     1005001,//Rescue Rabbit
   ],
   "ICON": [
@@ -257,10 +260,17 @@
     1010141,//Dragunity Quirinus
     1010142,//Exosister Mikailis
     1010143,//Fairy Tail - Snow
+    1010144,//Rex, Freight Fur Hire
     1010145,//Artmage Non-Finito
     1010146,//Number C101: Silent Honor DARK
     1010147,//Fallen of the White Dragon
     1010148,//Tri-Brigade Springans Kitt
+    1010149,//Favorite HERO Flame Wingman
+    1010150,//Darklord Eveningstar
+    1010151,//Lev Shaddoll Fusion
+    1010152,//GMX - ALLOS
+    1010153,//First Penguin
+    1010154,//Solemn Scolding
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -332,6 +342,10 @@
     1011069,//WCS 2026 Qualifiers Gold Finalist
     1011070,//WCS 2026 Qualifiers Silver Finalist
     1011071,//WCS 2026 Qualifiers Bronze Finalist
+    1011072,//Fusion Cup Champion
+    1011073,//Fusion Cup Gold Finalist
+    1011074,//Fusion Cup Silver Finalist
+    1011075,//Fusion Cup Bronze Finalist
     1012001,//X-Krawler Synaphysis
     1012002,//Mekk-Knight Spectrum Supreme
     1012003,//Knightmare Gryphon
@@ -427,6 +441,7 @@
     1013013,//Aleister the Invoker
     1013014,//Shadow Duelist Zester
     1013015,//Wumpus
+    1013016,//Diabellstar the Black Witch
   ],
   "PROFILE_TAG": [
     1020001,//Beginner Duelist
@@ -647,8 +662,17 @@
     1020217,//Luck of the Roll
     1020218,//Dreadnought
     1020219,//Enforcers of Justice
+    1020220,//Violet Overlord
+    1020221,//Fusion Cup Top 10
+    1020222,//Fusion Cup Top 100
+    1020223,//Fusion Cup Top 500
+    1020224,//Fusion Cup Top 1000
+    1020225,//Fusion Cup Top 10000
+    1020226,//Fusion Cup 2nd Stage Duelist
+    1020227,//My Favorite
     1021001,//Starting Out
     1021002,//Top Performer
+    1021003,//Point Collector
     1022001,//High School Tournament 2026 Champion
     1022002,//High School Tournament 2026 Grand Finalist
     1022003,//High School Tournament 2026 Finalist
@@ -697,6 +721,7 @@
     1030041,//Red & White Frame
     1030042,//Mimighoul Flower
     1030043,//Yellow & Black Frame
+    1030044,//Lime & Pink Frame
     1031001,//The Path of the Blue Sky Striker
     1031002,//The Path of the Red Sky Striker
     1031003,//Magic Cylinder
@@ -723,6 +748,8 @@
     1031024,//Elfnote
     1031025,//Albion the Shrouded Dragon
     1031026,//Palm Ryzeal
+    1031027,//Forbidden Crown
+    1031028,//Synchro Ring β
     1032001,//Festive Ornament
     1032002,//Celebration of Spring Breeze
     1032003,//Tropical Seaside
@@ -739,6 +766,7 @@
     1033003,//Overlay Unit
     1033004,//Synchro Ring
     1033005,//WCS 2025 Party Favor
+    1033006,//Fusion Vortex
   ],
   "PROTECTOR": [
     1070001,//Yu-Gi-Oh! Trading Card Game
@@ -908,14 +936,20 @@
     1070166,//Dragunity Knight - Areus
     1070167,//Exosister Karmael
     1070168,//Teller of Fairy Tails
+    1070169,//Folgo, Justice Fur Hire
     1070170,//Ryzeal Plugin
     1070171,//Hecahands Jauzah
     1070172,//Archfiend Emperor
     1070173,//Archfiend Matriarch
     1070174,//Starving Venom Wing Dragon
+    1070175,//Pumpking the King of Grave Ghosts
     1070176,//Stellarnova Alpha
     1070177,//Superdreadnought Rail Cannon Juggernaut Liebe
     1070178,//Mokomoko
+    1070179,//Favorite Hero
+    1070180,//El Shaddoll Construct
+    1070184,//Polymerization
+    1070189,//Fifth Hope
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -986,6 +1020,7 @@
     1073018,//DC 2025 DEC Celebration
     1073019,//DC 2026 MAR Celebration
     1073020,//WCS 2026 Qualifiers Celebration
+    1073023,//Fusion Cup Celebration
     1075001,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
     1075002,//THE CHRONICLES: Sky Striker Ace
     1075003,//White & Blue
@@ -1029,6 +1064,8 @@
     1080031,//Dark Magical Blast
     1080032,//Gigantic Sparkle
     1080033,//Rage of Deep Blue
+    1080034,//Cyber Kaiser
+    1080035,//Zero to Future
     1082001,//Xyz Black
     1082002,//The Millennium Puzzle
     1082003,//Duelist Card Case Blue
@@ -1179,6 +1216,7 @@
     1101036,//Swimming Ring
     1101040,//Halloween Ghost
     1101041,//Wreath
+    1101044,//Forbidden Crown
     1101045,// WAKE CUP!
     1102001,//Colosseum
     1102002,//WCS
@@ -1279,7 +1317,9 @@
     1111072,//Live☆Twin Lil-la Sweet
     1111074,//Bramble Rose Dragon
     1111077,//Dominus Spiral
+    1111078,//Sandwich Day
     1111080,//Borrel
+    1111081,//Shaddoll Fusion
     1112001,//Colosseum
     1112002,//WCS
     1112004,//Japan High School Championship
@@ -1322,6 +1362,8 @@
     1120031,//Dark Magical Blast
     1120032,//Gigantic Sparkle
     1120033,//Rage of Deep Blue
+    1120034,//Cyber Kaiser
+    1120035,//Zero to Future
   ],
   "WALLPAPER": [
     1130001,//Blue-Eyes Alternative White Dragon
@@ -1453,8 +1495,14 @@
     1130131,//Triple Tactics Thrust
     1130132,//Fusion Deployment
     1130133,//Weaver of Fairy Tails
+    1130134,//Rookie Fur Hire
     1130135,//Gorgon of Zilofthonia
     1130136,//Fydraulis Harmonia
+    1130137,//Favorite HERO Flame Wingman
+    1130138,//Darklord Eveningstar
+    1130139,//El Shaddoll Winda
+    1130140,//Dominus Spark
+    1130150,//Anti-GMX Final Experiment
     1132001,//Rescue Rabbit
     1132002,//Neymar
     1132003,//That's 10!
@@ -1491,6 +1539,9 @@
     1170013,//Dragunity
     1170014,//The Fallen & The Virtuous
     1170015,//Fairy Tail
+    1170016,//Elemental HERO
+    1170017,//Darklord
+    1170018,//Shaddoll
   ],
   "COIN": [
     1180001,//Blue-Eyes Alternative White Dragon
@@ -1515,6 +1566,7 @@
     1180022,//Exosister
     1180023,//Fallen of Albaz
     1180024,//Fairy Tail
+    1180025,//Elemental HERO
   ],
   "BOOKMARK_LIMIT": [
     1190001,//Bookmark Slots

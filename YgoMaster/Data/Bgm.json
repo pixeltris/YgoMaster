@@ -40,7 +40,12 @@
   { "1090041": [ "BGM_DUEL_F10_PHASE_A","BGM_DUEL_F10_PHASE_B","BGM_DUEL_F10_PHASE_C" ] },//Neon-Lit Cyber City
   { "1090042": [ "BGM_DUEL_F11_PHASE_A","BGM_DUEL_F11_PHASE_B","" ] },//Fairy Realm - Oratorio Garden
   { "1092001": [ "BGM_DUEL_EX_02_NORMAL", "BGM_DUEL_EX_02_KEYCARD", "BGM_DUEL_EX_02_CLIMAX" ] },//Colosseum
-  { "1092002": [ "BGM_DUEL_EX_03_NORMAL", "BGM_DUEL_EX_03_KEYCARD", "BGM_DUEL_EX_03_CLIMAX" ] },//WCS
+  { "1092002": [ "BGM_DUEL_EX_03_NORMAL", "BGM_DUEL_EX_03_KEYCARD", "BGM_DUEL_EX_03_CLIMAX" ] },//WCS (2023,2024)
+  { "1092004": 08 },//Japan High School Championship - https://www.youtube.com/watch?v=EPmylBZg9o4
+  { "1092006": [ "BGM_DUEL_EX_09_PHASE_A", "BGM_DUEL_EX_09_PHASE_B", "" ] },//Synchro Cup - Stage 1 BGM (TODO: Update name if this gets an official name) - https://www.youtube.com/watch?v=VxZsAHJxcQc
+  { "1092008": [ "BGM_DUEL_EX_06_ALL", "", "" ] },//WCS (2025) - Stage 1 BGM (TODO: Update name if this gets an official name) - https://www.youtube.com/watch?v=YYfWQKCgek4
+  { "1092009": [ "BGM_DUEL_EX_11_PHASE_A", "BGM_DUEL_EX_11_PHASE_B", "" ] },//Fusion Cup - Stage 1 BGM (TODO: Update name if this gets an official name) - https://www.youtube.com/watch?v=b-m6C_vWT6c
+  { "1092010": [ "BGM_DUEL_EX_12_NORMAL", "BGM_DUEL_EX_12_KEYCARD", "BGM_DUEL_EX_12_CLIMAX" ] },//WCS (2026?) No BGM yet - using Stage 2 BGM of Fusion Cup (TODO: Update the BGM) (TODO: Update name if this gets an official name)
 ]
 //Audio file list: https://code.moenext.com/sherry_chaos/MDPro3/-/tree/master/Assets/Addressables/Sound/BGM
 //BGM_DUEL_NORMAL_01 BGM_DUEL_KEYCARD_01 BGM_DUEL_CLIMAX_01
@@ -75,3 +80,13 @@
 //BGM_TUTORIAL_01
 //BGM_OUT_TUTORIAL_2
 //BGM_SOLO_GATE
+
+// Ref: https://en.namu.wiki/w/%EC%9C%A0%ED%9D%AC%EC%99%95%20%EB%A7%88%EC%8A%A4%ED%84%B0%20%EB%93%80%EC%96%BC/OST
+// Using MelonLoader + CinematicUnityExplorer play BGMs using the C# Console:
+// YgomSystem.Sound.Instance.StopAll();
+// YgomSystem.Sound.Instance.PlayBGM("BGM_DUEL_EX_08_ALL");
+
+// Duplicates / 2nd stage events:
+//{ "1092006": [ "BGM_DUEL_EX_10_NORMAL", "BGM_DUEL_EX_10_KEYCARD", "BGM_DUEL_EX_10_CLIMAX" ] },//Synchro Cup - Stage 2 BGM (TODO: Update name if this gets an official name) - https://www.youtube.com/watch?v=JL2qIsYOgNQ
+//{ "1092008": [ "BGM_DUEL_EX_07_PHASE_A", "BGM_DUEL_EX_07_PHASE_B", "" ] },//WCS 2025 - Stage 2 BGM (TODO: Update name if this gets an official name) - https://www.youtube.com/watch?v=3iyU85t-UcQ
+//{ "1092009": [ "BGM_DUEL_EX_12_NORMAL", "BGM_DUEL_EX_12_KEYCARD", "BGM_DUEL_EX_12_CLIMAX" ] },//Fusion Cup - Stage 2 BGM (assumed) (TODO: Update name if this gets an official name) - https://www.youtube.com/watch?v=rnC4cTcRS8Y

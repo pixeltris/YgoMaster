@@ -25,7 +25,7 @@
     "MultiplayerPvpClientSysActCallsPerSleep": 5,
     "MultiplayerPvpClientDoCommandUserOffset": 15616,
     "MultiplayerPvpClientRunDialogUserOffset": 15512,
-    "MultiplayerPvpClientDuelDllSize": 19118592,
+    "MultiplayerPvpClientDuelDllSize": 19443200,
     "DisableDeckValidation": false,
     "DontUpdateDeckEditTime": false,
     "DeckListAlphabetical": false,

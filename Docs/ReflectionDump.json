@@ -2123,7 +2123,7 @@
     ],
     "Type": "Method",
     "Name": "OpenCheckBoxDialog",
-    "Signature": "public static System.Void OpenCheckBoxDialog(System.String title, System.String message, System.Collections.Generic.List<YgomGame.Dialog.CommonDialog.EntryCheckBoxListData.EntryCheckBoxData> checkBoxList, System.Boolean isEnableMulti, System.Action<System.Collections.Generic.List<System.Boolean>> action, System.Action noAction, System.String buttonLabel, System.String noButtonLabel, System.Boolean interactable, YgomGame.Dialog.CommonDialog.CommonDialogTitleWidget.IconType iconType, System.Collections.Generic.Dictionary<System.String,System.Object> args)"
+    "Signature": "public static System.Void OpenCheckBoxDialog(System.String title, System.String message, System.Collections.Generic.List<YgomGame.Dialog.CommonDialog.EntryCheckBoxListData.EntryCheckBoxData> checkBoxList, System.Boolean isEnableMulti, System.Boolean isAllowScrollingSwipe, System.Action<System.Collections.Generic.List<System.Boolean>> action, System.Action noAction, System.String buttonLabel, System.String noButtonLabel, YgomGame.Dialog.CommonDialog.CommonDialogTitleWidget.IconType iconType, System.Collections.Generic.Dictionary<System.String,System.Object> args)"
   },
   {
     "Assembly": "Assembly-CSharp",
