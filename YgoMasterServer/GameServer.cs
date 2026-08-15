@@ -322,6 +322,24 @@ namespace YgoMaster
                                     case "Deck.set_accessory":// v2.2.1
                                         Act_DeckSetAccessory(gameServerWebRequest);
                                         break;
+                                    case "Billing.product_list":
+                                        Act_BillingProductList(gameServerWebRequest);
+                                        break;
+                                    case "Billing.Steam.in_complete_item_check":
+                                        Act_Billing_Steam_in_complete_item_check(gameServerWebRequest);
+                                        break;
+                                    case "Billing.reservation":
+                                        Act_BillingReservation(gameServerWebRequest);
+                                        break;
+                                    case "Billing.purchase":
+                                        Act_BillingPurchase(gameServerWebRequest);
+                                        break;
+                                    case "Billing.add_purchased_item":
+                                        Act_Billing_add_purchased_item(gameServerWebRequest);
+                                        break;
+                                    case "Billing.cancel":
+                                        Act_BillingCancel(gameServerWebRequest);
+                                        break;
                                     case "Shop.get_list":
                                         Act_ShopGetList(gameServerWebRequest);
                                         break;

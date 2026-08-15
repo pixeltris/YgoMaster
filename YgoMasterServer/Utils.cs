@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -80,6 +80,28 @@ namespace YgoMaster
         public static DateTime ConvertEpochTime(long time)
         {
             return (new DateTime(1970, 1, 1)).AddSeconds(time).ToLocalTime();
+        }
+
+        static readonly object billingIdLocker = new object();
+        static long lastBillingId;
+
+        // Ids used by the billing flow (Steam order id / purchased_item_target_id).
+        // The real ones look like 2000010112000000000 - a UTC timestamp (yyyyMMddHHmmss) followed by
+        // sub-second digits - so match that shape. Always increases, so two purchases landing in
+        // the same millisecond can't produce the same id.
+        public static long CreateBillingId()
+        {
+            lock (billingIdLocker)
+            {
+                long id;
+                if (!long.TryParse(DateTime.UtcNow.ToString("yyyyMMddHHmmssfff",
+                    System.Globalization.CultureInfo.InvariantCulture) + "00", out id) || id <= lastBillingId)
+                {
+                    id = lastBillingId + 1;
+                }
+                lastBillingId = id;
+                return id;
+            }
         }
 
         public static bool TryCreateDirectory(string dir)

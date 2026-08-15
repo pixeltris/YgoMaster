@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Acts\Act_Billing.cs" />
     <Compile Include="Acts\Act_CardFile.cs" />
     <Compile Include="Acts\Act_Craft.cs" />
     <Compile Include="Acts\Act_Duel.cs" />
