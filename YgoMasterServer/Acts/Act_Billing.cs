@@ -267,7 +267,7 @@ namespace YgoMaster
                             break;
                         default:
                             // Anything non-gem in a bundle goes through the normal item path.
-                            request.Player.Items.Add(itemId);
+                            request.Player.AddItem(itemId, amount);
                             WriteItem(request, itemId);
                             break;
                     }

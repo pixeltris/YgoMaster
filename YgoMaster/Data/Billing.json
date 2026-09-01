@@ -24,135 +24,9 @@
 {
   "GemShop": {
     "Products": {
-      "20": {
-        "shop_paid_id": 20,
-        "product_id": "ygomaster.gem.01",
-        "enabled": true,
-        "limit_count": -1,
-        "buy_count": -1,
-        "start_date": "2020-01-01 00:00:00",
-        "end_date": "2100-12-30 15:00:00",
-        "end_date_ts": 0,
-        "string_id": "IDS_GEMSHOP_PRODUCTNAME_GEMPACK_00",
-        "thumb_id": 1,
-        "confirm_reg_id": 0,
-        "currency": "GEM",
-        "price": "0",
-        "f_price": "FREE",
-        "style": 0,
-        "sort": 0,
-        "items": {
-          "1": 100
-        }
-      },
-      "21": {
-        "shop_paid_id": 21,
-        "product_id": "ygomaster.gem.02",
-        "enabled": true,
-        "limit_count": -1,
-        "buy_count": -1,
-        "start_date": "2020-01-01 00:00:00",
-        "end_date": "2100-12-30 15:00:00",
-        "end_date_ts": 0,
-        "string_id": "IDS_GEMSHOP_PRODUCTNAME_GEMPACK_00",
-        "thumb_id": 2,
-        "confirm_reg_id": 0,
-        "currency": "GEM",
-        "price": "0",
-        "f_price": "FREE",
-        "style": 0,
-        "sort": 1,
-        "items": {
-          "1": 250
-        }
-      },
-      "22": {
-        "shop_paid_id": 22,
-        "product_id": "ygomaster.gem.03",
-        "enabled": true,
-        "limit_count": -1,
-        "buy_count": -1,
-        "start_date": "2020-01-01 00:00:00",
-        "end_date": "2100-12-30 15:00:00",
-        "end_date_ts": 0,
-        "string_id": "IDS_GEMSHOP_PRODUCTNAME_GEMPACK_00",
-        "thumb_id": 3,
-        "confirm_reg_id": 0,
-        "currency": "GEM",
-        "price": "0",
-        "f_price": "FREE",
-        "style": 0,
-        "sort": 2,
-        "items": {
-          "1": 500
-        }
-      },
-      "23": {
-        "shop_paid_id": 23,
-        "product_id": "ygomaster.gem.04",
-        "enabled": true,
-        "limit_count": -1,
-        "buy_count": -1,
-        "start_date": "2020-01-01 00:00:00",
-        "end_date": "2100-12-30 15:00:00",
-        "end_date_ts": 0,
-        "string_id": "IDS_GEMSHOP_PRODUCTNAME_GEMPACK_00",
-        "thumb_id": 4,
-        "confirm_reg_id": 0,
-        "currency": "GEM",
-        "price": "0",
-        "f_price": "FREE",
-        "style": 0,
-        "sort": 3,
-        "items": {
-          "1": 1000
-        }
-      },
-      "24": {
-        "shop_paid_id": 24,
-        "product_id": "ygomaster.gem.05",
-        "enabled": true,
-        "limit_count": -1,
-        "buy_count": -1,
-        "start_date": "2020-01-01 00:00:00",
-        "end_date": "2100-12-30 15:00:00",
-        "end_date_ts": 0,
-        "string_id": "IDS_GEMSHOP_PRODUCTNAME_GEMPACK_00",
-        "thumb_id": 5,
-        "confirm_reg_id": 0,
-        "currency": "GEM",
-        "price": "0",
-        "f_price": "FREE",
-        "style": 0,
-        "sort": 4,
-        "items": {
-          "1": 2500
-        }
-      },
-      "25": {
-        "shop_paid_id": 25,
-        "product_id": "ygomaster.gem.06",
-        "enabled": true,
-        "limit_count": -1,
-        "buy_count": -1,
-        "start_date": "2020-01-01 00:00:00",
-        "end_date": "2100-12-30 15:00:00",
-        "end_date_ts": 0,
-        "string_id": "IDS_GEMSHOP_PRODUCTNAME_GEMPACK_00",
-        "thumb_id": 6,
-        "confirm_reg_id": 0,
-        "currency": "GEM",
-        "price": "0",
-        "f_price": "FREE",
-        "style": 0,
-        "sort": 5,
-        "items": {
-          "1": 5000
-        }
-      },
-      "26": {
-        "shop_paid_id": 26,
-        "product_id": "ygomaster.gem.07",
+      "1": {
+        "shop_paid_id": 1,
+        "product_id": "ygomaster.gem",
         "enabled": true,
         "limit_count": -1,
         "buy_count": -1,
@@ -162,15 +36,151 @@
         "string_id": "IDS_GEMSHOP_PRODUCTNAME_GEMPACK_00",
         "thumb_id": 7,
         "confirm_reg_id": 0,
-        "currency": "GEM",
+        "currency": "",
         "price": "0",
         "f_price": "FREE",
         "style": 0,
-        "sort": 6,
+        "sort": 0,
         "items": {
-          "1": 10000
+          "1": 10000000
         }
-      }
+      },
+      "2": {
+        "shop_paid_id": 2,
+        "product_id": "ygomaster.CP-N",
+        "enabled": true,
+        "limit_count": -1,
+        "buy_count": -1,
+        "start_date": "2020-01-01 00:00:00",
+        "end_date": "2100-12-30 15:00:00",
+        "end_date_ts": 0,
+        "string_id": "IDS_SYS_IDHACK:CP N ×99999",
+        "thumb_id": 0,
+        "confirm_reg_id": 0,
+        "currency": "",
+        "price": "0",
+        "f_price": "FREE",
+        "style": 0,
+        "sort": 0,
+        "set_type": 1,
+        "set_items": [
+          {
+            "is_period": false,
+            "item_category": 1,
+            "item_id": 3,
+            "num": 99999,
+            "rarity": 0,
+            "prob": 0,
+            "pack_id": 0,
+            "pack_thumb": ""
+          }
+        ],
+        "items": {
+          "3": 99999
+        }
+      },
+      "3": {
+        "shop_paid_id": 3,
+        "product_id": "ygomaster.CP-R",
+        "enabled": true,
+        "limit_count": -1,
+        "buy_count": -1,
+        "start_date": "2020-01-01 00:00:00",
+        "end_date": "2100-12-30 15:00:00",
+        "end_date_ts": 0,
+        "string_id": "IDS_SYS_IDHACK:CP R ×99999",
+        "thumb_id": 0,
+        "confirm_reg_id": 0,
+        "currency": "",
+        "price": "0",
+        "f_price": "FREE",
+        "style": 0,
+        "sort": 0,
+        "set_type": 1,
+        "set_items": [
+          {
+            "is_period": false,
+            "item_category": 1,
+            "item_id": 4,
+            "num": 99999,
+            "rarity": 0,
+            "prob": 0,
+            "pack_id": 0,
+            "pack_thumb": ""
+          }
+        ],
+        "items": {
+          "4": 99999
+        }
+      },
+      "4": {
+        "shop_paid_id": 4,
+        "product_id": "ygomaster.CP-SR",
+        "enabled": true,
+        "limit_count": -1,
+        "buy_count": -1,
+        "start_date": "2020-01-01 00:00:00",
+        "end_date": "2100-12-30 15:00:00",
+        "end_date_ts": 0,
+        "string_id": "IDS_SYS_IDHACK:CP SR ×99999",
+        "thumb_id": 0,
+        "confirm_reg_id": 0,
+        "currency": "",
+        "price": "0",
+        "f_price": "FREE",
+        "style": 0,
+        "sort": 0,
+        "set_type": 1,
+        "set_items": [
+          {
+            "is_period": false,
+            "item_category": 1,
+            "item_id": 5,
+            "num": 99999,
+            "rarity": 0,
+            "prob": 0,
+            "pack_id": 0,
+            "pack_thumb": ""
+          }
+        ],
+        "items": {
+          "5": 99999
+        }
+      },
+      "5": {
+        "shop_paid_id": 5,
+        "product_id": "ygomaster.CP-UR",
+        "enabled": true,
+        "limit_count": -1,
+        "buy_count": -1,
+        "start_date": "2020-01-01 00:00:00",
+        "end_date": "2100-12-30 15:00:00",
+        "end_date_ts": 0,
+        "string_id": "IDS_SYS_IDHACK:CP UR ×99999",
+        "thumb_id": 0,
+        "confirm_reg_id": 0,
+        "currency": "",
+        "price": "0",
+        "f_price": "FREE",
+        "style": 0,
+        "sort": 0,
+        "set_type": 1,
+        "set_items": [
+          {
+            "is_period": false,
+            "item_category": 1,
+            "item_id": 6,
+            "num": 99999,
+            "rarity": 0,
+            "prob": 0,
+            "pack_id": 0,
+            "pack_thumb": ""
+          }
+        ],
+        "items": {
+          "6": 99999
+        }
+      },
       // Template for a time limited bundle. The client hides products outside their date window,
       // so "end_date" in the past means the tile never appears. "end_date_ts" is the same time as
       // a unix timestamp and "limitdate" is the "available until" label drawn on the tile.
