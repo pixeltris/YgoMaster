@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -365,6 +365,7 @@ namespace YgoMasterClient
                 nativeTypes.Add(typeof(YgomSystem.Utility.ClientWork));
                 nativeTypes.Add(typeof(YgomSystem.Utility.ClientWorkUtil));
                 nativeTypes.Add(typeof(YgomSystem.Network.ProtocolHttp));
+                nativeTypes.Add(typeof(YgomSystem.Billing.Billing_Steam));
                 nativeTypes.Add(typeof(YgomSystem.LocalFileSystem.WindowsStorageIO));
                 nativeTypes.Add(typeof(YgomSystem.LocalFileSystem.StandardStorageIO));
                 nativeTypes.Add(typeof(YgomMiniJSON.Json));
@@ -943,6 +944,108 @@ namespace YgomSystem.Network
             YgomSystem.Utility.ClientWork.UpdateJson("$.Server.urls", MiniJSON.Json.Serialize(urls));
             YgomSystem.Utility.ClientWork.UpdateValue("$.Server.url", ClientSettings.ServerUrl);
             YgomSystem.Utility.ClientWork.UpdateValue("$.Server.url_polling", ClientSettings.ServerPollUrl);
+        }
+    }
+}
+
+namespace YgomSystem.Billing
+{
+    // Bypasses the Steam payment path so the gem shop works offline.
+    // Server half / act ordering: YgoMasterServer/Acts/Act_Billing.cs
+    static class Billing_Steam
+    {
+        const uint SteamAppId = 1449850;
+
+        // MicroTxnAuthorizationResponse_t layout, inferred from x64 alignment of
+        // { UInt32, UInt64, Byte } rather than read from IL2CPP. If it ever stops matching,
+        // m_bAuthorized reads 0 and purchases are silently declined instead of crashing.
+        // IL2Field.Token gives the real offsets.
+        const int MicroTxn_Size = 24;
+        const int MicroTxn_AppIdOffset = 0;
+        const int MicroTxn_OrderIdOffset = 8;
+        const int MicroTxn_AuthorizedOffset = 16;
+
+        static IL2Class classInfo;
+        static IL2Method methodCanMakePayment;
+        static IL2Method methodOnMicroTxnAuthorizationResponse;
+
+        delegate bool Del_CanMakePayment();
+        static Hook<Del_CanMakePayment> hookCanMakePayment;
+
+        delegate bool Del_BuyItemFromPlatform(IntPtr thisPtr, IntPtr product, IntPtr callback);
+        static Hook<Del_BuyItemFromPlatform> hookBuyItemFromPlatform;
+
+        static Billing_Steam()
+        {
+            // Never touch payment behaviour on the real game.
+            if (Program.IsLive)
+            {
+                return;
+            }
+            IL2Assembly assembly = Assembler.GetAssembly("Assembly-CSharp");
+            classInfo = assembly.GetClass("Billing_Steam", "YgomSystem.Billing");
+            methodCanMakePayment = classInfo.GetMethod("canMakePayment");
+            methodOnMicroTxnAuthorizationResponse = classInfo.GetMethod("OnMicroTxnAuthorizationResponse");
+
+            hookCanMakePayment = new Hook<Del_CanMakePayment>(CanMakePayment, methodCanMakePayment);
+            hookBuyItemFromPlatform = new Hook<Del_BuyItemFromPlatform>(
+                BuyItemFromPlatform, classInfo.GetMethod("BuyItemFromPlatform"));
+        }
+
+        // Steam would normally authorise the purchase and fire MicroTxnAuthorizationResponse_t.
+        // Offline that never happens, so synthesise it and drive the game's own callback.
+        static bool BuyItemFromPlatform(IntPtr thisPtr, IntPtr product, IntPtr callback)
+        {
+            ulong orderId = (ulong)YgoMaster.Utils.CreateBillingId();
+
+            // Must run the original: it sets m_ProductInfo, which the callback chain
+            // dereferences. Skip it and OnMicroTxnAuthorizationResponse throws.
+            bool originalResult = false;
+            try
+            {
+                originalResult = hookBuyItemFromPlatform.Original(thisPtr, product, callback);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[Billing] Original BuyItemFromPlatform threw (expected offline): " + e.Message);
+            }
+
+            Console.WriteLine("[Billing] BuyItemFromPlatform intercepted (original returned " + originalResult +
+                ") - faking Steam authorization (order " + orderId + ")");
+
+            // Deferred a frame - completing the purchase inline finishes it before the caller has
+            // set up the state it's about to wait on.
+            TradeUtils.AddAction(delegate
+            {
+                IntPtr mem = Marshal.AllocHGlobal(MicroTxn_Size);
+                try
+                {
+                    for (int i = 0; i < MicroTxn_Size; i++)
+                    {
+                        Marshal.WriteByte(mem, i, 0);
+                    }
+                    Marshal.WriteInt32(mem, MicroTxn_AppIdOffset, (int)SteamAppId);
+                    Marshal.WriteInt64(mem, MicroTxn_OrderIdOffset, (long)orderId);
+                    Marshal.WriteByte(mem, MicroTxn_AuthorizedOffset, 1);
+
+                    methodOnMicroTxnAuthorizationResponse.Invoke(thisPtr, new IntPtr[] { mem });
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("[Billing] Failed to drive OnMicroTxnAuthorizationResponse: " + e);
+                }
+                finally
+                {
+                    Marshal.FreeHGlobal(mem);
+                }
+            });
+
+            return true;
+        }
+
+        static bool CanMakePayment()
+        {
+            return true;
         }
     }
 }

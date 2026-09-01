@@ -1,0 +1,203 @@
+// Bundles shown in the in-game gem shop ("Purchase Gems"). Handled by Acts/Act_Billing.cs.
+//
+// Nothing here costs real money - the Steam payment path is bypassed - so "price" / "currency"
+// are inert and only exist because the client requires the fields. "f_price" is the string the
+// store button displays.
+//
+// [WARNING] Every product must define the full set of keys below. The client parses the product
+// list as a unit, so a single product missing a key (even one it never displays) fails the whole
+// screen with "Failed to load product information". Blank the values instead of deleting keys.
+//
+// Field notes:
+//   product_id    identifier echoed back in the billing ticket. Never validated.
+//   items         { "<itemId>": <amount> }. 1 = Gem, 2 = GemAlt. YgoMaster keeps a single gem
+//                 pool so both are summed - use "1" unless you want the paid/free split shown
+//                 on the tile.
+//   string_id     text id for the product name. The displayed name includes the gem total, so
+//                 it updates automatically when "items" changes.
+//   thumb_id      which gem pile / box artwork the tile uses (1-7).
+//   style         0 = normal tile, 1 = featured tile.
+//   limit_count   max purchases, -1 for unlimited. buy_count is how many have been made.
+//                 [NOTE] buy_count is only tracked in the response, so limits reset when the
+//                 server restarts. See the TODO in Act_Billing.cs.
+//   sort          display order.
+{
+  "GemShop": {
+    "Products": {
+      "20": {
+        "shop_paid_id": 20,
+        "product_id": "ygomaster.gem.01",
+        "enabled": true,
+        "limit_count": -1,
+        "buy_count": -1,
+        "start_date": "2020-01-01 00:00:00",
+        "end_date": "2100-12-30 15:00:00",
+        "end_date_ts": 0,
+        "string_id": "IDS_GEMSHOP_PRODUCTNAME_GEMPACK_00",
+        "thumb_id": 1,
+        "confirm_reg_id": 0,
+        "currency": "GEM",
+        "price": "0",
+        "f_price": "FREE",
+        "style": 0,
+        "sort": 0,
+        "items": {
+          "1": 100
+        }
+      },
+      "21": {
+        "shop_paid_id": 21,
+        "product_id": "ygomaster.gem.02",
+        "enabled": true,
+        "limit_count": -1,
+        "buy_count": -1,
+        "start_date": "2020-01-01 00:00:00",
+        "end_date": "2100-12-30 15:00:00",
+        "end_date_ts": 0,
+        "string_id": "IDS_GEMSHOP_PRODUCTNAME_GEMPACK_00",
+        "thumb_id": 2,
+        "confirm_reg_id": 0,
+        "currency": "GEM",
+        "price": "0",
+        "f_price": "FREE",
+        "style": 0,
+        "sort": 1,
+        "items": {
+          "1": 250
+        }
+      },
+      "22": {
+        "shop_paid_id": 22,
+        "product_id": "ygomaster.gem.03",
+        "enabled": true,
+        "limit_count": -1,
+        "buy_count": -1,
+        "start_date": "2020-01-01 00:00:00",
+        "end_date": "2100-12-30 15:00:00",
+        "end_date_ts": 0,
+        "string_id": "IDS_GEMSHOP_PRODUCTNAME_GEMPACK_00",
+        "thumb_id": 3,
+        "confirm_reg_id": 0,
+        "currency": "GEM",
+        "price": "0",
+        "f_price": "FREE",
+        "style": 0,
+        "sort": 2,
+        "items": {
+          "1": 500
+        }
+      },
+      "23": {
+        "shop_paid_id": 23,
+        "product_id": "ygomaster.gem.04",
+        "enabled": true,
+        "limit_count": -1,
+        "buy_count": -1,
+        "start_date": "2020-01-01 00:00:00",
+        "end_date": "2100-12-30 15:00:00",
+        "end_date_ts": 0,
+        "string_id": "IDS_GEMSHOP_PRODUCTNAME_GEMPACK_00",
+        "thumb_id": 4,
+        "confirm_reg_id": 0,
+        "currency": "GEM",
+        "price": "0",
+        "f_price": "FREE",
+        "style": 0,
+        "sort": 3,
+        "items": {
+          "1": 1000
+        }
+      },
+      "24": {
+        "shop_paid_id": 24,
+        "product_id": "ygomaster.gem.05",
+        "enabled": true,
+        "limit_count": -1,
+        "buy_count": -1,
+        "start_date": "2020-01-01 00:00:00",
+        "end_date": "2100-12-30 15:00:00",
+        "end_date_ts": 0,
+        "string_id": "IDS_GEMSHOP_PRODUCTNAME_GEMPACK_00",
+        "thumb_id": 5,
+        "confirm_reg_id": 0,
+        "currency": "GEM",
+        "price": "0",
+        "f_price": "FREE",
+        "style": 0,
+        "sort": 4,
+        "items": {
+          "1": 2500
+        }
+      },
+      "25": {
+        "shop_paid_id": 25,
+        "product_id": "ygomaster.gem.06",
+        "enabled": true,
+        "limit_count": -1,
+        "buy_count": -1,
+        "start_date": "2020-01-01 00:00:00",
+        "end_date": "2100-12-30 15:00:00",
+        "end_date_ts": 0,
+        "string_id": "IDS_GEMSHOP_PRODUCTNAME_GEMPACK_00",
+        "thumb_id": 6,
+        "confirm_reg_id": 0,
+        "currency": "GEM",
+        "price": "0",
+        "f_price": "FREE",
+        "style": 0,
+        "sort": 5,
+        "items": {
+          "1": 5000
+        }
+      },
+      "26": {
+        "shop_paid_id": 26,
+        "product_id": "ygomaster.gem.07",
+        "enabled": true,
+        "limit_count": -1,
+        "buy_count": -1,
+        "start_date": "2020-01-01 00:00:00",
+        "end_date": "2100-12-30 15:00:00",
+        "end_date_ts": 0,
+        "string_id": "IDS_GEMSHOP_PRODUCTNAME_GEMPACK_00",
+        "thumb_id": 7,
+        "confirm_reg_id": 0,
+        "currency": "GEM",
+        "price": "0",
+        "f_price": "FREE",
+        "style": 0,
+        "sort": 6,
+        "items": {
+          "1": 10000
+        }
+      }
+      // Template for a time limited bundle. The client hides products outside their date window,
+      // so "end_date" in the past means the tile never appears. "end_date_ts" is the same time as
+      // a unix timestamp and "limitdate" is the "available until" label drawn on the tile.
+      //
+      // ,"30": {
+      //   "shop_paid_id": 30,
+      //   "product_id": "ygomaster.gem.seasonal.01",
+      //   "enabled": true,
+      //   "limit_count": "3",
+      //   "buy_count": 0,
+      //   "start_date": "2020-01-01 00:00:00",
+      //   "end_date": "2030-01-05 03:59:59",
+      //   "end_date_ts": 1893556799,
+      //   "string_id": "IDS_GEMSHOP_PRODUCTNAME_GEMPACK_11",
+      //   "thumb_id": 5,
+      //   "confirm_reg_id": 0,
+      //   "limitdate": "05 Jan 2030 03:59",
+      //   "currency": "GEM",
+      //   "price": "0",
+      //   "f_price": "FREE",
+      //   "style": 1,
+      //   "sort": 7,
+      //   "items": {
+      //     "1": 2500
+      //   }
+      // }
+    },
+    "ConfirmReg": []
+  }
+}
