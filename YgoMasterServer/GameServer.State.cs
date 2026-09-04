@@ -2749,7 +2749,6 @@ namespace YgoMaster
                                     {
                                         // The item id doesn't belong to the stated category so this isn't an item we can safely give / display
                                         // (seen on period based exchange tickets which use category DECK_CASE with an item id of 4)
-                                        Utils.LogWarning("Ignoring set item with category " + item.ItemCategory + " item id " + item.ItemId + " for shop id " + info.ShopId);
                                         continue;
                                     }
                                     info.SetItems.Add(item);
