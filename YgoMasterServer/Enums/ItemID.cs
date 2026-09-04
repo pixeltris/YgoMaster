@@ -111,6 +111,30 @@ namespace YgoMaster
         }
 
         /// <summary>
+        /// Categories by item id block (itemId / 10000) for ids of 1000000 onwards
+        /// </summary>
+        static Dictionary<int, Category> categoriesByIdBlock = new Dictionary<int, Category>()
+        {
+            { 100, Category.AVATAR },
+            { 101, Category.ICON },
+            { 102, Category.PROFILE_TAG },
+            { 103, Category.ICON_FRAME },
+            { 107, Category.PROTECTOR },
+            { 108, Category.DECK_CASE },
+            { 109, Category.FIELD },
+            { 110, Category.FIELD_OBJ },
+            { 111, Category.AVATAR_HOME },
+            { 112, Category.STRUCTURE },
+            { 113, Category.WALLPAPER },
+            { 114, Category.PACK_TICKET },
+            { 115, Category.DECK_LIMIT },
+            { 116, Category.REPLAY_LIMIT },
+            { 117, Category.CARD_FILE },
+            { 118, Category.COIN },
+            { 119, Category.BOOKMARK_LIMIT },
+        };
+
+        /// <summary>
         /// YgomGame.Utility.ItemUtil.GetCategoryFromID
         /// </summary>
         public static Category GetCategoryFromID(int itemId)
@@ -123,65 +147,17 @@ namespace YgoMaster
             {
                 return Category.CONSUME;
             }
-            if (itemId - 3000 < 97000 ||
-                itemId - 103000 < 97000 ||
-                itemId - 203000 < 97000)
+            if (itemId < 300000)
             {
+                // 3000-99999 (+100000 per CardStyleRarity - see RemapCardId)
                 return Category.CARD;
             }
-            if (itemId - 1000000 < 10000)
+            Category category;
+            if (categoriesByIdBlock.TryGetValue(itemId / 10000, out category))
             {
-                return Category.AVATAR;
+                return category;
             }
-            if (itemId - 1010000 < 10000)
-            {
-                return Category.ICON;
-            }
-            if (itemId - 1020000 < 10000)
-            {
-                return Category.PROFILE_TAG;
-            }
-            if (itemId - 1030000 < 10000)
-            {
-                return Category.ICON_FRAME;
-            }
-            if (itemId - 1070000 < 10000)
-            {
-                return Category.PROTECTOR;
-            }
-            if (itemId - 1080000 < 10000)
-            {
-                return Category.DECK_CASE;
-            }
-            if (itemId - 1090000 < 10000)
-            {
-                return Category.FIELD;
-            }
-            if (itemId - 1100000 < 10000)
-            {
-                return Category.FIELD_OBJ;
-            }
-            if (itemId - 1110000 < 10000)
-            {
-                return Category.AVATAR_HOME;
-            }
-            if (itemId - 1120000 < 10000)
-            {
-                return Category.STRUCTURE;
-            }
-            if (itemId - 1130000 < 10000)
-            {
-                return Category.WALLPAPER;
-            }
-            if (itemId - 1140000 < 10000)
-            {
-                return Category.PACK_TICKET;
-            }
-            if (itemId - 1180000 < 10000)
-            {
-                return Category.COIN;
-            }
-            return 0;
+            return Category.NONE;
         }
 
         /// <summary>
