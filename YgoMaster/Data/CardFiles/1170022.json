@@ -1,0 +1,67 @@
+{
+  "card_list": {
+    "23487": {
+      "card_id": 23487,
+      "page": 1,
+      "card_pos": 0,
+      "assign_premium_type": 0
+    },
+    "23488": {
+      "card_id": 23488,
+      "page": 1,
+      "card_pos": 2,
+      "assign_premium_type": 0
+    },
+    "23489": {
+      "card_id": 23489,
+      "page": 1,
+      "card_pos": 5,
+      "assign_premium_type": 0
+    },
+    "23490": {
+      "card_id": 23490,
+      "page": 1,
+      "card_pos": 8,
+      "assign_premium_type": 0
+    },
+    "23491": {
+      "card_id": 23491,
+      "page": 2,
+      "card_pos": 0,
+      "assign_premium_type": 0
+    },
+    "23492": {
+      "card_id": 23492,
+      "page": 1,
+      "card_pos": 1,
+      "assign_premium_type": 0
+    },
+    "23493": {
+      "card_id": 23493,
+      "page": 1,
+      "card_pos": 7,
+      "assign_premium_type": 0
+    },
+    "23494": {
+      "card_id": 23494,
+      "page": 1,
+      "card_pos": 3,
+      "assign_premium_type": 0
+    },
+    "23495": {
+      "card_id": 23495,
+      "page": 1,
+      "card_pos": 6,
+      "assign_premium_type": 0
+    },
+    "23496": {
+      "card_id": 23496,
+      "page": 1,
+      "card_pos": 4,
+      "assign_premium_type": 0
+    }
+  },
+  "total_page": 2,
+  "total_card": 10,
+  "sort": 483
+}

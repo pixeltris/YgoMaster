@@ -58,6 +58,7 @@
     1000043,//Dinowrestler Pankratops
     1000046,//Beat, Bladesman Fur Hire
     1000047,//Penguin Soldier
+    1000048,//Fairy Tail - Snow
     1001001,//Instant Fusion
     1001002,//Noble Arms - Caliburn
     1001003,//Book of Moon
@@ -271,6 +272,13 @@
     1010152,//GMX - ALLOS
     1010153,//First Penguin
     1010154,//Solemn Scolding
+    1010155,//Chimeratech Megafleet Dragon
+    1010156,//Clown Crew Biancaviso
+    1010157,//Pot of Sloth
+    1010158,//Effect Veiler
+    1010160,//Dark Magician & Dark Magician Girl (WCS2026)
+    1010161,//2027 SEASON
+    1010180,//Desperate Tag
     1011001,//Soccer Ball
     1011002,//Trophy
     1011003,//Diamond
@@ -346,6 +354,10 @@
     1011073,//Fusion Cup Gold Finalist
     1011074,//Fusion Cup Silver Finalist
     1011075,//Fusion Cup Bronze Finalist
+    1011079,//WCS 2026 Champion
+    1011080,//WCS 2026 Finalist
+    1011081,//WCS 2026 Top 4
+    1011082,//WCS 2026 Top 12
     1012001,//X-Krawler Synaphysis
     1012002,//Mekk-Knight Spectrum Supreme
     1012003,//Knightmare Gryphon
@@ -426,6 +438,11 @@
     1012078,//S-Force Rappa Chiyomaru
     1012079,//Spright Starter
     1012080,//EM:P Meowmine
+    1012081,//Exosister Karmael
+    1012082,//Marchosias
+    1012083,//Exosister Stella
+    1012084,//Exosister Irene
+    1012085,//Exosister Sophia
     1013001,//PawaPuro
     1013002,//Memories of Intersecting Duels
     1013003,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
@@ -670,12 +687,17 @@
     1020225,//Fusion Cup Top 10000
     1020226,//Fusion Cup 2nd Stage Duelist
     1020227,//My Favorite
+    1020228,//WCS 2026 Champion
+    1020229,//WCS 2026 Finalist
+    1020230,//WCS 2026 Top 4
+    1020231,//WCS 2026 Top 12
+    1020238,//Unstoppable Force
     1021001,//Starting Out
     1021002,//Top Performer
     1021003,//Point Collector
-    1022001,//High School Tournament 2026 Champion
-    1022002,//High School Tournament 2026 Grand Finalist
-    1022003,//High School Tournament 2026 Finalist
+    1022001,//Japan High School Championship 2025 Champion
+    1022002,//Japan High School Championship 2025 Grand Finalist
+    1022003,//Japan High School Championship 2025 Finalist
   ],
   "ICON_FRAME": [
     1030001,//Beginner's Frame
@@ -750,6 +772,7 @@
     1031026,//Palm Ryzeal
     1031027,//Forbidden Crown
     1031028,//Synchro Ring β
+    1031029,//Clown Crew
     1032001,//Festive Ornament
     1032002,//Celebration of Spring Breeze
     1032003,//Tropical Seaside
@@ -767,6 +790,7 @@
     1033004,//Synchro Ring
     1033005,//WCS 2025 Party Favor
     1033006,//Fusion Vortex
+    1033007,//WCS 2026 Party Favor
   ],
   "PROTECTOR": [
     1070001,//Yu-Gi-Oh! Trading Card Game
@@ -948,8 +972,15 @@
     1070178,//Mokomoko
     1070179,//Favorite Hero
     1070180,//El Shaddoll Construct
+    1070181,//Cyber Dragon Infinity
+    1070182,//Clown Crew Biancaviso
+    1070183,//Phara the Primordial Goddess
     1070184,//Polymerization
     1070189,//Fifth Hope
+    1070190,//Bystial Dis Pater
+    1070191,//Dark Magician & Dark Magician Girl (WCS2026)
+    1070192,//Dark Magician (WCS2026)
+    1070193,//Dark Magician Girl (WCS2026)
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -1020,6 +1051,8 @@
     1073018,//DC 2025 DEC Celebration
     1073019,//DC 2026 MAR Celebration
     1073020,//WCS 2026 Qualifiers Celebration
+    1073021,//WCS 2026 Celebration
+    1073022,//WCS 2026 Party Favor
     1073023,//Fusion Cup Celebration
     1075001,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
     1075002,//THE CHRONICLES: Sky Striker Ace
@@ -1097,6 +1130,7 @@
     1082029,//Elfnote
     1082030,//Dragon Ravine
     1082032,//Exosister
+    1082034,//Dark Magician & Dark Magician Girl (WCS2026)
     1083001,//White & Blue
   ],
   "FIELD": [
@@ -1320,12 +1354,16 @@
     1111078,//Sandwich Day
     1111080,//Borrel
     1111081,//Shaddoll Fusion
+    1111082,//Tails of the Fairy Tails
+    1111083,//Clown Crew
+    1111084,//Red Hypernova Dragon
     1112001,//Colosseum
     1112002,//WCS
     1112004,//Japan High School Championship
     1113001,//WCS 2023 Party Favor
     1113002,//WCS 2024 Party Favor
     1113003,//WCS 2025 Party Favor
+    1113004,//WCS 2026 Party Favor
     1115001,//eFootball™
   ],
   "STRUCTURE": [
@@ -1502,7 +1540,12 @@
     1130138,//Darklord Eveningstar
     1130139,//El Shaddoll Winda
     1130140,//Dominus Spark
+    1130141,//Cyber End Dragon, the Final Strike Dragon
+    1130142,//Clown Crew Biancaviso
+    1130143,//Red Hypernova Dragon
+    1130144,//Crimson Dragon Quetzalcoatl
     1130150,//Anti-GMX Final Experiment
+    1130151,//Dark Magician & Dark Magician Girl (WCS2026)
     1132001,//Rescue Rabbit
     1132002,//Neymar
     1132003,//That's 10!
@@ -1542,6 +1585,9 @@
     1170016,//Elemental HERO
     1170017,//Darklord
     1170018,//Shaddoll
+    1170019,//Cyber Dragon
+    1170020,//Clown Crew
+    1170022,//WCS2026
   ],
   "COIN": [
     1180001,//Blue-Eyes Alternative White Dragon
@@ -1567,6 +1613,7 @@
     1180023,//Fallen of Albaz
     1180024,//Fairy Tail
     1180025,//Elemental HERO
+    1180026,//Cyber Dragon
   ],
   "BOOKMARK_LIMIT": [
     1190001,//Bookmark Slots
