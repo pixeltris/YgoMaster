@@ -32,6 +32,29 @@ namespace YgoMaster
             return pack;
         }
 
+        /// <summary>
+        /// The rarity guaranteed on the final card of every 10th pack of a bundle
+        /// </summary>
+        CardRarity GetBundleRarityGuarantee(ShopItemInfo bundle)
+        {
+            switch (bundle.BundleType)
+            {
+                case ShopBundleType.IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_10_UR:
+                case ShopBundleType.IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_NUM_URNUM_SET:
+                case ShopBundleType.IDS_SHOP_BUY_BUTTON_ADS_PRIZE_LUCKY_CARD_NUM_URNUM_SET:
+                    return CardRarity.UltraRare;
+                case ShopBundleType.IDS_SHOP_BUY_BUTTON_ADS_CARDPACK_NUM_RARE_RARENUM_SET:
+                    ShopItemPrice price = bundle.Prices.FirstOrDefault();
+                    if (price != null && price.PopArgs != null && price.PopArgs.Count >= 3 && price.PopArgs[1] == (int)CardRarity.UltraRare)
+                    {
+                        return CardRarity.UltraRare;
+                    }
+                    return CardRarity.SuperRare;
+                default:
+                    return CardRarity.SuperRare;
+            }
+        }
+
         // TODO: Put this somewhere else (called by Act_ShopPurchase / SoloUpdateChapterStatus / GiveDuelReward)
         bool GiveStructureDeck(GameServerWebRequest request, int structureDeckId)
         {
@@ -288,6 +311,10 @@ namespace YgoMaster
                                 targetId = shopItem.PrizeId;
                                 data["is_prize"] = true;
                                 data["prize_type"] = (int)shopItem.PrizeType;
+                                if (shopItem.PrizeProbGachaId > 0)
+                                {
+                                    data["prob_gacha_id"] = shopItem.PrizeProbGachaId;
+                                }
                                 WritePrizeData(request, shopItem);
                             }
                             List<Dictionary<string, object>> setItems = new List<Dictionary<string, object>>();
@@ -1369,11 +1396,37 @@ namespace YgoMaster
             }
         }
 
+        /// <summary>
+        /// Formats a value with the given number of significant digits (e.g. 4 digits: 0.001719 / 1.500 / 12.50)
+        /// </summary>
+        static string FormatSignificantDigits(double value, int digits)
+        {
+            if (value <= 0 || double.IsInfinity(value) || double.IsNaN(value))
+            {
+                return value.ToString("F" + digits);
+            }
+            int decimals = Math.Max(0, digits - 1 - (int)Math.Floor(Math.Log10(value)));
+            return value.ToString("F" + decimals);
+        }
+
         void Act_GachaGetProbability(GameServerWebRequest request)
         {
             int packId = Utils.GetValue<int>(request.ActParams, "gacha_id");
-            ShopItemInfo item;
-            if (Shop.PacksByPackId.TryGetValue(packId, out item) && item.Cards.Count > 0)
+            int shopId = Utils.GetValue<int>(request.ActParams, "shop_id");
+            ShopItemInfo item = null;
+            ShopItemInfo bundle;
+            CardRarity bundleRarityGuarantee = CardRarity.None;
+            if (Shop.AllShops.TryGetValue(shopId, out bundle) && bundle.Category == ShopCategory.Special)
+            {
+                // Bundles show the odds of their pack ("gacha_id" is an official bundle id which doesn't map to a pack here)
+                item = GetBundlePack(bundle);
+                bundleRarityGuarantee = GetBundleRarityGuarantee(bundle);
+            }
+            else
+            {
+                Shop.PacksByPackId.TryGetValue(packId, out item);
+            }
+            if (item != null && item.Cards.Count > 0)
             {
                 ShopOddsInfo odds = item.GetOdds(Shop);
                 if (odds != null)
@@ -1488,15 +1541,23 @@ namespace YgoMaster
                                 { "rare", (int)rate.Key },
                                 { "rate", string.Format("{0:0.00}", rate.Value) },
                                 { "num", num },
-                                { "perpiece", (rate.Value / num).ToString("F4") },
+                                { "perpiece", FormatSignificantDigits(rate.Value / num, 4) },
                             });
                         }
                         rarityTable["datas"] = datas;
                         rateData.Add(rarityTable);
                     };
 
+                    CardRarity baseRarityGuarantee = odds.CardRateList.Where(x => x.GuaranteeRareMin != CardRarity.None)
+                        .Select(x => x.GuaranteeRareMin).DefaultIfEmpty(CardRarity.None).Min();
                     foreach (ShopOddsRarity cardRate in odds.CardRateList)
                     {
+                        if (bundleRarityGuarantee != CardRarity.None && cardRate.GuaranteeRareMin != CardRarity.None &&
+                            cardRate.GuaranteeRareMin != baseRarityGuarantee && cardRate.GuaranteeRareMin != bundleRarityGuarantee)
+                        {
+                            // Bundles only show the pack's base guarantee and the bundle's guarantee
+                            continue;
+                        }
                         if (cardRate.GuaranteeRareMin != CardRarity.None)
                         {
                             if (cardRate.StartNum != cardRate.EndNum)
@@ -1551,10 +1612,12 @@ namespace YgoMaster
                         createText(1, packDetailTextId);
                     }
 
-                    foreach (ShopOddsStyleRarity premiereRate in odds.CardStyleRarityRateList)
+                    if (odds.CardStyleRarityRateList.Count > 0)
                     {
                         createHeader(0, "IDS_MARKUPSHOP_TEIKYOU_PREMIRE_LABEL", null, null);
-
+                    }
+                    foreach (ShopOddsStyleRarity premiereRate in odds.CardStyleRarityRateList)
+                    {
                         createHeader(
                             2,
                             "IDS_MARKUPSHOP_TEIKYOU_PREMIRE_RARE" + Math.Min(premiereRate.Rarities.Count, 4) + "_LABEL",

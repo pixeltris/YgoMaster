@@ -2905,6 +2905,7 @@ namespace YgoMaster
                 return false;
             }
             info.PrizeCoverPath = Utils.GetValue<string>(prizeData, "cover_path");
+            info.PrizeProbGachaId = Utils.GetValue<int>(data, "prob_gacha_id");
             foreach (Dictionary<string, object> prizeRow in Utils.GetDictionaryCollection(prizeData, "Prizes"))
             {
                 ShopBundlePrize prize = new ShopBundlePrize();

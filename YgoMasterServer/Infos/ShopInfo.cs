@@ -226,6 +226,10 @@ namespace YgoMaster
         public ShopPrizeType PrizeType;
         public string PrizeCoverPath;
         public List<ShopBundlePrize> Prizes = new List<ShopBundlePrize>();
+        /// <summary>
+        /// "prob_gacha_id" of a prize bundle (used for "Odds" as targetId is the prize id)
+        /// </summary>
+        public int PrizeProbGachaId;
 
         public ShopItemInfo()
         {
