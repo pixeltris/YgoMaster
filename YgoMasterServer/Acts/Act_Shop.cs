@@ -1176,7 +1176,7 @@ namespace YgoMaster
                         isNewCard = true;
                         newCardIds.Add(prizeCardId);
                     }
-                    request.Player.Cards.Add(prizeCardId, 1, PlayerCardKind.NoDismantle, CardStyleRarity.Royal);
+                    request.Player.Cards.Add(prizeCardId, 1, DisableNoDismantle ? PlayerCardKind.Dismantle : PlayerCardKind.NoDismantle, CardStyleRarity.Royal);
                     cardIdsToUpdate.Add(prizeCardId);
                     request.Player.ShopState.SetPrizeCardId(shopItem, pos, prizeCardId);
                     HashSet<int> prizeFoundSecrets = new HashSet<int>();
@@ -1255,7 +1255,7 @@ namespace YgoMaster
                                 {
                                     CardStyleRarity cardStyle;
                                     int cid = RemapCardId(item.ItemId, out cardStyle);
-                                    request.Player.Cards.Add(cid, item.Num, PlayerCardKind.NoDismantle, cardStyle);
+                                    request.Player.Cards.Add(cid, item.Num, DisableNoDismantle ? PlayerCardKind.Dismantle : PlayerCardKind.NoDismantle, cardStyle);
                                     cardIdsToUpdate.Add(cid);
                                     added = true;
                                 }
