@@ -276,6 +276,7 @@
     1010156,//Clown Crew Biancaviso
     1010157,//Pot of Sloth
     1010158,//Effect Veiler
+    1010159,//Artmage Power Patron
     1010160,//Dark Magician & Dark Magician Girl (WCS2026)
     1010161,//2027 SEASON
     1010180,//Desperate Tag
@@ -354,10 +355,14 @@
     1011073,//Fusion Cup Gold Finalist
     1011074,//Fusion Cup Silver Finalist
     1011075,//Fusion Cup Bronze Finalist
+    1011076,//DC 2026 OCT Gold Finalist
+    1011077,//DC 2026 OCT Silver Finalist
+    1011078,//DC 2026 OCT Bronze Finalist
     1011079,//WCS 2026 Champion
     1011080,//WCS 2026 Finalist
     1011081,//WCS 2026 Top 4
     1011082,//WCS 2026 Top 12
+    1011086,//DC 2026 OCT Copper Finalist
     1012001,//X-Krawler Synaphysis
     1012002,//Mekk-Knight Spectrum Supreme
     1012003,//Knightmare Gryphon
@@ -691,6 +696,12 @@
     1020229,//WCS 2026 Finalist
     1020230,//WCS 2026 Top 4
     1020231,//WCS 2026 Top 12
+    1020232,//DC 2026 OCT Top 10
+    1020233,//DC 2026 OCT Top 100
+    1020234,//DC 2026 OCT Top 500
+    1020235,//DC 2026 OCT Top 1000
+    1020236,//DC 2026 OCT Top 10000
+    1020237,//DC 2026 OCT 2nd Stage Duelist
     1020238,//Unstoppable Force
     1021001,//Starting Out
     1021002,//Top Performer
@@ -976,6 +987,8 @@
     1070182,//Clown Crew Biancaviso
     1070183,//Phara the Primordial Goddess
     1070184,//Polymerization
+    1070185,//Aleister the Reminiscent
+    1070186,//Vidolium the Unstable Power Patron of Unity
     1070189,//Fifth Hope
     1070190,//Bystial Dis Pater
     1070191,//Dark Magician & Dark Magician Girl (WCS2026)
@@ -1031,6 +1044,8 @@
     1072008,//Yummy
     1072009,//Albaz the Shrouded & Ecclesia the Exiled
     1072010,//Enneacraft
+    1072011,//Eria the Water Charmer & Hiita the Fire Charmer
+    1072012,//Wynn the Wind Charmer & Aussa the Earth Charmer
     1073001,//WCS 2023 Party Favor
     1073002,//WCS 2023 Celebration
     1073003,//DC 2023 OCT Celebration
@@ -1054,6 +1069,7 @@
     1073021,//WCS 2026 Celebration
     1073022,//WCS 2026 Party Favor
     1073023,//Fusion Cup Celebration
+    1073025,//DC 2026 OCT Celebration
     1075001,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
     1075002,//THE CHRONICLES: Sky Striker Ace
     1075003,//White & Blue
@@ -1063,6 +1079,7 @@
     1075007,//THE CHRONICLES: The Fallen & The Virtuous2
     1075008,//THE CHRONICLES: Spirit Charmers
     1075009,//THE CHRONICLES: Magistus
+    1075010,//THE CHRONICLES: Seeker of the Sinful Spoils
   ],
   "DECK_CASE": [
     1080001,//Duelist Card Case Red
@@ -1130,6 +1147,7 @@
     1082029,//Elfnote
     1082030,//Dragon Ravine
     1082032,//Exosister
+    1082033,//Theorealize Liberation
     1082034,//Dark Magician & Dark Magician Girl (WCS2026)
     1083001,//White & Blue
   ],
@@ -1252,6 +1270,7 @@
     1101041,//Wreath
     1101044,//Forbidden Crown
     1101045,// WAKE CUP!
+    1101048,//The Phantom Knights of Shade Brigandine
     1102001,//Colosseum
     1102002,//WCS
     1102004,//Japan High School Championship
@@ -1347,6 +1366,8 @@
     1111064,//Mulcharmy Pink
     1111066,//Magical Meltdown
     1111068,//Yummy
+    1111069,//Grand Spiritual Art - Ichirin
+    1111070,//Artmage
     1111071,//Dracotail
     1111072,//Live☆Twin Lil-la Sweet
     1111074,//Bramble Rose Dragon
@@ -1544,6 +1565,11 @@
     1130142,//Clown Crew Biancaviso
     1130143,//Red Hypernova Dragon
     1130144,//Crimson Dragon Quetzalcoatl
+    1130145,//Spirit Charmers
+    1130146,//Awakening of the Possessed
+    1130147,//Dark Requiem Xyz Dragon
+    1130148,//Gamma Summon
+    1130149,//Theorealize Past Lull
     1130150,//Anti-GMX Final Experiment
     1130151,//Dark Magician & Dark Magician Girl (WCS2026)
     1132001,//Rescue Rabbit
@@ -1559,6 +1585,8 @@
     1141002,//Fusion Reward Ticket
     1141003,//Synchro Reward Ticket
     1141004,//Duelist Cup Reward Tickets
+    1142001,//Master Pack UR 30% Card x1 Ticket
+    1142002,//Master Pack UR Card x1 Ticket
   ],
   "DECK_LIMIT": [
     1150001,//Deck Slot
@@ -1587,6 +1615,7 @@
     1170018,//Shaddoll
     1170019,//Cyber Dragon
     1170020,//Clown Crew
+    1170021,//Spirit Charmers
     1170022,//WCS2026
   ],
   "COIN": [
@@ -1614,6 +1643,8 @@
     1180024,//Fairy Tail
     1180025,//Elemental HERO
     1180026,//Cyber Dragon
+    1180027,//Grand Spiritual Art - Ichirin
+    1180028,//Theorealize
   ],
   "BOOKMARK_LIMIT": [
     1190001,//Bookmark Slots
