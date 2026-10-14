@@ -798,6 +798,18 @@ namespace YgoMaster
             return state != null ? state.PurchaseCount : 0;
         }
 
+        public void SetPrizeCardId(ShopItemInfo shopItem, int pos, int cardId)
+        {
+            GetItemState(shopItem).PrizeCardIds[pos] = cardId;
+        }
+
+        public int GetPrizeCardId(ShopItemInfo shopItem, int pos)
+        {
+            int cardId;
+            GetItemState(shopItem).PrizeCardIds.TryGetValue(pos, out cardId);
+            return cardId;
+        }
+
         public PlayerShopItemAvailability GetAvailability(ShopInfo shop, ShopItemInfo shopItem)
         {
             long buyLimit, expireTime;
@@ -866,7 +878,7 @@ namespace YgoMaster
                 {
                     continue;
                 }
-                shopItemsData[shopItemState.Key.ToString()] = new Dictionary<string, object>()
+                Dictionary<string, object> stateData = new Dictionary<string, object>()
                 {
                     { "Unlocked", shopItemState.Value.Unlocked },
                     { "UnlockedTime", shopItemState.Value.UnlockedTime },
@@ -874,6 +886,11 @@ namespace YgoMaster
                     { "PurchaseCount", shopItemState.Value.PurchaseCount },
                     { "UnlockedPurchaseCount", shopItemState.Value.UnlockedPurchaseCount },
                 };
+                if (shopItemState.Value.PrizeCardIds.Count > 0)
+                {
+                    stateData["PrizeCardIds"] = shopItemState.Value.PrizeCardIds.ToDictionary(x => x.Key.ToString(), x => (object)x.Value);
+                }
+                shopItemsData[shopItemState.Key.ToString()] = stateData;
             }
             result["ShopItems"] = shopItemsData;
             return result;
@@ -911,6 +928,18 @@ namespace YgoMaster
                         state.IsNew = Utils.GetValue<bool>(stateData, "IsNew");
                         state.PurchaseCount = Utils.GetValue<long>(stateData, "PurchaseCount");
                         state.UnlockedPurchaseCount = Utils.GetValue<long>(stateData, "UnlockedPurchaseCount");
+                        Dictionary<string, object> prizeCardIds = Utils.GetValue(stateData, "PrizeCardIds", default(Dictionary<string, object>));
+                        if (prizeCardIds != null)
+                        {
+                            foreach (KeyValuePair<string, object> prizeCardId in prizeCardIds)
+                            {
+                                int pos;
+                                if (int.TryParse(prizeCardId.Key, out pos))
+                                {
+                                    state.PrizeCardIds[pos] = (int)Convert.ChangeType(prizeCardId.Value, typeof(int));
+                                }
+                            }
+                        }
                         ShopItems[shopId] = state;
                     }
                 }
@@ -938,10 +967,14 @@ namespace YgoMaster
         /// Number of times this item has been purchased after being unlocked (resets every time it's unlocked)
         /// </summary>
         public long UnlockedPurchaseCount;
+        /// <summary>
+        /// The card obtained for each prize of a bundle (prize pos -> card id), used for "unlockData" in Prize.PrizeData
+        /// </summary>
+        public Dictionary<int, int> PrizeCardIds = new Dictionary<int, int>();
 
         public bool IsDefault
         {
-            get { return !Unlocked && UnlockedTime == 0 && !IsNew && PurchaseCount == 0 && UnlockedPurchaseCount == 0; }
+            get { return !Unlocked && UnlockedTime == 0 && !IsNew && PurchaseCount == 0 && UnlockedPurchaseCount == 0 && PrizeCardIds.Count == 0; }
         }
     }
 

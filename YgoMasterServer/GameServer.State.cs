@@ -2723,52 +2723,42 @@ namespace YgoMaster
                         {
                             info.Buylimit = 1;
                         }
-                        if (info.TargetCategory == 1)
+                        if (GetSpecialShopUnsupportedReason(data, out info.BundleType) != null)
                         {
-                            foreach (Dictionary<string, object> priceData in Utils.GetDictionaryCollection(data, "prices"))
+                            // Only supporting bundles for now (unsupported bundles are logged by --mergeshops)
+                            continue;
+                        }
+                        List<Dictionary<string, object>> setItems = Utils.GetDictionaryCollection(data, "setItems");
+                        if (setItems != null)
+                        {
+                            foreach (Dictionary<string, object> itemData in setItems)
                             {
-                                string pop = Utils.GetValue<string>(priceData, "POP");
-                                Enum.TryParse<ShopBundleType>(pop, true, out info.BundleType);
-                            }
-                            if (info.BundleType == ShopBundleType.None)
-                            {
-                                // Unsupported bundle type
-                                continue;
-                            }
-                            List<Dictionary<string, object>> setItems = Utils.GetDictionaryCollection(data, "setItems");
-                            if (setItems != null)
-                            {
-                                foreach (Dictionary<string, object> itemData in setItems)
+                                ShopBundleItem item = new ShopBundleItem();
+                                item.ItemCategory = Utils.GetValue<int>(itemData, "item_category");
+                                item.ItemId = Utils.GetValue<int>(itemData, "item_id");
+                                item.Num = Utils.GetValue<int>(itemData, "num");
+                                item.Period = Utils.GetValue<bool>(itemData, "is_period");
+                                if (ItemID.GetCategoryFromID(item.ItemId) != (ItemID.Category)item.ItemCategory)
                                 {
-                                    ShopBundleItem item = new ShopBundleItem();
-                                    item.ItemCategory = Utils.GetValue<int>(itemData, "item_category");
-                                    item.ItemId = Utils.GetValue<int>(itemData, "item_id");
-                                    item.Num = Utils.GetValue<int>(itemData, "num");
-                                    item.Period = Utils.GetValue<bool>(itemData, "is_period");
-                                    if (ItemID.GetCategoryFromID(item.ItemId) != (ItemID.Category)item.ItemCategory)
-                                    {
-                                        // The item id doesn't belong to the stated category so this isn't an item we can safely give / display
-                                        // (seen on period based exchange tickets which use category DECK_CASE with an item id of 4)
-                                        continue;
-                                    }
-                                    info.SetItems.Add(item);
+                                    // The item id doesn't belong to the stated category so this isn't an item we can safely give / display
+                                    // (seen on period based exchange tickets which use category DECK_CASE with an item id of 4)
+                                    continue;
                                 }
-                            }
-                            info.BundlePickupCardListId = Utils.GetValue<int>(data, "pickupCardListId");
-                            info.BundleNormalCardListId = Utils.GetValue<int>(data, "normalCardListId");
-                            if (info.BundleNormalCardListId == 0)
-                            {
-                                ShopItemInfo standardPack = Shop.PackShop.Values.FirstOrDefault(x => x.PackType == ShopPackType.Standard);
-                                if (standardPack != null)
-                                {
-                                    info.BundleNormalCardListId = standardPack.ShopId;
-                                }
+                                info.SetItems.Add(item);
                             }
                         }
-                        else
+                        info.BundlePickupCardListId = Utils.GetValue<int>(data, "pickupCardListId");
+                        info.BundleNormalCardListId = Utils.GetValue<int>(data, "normalCardListId");
+                        if (info.BundleNormalCardListId == 0)
                         {
-                            // Only supporting bundles for now
-                            // TODO: Deck box (category 15)
+                            ShopItemInfo standardPack = Shop.PackShop.Values.FirstOrDefault(x => x.PackType == ShopPackType.Standard);
+                            if (standardPack != null)
+                            {
+                                info.BundleNormalCardListId = standardPack.ShopId;
+                            }
+                        }
+                        if (Utils.GetValue<bool>(data, "is_prize") && !LoadShopItemPrize(info, data))
+                        {
                             continue;
                         }
                         break;
@@ -2867,6 +2857,80 @@ namespace YgoMaster
                 }
                 shopItems[info.ShopId] = info;
             }
+        }
+
+        /// <summary>
+        /// Returns why a SpecialShop item isn't supported (or null if it's supported). Only bundles are supported.
+        /// </summary>
+        static string GetSpecialShopUnsupportedReason(Dictionary<string, object> data, out ShopBundleType bundleType)
+        {
+            bundleType = ShopBundleType.None;
+            int targetCategory = Utils.GetValue<int>(data, "targetCategory");
+            bool isPrize = Utils.GetValue<bool>(data, "is_prize");
+            if (targetCategory != 1 && !(isPrize && targetCategory == (int)ShopPrizeType.LuckyCard))
+            {
+                // TODO: Deck box (category 15)
+                return "unsupported targetCategory " + targetCategory + (isPrize ? " (prize)" : string.Empty);
+            }
+            List<string> pops = new List<string>();
+            foreach (Dictionary<string, object> priceData in Utils.GetDictionaryCollection(data, "prices"))
+            {
+                string pop = Utils.GetValue<string>(priceData, "POP");
+                Enum.TryParse<ShopBundleType>(pop, true, out bundleType);
+                pops.Add(string.IsNullOrEmpty(pop) ? "none" : pop);
+            }
+            if (bundleType == ShopBundleType.None)
+            {
+                return "unsupported bundle type (POP: " + string.Join(", ", pops) + ")";
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Loads "prize" (custom, Prize.PrizeData[targetId] with each prize's "cardList" added by --mergeshops)
+        /// </summary>
+        bool LoadShopItemPrize(ShopItemInfo info, Dictionary<string, object> data)
+        {
+            info.PrizeId = Utils.GetValue<int>(data, "targetId");
+            info.PrizeType = (ShopPrizeType)Utils.GetValue<int>(data, "prize_type");
+            if (info.PrizeType != ShopPrizeType.LuckyCard)
+            {
+                Utils.LogWarning("Unsupported prize type " + (int)info.PrizeType + " for shop " + info.ShopId);
+                return false;
+            }
+            Dictionary<string, object> prizeData = Utils.GetValue(data, "prize", default(Dictionary<string, object>));
+            if (prizeData == null)
+            {
+                Utils.LogWarning("Missing prize data for shop " + info.ShopId);
+                return false;
+            }
+            info.PrizeCoverPath = Utils.GetValue<string>(prizeData, "cover_path");
+            foreach (Dictionary<string, object> prizeRow in Utils.GetDictionaryCollection(prizeData, "Prizes"))
+            {
+                ShopBundlePrize prize = new ShopBundlePrize();
+                prize.PackId = Utils.GetValue<int>(prizeRow, "packId");
+                prize.NameText = Utils.GetValue<string>(prizeRow, "nameTextId");
+                prize.CardListId = Utils.GetValue<int>(prizeRow, "normalCardListId");
+                prize.PackImageName = Utils.GetValue<string>(prizeRow, "packImageName");
+                List<int> cards = Utils.GetIntList(prizeRow, "cardList");
+                if (cards == null || cards.Count == 0)
+                {
+                    Utils.LogWarning("No card list for prize card list " + prize.CardListId + " on shop " + info.ShopId);
+                    return false;
+                }
+                prize.Cards.AddRange(cards);
+                info.Prizes.Add(prize);
+            }
+            if (info.Prizes.Count == 0)
+            {
+                Utils.LogWarning("No prizes for shop " + info.ShopId);
+                return false;
+            }
+            foreach (ShopBundlePrize prize in info.Prizes)
+            {
+                Shop.PrizesByCardListId[prize.CardListId] = prize;
+            }
+            return true;
         }
 
         void LoadShopPackOdds(string file)
@@ -3159,7 +3223,10 @@ namespace YgoMaster
             Dictionary<int, Dictionary<string, object>> accessoryShop = new Dictionary<int, Dictionary<string, object>>();
             Dictionary<int, Dictionary<string, object>> specialShop = new Dictionary<int, Dictionary<string, object>>();
             Dictionary<int, List<int>> extraCardLists = new Dictionary<int, List<int>>();
+            Dictionary<int, int> extraCardListIds = new Dictionary<int, int>();// The card list id inside each "Gacha-" file (keyed by the id in the file name)
             Dictionary<int, int> cardListIdToCardPackId = new Dictionary<int, int>();
+            Dictionary<int, Dictionary<string, object>> prizeDatas = new Dictionary<int, Dictionary<string, object>>();
+            Dictionary<int, List<int>> allCardLists = new Dictionary<int, List<int>>();// Every dumped card list by its card list id (used for prize card lists)
             int standardCardListId = 0;
             foreach (string file in Directory.GetFiles(dir).OrderBy(x => new FileInfo(x).LastWriteTime))
             {
@@ -3167,6 +3234,38 @@ namespace YgoMaster
                 data = Utils.GetResData(data);
                 if (data != null)
                 {
+                    Dictionary<string, object> prizeData = Utils.GetValue(data, "Prize", default(Dictionary<string, object>));
+                    if (prizeData != null)
+                    {
+                        Dictionary<string, object> prizeDataItems = Utils.GetValue(prizeData, "PrizeData", default(Dictionary<string, object>));
+                        if (prizeDataItems != null)
+                        {
+                            foreach (KeyValuePair<string, object> prizeDataItem in prizeDataItems)
+                            {
+                                int prizeId;
+                                if (int.TryParse(prizeDataItem.Key, out prizeId) && prizeDataItem.Value is Dictionary<string, object>)
+                                {
+                                    prizeDatas[prizeId] = prizeDataItem.Value as Dictionary<string, object>;
+                                }
+                            }
+                        }
+                    }
+                    Dictionary<string, object> allGachaData = Utils.GetValue(data, "Gacha", default(Dictionary<string, object>));
+                    if (allGachaData != null)
+                    {
+                        Dictionary<string, object> allCardListData = Utils.GetValue(allGachaData, "cardList", default(Dictionary<string, object>));
+                        if (allCardListData != null)
+                        {
+                            foreach (string cardListKey in allCardListData.Keys)
+                            {
+                                int cardListId;
+                                if (int.TryParse(cardListKey, out cardListId))
+                                {
+                                    allCardLists[cardListId] = Utils.GetIntList(allCardListData, cardListKey);
+                                }
+                            }
+                        }
+                    }
                     Dictionary<string, object> shopData = Utils.GetValue(data, "Shop", default(Dictionary<string, object>));
                     if (shopData != null)
                     {
@@ -3312,6 +3411,11 @@ namespace YgoMaster
                                     else
                                     {
                                         extraCardLists[shopId] = Utils.GetIntList(cardListData, cardListData.First().Key);
+                                        int cardListId;
+                                        if (int.TryParse(cardListData.First().Key, out cardListId))
+                                        {
+                                            extraCardListIds[shopId] = cardListId;
+                                        }
                                     }
                                 }
                             }
@@ -3336,11 +3440,63 @@ namespace YgoMaster
                     }
                 }
             }
+            // Log bundles which won't be loaded so that new types of bundles don't go unnoticed
+            foreach (KeyValuePair<int, Dictionary<string, object>> specialShopItem in specialShop.OrderBy(x => x.Key))
+            {
+                List<Dictionary<string, object>> setItems = Utils.GetDictionaryCollection(specialShopItem.Value, "setItems");
+                if (setItems == null || setItems.Count == 0)
+                {
+                    continue;
+                }
+                ShopBundleType bundleType;
+                string unsupportedReason = GetSpecialShopUnsupportedReason(specialShopItem.Value, out bundleType);
+                if (unsupportedReason != null)
+                {
+                    Utils.LogWarning("Unsupported bundle " + specialShopItem.Key + " (productType: " +
+                        (ShopProductType)Utils.GetValue<int>(specialShopItem.Value, "productType") + ") " + unsupportedReason + ". It won't be in the shop");
+                }
+            }
+            // Embed Prize.PrizeData into prize bundles as "prize"
+            HashSet<int> prizeCardListIds = new HashSet<int>();
+            foreach (KeyValuePair<int, Dictionary<string, object>> specialShopItem in specialShop)
+            {
+                if (!Utils.GetValue<bool>(specialShopItem.Value, "is_prize"))
+                {
+                    continue;
+                }
+                int prizeId = Utils.GetValue<int>(specialShopItem.Value, "targetId");
+                Dictionary<string, object> prizeData;
+                if (!prizeDatas.TryGetValue(prizeId, out prizeData))
+                {
+                    Utils.LogWarning("Couldn't find prize data " + prizeId + " for shop " + specialShopItem.Key);
+                    continue;
+                }
+                foreach (Dictionary<string, object> prizeRow in Utils.GetDictionaryCollection(prizeData, "Prizes"))
+                {
+                    int cardListId = Utils.GetValue<int>(prizeRow, "normalCardListId");
+                    prizeCardListIds.Add(cardListId);
+                    List<int> cardList;
+                    if (allCardLists.TryGetValue(cardListId, out cardList))
+                    {
+                        prizeRow["cardList"] = cardList;
+                    }
+                    else
+                    {
+                        Utils.LogWarning("No card list for prize card list " + cardListId + " on shop " + specialShopItem.Key);
+                    }
+                }
+                specialShopItem.Value["prize"] = prizeData;
+            }
             foreach (KeyValuePair<int, List<int>> cardList in extraCardLists)
             {
                 if (!packShop.ContainsKey(cardList.Key))
                 {
-                    Console.WriteLine("[WARNING] Couldn't find shop for gacha list " + cardList.Key);
+                    // Prize card lists aren't for a pack shop (they're picked up by card list id above, whatever the file name)
+                    int cardListId;
+                    if (!extraCardListIds.TryGetValue(cardList.Key, out cardListId) || !prizeCardListIds.Contains(cardListId))
+                    {
+                        Console.WriteLine("[WARNING] Couldn't find shop for gacha list " + cardList.Key);
+                    }
                     continue;
                 }
                 packShop[cardList.Key]["cardList"] = cardList.Value;
