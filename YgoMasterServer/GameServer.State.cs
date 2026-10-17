@@ -2321,7 +2321,7 @@ namespace YgoMaster
                                             existingPrice.Id++;
                                         }
                                     }
-                                    price = new ShopItemPrice();
+                                    price = new ShopItemPrice(ItemID.Value.Gem);
                                     price.Id = 1;
                                     shopItem.Prices.Insert(0, price);
                                 }
@@ -2333,7 +2333,7 @@ namespace YgoMaster
                                 ShopItemPrice price = shopItem.Prices.FirstOrDefault(x => x.ItemAmount > 1);
                                 if (price == null)
                                 {
-                                    price = new ShopItemPrice();
+                                    price = new ShopItemPrice(ItemID.Value.Gem);
                                     price.Id = shopItem.Prices.Count + 1;
                                     shopItem.Prices.Add(price);
                                 }
@@ -2344,7 +2344,7 @@ namespace YgoMaster
                             {
                                 if (Shop.DefaultPackPrice > 0)
                                 {
-                                    ShopItemPrice price = new ShopItemPrice();
+                                    ShopItemPrice price = new ShopItemPrice(ItemID.Value.Gem);
                                     price.Id = shopItem.Prices.Count + 1;
                                     price.ItemAmount = 1;
                                     price.Price = Shop.DefaultPackPrice;
@@ -2352,7 +2352,7 @@ namespace YgoMaster
                                 }
                                 if (Shop.DefaultPackPriceX10 > 0)
                                 {
-                                    ShopItemPrice price = new ShopItemPrice();
+                                    ShopItemPrice price = new ShopItemPrice(ItemID.Value.Gem);
                                     price.Id = shopItem.Prices.Count + 1;
                                     price.ItemAmount = 10;
                                     price.Price = Shop.DefaultPackPriceX10;
@@ -2415,7 +2415,7 @@ namespace YgoMaster
                             if (Shop.OverrideStructureDeckPrice > 0 || (shopItem.Prices.Count == 0 && Shop.DefaultStructureDeckPrice > 0))
                             {
                                 shopItem.Prices.Clear();
-                                ShopItemPrice price = new ShopItemPrice();
+                                ShopItemPrice price = new ShopItemPrice(ItemID.Value.Gem);
                                 price.Id = 1;
                                 price.ItemAmount = 1;
                                 price.Price = Shop.OverrideStructureDeckPrice > 0 ? Shop.OverrideStructureDeckPrice : Shop.DefaultStructureDeckPrice;
@@ -2783,7 +2783,7 @@ namespace YgoMaster
                 }
                 foreach (Dictionary<string, object> priceData in Utils.GetDictionaryCollection(data, "prices"))
                 {
-                    ShopItemPrice price = new ShopItemPrice();
+                    ShopItemPrice price = new ShopItemPrice(ItemID.Value.Gem);
                     price.Id = info.Prices.Count + 1;
                     price.Price = Utils.GetValue<int>(priceData, "use_item_num");
                     List<object> textArgs;
@@ -2805,7 +2805,7 @@ namespace YgoMaster
                     int priceX1 = Utils.GetValue<int>(data, "price");
                     if (priceX1 > 0)
                     {
-                        info.Prices.Add(new ShopItemPrice()
+                        info.Prices.Add(new ShopItemPrice(ItemID.Value.Gem)
                         {
                             Id = 1,
                             ItemAmount = 1,
@@ -2814,7 +2814,7 @@ namespace YgoMaster
                         if (info.Category == ShopCategory.Pack)
                         {
                             int priceX10 = Utils.GetValue<int>(data, "priceX10", priceX1 * 10);
-                            info.Prices.Add(new ShopItemPrice()
+                            info.Prices.Add(new ShopItemPrice(ItemID.Value.Gem)
                             {
                                 Id = 2,
                                 ItemAmount = 10,
@@ -2828,21 +2828,21 @@ namespace YgoMaster
                     info.DisableUltraRareGuarantee = true;
                     const int legacyPackPrice = 10;
                     info.Prices.Clear();
-                    info.Prices.Add(new ShopItemPrice()
+                    info.Prices.Add(new ShopItemPrice(ItemID.Value.Gem)
                     {
                         Id = info.Prices.Count + 1,
                         Price = legacyPackPrice,
                         ItemAmount = 1,
                         MultiBuyLimit = 100
                     });
-                    info.Prices.Add(new ShopItemPrice()
+                    info.Prices.Add(new ShopItemPrice(ItemID.Value.Gem)
                     {
                         Id = info.Prices.Count + 1,
                         Price = legacyPackPrice,
                         ItemAmount = 1,
                         MultiBuyLimit = 10
                     });
-                    info.Prices.Add(new ShopItemPrice()
+                    info.Prices.Add(new ShopItemPrice(ItemID.Value.Gem)
                     {
                         Id = info.Prices.Count + 1,
                         Price = legacyPackPrice,
