@@ -2783,7 +2783,16 @@ namespace YgoMaster
                 }
                 foreach (Dictionary<string, object> priceData in Utils.GetDictionaryCollection(data, "prices"))
                 {
-                    ShopItemPrice price = new ShopItemPrice(ItemID.Value.Gem);
+                    ShopItemPrice price;
+                    // Only packs support a configured payment currency; other shop items use Gems.
+                    if (info.Category == ShopCategory.Pack)
+                    {
+                        price = new ShopItemPrice(Utils.GetValue<ItemID.Value>(priceData, "item_id", ItemID.Value.Gem));
+                    }
+                    else
+                    {
+                        price = new ShopItemPrice(ItemID.Value.Gem);
+                    }
                     price.Id = info.Prices.Count + 1;
                     price.Price = Utils.GetValue<int>(priceData, "use_item_num");
                     List<object> textArgs;
