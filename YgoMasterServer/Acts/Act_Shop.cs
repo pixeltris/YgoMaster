@@ -446,7 +446,7 @@ namespace YgoMaster
                     {
                         { "price_id", price.Id },
                         { "item_category", 1 },
-                        { "item_id", 1 },
+                        { "item_id", price.ItemId },
                         { "button_type", (int)buttonType },
                         { "use_item_num", priceValue },
                         { "buy_count", 1 },
@@ -753,7 +753,7 @@ namespace YgoMaster
                 Utils.LogWarning("Failed to find pack odds for " + shopItem.Id);
                 return false;
             }
-            request.Player.Gems -= price.Price * price.GetAvailableBuyAmount(request.Player);
+            request.Player.AddItem(price.ItemId, -price.Price * price.GetAvailableBuyAmount(request.Player));
 
             Dictionary<int, int> standardPackCardRare = GetCardRarities(request.Player, Shop.StandardPack);
             Dictionary<int, int> packCardRare = GetCardRarities(request.Player, targetShopItem);
@@ -1329,7 +1329,7 @@ namespace YgoMaster
                 gacha["resultInfo"] = resultInfo;
             }
             WriteCards_have(request, cardIdsToUpdate);
-            WriteItem(request, (int)ItemID.Value.Gem);
+            WriteItem(request, price.ItemId);
             HashSet<int> shopIdsToUpdate = new HashSet<int>();
             if (packCount == shopExtraGuaranteePackCount && !Shop.DisableUltraRareGuarantee && !shopItem.DisableUltraRareGuarantee && !isBundle)
             {

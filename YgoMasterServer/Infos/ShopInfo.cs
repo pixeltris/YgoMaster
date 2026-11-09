@@ -389,13 +389,40 @@ namespace YgoMaster
     {
         public int Id;
         public int Price;
+        public int ItemId;
         public int ItemAmount = 1;
         public int MultiBuyLimit = 1;
         public List<int> PopArgs;
 
+        public ShopItemPrice(ItemID.Value itemId)
+        {
+            ItemId = (int)itemId;
+        }
+
         public int GetAvailableBuyAmount(Player player)
         {
-            return Math.Min(player.Gems / Price, Math.Max(1, MultiBuyLimit));
+            if (Price <= 0)
+            {
+                return 0;
+            }
+            int balance;
+            switch ((ItemID.Value)ItemId)
+            {
+                case ItemID.Value.Gem: balance = player.Gems; break;
+                case ItemID.Value.CpN: balance = player.CraftPoints.Get(CardRarity.Normal); break;
+                case ItemID.Value.CpR: balance = player.CraftPoints.Get(CardRarity.Rare); break;
+                case ItemID.Value.CpSR: balance = player.CraftPoints.Get(CardRarity.SuperRare); break;
+                case ItemID.Value.CpUR: balance = player.CraftPoints.Get(CardRarity.UltraRare); break;
+                case ItemID.Value.OrbDark: balance = player.OrbPoints.Get(OrbType.Dark); break;
+                case ItemID.Value.OrbLight: balance = player.OrbPoints.Get(OrbType.Light); break;
+                case ItemID.Value.OrbEarth: balance = player.OrbPoints.Get(OrbType.Earth); break;
+                case ItemID.Value.OrbWater: balance = player.OrbPoints.Get(OrbType.Water); break;
+                case ItemID.Value.OrbFire: balance = player.OrbPoints.Get(OrbType.Fire); break;
+                case ItemID.Value.OrbWind: balance = player.OrbPoints.Get(OrbType.Wind); break;
+                default:
+                    return 0;
+            }
+            return Math.Min(Math.Max(0, balance) / Price, Math.Max(1, MultiBuyLimit));
         }
     }
 
