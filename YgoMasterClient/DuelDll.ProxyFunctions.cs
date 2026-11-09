@@ -249,6 +249,8 @@ namespace YgoMasterClient
         static Hook<Del_DLL_DuelGetCantActIcon> hookDLL_DuelGetCantActIcon;
         delegate bool Del_DLL_DuelIsThisMaximumMode(int player, int locate);
         static Hook<Del_DLL_DuelIsThisMaximumMode> hookDLL_DuelIsThisMaximumMode;
+        delegate bool Del_DLL_DuelIsFaceDownCardOpen(int player);
+        static Hook<Del_DLL_DuelIsFaceDownCardOpen> hookDLL_DuelIsFaceDownCardOpen;
 
         static void InitProxyFunctions(IntPtr lib)
         {
@@ -371,6 +373,7 @@ namespace YgoMasterClient
             hookDLL_SetRareByUniqueID = new Hook<Del_DLL_SetRareByUniqueID>(DLL_SetRareByUniqueID, PInvoke.GetProcAddress(lib, "DLL_SetRareByUniqueID"));
             hookDLL_DuelGetCantActIcon = new Hook<Del_DLL_DuelGetCantActIcon>(DLL_DuelGetCantActIcon, PInvoke.GetProcAddress(lib, "DLL_DuelGetCantActIcon"));
             hookDLL_DuelIsThisMaximumMode = new Hook<Del_DLL_DuelIsThisMaximumMode>(DLL_DuelIsThisMaximumMode, PInvoke.GetProcAddress(lib, "DLL_DuelIsThisMaximumMode"));
+            hookDLL_DuelIsFaceDownCardOpen = new Hook<Del_DLL_DuelIsFaceDownCardOpen>(DLL_DuelIsFaceDownCardOpen, PInvoke.GetProcAddress(lib, "DLL_DuelIsFaceDownCardOpen"));
         }
 
         static uint DLL_CardRareGetBufferSize()
@@ -1873,7 +1876,7 @@ namespace YgoMasterClient
         {
             if (IsPvpDuel)
             {
-                return false; // Ignore ???
+                return pvpEngineState.GetValue(PvpOperationType.DLL_DuelGetCantActIcon, player, locate, index, flag) != 0;
             }
             else
             {
@@ -1890,6 +1893,18 @@ namespace YgoMasterClient
             else
             {
                 return hookDLL_DuelIsThisMaximumMode.Original(player, locate);
+            }
+        }
+
+        static bool DLL_DuelIsFaceDownCardOpen(int player)
+        {
+            if (IsPvpDuel)
+            {
+                return pvpEngineState.GetValue(PvpOperationType.DLL_DuelIsFaceDownCardOpen, player) != 0;
+            }
+            else
+            {
+                return hookDLL_DuelIsFaceDownCardOpen.Original(player);
             }
         }
     }

@@ -1812,7 +1812,7 @@ namespace YgomGame.Tutorial
             hookOnCreatedView = new Hook<Del_OnCreatedView>(OnCreatedView, classInfo.GetMethod("OnCreatedView"));
             CardFlyingViewController__labelCtrl = classInfo.GetField("_labelCtrl");
 
-            LabeledPlayableController_PlayLabel = assembly.GetClass("LabeledPlayableController", "YgomSystem.Timeline").GetMethod("PlayLabel", x => x.GetParameters().Length == 1);
+            LabeledPlayableController_PlayLabel = assembly.GetClass("LabeledPlayableController", "YgomSystem.Timeline").GetMethod("PlayLabel", x => x.GetParameters().Length == 2 && x.GetParameters()[1].Name == "tryReserve");
 
             // Also see DuelClientEndView (handles TransOut?)
             IL2Class DuelClient_Class = assembly.GetClass("DuelClient", "YgomGame.Duel");
@@ -1857,7 +1857,8 @@ namespace YgomGame.Tutorial
                 IntPtr timeline = DuelClient_m_DuelEndTransTimeline.GetValue(duelClient).ptr;
                 IntPtr ptr = TimelineObject_playableDirector.GetGetMethod().Invoke(timeline).ptr;
                 IntPtr lpc2 = LabeledPlayableController_Create.Invoke(new IntPtr[] { ptr }).ptr;
-                LabeledPlayableController_PlayLabel.Invoke(lpc2, new IntPtr[] { new IL2String("TransOut").ptr });
+                bool tryReserve = false;
+                LabeledPlayableController_PlayLabel.Invoke(lpc2, new IntPtr[] { new IL2String("TransOut").ptr, new IntPtr(&tryReserve) });
 
                 // BGM normally only starts on the duel result screen, force it to play now / ignore next stop of the BGM
                 float delay = -1f;
@@ -1876,7 +1877,8 @@ namespace YgomGame.Tutorial
                     // TransIn has finished (circle mask covering screen). Remove the flying cards view now that it's covered
 
                     // TransOut is required otherwise the cards/BG never goes away
-                    LabeledPlayableController_PlayLabel.Invoke(CardFlyingViewController__labelCtrl.GetValue(hackedInstance).ptr, new IntPtr[] { new IL2String("TransOut").ptr });
+                    bool tryReserve = false;
+                    LabeledPlayableController_PlayLabel.Invoke(CardFlyingViewController__labelCtrl.GetValue(hackedInstance).ptr, new IntPtr[] { new IL2String("TransOut").ptr, new IntPtr(&tryReserve) });
                     IntPtr manager = YgomGame.Menu.ContentViewControllerManager.GetManager();
                     YgomSystem.UI.ViewControllerManager.PopChildViewController(manager, hackedInstance);
                     hackedInstance = IntPtr.Zero;

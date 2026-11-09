@@ -352,6 +352,9 @@ namespace YgoMaster
                                     case "Gacha.get_probability":
                                         Act_GachaGetProbability(gameServerWebRequest);
                                         break;
+                                    case "Gacha.get_key_cards":// v2.9.0
+                                        Act_GachaGetKeyCards(gameServerWebRequest);
+                                        break;
                                     case "Craft.exchange_multi":
                                         Act_CraftExchangeMulti(gameServerWebRequest);
                                         break;

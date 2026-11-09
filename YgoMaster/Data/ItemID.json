@@ -59,6 +59,7 @@
     1000046,//Beat, Bladesman Fur Hire
     1000047,//Penguin Soldier
     1000048,//Fairy Tail - Snow
+    1000050,//Teardrop the Rikka Queen
     1001001,//Instant Fusion
     1001002,//Noble Arms - Caliburn
     1001003,//Book of Moon
@@ -98,6 +99,7 @@
     1001039,//Ally of Justice Catastor
     1001040,//Gimmick Puppet Egg Head
     1001041,//Book of Taiyou
+    1001043,//Planet Pathfinder
     1002001,//Soccer Ball
     1002002,//Basketball
     1002003,//Record Player
@@ -279,6 +281,12 @@
     1010159,//Artmage Power Patron
     1010160,//Dark Magician & Dark Magician Girl (WCS2026)
     1010161,//2027 SEASON
+    1010162,//Crackle Blitzclique
+    1010163,//Witchcrafter Unveiling
+    1010166,//Brise the Lightning Lampreyer of Lukunas
+    1010167,//Dark Magical Curtain
+    1010168,//Dark Magician, the Pharaoh's Servant
+    1010172,//Rikka Sacred Queen Strenna
     1010180,//Desperate Tag
     1011001,//Soccer Ball
     1011002,//Trophy
@@ -462,8 +470,8 @@
     1013012,//Rescue Hedgehog
     1013013,//Aleister the Invoker
     1013014,//Shadow Duelist Zester
-    1013015,//Wumpus
     1013016,//Diabellstar the Black Witch
+    1013017,//Rescue Cat
   ],
   "PROFILE_TAG": [
     1020001,//Beginner Duelist
@@ -703,6 +711,8 @@
     1020236,//DC 2026 OCT Top 10000
     1020237,//DC 2026 OCT 2nd Stage Duelist
     1020238,//Unstoppable Force
+    1020246,//Stellar Trailblazer
+    1020247,//Deep Space
     1021001,//Starting Out
     1021002,//Top Performer
     1021003,//Point Collector
@@ -755,6 +765,7 @@
     1030042,//Mimighoul Flower
     1030043,//Yellow & Black Frame
     1030044,//Lime & Pink Frame
+    1030046,//Navy & Yellow Frame
     1031001,//The Path of the Blue Sky Striker
     1031002,//The Path of the Red Sky Striker
     1031003,//Magic Cylinder
@@ -784,6 +795,7 @@
     1031027,//Forbidden Crown
     1031028,//Synchro Ring β
     1031029,//Clown Crew
+    1031030,//Dark Magical Curtain
     1032001,//Festive Ornament
     1032002,//Celebration of Spring Breeze
     1032003,//Tropical Seaside
@@ -989,11 +1001,21 @@
     1070184,//Polymerization
     1070185,//Aleister the Reminiscent
     1070186,//Vidolium the Unstable Power Patron of Unity
+    1070187,//K9-17 Izuna
+    1070188,//Sosei Ryu-Ge Mistva
     1070189,//Fifth Hope
     1070190,//Bystial Dis Pater
     1070191,//Dark Magician & Dark Magician Girl (WCS2026)
     1070192,//Dark Magician (WCS2026)
     1070193,//Dark Magician Girl (WCS2026)
+    1070194,//Number 11: Big Eye
+    1070195,//Surge Blitzclique
+    1070196,//Witchcrafter Madame Verre
+    1070197,//Witchcrafter Madame Rilliona
+    1070203,//Ruler of the End of the World
+    1070204,//Dark Magician, the Pharaoh's Servant
+    1070205,//Dark Magical Curtain
+    1070210,//Rikka Black Princess
     1071001,//Crusadia Maximus
     1071002,//Longirsu, the Orcust Orchestrator
     1071003,//Dream Mirror Phantasms
@@ -1070,6 +1092,7 @@
     1073022,//WCS 2026 Party Favor
     1073023,//Fusion Cup Celebration
     1073025,//DC 2026 OCT Celebration
+    1073026,//Japan High School Championship 2026
     1075001,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
     1075002,//THE CHRONICLES: Sky Striker Ace
     1075003,//White & Blue
@@ -1149,6 +1172,7 @@
     1082032,//Exosister
     1082033,//Theorealize Liberation
     1082034,//Dark Magician & Dark Magician Girl (WCS2026)
+    1082035,//Blitzclique
     1083001,//White & Blue
   ],
   "FIELD": [
@@ -1270,7 +1294,9 @@
     1101041,//Wreath
     1101044,//Forbidden Crown
     1101045,// WAKE CUP!
+    1101047,//Rikka
     1101048,//The Phantom Knights of Shade Brigandine
+    1101049,//Blitzclique
     1102001,//Colosseum
     1102002,//WCS
     1102004,//Japan High School Championship
@@ -1378,6 +1404,7 @@
     1111082,//Tails of the Fairy Tails
     1111083,//Clown Crew
     1111084,//Red Hypernova Dragon
+    1111087,//Witchcrafter
     1112001,//Colosseum
     1112002,//WCS
     1112004,//Japan High School Championship
@@ -1572,11 +1599,19 @@
     1130149,//Theorealize Past Lull
     1130150,//Anti-GMX Final Experiment
     1130151,//Dark Magician & Dark Magician Girl (WCS2026)
+    1130152,//Whisker Blitzclique
+    1130153,//Witchcrafter Walpurgis
+    1130158,//Thunder Dragon Colossus
+    1130159,//Dark Magician, the Pharaoh's Servant
+    1130160,//Dark Magical Curtain
+    1130165,//Teardrop the Rikka Sacred Queen
+    1130174,//Number 62: Galaxy-Eyes Prime Photon Dragon
     1132001,//Rescue Rabbit
     1132002,//Neymar
     1132003,//That's 10!
     1132004,//Endymion, the Mighty Master of Magic
     1132005,//Emerging Emergency Rescute Rescue
+    1132006,//Evil★Twin Challenge
   ],
   "PACK_TICKET": [
     1140001,//Legacy Pack ticket
@@ -1617,6 +1652,8 @@
     1170020,//Clown Crew
     1170021,//Spirit Charmers
     1170022,//WCS2026
+    1170023,//Witchcrafter
+    1170025,//Rikka
   ],
   "COIN": [
     1180001,//Blue-Eyes Alternative White Dragon
@@ -1645,6 +1682,8 @@
     1180026,//Cyber Dragon
     1180027,//Grand Spiritual Art - Ichirin
     1180028,//Theorealize
+    1180029,//Blitzclique
+    1180030,//Witchcrafter
   ],
   "BOOKMARK_LIMIT": [
     1190001,//Bookmark Slots

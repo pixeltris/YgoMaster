@@ -1397,6 +1397,37 @@ namespace YgoMaster
         }
 
         /// <summary>
+        /// The "key cards" of a pack (shown on the card route list "How to obtain"). Officially these are the SR / UR cards of the pack.
+        /// </summary>
+        void Act_GachaGetKeyCards(GameServerWebRequest request)
+        {
+            int packId = Utils.GetValue<int>(request.ActParams, "gacha_id");
+            List<int> keyCards = new List<int>();
+            ShopItemInfo shopItem;
+            if (Shop.PacksByPackId.TryGetValue(packId, out shopItem))
+            {
+                foreach (KeyValuePair<int, int> card in GetCardRarities(request.Player, shopItem))
+                {
+                    if (card.Value >= (int)CardRarity.SuperRare)
+                    {
+                        keyCards.Add(card.Key);
+                    }
+                }
+                keyCards.Sort();
+            }
+            else
+            {
+                Utils.LogWarning("Failed to find pack " + packId + " for key cards");
+            }
+            request.Response["Gacha"] = new Dictionary<string, object>()
+            {
+                { "keycardList", new Dictionary<string, object>() {
+                    { packId.ToString(), keyCards }
+                }}
+            };
+        }
+
+        /// <summary>
         /// Formats a value with the given number of significant digits (e.g. 4 digits: 0.001719 / 1.500 / 12.50)
         /// </summary>
         static string FormatSignificantDigits(double value, int digits)

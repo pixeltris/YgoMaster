@@ -124,6 +124,7 @@ namespace YgoMaster
                 UpdateValue(PvpOperationType.DLL_DuelCanIDoSummonMonster, Pvp.DLL_DuelCanIDoSummonMonster(player) ? 1 : 0, player);
                 UpdateValue(PvpOperationType.DLL_DuelGetCardInHand, (int)Pvp.DLL_DuelGetCardInHand(player), player);
                 UpdateValue(PvpOperationType.DLL_DuelGetLP, Pvp.DLL_DuelGetLP(player), player);
+                UpdateValue(PvpOperationType.DLL_DuelIsFaceDownCardOpen, Pvp.DLL_DuelIsFaceDownCardOpen(player) ? 1 : 0, player);
                 //UpdateValue(PvpOperationType.DLL_DuelIsHuman, Pvp.DLL_DuelIsHuman(player), player);
                 //UpdateValue(PvpOperationType.DLL_DuelIsMyself, Pvp.DLL_DuelIsMyself(player), player);
                 //UpdateValue(PvpOperationType.DLL_DuelIsRival, Pvp.DLL_DuelIsRival(player), player);
@@ -280,6 +281,13 @@ namespace YgoMaster
                         UpdateValue(PvpOperationType.DLL_DuelGetCardBasicVal, 0, StructToByteArray(basicVal), player, pos, index);
 
                         UpdateValue(PvpOperationType.DLL_DuelGetCardFace, Pvp.DLL_DuelGetCardFace(player, pos, index), player, pos, index);
+
+                        // DLL_DuelGetCantActIcon flag values (from duel.dll): 1 = distinct, 2 = distinct for hand only, anything else = same as 0
+                        for (int flag = 0; flag <= 2; flag++)
+                        {
+                            UpdateValue(PvpOperationType.DLL_DuelGetCantActIcon, Pvp.DLL_DuelGetCantActIcon(player, pos, index, flag) ? 1 : 0, player, pos, index, flag);
+                        }
+
                         UpdateValue(PvpOperationType.DLL_DuelGetCardTurn, Pvp.DLL_DuelGetCardTurn(player, pos, index), player, pos, index);
 
                         if (pos == PosGrave)
@@ -396,6 +404,11 @@ namespace YgoMaster
             return UpdateValue(operationType, value, new PvpEngineOperationArgs(arg1, arg2, arg3));
         }
 
+        int UpdateValue(PvpOperationType operationType, int value, int arg1, int arg2, int arg3, int arg4)
+        {
+            return UpdateValue(operationType, value, new PvpEngineOperationArgs(arg1, arg2, arg3, arg4));
+        }
+
         void UpdateValue(PvpOperationType operationType, int value, byte[] data)
         {
             UpdateValue(operationType, value, data, new PvpEngineOperationArgs(0));
@@ -414,6 +427,11 @@ namespace YgoMaster
         void UpdateValue(PvpOperationType operationType, int value, byte[] data, int arg1, int arg2, int arg3)
         {
             UpdateValue(operationType, value, data, new PvpEngineOperationArgs(arg1, arg2, arg3));
+        }
+
+        void UpdateValue(PvpOperationType operationType, int value, byte[] data, int arg1, int arg2, int arg3, int arg4)
+        {
+            UpdateValue(operationType, value, data, new PvpEngineOperationArgs(arg1, arg2, arg3, arg4));
         }
 
         int UpdateValue(PvpOperationType operationType, int value, PvpEngineOperationArgs args)
@@ -515,6 +533,11 @@ namespace YgoMaster
             return GetValue(operationType, new PvpEngineOperationArgs(arg1, arg2, arg3));
         }
 
+        public int GetValue(PvpOperationType operationType, int arg1, int arg2, int arg3, int arg4)
+        {
+            return GetValue(operationType, new PvpEngineOperationArgs(arg1, arg2, arg3, arg4));
+        }
+
         public int GetValue(PvpOperationType operationType, PvpEngineOperationArgs args)
         {
             PvpEngineOperationResult result = GetResult(operationType, args);
@@ -539,6 +562,11 @@ namespace YgoMaster
         public PvpEngineOperationResult GetResult(PvpOperationType operationType, int arg1, int arg2, int arg3)
         {
             return GetResult(operationType, new PvpEngineOperationArgs(arg1, arg2, arg3));
+        }
+
+        public PvpEngineOperationResult GetResult(PvpOperationType operationType, int arg1, int arg2, int arg3, int arg4)
+        {
+            return GetResult(operationType, new PvpEngineOperationArgs(arg1, arg2, arg3, arg4));
         }
 
         public PvpEngineOperationResult GetResult(PvpOperationType operationType, PvpEngineOperationArgs args)
@@ -631,40 +659,34 @@ namespace YgoMaster
         public int Arg1;
         public int Arg2;
         public int Arg3;
+        public int Arg4;
 
-        public PvpEngineOperationArgs(int arg1)
-        {
-            Arg1 = arg1;
-            Arg2 = 0;
-            Arg3 = 0;
-        }
-
-        public PvpEngineOperationArgs(int arg1, int arg2)
-        {
-            Arg1 = arg1;
-            Arg2 = arg2;
-            Arg3 = 0;
-        }
-
-        public PvpEngineOperationArgs(int arg1, int arg2, int arg3)
+        public PvpEngineOperationArgs(int arg1, int arg2 = 0, int arg3 = 0, int arg4 = 0)
         {
             Arg1 = arg1;
             Arg2 = arg2;
             Arg3 = arg3;
+            Arg4 = arg4;
         }
 
         public void Read(BinaryReader reader)
         {
-            Arg1 = reader.ReadInt32();
-            Arg2 = reader.ReadInt32();
-            Arg3 = reader.ReadInt32();
+            byte count = reader.ReadByte();
+            Arg1 = count >= 1 ? reader.ReadInt32() : 0;
+            Arg2 = count >= 2 ? reader.ReadInt32() : 0;
+            Arg3 = count >= 3 ? reader.ReadInt32() : 0;
+            Arg4 = count >= 4 ? reader.ReadInt32() : 0;
         }
 
         public void Write(BinaryWriter writer)
         {
-            writer.Write(Arg1);
-            writer.Write(Arg2);
-            writer.Write(Arg3);
+            // Only write args up to the last non-zero arg (trailing zeros are implied)
+            byte count = (byte)(Arg4 != 0 ? 4 : Arg3 != 0 ? 3 : Arg2 != 0 ? 2 : Arg1 != 0 ? 1 : 0);
+            writer.Write(count);
+            if (count >= 1) writer.Write(Arg1);
+            if (count >= 2) writer.Write(Arg2);
+            if (count >= 3) writer.Write(Arg3);
+            if (count >= 4) writer.Write(Arg4);
         }
     }
 
@@ -1474,9 +1496,13 @@ namespace YgoMaster
         [DllImport(DllName)]
         static extern void DLL_SetRareByUniqueID(int uniqueId, int rare);//v2.3.0 TODO:?
         [DllImport(DllName)]
-        static extern bool DLL_DuelGetCantActIcon(int player, int locate, int index, int flag);//v2.4.0 TODO:?
+        public static extern bool DLL_DuelGetCantActIcon(int player, int locate, int index, int flag);//v2.4.0
         [DllImport(DllName)]
         public static extern bool DLL_DuelIsThisMaximumMode(int player, int locate);//v2.5.0
+        [DllImport(DllName)]
+        public static extern bool DLL_DuelIsFaceDownCardOpen(int player);//v2.9.0
+        //[DllImport(DllName)]
+        //static extern IntPtr DLL_GetRevisionString();//v2.8.0
     }
 
     enum PvpOperationType
@@ -1614,7 +1640,9 @@ namespace YgoMaster
         DLL_DuelGetAttachedEffectList,//v2.2.1
         DLL_DuelChangeCardIDByUniqueID,//v2.3.0 TODO:?
         DLL_SetRareByUniqueID,//v2.3.0 TODO:?
-        DLL_DuelGetCantActIcon,//v2.4.0 TODO:?
+        DLL_DuelGetCantActIcon,//v2.4.0
         DLL_DuelIsThisMaximumMode,//v2.5.0
+        DLL_DuelIsFaceDownCardOpen,//v2.9.0
+        DLL_GetRevisionString,//v2.8.0
     }
 }

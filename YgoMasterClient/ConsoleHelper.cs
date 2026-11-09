@@ -614,7 +614,7 @@ namespace YgoMasterClient
                                                 YgomSystem.Utility.TextData.LoadGroup("IDS_DECKEDIT");
                                                 IL2Class idsDeckEditClass = assembly.GetClass("IDS_DECKEDIT", "YgomGame.TextIDs");
                                                 tw.WriteLine("/// <summary>");
-                                                tw.WriteLine("/// IDS_DECKEDIT.HOWTOGET_CATEGORY (off by 1?)");
+                                                tw.WriteLine("/// IDS_DECKEDIT.HOWTOGET_CATEGORY (the value is the number in the text id)");
                                                 tw.WriteLine("/// </summary>");
                                                 tw.WriteLine("enum HowToObtainCard");
                                                 tw.WriteLine("{");
@@ -626,9 +626,10 @@ namespace YgoMasterClient
                                                         string str = YgomSystem.Utility.TextData.GetText(idsDeckEditClass.Name + "." + field.Name);
                                                         str = FixWeirdNameForEnum(str);
                                                         str = str.Replace(" ", string.Empty);
-                                                        if (!string.IsNullOrEmpty(str))
+                                                        int categoryId;
+                                                        if (!string.IsNullOrEmpty(str) && int.TryParse(field.Name.Substring("HOWTOGET_CATEGORY".Length), out categoryId))
                                                         {
-                                                            tw.WriteLine("    " + str + ",// " + field.Name);
+                                                            tw.WriteLine("    " + str + " = " + categoryId + ",// " + field.Name);
                                                         }
                                                     }
                                                 }

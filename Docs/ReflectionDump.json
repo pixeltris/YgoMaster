@@ -3976,7 +3976,7 @@
     ],
     "Type": "Method",
     "Name": "PlayLabel",
-    "Signature": "public System.Void PlayLabel(System.String label)"
+    "Signature": "public System.Void PlayLabel(System.String label, System.Boolean tryReserve)"
   },
   {
     "Assembly": "Assembly-CSharp",
@@ -4237,6 +4237,36 @@
     "Type": "Method",
     "Name": "GetServerDefaultUrl",
     "Signature": "public static System.Void GetServerDefaultUrl(YgomSystem.Utility.RuntimeEnvironment.ServerType type, System.String& url, System.String& pollingUrl)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.Billing",
+    "Class": [
+      "Billing_Steam"
+    ],
+    "Type": "Method",
+    "Name": "canMakePayment",
+    "Signature": "public System.Boolean canMakePayment()"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.Billing",
+    "Class": [
+      "Billing_Steam"
+    ],
+    "Type": "Method",
+    "Name": "OnMicroTxnAuthorizationResponse",
+    "Signature": "System.Void OnMicroTxnAuthorizationResponse(Steamworks.MicroTxnAuthorizationResponse_t response)"
+  },
+  {
+    "Assembly": "Assembly-CSharp",
+    "Namespace": "YgomSystem.Billing",
+    "Class": [
+      "Billing_Steam"
+    ],
+    "Type": "Method",
+    "Name": "BuyItemFromPlatform",
+    "Signature": "public System.Boolean BuyItemFromPlatform(KonamiCommonIAB.ProductInfo product, KonamiCommonIAB.IabDelegate.OnBuyFinishedDelegate cb)"
   },
   {
     "Assembly": "Assembly-CSharp",

@@ -179,6 +179,8 @@ namespace YgoMaster
         [DllImport(dllName)]
         private static extern uint DLL_DuelGetTurnNum();
         [DllImport(dllName)]
+        private static extern bool DLL_DuelIsFaceDownCardOpen(int player);
+        [DllImport(dllName)]
         private static extern int DLL_DuelIsHuman(int player);
         [DllImport(dllName)]
         private static extern int DLL_DuelIsMyself(int player);
@@ -288,6 +290,8 @@ namespace YgoMaster
         private static extern int DLL_GetCardExistNum();
         [DllImport(dllName)]
         private static extern int DLL_GetRevision();
+        [DllImport(dllName)]
+        private static extern IntPtr DLL_GetRevisionString();
         [DllImport(dllName)]
         private static extern void DLL_SetAddRecordDelegate(AddRecord addRecord);
         [DllImport(dllName)]

@@ -312,12 +312,12 @@ namespace YgoMaster
 
         void Act_CraftGetCardRoute(GameServerWebRequest request)
         {
-            // Only taking into account shop structure decks and packs for now
-            // TODO: solo rewards / starting decks
+            // NOTE: "call_from_id" (v2.9.0) is currently ignored
             int cardId;
             if (Utils.TryGetValue(request.ActParams, "card_id", out cardId))
             {
                 List<object> routes = new List<object>();
+                Dictionary<string, object> standardPackRoute = null;
                 for (int i = 0; i < 2; i++)
                 {
                     IEnumerable<ShopItemInfo> shopItems = (i == 0 ? Shop.PackShop.Values : Shop.StructureShop.Values);
@@ -352,17 +352,35 @@ namespace YgoMaster
                             default:
                                 continue;
                         }
-                        routes.Add(new Dictionary<string, object>()
+                        Dictionary<string, object> route = new Dictionary<string, object>()
                         {
                             { "route_category", (int)howToObtain },
                             { "route_param", shopItem.ShopId },
                             { "route_open", isRouteOpen },
+                            { "route_transition", true },
                             { "route_name_id", i == 0 ? Utils.FixIdString(shopItem.NameText) : "IDS_ITEM_ID" + shopItem.Id },
                             { "route_icon_type", (int)shopItem.IconType },
                             { "route_icon_data", shopItem.IconData },
                             { "route_icon_mrk", shopItem.IconMrk },
                             { "route_pack_thumb", shopItem.IconMrk.ToString() }
-                        });
+                        };
+                        if (i == 0)
+                        {
+                            // v2.9.0
+                            route["route_detail_data"] = new Dictionary<string, object>()
+                            {
+                                { "is_secret", shopItem.SecretType != ShopItemSecretType.None },
+                                { "gacha_id", shopItem.Id }
+                            };
+                        }
+                        if (i == 0 && shopItem == Shop.StandardPack)
+                        {
+                            standardPackRoute = route;
+                        }
+                        else
+                        {
+                            routes.Add(route);
+                        }
                     }
                 }
                 foreach (int itemId in DefaultItems)
@@ -373,53 +391,94 @@ namespace YgoMaster
                         Act_CraftGetCardRoute_TryAddStructureDeck(request, routes, cardId, itemId, HowToObtainCard.InitialDistributionStructure);
                     }
                 }
-                Dictionary<int, Dictionary<string, object>> soloAllRewardData = Utils.GetIntDictDict(SoloData, "reward");
-                if (soloAllRewardData != null)
+                Act_CraftGetCardRoute_AddSolo(routes, cardId);
+                // Official order is: packs, solo, generate (craft), master pack
+                if (GetCraftableCards(request.Player).Contains(cardId))
                 {
-                    foreach (KeyValuePair<int, Dictionary<string, object>> soloRewardData in soloAllRewardData)
+                    routes.Add(new Dictionary<string, object>()
                     {
-                        foreach (KeyValuePair<string, object> reward in soloRewardData.Value)
-                        {
-                            Dictionary<string, object> rewardItems = reward.Value as Dictionary<string, object>;
-                            foreach (KeyValuePair<string, object> item in rewardItems)
-                            {
-                                int itemId;
-                                int count = (int)Convert.ChangeType(item.Value, typeof(int));
-                                if (int.TryParse(item.Key, out itemId))
-                                {
-                                    ItemID.Category category = ItemID.GetCategoryFromID(itemId);
-                                    if (category == ItemID.Category.CARD)
-                                    {
-                                        if (itemId == cardId)
-                                        {
-                                            // TODO: Fetch which gates contain this card (will be messy getting that info here...)
-                                            routes.Add(new Dictionary<string, object>()
-                                            {
-                                                { "route_category", (int)HowToObtainCard.Solo },
-                                                { "route_param", 1 },// Gate id (required) determines which image to display
-                                                { "route_open", true },// TODO: Check unlocked status
-                                                { "route_name_id", string.Empty },//, "IDS_SOLO_GATE001" }, <--- removed to display no text
-                                                { "route_icon_type", 0 },
-                                                { "route_icon_data", string.Empty },
-                                                { "route_icon_mrk", 0 },
-                                                { "route_pack_thumb", string.Empty }
-                                            });
-                                        }
-                                    }
-                                    else if (category == ItemID.Category.STRUCTURE)
-                                    {
-                                        //Act_CraftGetCardRoute_TryAddStructureDeck(request, routes, cardId, itemId, HowToObtainCard.Solo);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                        { "route_category", (int)HowToObtainCard.GenerateCard },
+                        { "route_param", 0 },
+                        { "route_open", true },
+                        { "route_transition", true },
+                        { "route_name_id", string.Empty },
+                        { "route_icon_type", 0 },
+                        { "route_icon_data", string.Empty },
+                        { "route_icon_mrk", 0 },
+                        { "route_pack_thumb", string.Empty }
+                    });
+                }
+                if (standardPackRoute != null)
+                {
+                    routes.Add(standardPackRoute);
                 }
                 if (routes.Count > 0)
                 {
                     request.Response["Route"] = routes;
                     request.Remove("Route");
                 }
+            }
+        }
+
+        void Act_CraftGetCardRoute_AddSolo(List<object> routes, int cardId)
+        {
+            // Solo rewards are keyed by the chapter "set_id" / "mydeck_set_id" (see Act_SoloDuel)
+            Dictionary<int, Dictionary<string, object>> allRewardData = Utils.GetIntDictDict(SoloData, "reward");
+            Dictionary<int, Dictionary<string, object>> allChapterData = Utils.GetIntDictDict(SoloData, "chapter");
+            if (allRewardData == null || allChapterData == null)
+            {
+                return;
+            }
+            HashSet<int> rewardIds = new HashSet<int>();
+            foreach (KeyValuePair<int, Dictionary<string, object>> rewardData in allRewardData)
+            {
+                foreach (KeyValuePair<string, object> reward in rewardData.Value)
+                {
+                    Dictionary<string, object> rewardItems = reward.Value as Dictionary<string, object>;
+                    if (rewardItems != null && rewardItems.ContainsKey(cardId.ToString()))
+                    {
+                        rewardIds.Add(rewardData.Key);
+                    }
+                }
+            }
+            if (rewardIds.Count == 0)
+            {
+                return;
+            }
+            List<int> gateIds = new List<int>();
+            foreach (KeyValuePair<int, Dictionary<string, object>> gateChapters in allChapterData)
+            {
+                foreach (KeyValuePair<string, object> chapter in gateChapters.Value)
+                {
+                    Dictionary<string, object> chapterData = chapter.Value as Dictionary<string, object>;
+                    if (chapterData == null)
+                    {
+                        continue;
+                    }
+                    int myDeckSetId = Utils.GetValue<int>(chapterData, "mydeck_set_id");
+                    int loanerDeckSetId = Utils.GetValue<int>(chapterData, "set_id");
+                    if ((myDeckSetId != 0 && rewardIds.Contains(myDeckSetId)) || (loanerDeckSetId != 0 && rewardIds.Contains(loanerDeckSetId)))
+                    {
+                        gateIds.Add(gateChapters.Key);
+                        break;
+                    }
+                }
+            }
+            gateIds.Sort();
+            foreach (int gateId in gateIds)
+            {
+                routes.Add(new Dictionary<string, object>()
+                {
+                    { "route_category", (int)HowToObtainCard.SoloMode },
+                    { "route_param", gateId },
+                    { "route_open", true },// TODO: Check gate unlocked status
+                    { "route_transition", true },
+                    { "route_name_id", "IDS_SOLO_GATE" + gateId.ToString("D3") },
+                    { "route_icon_type", 0 },
+                    { "route_icon_data", string.Empty },
+                    { "route_icon_mrk", 0 },
+                    { "route_pack_thumb", string.Empty }
+                });
             }
         }
 
@@ -435,6 +494,7 @@ namespace YgoMaster
                         { "route_category", (int)route },
                         { "route_param", structureId },
                         { "route_open", true },
+                        { "route_transition", true },
                         { "route_name_id", "IDS_ITEM_ID" + structureId },
                         { "route_icon_type", 0 },
                         { "route_icon_data", string.Empty },

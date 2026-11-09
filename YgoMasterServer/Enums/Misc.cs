@@ -177,21 +177,35 @@ namespace YgoMaster
     }
 
     /// <summary>
-    /// IDS_DECKEDIT.HOWTOGET_CATEGORY (off by 1?)
+    /// IDS_DECKEDIT.HOWTOGET_CATEGORY (the value is the number in the text id e.g. HOWTOGET_CATEGORY020 = 20)
     /// </summary>
     enum HowToObtainCard
     {
         None = 0,
         Pack = 1,
         Solo = 2,
-        Tournament = 3,// Assumed
-        Exhibition = 4,// Assumed
-        //Craft = 5,// Assumed removed
+        Tournament = 3,
+        Exhibition = 4,
         InitialDistributionStructure = 5,
         SalesStructure = 6,
-        Mission = 7,// Assumed
+        Mission = 7,
         DuelResult = 8,
-        BundleDeals = 9
+        BundleDeals = 9,
+        SelectionPack = 10,
+        SecretPack = 11,
+        BonusPack = 12,
+        GenerateCard = 20,
+        GemShop = 21,
+        Campaign = 22,
+        CampaignStructureDecks = 23,
+        LoginBonus = 24,
+        SoloMode = 25,
+        SoloModeStructureDecks = 26,
+        MissionReward = 27,
+        MissionRewardStructureDecks = 28,
+        BundleDeals2 = 29,
+        BundleDeals3 = 30,
+        Other = 99
     }
 
     /// <summary>
