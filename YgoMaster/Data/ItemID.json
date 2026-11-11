@@ -1092,7 +1092,7 @@
     1073022,//WCS 2026 Party Favor
     1073023,//Fusion Cup Celebration
     1073025,//DC 2026 OCT Celebration
-    1073026,//Japan High School Championship 2026
+    //1073026,//Japan High School Championship 2026
     1075001,//Yu-Gi-Oh! CARD GAME THE CHRONICLES
     1075002,//THE CHRONICLES: Sky Striker Ace
     1075003,//White & Blue
@@ -1636,7 +1636,7 @@
     1170004,//Labrynth
     1170005,//K9
     1170006,//Mikanko
-    1170007,//(英)1170007
+    //1170007,//(英)1170007
     1170008,//Sky Striker Ace
     1170009,//Dark Magician
     1170010,//Destiny HERO

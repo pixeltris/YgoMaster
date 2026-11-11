@@ -177,35 +177,45 @@ namespace YgoMaster
     }
 
     /// <summary>
-    /// IDS_DECKEDIT.HOWTOGET_CATEGORY (the value is the number in the text id e.g. HOWTOGET_CATEGORY020 = 20)
+    /// YgomGame.Card.LootSourceInfo.LootCategory
     /// </summary>
     enum HowToObtainCard
     {
         None = 0,
         Pack = 1,
-        Solo = 2,
-        Tournament = 3,
-        Exhibition = 4,
-        InitialDistributionStructure = 5,
-        SalesStructure = 6,
-        Mission = 7,
-        DuelResult = 8,
-        BundleDeals = 9,
-        SelectionPack = 10,
-        SecretPack = 11,
-        BonusPack = 12,
-        GenerateCard = 20,
-        GemShop = 21,
-        Campaign = 22,
-        CampaignStructureDecks = 23,
-        LoginBonus = 24,
-        SoloMode = 25,
-        SoloModeStructureDecks = 26,
-        MissionReward = 27,
-        MissionRewardStructureDecks = 28,
-        BundleDeals2 = 29,
-        BundleDeals3 = 30,
-        Other = 99
+        OldSolo,
+        Tournament,
+        Exhibition,
+        FreeStruct,
+        PaidStruct,
+        OldMission,
+        DuelReward,
+        OldSet,
+        PackSelection,
+        PackSecret,
+        PackBonus,
+        Etc = 99,
+        Craft = 20,
+        GemShop,
+        Campaign,
+        CampaignStruct,
+        LoginBonus,
+        Solo,
+        SoloStruct,
+        Mission,
+        MissionStruct,
+        Set,
+        LimitedTimeSet,
+        Etc1 = 101,
+        Etc2,
+        Etc3,
+        Etc4,
+        Etc5,
+        Etc6,
+        Etc7,
+        Etc8,
+        Etc9,
+        Etc10
     }
 
     /// <summary>

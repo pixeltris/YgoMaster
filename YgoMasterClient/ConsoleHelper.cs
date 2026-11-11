@@ -540,7 +540,7 @@ namespace YgoMasterClient
                         allEnums["ChapterUnlockType"] = assembly.GetClass("SoloModeUtil", "YgomGame.Solo").GetNestedType("UnlockType");
                         allEnums["SoloDeckType"] = assembly.GetClass("SoloModeUtil", "YgomGame.Solo").GetNestedType("DeckType");
                         allEnums["RoomEntryViewController.Mode"] = assembly.GetClass("RoomEntryViewController", "YgomGame.Room").GetNestedType("Mode");
-                        allEnums["HowToObtainCard"] = null;
+                        allEnums["HowToObtainCard"] = assembly.GetClass("LootSourceInfo", "YgomGame.Card").GetNestedType("LootCategory");
                         allEnums["DuelResultScore"] = null;
                         //allEnums["DuelRoomTableState"] = null;// TODO: Generate
                         allEnums["DuelClientStep"] = assembly.GetClass("DuelClient", "YgomGame.Duel").GetNestedType("Step");
@@ -610,31 +610,6 @@ namespace YgoMasterClient
                                     {
                                         switch (enumClass.Key)
                                         {
-                                            case "HowToObtainCard":
-                                                YgomSystem.Utility.TextData.LoadGroup("IDS_DECKEDIT");
-                                                IL2Class idsDeckEditClass = assembly.GetClass("IDS_DECKEDIT", "YgomGame.TextIDs");
-                                                tw.WriteLine("/// <summary>");
-                                                tw.WriteLine("/// IDS_DECKEDIT.HOWTOGET_CATEGORY (the value is the number in the text id)");
-                                                tw.WriteLine("/// </summary>");
-                                                tw.WriteLine("enum HowToObtainCard");
-                                                tw.WriteLine("{");
-                                                tw.WriteLine("    None,");
-                                                foreach (IL2Field field in idsDeckEditClass.GetFields())
-                                                {
-                                                    if (field.Name.StartsWith("HOWTOGET_CATEGORY"))
-                                                    {
-                                                        string str = YgomSystem.Utility.TextData.GetText(idsDeckEditClass.Name + "." + field.Name);
-                                                        str = FixWeirdNameForEnum(str);
-                                                        str = str.Replace(" ", string.Empty);
-                                                        int categoryId;
-                                                        if (!string.IsNullOrEmpty(str) && int.TryParse(field.Name.Substring("HOWTOGET_CATEGORY".Length), out categoryId))
-                                                        {
-                                                            tw.WriteLine("    " + str + " = " + categoryId + ",// " + field.Name);
-                                                        }
-                                                    }
-                                                }
-                                                tw.WriteLine("}");
-                                                break;
                                             case "DuelResultScore":
                                                 YgomSystem.Utility.TextData.LoadGroup("IDS_SCORE");
                                                 IL2Class idsScoreClass = assembly.GetClass("IDS_SCORE", "YgomGame.TextIDs");

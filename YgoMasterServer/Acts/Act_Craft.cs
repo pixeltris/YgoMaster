@@ -321,7 +321,7 @@ namespace YgoMaster
                 for (int i = 0; i < 2; i++)
                 {
                     IEnumerable<ShopItemInfo> shopItems = (i == 0 ? Shop.PackShop.Values : Shop.StructureShop.Values);
-                    HowToObtainCard howToObtain = i == 0 ? HowToObtainCard.Pack : HowToObtainCard.SalesStructure;
+                    HowToObtainCard howToObtain = i == 0 ? HowToObtainCard.Pack : HowToObtainCard.PaidStruct;
                     foreach (ShopItemInfo shopItem in shopItems)
                     {
                         if (i == 0)
@@ -369,7 +369,7 @@ namespace YgoMaster
                             // v2.9.0
                             route["route_detail_data"] = new Dictionary<string, object>()
                             {
-                                { "is_secret", shopItem.SecretType != ShopItemSecretType.None },
+                                { "is_secret", shopItem.PackType == ShopPackType.Secret },
                                 { "gacha_id", shopItem.Id }
                             };
                         }
@@ -388,7 +388,7 @@ namespace YgoMaster
                     ItemID.Category category = ItemID.GetCategoryFromID(itemId);
                     if (category == ItemID.Category.STRUCTURE)
                     {
-                        Act_CraftGetCardRoute_TryAddStructureDeck(request, routes, cardId, itemId, HowToObtainCard.InitialDistributionStructure);
+                        Act_CraftGetCardRoute_TryAddStructureDeck(request, routes, cardId, itemId, HowToObtainCard.FreeStruct);
                     }
                 }
                 Act_CraftGetCardRoute_AddSolo(routes, cardId);
@@ -397,7 +397,7 @@ namespace YgoMaster
                 {
                     routes.Add(new Dictionary<string, object>()
                     {
-                        { "route_category", (int)HowToObtainCard.GenerateCard },
+                        { "route_category", (int)HowToObtainCard.Craft },
                         { "route_param", 0 },
                         { "route_open", true },
                         { "route_transition", true },
@@ -469,7 +469,7 @@ namespace YgoMaster
             {
                 routes.Add(new Dictionary<string, object>()
                 {
-                    { "route_category", (int)HowToObtainCard.SoloMode },
+                    { "route_category", (int)HowToObtainCard.Solo },
                     { "route_param", gateId },
                     { "route_open", true },// TODO: Check gate unlocked status
                     { "route_transition", true },

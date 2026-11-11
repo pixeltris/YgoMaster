@@ -295,45 +295,44 @@ enum RoomEntryViewController.Mode
     SPECTER,
 }
 /// <summary>
-/// IDS_DECKEDIT.HOWTOGET_CATEGORY (off by 1?)
+/// YgomGame.Card.LootSourceInfo.LootCategory
 /// </summary>
 enum HowToObtainCard
 {
-    None,
-    Pack,// HOWTOGET_CATEGORY001
-    SoloMode,// HOWTOGET_CATEGORY002
-    Tournament,// HOWTOGET_CATEGORY003
-    Exhibition,// HOWTOGET_CATEGORY004
-    InitialDistributionStructure,// HOWTOGET_CATEGORY005
-    SalesStructure,// HOWTOGET_CATEGORY006
-    Mission,// HOWTOGET_CATEGORY007
-    DuelResult,// HOWTOGET_CATEGORY008
-    BundleDeals,// HOWTOGET_CATEGORY009
-    SelectionPack,// HOWTOGET_CATEGORY010
-    SecretPack,// HOWTOGET_CATEGORY011
-    BonusPack,// HOWTOGET_CATEGORY012
-    GenerateCard,// HOWTOGET_CATEGORY020
-    GemShop,// HOWTOGET_CATEGORY021
-    Campaign,// HOWTOGET_CATEGORY022
-    CampaignStructureDecks,// HOWTOGET_CATEGORY023
-    LoginBonus,// HOWTOGET_CATEGORY024
-    SoloMode,// HOWTOGET_CATEGORY025
-    SoloModeStructureDecks,// HOWTOGET_CATEGORY026
-    Mission,// HOWTOGET_CATEGORY027
-    MissionRewardStructureDecks,// HOWTOGET_CATEGORY028
-    BundleDeals,// HOWTOGET_CATEGORY029
-    BundleDeals,// HOWTOGET_CATEGORY030
-    Other,// HOWTOGET_CATEGORY099
-    Other,// HOWTOGET_CATEGORY101
-    Other,// HOWTOGET_CATEGORY102
-    Other,// HOWTOGET_CATEGORY103
-    Other,// HOWTOGET_CATEGORY104
-    Other,// HOWTOGET_CATEGORY105
-    Other,// HOWTOGET_CATEGORY106
-    Other,// HOWTOGET_CATEGORY107
-    Other,// HOWTOGET_CATEGORY108
-    Other,// HOWTOGET_CATEGORY109
-    Other,// HOWTOGET_CATEGORY110
+    Pack = 1,
+    OldSolo,
+    Tournament,
+    Exhibition,
+    FreeStruct,
+    PaidStruct,
+    OldMission,
+    DuelReward,
+    OldSet,
+    PackSelection,
+    PackSecret,
+    PackBonus,
+    Etc = 99,
+    Craft = 20,
+    GemShop,
+    Campaign,
+    CampaignStruct,
+    LoginBonus,
+    Solo,
+    SoloStruct,
+    Mission,
+    MissionStruct,
+    Set,
+    LimitedTimeSet,
+    Etc1 = 101,
+    Etc2,
+    Etc3,
+    Etc4,
+    Etc5,
+    Etc6,
+    Etc7,
+    Etc8,
+    Etc9,
+    Etc10,
 }
 /// <summary>
 /// IDS_SCORE (IDS_SCORE.DETAIL_XXX)
